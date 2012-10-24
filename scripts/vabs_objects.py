@@ -1,55 +1,8 @@
 """
 Classes and modules that organize the data for a VABS input file.
 
-This code has been rewritten from the old code, which can be found in
-spardesign/VABS/VABSobjects.py.
-
-Here is a list of classes/functions from the old code (* indicates this code
-has already been rewritten below):
-    *nodeObj --> Node
-    *materialObj --> Material
-    *layerObj --> Layer
-    *isotropicMatlObj --> IsotropicMaterial
-    *orthotropicMatlObj --> OrthotropicMaterial
-    *elementObj --> Element, LinearQuadElement, QuadraticQuadElement
-        inspect (deprecated) instead, use print statement on an Element instance to execute __str__() method
-        middle (deprecated) calculation is done in __init__ for subclasses LinearQuadElement, QuadraticQuadElement
-        is_quadratic (deprecated)
-        *angles --> _angles (moved to subclasses LinearQuadElement, QuadraticQuadElement)
-        *is_ccw (moved to subclasses LinearQuadElement, QuadraticQuadElement)
-        *reorient --> reorder_nodes (moved to subclasses LinearQuadElement, QuadraticQuadElement)
-    reorderBadElements (deprecated)
-    *assignCoordinatesToNodes --> assign_coordinates_to_nodes
-    fillNodeObjects (deprecated) instead, make new Node instances with assign_coordinates_to_nodes
-    fillLayerObjects (deprecated) instead, make new Layer instances
-    assignLayers (deprecated) instead, make new Layer instances
-    fillMaterialObjects (deprecated) instead, make new Material instances
-    assignMaterials (deprecated) instead, make new Material instances
-    fillElementObjects (deprecated) instead, make new Element instances
-    assignElementOrientations (deprecated) instead, make new Element instances
-    assignNodesAndLayersToElements (deprecated) instead, make new Element instances
-    
-    unused functions:
-        findMiddleCoordinatesOfElement (deprecated)
-        areNodesSortedByVABSconvention (deprecated)
-        reassignNodesOnElement (deprecated)
-        reassignNodesOnAllBadElements (deprecated)
-        assignBordersToElements (deprecated)
-        rewriteConnectivity (deprecated)
-        defineSparCapShearWebBoundaries (deprecated)
-        defineSparCapRootBuildupBoundary (deprecated)
-        defineLayerThickness (deprecated)
-        calcLayerThicknessesForAllLaminates (deprecated)
-        allFourCoordsAreWithinBounds (deprecated)
-        coordIsWithinBounds (deprecated)
-        middleCoordIsWithinBounds (deprecated)
-        defineLayerForEachElement (deprecated)
-
-    all .inspect() methods have been replaced with __str__() methods
-        see day2_oopII.pdf slide 8, from Python Boot Camp
-
 Author: Perry Roth-Johnson
-Last updated: October 23, 2012
+Last updated: October 24, 2012
 
 """
 
