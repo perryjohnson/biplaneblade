@@ -1,322 +1,412 @@
+"""
+A module to parse data from an ABAQUS-formatted 2D cross-section grid file.
+
+Authors: Phil Chiu
+         Perry Roth-Johnson
+Last updated: November 1, 2012
+
+A note on old modules. Some have been renamed, others deprecated:
+readFile() --> _read_file()
+makeTempFiles()  (DEPRECATED)
+closeTempFiles()  (DEPRECATED)
+deleteTempFiles()  (DEPRECATED)
+defineRegularExpressions() --> _define_patterns()
+findHeaders()  (DEPRECATED)
+findBlockStarts() --> _find_block_starts()
+interpretABAQUS()  (DEPRECATED)
+checkABAQUSparsing()   (DEPRECATED)
+parseABAQUS() --> _parse_abaqus()
+
+"""
+
 import re                        # import the regular expression module
 import os                        # import the operating system module
 import numpy as np               # import the the numpy module; rename it as np
 
 class AbaqusGrid:
     """
-    The AbaqusGrid class contains methods for parsing an ABAQUS-formatted
-    2D grid file (cross-section grid).
+The AbaqusGrid class contains methods for parsing an ABAQUS-formatted
+2D grid file (cross-section grid).
 
-    Usage Example
-    -------------
-        import abaqus_utilities as au
-        abgrid = au.AbaqusGrid('spar_station_abq.txt')
-        abgrid.parseABAQUS()
+Usage:
+from abaqus_utilities import *
+g = AbaqusGrid('../run_01/input/spar_station_04_linear_abq.txt')
+g.node_array
+g.node_array['node_no']
+g.node_array['x2']
+g.node_array['x3']
+g.element_array
+g.elementset_array
+g.number_of_nodes
+g.number_of_elements
 
-        nodeArray = abgrid.nodeArray
-        elemArray = abgrid.elemArray
-        esetArray = abgrid.esetArray
-        nnode     = abgrid.nnode
-        nelem     = abgrid.nelem
+Initialization:
+AbaqusGrid(filename, debug_flag=False)
+  filename - A string for the full path of the ABAQUS-formatted grid file.
+  debug_flag - Optional boolean to print intermediate results to the screen.
 
+Public attributes:
+filename - A string for the full path of the ABAQUS-formatted grid file.
+node_array - A structured array that stores nodes in 3 columns:
+    node_no: A unique integer that labels this node.
+    x2: A float for the x2-coordinate of this node.
+    x3: A float for the x3-coordinate of this node.
+element_array - A structured array that stores element connectivity.
+    If the element is linear (4-noded), 6 columns are stored:
+        layer_no: An integer for the unique layer associated with this element.
+        elem_no: An integer that represents this unique element.
+                                4-------3
+                                |       |   The VABS linear quadrilateral
+                                |       |   element node numbering scheme.
+                                |       |
+                                1-------2
+        node1: An integer for the unique node located at the bottom left corner
+            of this element.
+        node2: An integer for the unique node located at the bottom right
+            corner of this element.
+        node3: An integer for the unique node located at the top right corner
+            of this element.
+        node4: An integer for the unique node located at the top left corner of
+            this element.
+    If the element is quadratic (8-noded), 10 columns are stored:
+        layer_no: An integer for the unique layer associated with this element.
+        elem_no: An integer that represents this unique element.
+                                4---7---3
+                                |       |   The VABS quadratic quadrilateral
+                                8       6   element node numbering scheme.
+                                |       |
+                                1---5---2
+        node1: An integer for the unique node located at the bottom left corner
+            of this element.
+        node2: An integer for the unique node located at the bottom right
+            corner of this element.
+        node3: An integer for the unique node located at the top right corner
+            of this element.
+        node4: An integer for the unique node located at the top left corner of
+            this element.
+        node5: An integer for the unique node located at the midpoint of the
+            bottom side of this element.
+        node6: An integer for the unique node located at the midpoint of the
+            right side of this element.
+        node7: An integer for the unique node located at the midpoint of the
+            top side of this element.
+        node8: An integer for the unique node located at the midpoint of the
+            left side of this element.
+        The VABS quadrilateral element node numbering scheme is shown below:
+elementset_array - A structured array that stores element orientation angles in
+    2 columns:
+    theta1: The orientation (in degrees) of this element. Sometimes this is
+        also referred to as the "layer plane angle."
+                Consider the box cross-section below:
 
-    Initialization
-    --------------
-    AbaqusGrid(filename)
-        filename : <string>
-            The path and filename of the ABAQUS-formatted grid file.
+                            theta1 = 0
+                        ---------------------
+                        |    (top wall)     |
+            theta1 = 90 |                   | theta1 = 270
+            (left wall) |                   | (right wall)
+                        |   (bottom wall)   |
+                        ---------------------
+                            theta1 = 180
 
+    elem_no: An integer that represents a unique element.
+number_of_nodes - An integer for the number of nodes in the grid.
+number_of_elements - An integer for the number of elements in the grid.
 
-    Public Variables
-    ----------------
-    filename : <string>
-        The path and filename of the layup file.
-
-    nodeArray : <np array>
-        Numpy array with nodes
-
-    elemArray : <np array>
-        Numpy array with elements.
-
-    esetArray : <np array>
-        Numpy array with elset.
-
-    nnode : <np array>
-        Total number of nodes in grid.
-
-    nelem : <np array>
-        Total number of elements (cells) in grid.
-
-
-    Public Methods
-    --------------
-    parseABAQUS(debug_flag=False)
-        Parameters
-            stn : <int>
-                Station number.
-
-            print_flag : <logical>
-                True to print output.
     """
 
 
-    def __init__(self, filename):
+    def __init__(self, filename, debug_flag=False):
         self.filename = filename
+        self._parse_abaqus(debug_flag=debug_flag)
 
 
-    def readFile(self):
-        f = open(self.filename, 'r')   # read the file
-        abqfile = f.readlines()        # parse all characters in file into one long string
-        return abqfile
+    def _read_file(self):
+        """
+Saves the ABAQUS file as a list of strings (as an attribute).
+
+Each element in the list represents one line in the file.
+
+Saves:
+self._abq_file - A list of strings.
+
+        """
+        f = open(self.filename, 'r')
+        self._abq_file = f.readlines()
+        f.close()
 
 
-    ## make temporary files on hard disk to store nodes and element connectivity parsed from the ABAQUS-formatted file from TrueGrid
-    def makeTempFiles(self):
-        nodeFile = open('node.txt', 'w+')  # file for node coordinates
-        elemFile = open('elem.txt', 'w+')  # file for element connectivity
-        esetFile = open('eset.txt', 'w+')  # file for element sets (for each structural component)
-        return (nodeFile, elemFile, esetFile)
+    def _define_patterns(self):
+        """
+Define regular expressions to search for nodes and elements in the ABAQUS file.
 
+Saves:
+self._node_pattern
+self._element_pattern
+self._node_header_pattern
+self._element_header_pattern
+self._elementset_header_pattern
 
-    ## close files on hard disk that store nodes and element connectivity
-    def closeTempFiles(self, nodeFile, elemFile, esetFile):
-        nodeFile.close()
-        elemFile.close()
-        esetFile.close()
-        return
-
-
-    ## delete the files on hard disk that store coordinates and connectivity
-    def deleteTempFiles(self):
-        os.remove('node.txt')
-        os.remove('elem.txt')
-        os.remove('eset.txt')
-        return
-
-
-    ## define regular expressions to search for nodes and elements in ABAQUS-formatted file
-    def defineRegularExpressions(self):
-        # node pattern:
-        nodePat = re.compile(r'[0-9]+(,-*[0-9]+\.[0-9]*E*[+-]*[0-9]*){3}')
+        """
+        self._node_pattern = re.compile(
+            r'[0-9]+(,-*[0-9]+\.[0-9]*E*[+-]*[0-9]*){3}')
         #  this regex pattern explained:
         #  -----------------------------
         #  [0-9]+                               :  node number
-        #  (,-*[0-9]+\.[0-9]*E*[+-]*[0-9]*){3}  :  x-coord, y-coord, z-coord triad (may be in decimal or scientific notation)
+        #  (,-*[0-9]+\.[0-9]*E*[+-]*[0-9]*){3}  :  x-coord, y-coord, z-coord
+        #  note: coords may be in decimal or scientific notation
 
-        # node header pattern:
-        nodeHeadPat = re.compile(r'\*NODE.+')
-        
-        # shell header pattern:
-        # shellHeadPat = re.compile(r'\*SHELL.+')
+        self._node_header_pattern = re.compile(r'\*NODE.+')
 
-        # element connectivity pattern:
-        # elemPat = re.compile(r'[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+')
-        elemPat = re.compile(r'[0-9]+(,[0-9]+){4,8}')
+        # linear element connectivity pattern:
+        self._linear_element_pattern = re.compile(r'^[0-9]+(,[0-9]+){4}$')
+        #  this regex pattern explained:
+        #  -----------------------------
+        #  ^               :  beginning of line
+        #  [0-9]+          :  element number
+        #  (,[0-9]+){4}    :  node1-node4
+        #  $               :  end of line
+
+        # quadratic element connectivity pattern:
+        self._quadratic_element_pattern = re.compile(r'^[0-9]+(,[0-9]+){8}$')
         #  this regex pattern explained:
         #  -----------------------------
         #  [0-9]+          :  element number
-        #  (,[0-9]+){4,8}  :  node1-node4 or node1-node8
+        #  (,[0-9]+){8}    :  node1-node8
 
-        # element header pattern:
-        elemHeadPat = re.compile(r'\*MATERIAL,NAME=M[0-9]+')
+        self._element_header_pattern = re.compile(r'\*MATERIAL,NAME=M[0-9]+')
 
         # element set pattern:
         # esetPat = re.compile(r'([0-9]+,){5,16}')
 
-        # element set header pattern:
-        esetHeadPat = re.compile(r'\*ELSET,ELSET=.+')
-
-        # generic header pattern:
-        # headPat = re.compile(r'\*.+')
+        self._elementset_header_pattern = re.compile(r'\*ELSET,ELSET=.+')
         
-        return (nodePat, elemPat, nodeHeadPat, elemHeadPat, esetHeadPat)
 
-
-    ## find the headers in the ABAQUS-formatted file, and return their line numbers
-    def findHeaders(self, headPat, abqfile):
-        headLineNums = []
-        for i in range(len(abqfile)):
-            headMatch = headPat.match(abqfile[i])
-            if headMatch:
-                headLineNums.append(i)
-        
-        return headLineNums
-
-    
-    ## find the start of the node block, element connectivity block, and element set blocks
-    def findBlockStarts(self, nodeHeadPat, elemHeadPat, esetHeadPat, abqfile):
-        nodeHead_lines = []
-        elemHead_lines = []
-        esetHead_lines = []
-        for i in range(len(abqfile)):
-            nodeHeadMatch = nodeHeadPat.match(abqfile[i])
-            elemHeadMatch = elemHeadPat.match(abqfile[i])
-            esetHeadMatch = esetHeadPat.match(abqfile[i])
-            if nodeHeadMatch:
-                nodeHead_lines.append(i)
-            elif elemHeadMatch:
-                elemHead_lines.append(i)
-            elif esetHeadMatch:
-                esetHead_lines.append(i)
-        (nodeBlockStart, elemBlockStart, esetBlockStart) = (nodeHead_lines[0], elemHead_lines[0], esetHead_lines[0])
-        
-        return (nodeBlockStart, elemBlockStart, esetBlockStart)
-
-    
-    def interpretABAQUS(self, abqfile, nodeFile, elemFile, esetFile, debug_flag=False):
+    def _find_block_starts(self):
         """
-        interpretABAQUS(abqfile, nodeFile, elemFile, esetFile, debug_flag=False)
+Returns the indices (line number) for the start of the node, element
+connectivity, and element set blocks in self._abq_file.
 
-        Interprets readlines() string from ABAQUS file and parses nodes and element connectivity into numpy arrays.
-        
-        Input
-        -----
-        abqfile : <string>
-            a string of all characters in the ABAQUS-formatted file
-        nodeFile : <object>
-            file handle to node.txt
-        elemFile : <object>
-            file handle to elem.txt
-        
-        Output
-        ------
-        nodeArray : <array>
-            a numpy array of node numbers and coordinates
+Saves:
+self._node_block_start
+self._element_block_start
+self._elementset_block_start
 
-        elemArray : <array>
-            a numpy array of element numbers and connectivity
-
-        esetArray : <array>
-            a numpy array with element numbers and theta1
-
-        nnode : <int>
-            the total number of nodes in this grid
-
-        nelem : <int>
-            the total number of elements (cells) in this grid
         """
+        node_headers = []
+        element_headers = []
+        element_set_headers = []
+        for i, line in enumerate(self._abq_file):
+            node_header_match = self._node_header_pattern.match(line)
+            element_header_match = self._element_header_pattern.match(line)
+            elementset_header_match = self._elementset_header_pattern.match(line)
+            if node_header_match:
+                node_headers.append(i)
+            elif element_header_match:
+                element_headers.append(i)
+            elif elementset_header_match:
+                element_set_headers.append(i)
+        self._node_block_start = node_headers[0]
+        self._element_block_start = element_headers[0]
+        self._elementset_block_start = element_set_headers[0]
 
-        # define the regular expression patterns
-        (nodePat, elemPat, nodeHeadPat, elemHeadPat, esetHeadPat) = self.defineRegularExpressions()
 
-        # find the line numbers on which the node block, element connectivity block, and element set blocks start
-        (nodeBlockStart, elemBlockStart, esetBlockStart) = self.findBlockStarts(nodeHeadPat, elemHeadPat, esetHeadPat, abqfile)
-        if debug_flag:
-            print (nodeBlockStart, elemBlockStart, esetBlockStart)
-            print abqfile[nodeBlockStart]
-            print abqfile[elemBlockStart]
-            print abqfile[esetBlockStart]
+    def _parse_nodes(self):
+        """
+Save the nodes in a structured array (as an attribute).
 
-        for i in range(nodeBlockStart,elemBlockStart):
-            nodeMatch = nodePat.match(abqfile[i])
-            if nodeMatch:  # if we find a node, write it to node.txt
-                nodeFile.write(abqfile[i])
+Saves:
+self.number_of_nodes
+self.node_array
 
-        for i in range(elemBlockStart,esetBlockStart):
-            elemMatch = elemPat.match(abqfile[i])
-            elemHeadMatch = elemHeadPat.match(abqfile[i])
-            if elemHeadMatch:
-                layer_no = int(abqfile[i][-2])
+        """
+        list_of_node_tuples = []
+        for line in self._abq_file[self._node_block_start:self._element_block_start]:
+            node_match = self._node_pattern.match(line)
+            if node_match:  # if we find a node
+                # save the first 3 entries; drop x1 (last entry)
+                (node_no, x2, x3) = line.strip().split(',')[:-1]
+                list_of_node_tuples.append((int(node_no), float(x2), float(x3)))
+        self.number_of_nodes = len(list_of_node_tuples)
+        # initialize a structured array
+        self.node_array = np.zeros((self.number_of_nodes,), 
+            dtype=[('node_no', 'i4'), ('x2', 'f8'), ('x3', 'f8')])
+        # save the nodes in the structured array
+        self.node_array[:] = list_of_node_tuples
+
+
+    def _parse_elements(self, debug_flag=False):
+        """
+Saves the elements in a structured array (as an attribute).
+
+Note: This function only supports linear (4-noded) elements and quadratic
+(8-noded) elements from TrueGrid.
+
+Saves:
+self.number_of_elements
+self.element_array
+
+        """
+        list_of_element_tuples = []
+        new_element_header_found = False
+        for i, line in enumerate(
+                self._abq_file[self._element_block_start:self._elementset_block_start]):
+            linear_element_match = self._linear_element_pattern.match(line)
+            quadratic_element_match = self._quadratic_element_pattern.match(line)
+            element_header_match = self._element_header_pattern.match(line)
+            if element_header_match:
+                new_element_header_found = True
+                # Extract the layer number from the element header line.
+                layer_no = line.strip().split("=")[-1].split("M")[-1]
                 if debug_flag:
-                    print 'element header found at line ' + str(i)
+                    print 'element header found at line ' + str(
+                            i+self._element_block_start+1)
                     print 'layer #' + str(layer_no)
-                    print 'first element: #' + str(np.fromstring(abqfile[i+6], dtype=int, sep=',')[0]) + '\n'
-            elif elemMatch:  # if we find an element connectivity, write it to elem.txt
-                elemFile.write(str(layer_no) + ',' + abqfile[i]) # store the layer number of each element at the beginning of each line in elem.txt
+            elif quadratic_element_match:
+                if debug_flag and new_element_header_found:
+                    print 'first element: #' + line.strip().split(',')[0]
+                    new_element_header_found = False
+                (elem_no, node1, node2, node3, node4,
+                        node5, node6, node7, node8) = line.strip().split(',')
+                list_of_element_tuples.append(
+                        (int(layer_no), int(elem_no), int(node1), int(node2),
+                        int(node3), int(node4), int(node5), int(node6),
+                        int(node7), int(node8)))
+            elif linear_element_match:
+                if debug_flag and new_element_header_found:
+                    print 'first element: #' + line.strip().split(',')[0]
+                    new_element_header_found = False
+                (elem_no, node1, node2, node3, node4) = line.strip().split(',')
+                list_of_element_tuples.append(
+                        (int(layer_no), int(elem_no), int(node1), int(node2),
+                        int(node3), int(node4)))
+        self.number_of_elements = len(list_of_element_tuples)
+        if len(list_of_element_tuples[0]) == 10:
+            is_quadratic = True
+        else:
+            is_quadratic = False
+        # initialize a structured array
+        if is_quadratic:
+            self.element_array = np.zeros(
+                    (self.number_of_elements,), dtype=[('layer_no', 'i4'),
+                    ('elem_no', 'i4'), ('node1', 'i4'), ('node2', 'i4'),
+                    ('node3', 'i4'), ('node4', 'i4'), ('node5', 'i4'),
+                    ('node6', 'i4'), ('node7', 'i4'), ('node8', 'i4')])
+        else:
+            self.element_array = np.zeros(
+                    (self.number_of_elements,), dtype=[('layer_no', 'i4'),
+                    ('elem_no', 'i4'), ('node1', 'i4'), ('node2', 'i4'),
+                    ('node3', 'i4'), ('node4', 'i4')])
+        # save the nodes in the structured array
+        self.element_array[:] = list_of_element_tuples
 
-        # this dictionary defines the relationship between element set names and their theta1 values
-        # e.g., the element set named 'scb' (bottom spar cap) has theta1=180 degrees
+
+    def _parse_elementsets(self, debug_flag=False):
+        """
+Save all the elements and their orientations (theta1) in a structured array
+(as an attribute).
+
+Saves:
+self.elementset_array
+
+FUTURE WORK: theta1_dict should be pulled out and replaced with an input file
+supplied by the user...maybe add theta1_dict as a keyword argument?
+
+KNOWN BUG: The elementsets in the ABAQUS file may be missing some elements!
+seems to be more likely to happen when quadratic elements are generated with
+TrueGrid. When linear elements are generated, everything is usually okay. A
+quick and dirty fix was implemented in the past: search for elements in the
+mesh that have not yet been assigned a theta1 value. Based on the middle
+coordinates of that element, assign a theta1 value.
+
+        """
+        list_of_elementset_tuples = []
+        # Define the relationship between elementset names and theta1 values
+        # e.g., elementset 'scb' (bottom spar cap) has theta1=180 degrees
         theta1_dict = { 'swlbiaxl': 90,      # left wall
                         'swlfoam':  90,      # left wall
                         'swlbiaxr': 90,      # left wall
-                        'swl':      90,      # left wall (simple bi-material cross-section)
                         'swrbiaxl': 270,     # right wall
                         'swrfoam':  270,     # right wall
                         'swrbiaxr': 270,     # right wall
-                        'swr':      270,     # right wall (simple bi-material cross-section)
                         'sct':      0,       # top wall
                         'rbt':      0,       # top wall
                         'scb':      180,     # bottom wall
                         'rbb':      180 }    # bottom wall
 
-        for i in range(esetBlockStart,len(abqfile)):
-            esetHeadMatch = esetHeadPat.match(abqfile[i])
-            if esetHeadMatch:
-                theta1 = theta1_dict[abqfile[i][13:-1]]
+        for line in self._abq_file[self._elementset_block_start:]:
+            elementset_header_match = self._elementset_header_pattern.match(line)
+            if elementset_header_match:
+                # Extract the elementset name and look up its theta1 value.
+                theta1 = theta1_dict[line.strip().split('=')[-1]]
                 if debug_flag:
-                    print 'element set: ' + abqfile[i][13:-1]
+                    print 'element set: ' + line.strip().split('=')[-1]
                     print 'theta1 = ' + str(theta1) + '\n'
             else:
-                esetLine = np.fromstring(abqfile[i], dtype=int, sep=',')
-                for j in range(len(esetLine)-1):
-                    esetFile.write(str(theta1) + ',' + str(esetLine[j]) + '\n')  # store the theta1 value of each element at the beg. of each line in eset.txt
-            
-        # rewind cursor to beginning of file 'node.txt'
-        nodeFile.seek(0,0)
-        # load nodes into an array
-        nodeArray = np.loadtxt('node.txt', delimiter=',', usecols=(0,1,2))
-        #   usecols kwarg discards the last column, which only contains zeros (z-coords)
-
-        # rewind cursor to beginning of file 'elem.txt'
-        elemFile.seek(0,0)
-        # load element connectivity into an array (of integers)
-        elemArray = np.loadtxt('elem.txt', dtype='int', delimiter=',')
-        # sort the array by element number
-        elemArray = elemArray[elemArray[:,1].argsort()]
-
-        # rewind cursor to beginning of file 'elem.txt'
-        esetFile.seek(0,0)
-        # load element connectivity into an array (of integers)
-        esetArray = np.loadtxt('eset.txt', dtype='int', delimiter=',')
-        # sort the array by element number
-        esetArray = esetArray[esetArray[:,1].argsort()]
-
-        nnode = len(nodeArray)  # set the number of nodes
-        nelem = len(elemArray)  # set the number of elements
-
-        self.checkABAQUSparsing(nodeArray, nnode)
-        # may need to check parsing of eset.txt ... I think some elements are missing!
-
-        return (nodeArray, elemArray, esetArray, nnode, nelem)
+                elements = line.strip().strip(',').split(',')
+                for elem_no in elements:
+                    list_of_elementset_tuples.append((theta1,int(elem_no)))
+        elementset_len = len(list_of_elementset_tuples)
+        # initialize a structured array
+        self.elementset_array = np.zeros((self.number_of_elements,),
+            dtype=[('theta1', 'i4'), ('elem_no', 'i4')])
+        # save the nodes in the structured array
+        try:
+            self.elementset_array[:] = list_of_elementset_tuples
+        except:
+            print """
+<*WARNING* in abaqus_utilities.AbaqusGrid._parse_elementsets()>
+    self.number_of_elements != len(list_of_elementset_tuples)
+    Elements are missing from the elementset blocks in the ABAQUS file!
+    ...Saving as many elements as possible in self.elementset_array
+            """
+            # Reinitialize the structured array with a smaller shape in order
+            # to match the number of elements parsed from the elemensets.
+            self.elementset_array = np.zeros((elementset_len,),
+                dtype=[('theta1', 'i4'), ('elem_no', 'i4')])
+            self.elementset_array[:] = list_of_elementset_tuples
 
 
-    def checkABAQUSparsing(self, nodeArray, nnode):
-        lastnodeno = int(nodeArray[-1,0])
-        if lastnodeno != nnode:
-            print '***ERROR: number of nodes does not equal the last node number in the list***'
-            print '     number_of_nodes = ' + str(nnode)
-            print '     last node number: ' + str(lastnodeno)
-
-        return
-
-
-    ## number of nodes and number of elements are also saved as class vars.
-    def parseABAQUS(self, debug_flag=False):
+    def _parse_abaqus(self, debug_flag=False):
         """
-        AbaqusGrid.parseABAQUS(debug_flag=False)
+Parses the ABAQUS output file and saves the node, element, and eset structured
+arrays as object attributes.
 
-        Parses the ABAQUS file and save the node, element, eset arrays as class vars.
-        Calls the AbaqusGrid.interpretABAQUS() function.
+This non-public method is automatically run when a new AbaqusGrid instance is
+created.
+
+Saves:
+self.number_of_nodes
+self.node_array
+
+Usage:
+cd safe
+import scripts.abaqus_utilities as au
+g = au.AbaqusGrid('run_01/input/spar_station_04_linear_abq.txt')
+g._parse_abaqus(debug_flag=True)
+
+g.node_array
+g.element_array
+g.elementset_array
+
         """
-        
-        if debug_flag:
-            print 'ABAQUS file: ' + filestr
-
-        abqfile = self.readFile()
-
-        (nodeFile, elemFile, esetFile) = self.makeTempFiles()
-        
-        if debug_flag:
-            print 'STATUS: interpreting the ABAQUS file...'
-
-        (self.nodeArray, self.elemArray, self.esetArray, self.nnode, self.nelem) = self.interpretABAQUS(abqfile, nodeFile, elemFile, esetFile, debug_flag=debug_flag)
-        self.closeTempFiles(nodeFile, elemFile, esetFile)
-        self.deleteTempFiles()
-         
 
         if debug_flag:
-            print self.nodeArray[0:5,:]
-            print self.elemArray[0:5,:]
-            print self.esetArray[0:5,:]
-            print 'number of nodes: ' + str(self.nnode)
-            print 'number of elements: ' + str(self.nelem)
+            print 'ABAQUS file: ' + self.filename
+        self._read_file()
+        if debug_flag:
+            print 'STATUS: parsing the ABAQUS file...'
+        self._define_patterns()
+        self._find_block_starts()
+        self._parse_nodes()
+        self._parse_elements(debug_flag=debug_flag)
+        self._parse_elementsets(debug_flag=debug_flag)
+        # Sort element_array by element number.
+        self.element_array.sort(order='elem_no')
+        # Sort elementset_array by element number.
+        self.elementset_array.sort(order='elem_no')
+        if debug_flag:
+            print '.node_array[0] =', self.node_array[0]
+            print '.element_array[0] =', self.element_array[0]
+            print '.elementset_array[0] =', self.elementset_array[0]
+            print 'number of nodes: ' + str(self.number_of_nodes)
+            print 'number of elements: ' + str(self.number_of_elements)
