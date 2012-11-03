@@ -3,19 +3,7 @@ A module to parse data from an ABAQUS-formatted 2D cross-section grid file.
 
 Authors: Phil Chiu
          Perry Roth-Johnson
-Last updated: November 1, 2012
-
-A note on old modules. Some have been renamed, others deprecated:
-readFile() --> _read_file()
-makeTempFiles()  (DEPRECATED)
-closeTempFiles()  (DEPRECATED)
-deleteTempFiles()  (DEPRECATED)
-defineRegularExpressions() --> _define_patterns()
-findHeaders()  (DEPRECATED)
-findBlockStarts() --> _find_block_starts()
-interpretABAQUS()  (DEPRECATED)
-checkABAQUSparsing()   (DEPRECATED)
-parseABAQUS() --> _parse_abaqus()
+Last updated: November 2, 2012
 
 """
 

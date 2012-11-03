@@ -331,10 +331,20 @@ theta1 - A float for the layer plane angle (in degrees) of this element.
     Acceptable values are 0 <= theta1 <= 360 degrees. The ply coordinate system
     (y1,y2,y3) is formed by rotating the global coordinate system (x1,x2,x3) in
     the right-hand sense about x1 by the amount 0 <= theta1 <= 360 degrees. For
-    example, consider a box-beam cross-section. For the upper wall, theta1=0;
-    the left wall, theta1=90; the lower wall, theta1=180; the right wall,
-    theta1=270. For more details, see the VABS Manual for Users, pages 8-9,
-    figures 4-5.
+    example, consider a box-beam cross-section.
+
+                            theta1 = 0
+                        ---------------------
+                        |    (top wall)     |
+            theta1 = 90 |                   | theta1 = 270
+            (left wall) |                   | (right wall)
+                        |   (bottom wall)   |
+                        ---------------------
+                            theta1 = 180
+
+    For the top wall, theta1=0; the left wall, theta1=90; the bottom wall,
+    theta1=180; the right wall, theta1=270. For more details, see the VABS
+    Manual for Users, pages 8-9, figures 4-5.
 
 Object methods:
 swap_nodes() - Swaps the assignment of two nodes in this element.
