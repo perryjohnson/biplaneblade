@@ -1,7 +1,7 @@
-spardesign2
+bladedesign
 ===========
 
-parametric analysis of biplane spars (rewritten from the ground up)
+engineering tool for design and analysis of biplane wind turbine blades
 
 Naming conventions
 ------------------
