@@ -1,3 +1,5 @@
+import os
+
 class Coordinates:
     """Define the coordinates for a blade station."""
     def __init__(self, x1, x2, x3):
@@ -91,6 +93,21 @@ class Structure:
         print self.LE_panel
         print "--- AFT PANEL ---"
         print self.aft_panel
+    def get_summary(self):
+        s = ''
+        s += "--- ROOT BUILDUP ---\n"
+        s += str(self.root_buildup) + '\n'
+        s += "--- SPAR CAP ---\n"
+        s += str(self.spar_cap) + '\n'
+        s += "--- SHEAR WEB ---\n"
+        s += str(self.shear_web) + '\n'
+        s += "---TE REINFORCEMENT ---\n"
+        s += str(self.TE_reinforcement) + '\n'
+        s += "--- LE PANEL ---\n"
+        s += str(self.LE_panel) + '\n'
+        s += "--- AFT PANEL ---\n"
+        s += str(self.aft_panel) + '\n'
+        return s
 
 
 class Station:
@@ -103,16 +120,49 @@ class Station:
     s5 = stn.Station(df.ix[5])  # import station 5
 
     """
-    def __init__(self, stn_series):
-        """Initialize a new blade station."""
+    logfile_name = 'station.log'
+    number_of_stations = 0
+    def __init__(self, stn_series, blade_path):
+        """Create a new blade station.
+
+        Note: Stations are usually not created directly. New Stations are
+        usually created by the Blade class.
+
+        Arguments
+        ---------
+        stn_series: a pandas Series object containing this station's properties
+        blade_path: the local target directory for storing blade data
+
+        Usage
+        -----
+        Station(b._df.ix[5], 'sandia_blade')
+        # this creates station #5 of the Sandia blade
+        # _df is a pandas DataFrame containing properties of all blade stations
+        # _df.ix[5] gets the Series object for station #5 from DataFrame _df
+
+        """
+        Station.number_of_stations += 1
+        self.station_num = Station.number_of_stations
+        self.station_path = os.path.join(blade_path, 'stn{0:02d}'.format(self.station_num))
+        try:
+            os.mkdir(self.station_path)
+        except WindowsError:
+            print "[WindowsError] The station path '{0}' already exists!".format(os.path.split(self.station_path)[-1])
+        self.logf = open(Station.logfile_name, "a")
+        self.logf.write("............(Created blade station #{0})............\n".format(self.station_num))
+        print " Created blade station #{0}".format(self.station_num)
         self.coords = Coordinates(stn_series['x1'], 
                                   stn_series['x2'], 
                                   stn_series['x3'])
+        self.logf.write("****** COORDINATES ******\n")
+        self.logf.write(str(self.coords) + '\n')
         self.airfoil = Airfoil(stn_series['airfoil'], 
                                stn_series['airfoil']+'.txt', 
                                stn_series['pitch axis'], 
                                stn_series['chord'], 
                                stn_series['twist'])
+        self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
+        self.logf.write(str(self.airfoil) + '\n')
         self.structure = Structure(stn_series['root buildup base'],
                                    stn_series['root buildup height'],
                                    stn_series['spar cap base'],
@@ -124,10 +174,8 @@ class Station:
                                    stn_series['TE reinf height foam'],
                                    stn_series['LE panel height'],
                                    stn_series['aft panel height'])
-        print "............(Creating a new blade station)............"
-        print "****** COORDINATES ******"
-        print self.coords
-        print "****** AIRFOIL AND CHORD PROPERTIES ******"
-        print self.airfoil
-        print "****** LAMINATE SCHEDULE ******"
-        self.structure.print_summary()
+        self.logf.write("****** LAMINATE SCHEDULE ******\n")
+        self.logf.write(self.structure.get_summary())
+        self.logf.write('\n')
+        self.logf.flush()
+        self.logf.close()
