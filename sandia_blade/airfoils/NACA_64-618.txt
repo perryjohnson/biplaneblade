@@ -1,5 +1,3 @@
-<reference>NuMad format, 96 pts.</reference>
-<coords>
 1.000000	0.000000
 0.950000	0.005509
 0.949445	0.005529
@@ -96,4 +94,4 @@
 0.901146	0.026449
 0.950000	0.013582
 0.950555	0.013428
-</coords>	
+1.000000    0.002000   # set a finite TE thickness to chord ratio of 0.002

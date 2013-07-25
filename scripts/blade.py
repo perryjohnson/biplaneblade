@@ -1,3 +1,11 @@
+"""A module for organizing geometrical data for a blade definition.
+
+Author: Perry Roth-Johnson
+Last updated: July 24, 2013
+
+"""
+
+
 import os
 import shutil
 import datetime
@@ -23,15 +31,13 @@ class Blade:
     def __init__(self, name, blade_path, defn_filename='blade_definition.csv', airfoils_path='airfoils'):
         """Create a new wind turbine blade.
 
-        Arguments
-        ---------
-        name: the name of this blade
-        blade_path: the local target directory for storing blade data
+        Parameters
+        ----------
+        name : string, the name of this blade
+        blade_path : string, the local target directory for storing blade data
 
-        Keyword Arguments
-        -----------------
-        defn_filename: CSV file for blade schedule of airfoils and laminates
-        airfoils_path: the local directory that contains airfoil coordinates
+        defn_filename : str (for CSV file), the blade definition filename
+        airfoils_path : str, local directory that contains airfoil coordinates
 
         Usage
         -----
@@ -40,8 +46,6 @@ class Blade:
               defn_filename='blade_definition.csv', airfoils_path='airfoils')
 
         """
-        # initialize the number_of_stations counter to zero
-        stn.Station.number_of_stations = 0
         self.name = name
         self.logf = open(Blade.logfile_name, "a")
         self.logf.write("[{0}] Created blade: {1}\n".format(datetime.datetime.now(), self.name))
@@ -62,7 +66,13 @@ class Blade:
                 self.logf.write("[{0}] Found airfoils path: {1}\n".format(datetime.datetime.now(), self.airfoils_path))
         self.logf.flush()
         self.logf.close()
+
     def __del__(self):
+        """Delete a wind turbine blade.
+
+        Also deletes all the station paths inside the blade path.
+
+        """
         self.logf = open(Blade.logfile_name, "a")
         for station in self.list_of_stations:
             if os.path.exists(station.station_path):
@@ -72,7 +82,9 @@ class Blade:
         self.logf.write("[{0}] Deleted blade '{1}' and all its station paths.\n".format(datetime.datetime.now(), self.name))
         self.logf.flush()
         self.logf.close()
+
     def import_blade_definition(self):
+        """Import the blade definition from a CSV file."""
         import_result = 0
         defn_fileext = os.path.splitext(self.defn_filename)[-1]
         if defn_fileext != '.csv' and defn_fileext != '.CSV':
@@ -86,21 +98,41 @@ class Blade:
             self.number_of_stations = len(self._df)
             import_result = 1
         return import_result
+
     def create_station(self, station_num):
+        """Create a new station for this blade."""
         return stn.Station(self._df.ix[station_num], self.blade_path)
+
     def create_all_stations(self):
+        """Create all stations for this blade."""
+        if stn.Station.number_of_stations != 0:
+            stn.Station.number_of_stations = 0  # initialize to zero
+            print " [Warning] The number of stations has been reset to zero."
+            self.logf = open(Blade.logfile_name, 'a')
+            self.logf.write("[{0}] [Warning] The number of stations (Station.number_of_stations) was reset to zero.\n")
         self.list_of_stations = []
         for station in range(1, self.number_of_stations+1):
             self.list_of_stations.append(self.create_station(station))
+
     def copy_airfoil_coords(self, station):
+        """Copy airfoil coordinates from airfoils_path into this station_path."""
         try:
             shutil.copy(os.path.join(self.airfoils_path, station.airfoil.filename), station.station_path)
             print " Copied station #{0} airfoil: {1}".format(station.station_num, station.airfoil.name)
+            station.airfoil.path = os.path.join(station.station_path, station.airfoil.filename)
+            print " ... Assigned station.airfoil.path!"
+            self.logf = open(Blade.logfile_name, 'a')
+            self.logf.write("[{0}] Assigned station.airfoil.path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.path))
+            self.logf.flush()
+            self.logf.close()
         except IOError:
             print "[IOError] The airfoil file '{0}' for station {1} does not exist!\n          Check '{2}' for errors.".format(station.airfoil.filename, station.station_num, self.defn_filename)
+
     def copy_all_airfoil_coords(self):
+        """Copy all airfoil coordinates from airfoils_path into each station_path."""
         for station in self.list_of_stations:
             self.copy_airfoil_coords(station)
+
     def plot_chord_schedule(self):
         """Plot the chord vs. span."""
         plt.figure()
@@ -109,6 +141,7 @@ class Blade:
         plt.xlabel('span, x1 [m]')
         plt.ylabel('chord [m]')
         plt.show()
+
     def plot_twist_schedule(self):
         """Plot the twist vs. span."""
         plt.figure()
