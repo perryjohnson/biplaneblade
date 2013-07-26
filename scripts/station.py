@@ -103,28 +103,9 @@ class Structure:
         self.TE_reinforcement = TE_Reinforcement(b_TE_reinf, h_TE_reinf_uniax, 
                                                  h_TE_reinf_foam)
         self.LE_panel = Part(np.nan, h_LE_panel)
-        self.aft_panel = Part(np.nan, h_aft_panel)        
+        self.aft_panel = Part(np.nan, h_aft_panel)
 
-    def print_summary(self):
-        """Print all the internal dimensions of this structure."""
-        print "--- ROOT BUILDUP ---"
-        print self.root_buildup
-        print "--- SPAR CAP ---"
-        print self.spar_cap
-        print "--- SHEAR WEB 1 ---"
-        print self.shear_web
-        print "--- SHEAR WEB 2 ---"
-        print self.shear_web
-        print "--- SHEAR WEB 3 ---"
-        print self.shear_web
-        print "---TE REINFORCEMENT ---"
-        print self.TE_reinforcement
-        print "--- LE PANEL ---"
-        print self.LE_panel
-        print "--- AFT PANEL ---"
-        print self.aft_panel
-
-    def get_summary(self):
+    def __str__(self):
         """Returns a string of all the internal dimensions for this structure."""
         s = ''
         s += "--- ROOT BUILDUP ---\n"
@@ -276,7 +257,7 @@ class Station:
                                    stn_series['LE panel height'],
                                    stn_series['aft panel height'])
         self.logf.write("****** LAMINATE SCHEDULE ******\n")
-        self.logf.write(self.structure.get_summary())
+        self.logf.write(str(self.structure) + '\n')
         self.logf.write('\n')
         self.logf.flush()
         self.logf.close()
