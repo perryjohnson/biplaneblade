@@ -50,9 +50,7 @@ class Blade:
         self.logf = open(Blade.logfile_name, "a")
         self.logf.write("[{0}] Created blade: {1}\n".format(datetime.datetime.now(), self.name))
         if not os.path.exists(blade_path):
-            msg = "[Error] The blade path '{0}' does not exist!\n...Exiting...".format(blade_path)
-            self.logf.write("[{0}] {1}".format(datetime.datetime.now(), msg))
-            print msg
+            raise ValueError("The blade path '{0}' does not exist!\n  Check the 'blade_path' passed to the Blade class.".format(blade_path))
         else:
             self.blade_path = os.path.join(os.getcwd(), blade_path)
             self.logf.write("[{0}] Found blade path: {1}\n".format(datetime.datetime.now(), self.blade_path))
@@ -84,14 +82,16 @@ class Blade:
         self.logf.close()
 
     def import_blade_definition(self):
-        """Import the blade definition from a CSV file."""
+        """Import the blade definition from a CSV file.
+
+        Returns 1 if the import was successful, 0 otherwise.
+
+        """
         import_result = 0
         defn_fileext = os.path.splitext(self.defn_filename)[-1]
         if defn_fileext != '.csv' and defn_fileext != '.CSV':
             # check that the blade definition file is a CSV file
-            print "[Error] The blade definition file '{0}' is not a CSV file!".format(os.path.split(self.defn_filename)[-1])
-            print "        The blade defintion will not be imported."
-            print "        ...Exiting..."
+            raise ValueError("blade definition file '{0}' must be of type *.csv".format(os.path.split(self.defn_filename)[-1]))
         else:
             # import the blade definition file into a pandas DataFrame
             self._df = pd.read_csv(self.defn_filename, index_col=0)
@@ -118,6 +118,9 @@ class Blade:
         """Copy airfoil coordinates from airfoils_path into this station_path."""
         try:
             shutil.copy(os.path.join(self.airfoils_path, station.airfoil.filename), station.station_path)
+        except IOError:
+            raise IOError("The airfoil file '{0}' for station {1} does not exist!\n  Check '{2}' for errors.".format(station.airfoil.filename, station.station_num, self.defn_filename))
+        else:
             print " Copied station #{0} airfoil: {1}".format(station.station_num, station.airfoil.name)
             station.airfoil.path = os.path.join(station.station_path, station.airfoil.filename)
             print " ... Assigned station.airfoil.path!"
@@ -125,8 +128,6 @@ class Blade:
             self.logf.write("[{0}] Assigned station.airfoil.path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.path))
             self.logf.flush()
             self.logf.close()
-        except IOError:
-            print "[IOError] The airfoil file '{0}' for station {1} does not exist!\n          Check '{2}' for errors.".format(station.airfoil.filename, station.station_num, self.defn_filename)
 
     def copy_all_airfoil_coords(self):
         """Copy all airfoil coordinates from airfoils_path into each station_path."""

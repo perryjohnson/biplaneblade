@@ -46,7 +46,7 @@ Twist:       {4:6.3f} (degrees)""".format(self.name, self.filename,
 
 
 class Part:
-    """Define the dimensions of a structural component."""
+    """Define the dimensions of a structural part."""
     def __init__(self, base, height):
         self.base = base
         self.height = height
@@ -54,7 +54,7 @@ class Part:
         return """base:    {0} (meters)
 height:  {1} (meters)""".format(self.base, self.height)
     def exists(self):
-        """Checks if a structural component exists at this station."""
+        """Checks if a structural part exists at this station."""
         if isnan(self.base) and isnan(self.height):
             return False
         else:
@@ -131,7 +131,7 @@ class Station:
     """Define a station for a wind turbine blade.
 
     This module also contains methods to split the airfoil curve into separate
-    segments for each structural component: spar caps, shear webs, etc.
+    segments for each structural part: spar caps, shear webs, etc.
 
     Usage
     -----
@@ -292,20 +292,24 @@ class Station:
         """Plot the airfoil coordinates of this station."""
         af = self.airfoil
         plt.figure()
-        plt.title("Station #{0}, {1}".format(self.station_num,
-                                             self.airfoil.name))
+        plt.title("Station #{0}, {1}".format(self.station_num, af.name))
         plt.axes().set_aspect('equal')
-        plt.plot(af.coords['x'], af.coords['y'])
-        if show_flag:
-            plt.show()
-        if savefig_flag:
-            fname = os.path.join(self.station_path, 'stn{0:02d}.png'.format(self.station_num))
-            plt.savefig(fname)
+        plt.xlabel('x2 [meters]')
+        plt.ylabel('x3 [meters]')
+        try:
+            plt.plot(af.coords['x'], af.coords['y'])
+        except AttributeError:
+            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <station>.read_airfoil_coords().".format(af.name, self.station_num))
+        else:
+            if show_flag:
+                plt.show()
+            if savefig_flag:
+                fname = os.path.join(self.station_path, 'stn{0:02d}.png'.format(self.station_num))
+                plt.savefig(fname)
+        
 
     # def split_airfoil_at_LE_and_TE(self):
 
     # note: use <Part>.exists() method to decide whether or not to split the airfoil curve for a particular Part
-
-    # note: clean up docs to use consistent terminology -- use "Part", not "component"
 
     # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
