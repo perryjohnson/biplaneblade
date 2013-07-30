@@ -168,6 +168,15 @@ class Station:
                 leading edge and the pitch axis (unitless)
             .chord : float, the chord length (meters)
             .twist : float, the twist about the x1 axis (degrees)
+            .coords : numpy array, the airfoil coordinates (scaled by the
+                .chord and .pitch_axis dimensions)
+                [note: created by .read_airfoil_coords()]
+            .LE_index : int, the index of .coords for the leading edge of this
+                airfoil
+            .upper : numpy array, the (scaled) airfoil coordinates of the upper
+                surface
+            .lower : numpy array, the (scaled) airfoil coordinates of the lower
+                surface
         .structure
             .root_buildup
                 .base=np.nan
@@ -206,9 +215,14 @@ class Station:
         -------
         .structure
             .<Part>
-                .exists() : bool, checks if a Part exists at this station
-            .print_summary() : stdout, print all internal dimensions
-            .get_summary() : str, returns all the internal dimensions
+                .exists() : bool, check if a Part exists at this station
+        .read_airfoil_coords() : Read the airfoil coordinates and scale wrt the
+            airfoil dims. Create a new attribute, <station>.airfoil.coords, a
+            numpy array of airfoil coordinates.
+        .plot_airfoil_coords() : plot the airfoil coordinates of this station
+        .split_airfoil_at_LE_and_TE() : Split the airfoil curve into upper and
+            lower segments. Create new attributes: <station>.airfoil.LE_index,
+            <station>.airfoil.upper, and <station>.airfoil.lower
 
         Usage
         -----    
@@ -269,6 +283,9 @@ class Station:
     def read_airfoil_coords(self, comment_char='#'):
         """Read the airfoil coordinates and scale wrt the airfoil dims.
 
+        Creates a new attribute for this station: <station>.airfoil.coords,
+        which is a numpy array of airfoil coordinates.
+
         Note
         ----
         If the trailing edge of the airfoil is a thin feature, it must have a
@@ -288,16 +305,22 @@ class Station:
         af.coords['x'] = af.coords['x'] * af.chord
         af.coords['y'] = af.coords['y'] * af.chord
 
-    def plot_airfoil_coords(self, show_flag=False, savefig_flag=True):
+    def plot_airfoil_coords(self, show_flag=False, savefig_flag=True, upper_lower_flag=False):
         """Plot the airfoil coordinates of this station."""
         af = self.airfoil
         plt.figure()
         plt.title("Station #{0}, {1}".format(self.station_num, af.name))
         plt.axes().set_aspect('equal')
+        plt.grid('on')
         plt.xlabel('x2 [meters]')
         plt.ylabel('x3 [meters]')
         try:
-            plt.plot(af.coords['x'], af.coords['y'])
+            if upper_lower_flag:
+                plt.plot(af.upper['x'], af.upper['y'], 'bo-', label='upper surface')
+                plt.plot(af.lower['x'], af.lower['y'], 'rs-', label='lower surface')
+                plt.legend(loc='center')
+            else:
+                plt.plot(af.coords['x'], af.coords['y'])
         except AttributeError:
             raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <station>.read_airfoil_coords().".format(af.name, self.station_num))
         else:
@@ -308,7 +331,21 @@ class Station:
                 plt.savefig(fname)
         
 
-    # def split_airfoil_at_LE_and_TE(self):
+    def split_airfoil_at_LE_and_TE(self):
+        """Split the airfoil curve into upper and lower segments."""
+        af = self.airfoil
+        try:
+            temp_list = np.nonzero(af.coords['y']==0.0)[0]
+        except:
+            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <station>.read_airfoil_coords().".format(af.name, self.station_num))
+        else:
+            # drop zeros from the list (which correspond to the TE, not the LE)
+            temp_list = temp_list[np.nonzero(temp_list)[0]]
+            # grab the first item in the list
+            # (the last item will also correspond to the TE, not the LE)
+            af.LE_index = temp_list[0]
+            af.upper = af.coords[af.LE_index:]
+            af.lower = af.coords[:af.LE_index+1]
 
     # note: use <Part>.exists() method to decide whether or not to split the airfoil curve for a particular Part
 

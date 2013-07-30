@@ -18,4 +18,5 @@ b.copy_all_airfoil_coords()
 # create some airfoil plots
 for station in b.list_of_stations:
     station.read_airfoil_coords()
-    station.plot_airfoil_coords()
+    station.split_airfoil_at_LE_and_TE()
+    station.plot_airfoil_coords(upper_lower_flag=True)
