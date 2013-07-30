@@ -20,9 +20,9 @@ class Coordinates:
         self.x2 = x2   # units [m]
         self.x3 = x3   # units [m]
     def __str__(self):
-        return """x1:  {0:7.3f} (meters)
-x2:  {1:7.3f} (meters)
-x3:  {2:7.3f} (meters)""".format(self.x1, self.x2, self.x3)
+        return """x1:  {0:7.4f} (meters)
+x2:  {1:7.4f} (meters)
+x3:  {2:7.4f} (meters)""".format(self.x1, self.x2, self.x3)
 
 
 class Airfoil:
@@ -39,9 +39,9 @@ class Airfoil:
     def __str__(self):
         return """Airfoil:     {0}
 Filename:    {1}
-Pitch axis:  {2:6.3f} (chord fraction)
-Chord:       {3:6.3f} (meters)
-Twist:       {4:6.3f} (degrees)""".format(self.name, self.filename,
+Pitch axis:  {2:6.4f} (chord fraction)
+Chord:       {3:6.4f} (meters)
+Twist:       {4:6.4f} (degrees)""".format(self.name, self.filename,
             self.pitch_axis, self.chord, self.twist)
 
 
@@ -68,9 +68,9 @@ class ShearWeb(Part):
         self.base_biax = base_biax
         self.base_foam = base_foam
     def __str__(self):
-        return """base:    {0:6.3f} (meters)
-|-> base_biax:  {1:6.3f} (meters)
-|-> base_foam:  {2:6.3f} (meters)
+        return """base:    {0:6.4f} (meters)
+|-> base_biax:  {1:6.4f} (meters)
+|-> base_foam:  {2:6.4f} (meters)
 height:  {3} (meters)""".format(self.base, self.base_biax,
     self.base_foam, self.height)
 
@@ -82,11 +82,39 @@ class TE_Reinforcement(Part):
         self.height_uniax = height_uniax
         self.height_foam = height_foam
     def __str__(self):
-        return """base:    {0:6.3f} (meters)
-height:  {1:6.3f} (meters)
-|-> height_uniax:  {2:6.3f} (meters)
-|-> height_foam:   {3:6.3f} (meters)""".format(self.base, self.height,
+        return """base:    {0:6.4f} (meters)
+height:  {1:6.4f} (meters)
+|-> height_uniax:  {2:6.4f} (meters)
+|-> height_foam:   {3:6.4f} (meters)""".format(self.base, self.height,
     self.height_uniax, self.height_foam)
+
+
+class InternalSurface(Part):
+    """Define triax and resin dimensions of the internal surface."""
+    def __init__(self, base, height_triax, height_resin):
+        Part.__init__(self, base, height=(height_triax+height_resin))
+        self.height_triax = height_triax
+        self.height_resin = height_resin
+    def __str__(self):
+        return """base:    {0:6.4f} (meters)
+height:  {1:6.4f} (meters)
+|-> height_triax:  {2:6.4f} (meters)
+|-> height_resin:  {3:6.4f} (meters)""".format(self.base, self.height,
+    self.height_triax, self.height_resin)
+
+
+class ExternalSurface(Part):
+    """Define triax and gelcoat dimensions of the external surface."""
+    def __init__(self, base, height_triax, height_gelcoat):
+        Part.__init__(self, base, height=(height_triax+height_gelcoat))
+        self.height_triax = height_triax
+        self.height_gelcoat = height_gelcoat
+    def __str__(self):
+        return """base:    {0:6.4f} (meters)
+height:  {1:6.4f} (meters)
+|-> height_triax:  {2:6.4f} (meters)
+|-> height_gelcoat:  {3:6.4f} (meters)""".format(self.base, self.height,
+    self.height_triax, self.height_gelcoat)
 
 
 class Structure:
@@ -94,7 +122,8 @@ class Structure:
     def __init__(self, h_RB, b_SC, h_SC, b_SW1_biax, b_SW1_foam, 
                  b_SW2_biax, b_SW2_foam, b_SW3_biax, b_SW3_foam,
                  b_TE_reinf, h_TE_reinf_uniax, h_TE_reinf_foam, h_LE_panel,
-                 h_aft_panel):
+                 h_aft_panel, h_int_surf_triax, h_int_surf_resin,
+                 h_ext_surf_triax, h_ext_surf_gelcoat):
         self.root_buildup = Part(np.nan, h_RB)
         self.spar_cap = Part(b_SC, h_SC)
         self.shear_web_1 = ShearWeb(b_SW1_biax, b_SW1_foam)
@@ -104,6 +133,8 @@ class Structure:
                                                  h_TE_reinf_foam)
         self.LE_panel = Part(np.nan, h_LE_panel)
         self.aft_panel = Part(np.nan, h_aft_panel)
+        self.internal_surface = InternalSurface(np.nan, h_int_surf_triax, h_int_surf_resin)
+        self.external_surface = ExternalSurface(np.nan, h_ext_surf_triax, h_ext_surf_gelcoat)
 
     def __str__(self):
         """Returns a string of all the internal dimensions for this structure."""
@@ -124,7 +155,29 @@ class Structure:
         s += str(self.LE_panel) + '\n'
         s += "--- AFT PANEL ---\n"
         s += str(self.aft_panel) + '\n'
+        s += "--- INTERNAL SURFACE ---\n"
+        s += str(self.internal_surface) + '\n'
+        s += "--- EXTERNAL SURFACE ---\n"
+        s += str(self.external_surface) + '\n'
         return s
+
+    def which_parts_exist(self):
+        """Check which structural parts exist at this station.
+
+        Returns a dictionary of booleans.
+
+        """
+        d = {'root buildup': self.root_buildup.exists(),
+             'spar cap': self.spar_cap.exists(),
+             'shear web 1': self.shear_web_1.exists(),
+             'shear web 2': self.shear_web_2.exists(),
+             'shear web 3': self.shear_web_3.exists(),
+             'TE reinforcement': self.TE_reinforcement.exists(),
+             'LE panel': self.LE_panel.exists(),
+             'aft panel': self.aft_panel.exists(),
+             'internal surface': self.internal_surface.exists(),
+             'external surface': self.external_surface.exists()}
+        return d
 
 
 class Station:
@@ -210,6 +263,16 @@ class Station:
             .aft_panel
                 .base=np.nan
                 .height : the aft panel height (meters)
+            .internal_surface
+                .base=np.nan
+                .height_triax : float, the internal surface height for triax (meters)
+                .height_resin : float, the internal surface height for resin (meters)
+                .height : float, the internal surface total height (meters)
+            .external_surface
+                .base=np.nan
+                .height_triax : float, the external surface height for triax (meters)
+                .height_gelcoat : float, the external surface height for gelcoat (meters)
+                .height : float, the external surface total height (meters)
 
         Methods
         -------
@@ -269,7 +332,11 @@ class Station:
                                    stn_series['TE reinf height uniax'],
                                    stn_series['TE reinf height foam'],
                                    stn_series['LE panel height'],
-                                   stn_series['aft panel height'])
+                                   stn_series['aft panel height'],
+                                   stn_series['internal surface triax'],
+                                   stn_series['internal surface resin'],
+                                   stn_series['external surface triax'],
+                                   stn_series['external surface gelcoat'])
         self.logf.write("****** LAMINATE SCHEDULE ******\n")
         self.logf.write(str(self.structure) + '\n')
         self.logf.write('\n')
@@ -305,7 +372,7 @@ class Station:
         af.coords['x'] = af.coords['x'] * af.chord
         af.coords['y'] = af.coords['y'] * af.chord
 
-    def plot_airfoil_coords(self, show_flag=False, savefig_flag=True, upper_lower_flag=False):
+    def plot_airfoil_coords(self, show_flag=False, savefig_flag=True, upper_lower_flag=False, legend_flag=False):
         """Plot the airfoil coordinates of this station."""
         af = self.airfoil
         plt.figure()
@@ -318,7 +385,8 @@ class Station:
             if upper_lower_flag:
                 plt.plot(af.upper['x'], af.upper['y'], 'bo-', label='upper surface')
                 plt.plot(af.lower['x'], af.lower['y'], 'rs-', label='lower surface')
-                plt.legend(loc='center')
+                if legend_flag:
+                    plt.legend(loc='center')
             else:
                 plt.plot(af.coords['x'], af.coords['y'])
         except AttributeError:
@@ -348,5 +416,58 @@ class Station:
             af.lower = af.coords[:af.LE_index+1]
 
     # note: use <Part>.exists() method to decide whether or not to split the airfoil curve for a particular Part
+    # check these parts:
+    # leading edge panel*  DONE
+    # shear webs (1*,2*,3)  ... let's implement shear web #3 later ... it splits up the aft panel ... not sure what to do with this yet ... pg 39: "The third shear web begins at 14.6 meters and ends at 60.2 meters, and is positioned at 78% of chord (as measured from leading edge to trailing edge) at the beginning and 68% of chord at its termination"
+    # spar caps*  DONE
+    # aft panels*
+    # TE reinforcement*  DONE
+
+    def part_edges(self):
+        """Find the edges of each structural part.
+
+        Returns a dictionary of x-coordinates (in meters).
+
+        """
+        # NOT YET IMPLEMENTED -----------------------------------
+        st = self.structure
+        af = self.airfoil
+        d = {}
+        # if st.LE_panel.exists():
+        #     d['LE panel, left'] = -af.pitch_axis*af.chord
+        #     d['LE panel, right'] = -st.spar_cap.base/2.0-st.shear_web_1.base
+        # if st.spar_cap.exists():
+        #     d['spar cap, left'] = -st.spar_cap.base/2.0
+        #     d['spar cap, right'] = st.spar_cap.base/2.0
+        # if st.TE_reinforcement.exists():
+        #     d['TE reinf, left'] = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
+        #     d['TE reinf, right'] = -af.pitch_axis*af.chord+af.chord
+        if st.shear_web_1.exists():
+            d['shear web 1, left'] = -st.spar_cap.base/2.0-st.shear_web_1.base
+            d['shear web 1, right'] = -st.spar_cap.base/2.0
+        if st.shear_web_2.exists():
+            d['shear web 2, left'] = st.spar_cap.base/2.0
+            d['shear web 2, right'] = st.spar_cap.base/2.0+st.shear_web_2.base
+        if st.shear_web_3.exists():
+            # IMPLEMENT LATER: change 0.78 to depend on spanwise position (see pg 39 of Griffith 2011)
+            d['shear web 3, left'] = -af.pitch_axis*af.chord+0.78*af.chord
+            d['shear web 3, right'] = -af.pitch_axis*af.chord+0.78*af.chord+st.shear_web_3.base
+        # if st.aft_panel.exists():
+        #     d['aft panel, left'] = st.spar_cap.base/2.0+st.shear
+        return d
+
+    def plot_part_edges(self):
+        """Plot color block for each structural part region.
+
+        Each color block spans the plot from top to bottom.
+
+        """
+        d = self.part_edges()
+        if self.structure.shear_web_1.exists():
+            plt.axvspan(d['shear web 1, left'], d['shear web 1, right'], facecolor='green', edgecolor='green')
+        if self.structure.shear_web_2.exists():
+            plt.axvspan(d['shear web 2, left'], d['shear web 2, right'], facecolor='green', edgecolor='green')
+        if self.structure.shear_web_3.exists():
+            plt.axvspan(d['shear web 3, left'], d['shear web 3, right'], facecolor='green', edgecolor='green')
 
     # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
