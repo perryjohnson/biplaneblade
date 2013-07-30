@@ -16,10 +16,12 @@ b.copy_all_airfoil_coords()
 # b.plot_twist_schedule()
 
 # create some airfoil plots
-# for station in b.list_of_stations:
-
-station = b.list_of_stations[15]
-station.read_airfoil_coords()
-station.split_airfoil_at_LE_and_TE()
-station.plot_airfoil_coords(upper_lower_flag=True,savefig_flag=False,show_flag=True)
-station.plot_part_edges()
+# station = b.list_of_stations[15]
+for station in b.list_of_stations:
+    station.read_airfoil_coords()
+    station.split_airfoil_at_LE_and_TE()
+    (fig, axes) = station.create_plot()
+    station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
+    station.plot_part_edges(axes)
+    station.show_plot()
+    station.save_plot(fig)
