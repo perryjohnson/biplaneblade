@@ -351,10 +351,10 @@ class Station:
             h_TE_reinf_foam=stn_series['TE reinf height foam'],
             h_LE_panel=stn_series['LE panel height'],
             h_aft_panel=stn_series['aft panel height'],
-            h_int_surf_triax=stn_series['internal surface triax'],
-            h_int_surf_resin=stn_series['internal surface resin'],
-            h_ext_surf_triax=stn_series['external surface triax'],
-            h_ext_surf_gelcoat=stn_series['external surface gelcoat'])
+            h_int_surf_triax=stn_series['internal surface height triax'],
+            h_int_surf_resin=stn_series['internal surface height resin'],
+            h_ext_surf_triax=stn_series['external surface height triax'],
+            h_ext_surf_gelcoat=stn_series['external surface height gelcoat'])
         self.logf.write("****** LAMINATE SCHEDULE ******\n")
         self.logf.write(str(self.structure) + '\n')
         self.logf.write('\n')
@@ -396,7 +396,7 @@ class Station:
         Returns handles to the figure and its axes: (fig, axes)
 
         Several settings are applied ---------
-        Title : Station #[num], [airfoil name]
+        Title : Station #[num], [airfoil name], [num]% span
         Aspect ratio : equal
         Grid : on
         x-label : x2 [meters]
@@ -405,7 +405,7 @@ class Station:
         """
         af = self.airfoil
         fig, axes = plt.subplots()
-        axes.set_title("Station #{0}, {1}".format(self.station_num, af.name))
+        axes.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, af.name, self.coords.x1))
         axes.set_aspect('equal')
         axes.grid('on')
         axes.set_xlabel('x2 [meters]')
@@ -453,11 +453,11 @@ class Station:
 
     # note: use <Part>.exists() method to decide whether or not to split the airfoil curve for a particular Part
     # check these parts:
-    # leading edge panel*
-    # shear webs (1*,2*,3*)  DONE
-    # spar caps*
-    # aft panels*
-    # TE reinforcement*
+    # leading edge panel
+    # shear webs (1,2,3)
+    # spar caps
+    # aft panels
+    # TE reinforcement
 
     def part_edges(self):
         """Find the edges of each structural part.
@@ -465,19 +465,15 @@ class Station:
         Returns a dictionary of x-coordinates (in meters).
 
         """
-        # NOT YET IMPLEMENTED -----------------------------------
         st = self.structure
         af = self.airfoil
         d = {}
-        # if st.LE_panel.exists():
-        #     d['LE panel, left'] = -af.pitch_axis*af.chord
-        #     d['LE panel, right'] = -st.spar_cap.base/2.0-st.shear_web_1.base
-        # if st.spar_cap.exists():
-        #     d['spar cap, left'] = -st.spar_cap.base/2.0
-        #     d['spar cap, right'] = st.spar_cap.base/2.0
-        # if st.TE_reinforcement.exists():
-        #     d['TE reinf, left'] = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
-        #     d['TE reinf, right'] = -af.pitch_axis*af.chord+af.chord
+        if st.spar_cap.exists():
+            d['spar cap, left'] = -st.spar_cap.base/2.0
+            d['spar cap, right'] = st.spar_cap.base/2.0
+        if st.TE_reinforcement.exists():
+            d['TE reinf, left'] = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
+            d['TE reinf, right'] = -af.pitch_axis*af.chord+af.chord
         if st.shear_web_1.exists():
             d['shear web 1, right'] = st.shear_web_1.x2
             d['shear web 1, left'] = st.shear_web_1.x2-st.shear_web_1.base
@@ -487,8 +483,28 @@ class Station:
         if st.shear_web_3.exists():
             d['shear web 3, left'] = st.shear_web_3.x2
             d['shear web 3, right'] = st.shear_web_3.x2+st.shear_web_3.base
-        # if st.aft_panel.exists():
-        #     d['aft panel, left'] = st.spar_cap.base/2.0+st.shear
+        if st.LE_panel.exists():
+            d['LE panel, left'] = -af.pitch_axis*af.chord
+            if st.shear_web_1.exists():
+                d['LE panel, right'] = d['shear web 1, left']
+            elif st.spar_cap.exists():
+                d['LE panel, right'] = d['spar cap, left']
+            else:
+                d['LE panel, right'] = np.nan
+                raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
+        if st.aft_panel.exists():
+            if st.shear_web_2.exists():
+                d['aft panel, left'] = d['shear web 2, right']
+            elif st.spar_cap.exists():
+                d['aft panel, left'] = d['spar cap, right']
+            else:
+                d['aft panel, left'] = np.nan
+                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+            if st.TE_reinforcement.exists():
+                d['aft panel, right'] = d['TE reinf, left']
+            else:
+                d['aft panel, right'] = np.nan
+                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
         return d
 
     def plot_part_edges(self, axes):
@@ -497,12 +513,21 @@ class Station:
         Each color block spans the plot from top to bottom.
 
         """
+        st = self.structure
         d = self.part_edges()
-        if self.structure.shear_web_1.exists():
+        if st.spar_cap.exists():
+            axes.axvspan(d['spar cap, left'], d['spar cap, right'], facecolor='cyan', edgecolor='cyan', alpha=0.7)
+        if st.TE_reinforcement.exists():
+            axes.axvspan(d['TE reinf, left'], d['TE reinf, right'], facecolor='pink', edgecolor='pink', alpha=0.7)
+        if st.LE_panel.exists():
+            axes.axvspan(d['LE panel, left'], d['LE panel, right'], facecolor='magenta', edgecolor='magenta', alpha=0.7)
+        if st.aft_panel.exists():
+            axes.axvspan(d['aft panel, left'], d['aft panel, right'], facecolor='orange', edgecolor='orange', alpha=0.7)
+        if st.shear_web_1.exists():
             axes.axvspan(d['shear web 1, left'], d['shear web 1, right'], facecolor='green', edgecolor='green')
-        if self.structure.shear_web_2.exists():
+        if st.shear_web_2.exists():
             axes.axvspan(d['shear web 2, left'], d['shear web 2, right'], facecolor='green', edgecolor='green')
-        if self.structure.shear_web_3.exists():
+        if st.shear_web_3.exists():
             axes.axvspan(d['shear web 3, left'], d['shear web 3, right'], facecolor='green', edgecolor='green')
 
     # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
