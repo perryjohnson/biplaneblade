@@ -7,6 +7,7 @@ Last updated: August 5, 2013
 
 
 import scripts.blade as bl
+reload(bl)
 
 b = bl.Blade('Sandia blade SNL100-00', 'sandia_blade')
 b.copy_all_airfoil_coords()
@@ -20,11 +21,11 @@ b.copy_all_airfoil_coords()
 for station in b.list_of_stations:
     station.read_airfoil_coords()
     station.split_airfoil_at_LE_and_TE()
-    (fig, axes) = station.create_plot()
-    station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
-    station.plot_part_edges(axes)
-    station.show_plot()
-    station.save_plot(fig)
+    # (fig, axes) = station.create_plot()
+    # station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
+    # station.plot_part_edges(axes)
+    # station.show_plot()
+    # station.save_plot(fig)
 
 # use Mayavi's mlab to make a 3D visualization of the entire blade
-b.plot_all_airfoils()
+b.plot_blade()

@@ -154,6 +154,52 @@ class Blade:
         plt.ylabel('twist [deg]')
         plt.show()
 
+    def create_plot(self, fig_width=1000, fig_height=800):
+        """Create a plot for this blade.
+
+        Returns a handle to the figure.
+
+        Parameters
+        ----------
+        fig_width : int, figure width (pixels)
+        fig_height : int, figure height (pixels)
+
+        Several settings are applied by default ---------
+        Title : [blade name]
+        Figure width : 1000 px
+        Figure height : 800 px
+
+        """
+        mlab.figure(figure=self.name, size=(fig_width,fig_height))
+
+    def show_plot(self, azimuth=45.0, elevation=54.74, distance=110.0,
+                  focalpoint=[60.0,0.85,0.0], print_view=False):
+        """Pick a nice view and show the plot.
+
+        Parameters
+        ----------
+        azimuth : float, optional. The azimuthal angle (in degrees, 0-360), 
+            i.e. the angle subtended by the position vector on a sphere 
+            projected on to the x-y plane with the x-axis.
+        elevation : float, optional. The zenith angle (in degrees, 0-180), 
+            i.e. the angle subtended by the position vector and the z-axis.
+        distance : float or 'auto', optional. A positive floating point number 
+            representing the distance from the focal point to place the camera.
+            New in Mayavi 3.4.0: if 'auto' is passed, the distance is computed 
+            to have a best fit of objects in the frame.
+        focalpoint : array_like or 'auto', optional. An array of 3 floating 
+            point numbers representing the focal point of the camera. New in 
+            Mayavi 3.4.0: if 'auto' is passed, the focal point is positioned at
+            the center of all objects in the scene.
+        print_view : boolean, print/don't print the view parameters
+
+        """
+        mlab.view(azimuth, elevation, distance, focalpoint)
+        if print_view:
+            print "[**Mayavi mlab view parameters**]"
+            print mlab.view()
+        mlab.show()
+
     def plot_all_airfoils(self):
         """Plot all the airfoils in the blade with Mayavi's mlab.
 
@@ -168,30 +214,90 @@ class Blade:
         b.plot_all_airfoils()
 
         """
-        # make a new figure
-        mlab.figure(1, size=(800,800))
-
         for station in self.list_of_stations:
             # assemble the airfoil coordinates for mlab
             try:
-                x = station.airfoil.coords['x']
+                y = station.airfoil.coords['x']  # chordwise coordinate
             except AttributeError:
                 raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.read_airfoil_coords() first.")
-            y = station.airfoil.coords['y']
-            l = len(x)
-            z = np.ones((l,))*station.coords.x1  # spanwise coordinate
-            s = np.ones((l,))  # arbitrary scalar value, which has no meaning here (normally this is used for plotting how a scalar field that varies in 3D space)
-
-            # make connectivity information between points to draw lines
-            # taken from plotting_many_lines.py
-            connections = []
-            connections.append(np.vstack([np.arange(0,l-1.5),np.arange(1,l-0.5)]).T)
-
+            z = station.airfoil.coords['y']  # flapwise coordinate
+            l = len(y)
+            x = np.ones((l,))*station.coords.x1  # spanwise coordinate
             # plot the airfoil on the screen
-            src = mlab.pipeline.scalar_scatter(x,y,z,s)
-            src.mlab_source.dataset.lines=connections
-            lines = mlab.pipeline.stripper(src)
-            mlab.pipeline.surface(lines, line_width=1)
+            mlab.plot3d(x,y,z, color=(0,0,1), tube_radius=0.08)
 
-        # show the final plot
-        mlab.show()
+    def plot_pitch_axis(self):
+        """Plots the pitch axis from root to tip."""
+        root = self.list_of_stations[0].coords.x1
+        tip = self.list_of_stations[-1].coords.x1
+        mlab.plot3d([root,tip],[0,0],[0,0], tube_radius=0.08)
+
+    # def get_LE_coords(self):
+    #     """Returns a list of (x,y,z) coordinates for the blade leading edge.
+
+    #     You must run <Station>.split_airfoil_at_LE_and_TE() first.
+
+    #     """
+    #     x = []  # spanwise coordinate
+    #     y = []  # chordwise coordinate
+    #     z = []  # flapwise coordinate
+    #     for station in self.list_of_stations:
+    #         LE_index = station.airfoil.LE_index
+    #         x.append(station.coords.x1)
+    #         y.append(station.airfoil.coords['x'][LE_index])
+    #         z.append(station.airfoil.coords['y'][LE_index])
+    #     return (x,y,z)
+
+    def get_LE_coords(self):
+        """Returns a list of (x,y,z) coordinates for the blade leading edge."""
+        x = []  # spanwise coordinate
+        y = []  # chordwise coordinate
+        z = []  # flapwise coordinate
+        for station in self.list_of_stations:
+            x.append(station.coords.x1)
+            y.append(-(station.airfoil.chord * station.airfoil.pitch_axis))
+            z.append(0.0)
+        return (x,y,z)
+
+    def plot_LE(self):
+        """Plots the leading edge from root to tip."""
+        (x,y,z) = self.get_LE_coords()
+        mlab.plot3d(x,y,z, tube_radius=0.08)
+
+    def get_TE_coords(self):
+        """Returns a list of (x,y,z) coordinates for the blade trailing edge."""
+        x = []  # spanwise coordinate
+        y = []  # chordwise coordinate
+        z = []  # flapwise coordinate
+        for station in self.list_of_stations:
+            x.append(station.coords.x1)
+            y.append(station.airfoil.chord * (1.0-station.airfoil.pitch_axis))
+            z.append(0.0)
+        return (x,y,z)
+
+    def plot_TE(self):
+        """Plots the trailing edge from root to tip."""
+        (x,y,z) = self.get_TE_coords()
+        mlab.plot3d(x,y,z, tube_radius=0.08)
+
+    def plot_blade(self, airfoils=True, pitch_axis=False, LE=True, TE=True):
+        """Plots a wireframe representation of the blade, with Mayavi mlab.
+
+        Parameters
+        ----------
+        airfoils : bool, plot/don't plot the airfoils at each blade station
+        pitch_axis : bool, plot/don't plot the pitch axis from root to tip
+        LE : bool, plot/don't plot the leading edge from root to tip
+        TE : bool, plot/don't plot the trailing edge from root to tip
+
+        """
+        self.create_plot()
+        if airfoils:
+            self.plot_all_airfoils()
+        if pitch_axis:
+            self.plot_pitch_axis()
+        if LE:
+            self.plot_LE()
+        if TE:
+            self.plot_TE()
+        self.show_plot()

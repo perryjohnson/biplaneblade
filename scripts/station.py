@@ -443,7 +443,7 @@ class Station:
         af = self.airfoil
         try:
             temp_list = np.nonzero(af.coords['y']==0.0)[0]
-        except:
+        except AttributeError:
             raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <station>.read_airfoil_coords().".format(af.name, self.station_num))
         else:
             # drop zeros from the list (which correspond to the TE, not the LE)
@@ -534,3 +534,5 @@ class Station:
             axes.axvspan(d['shear web 3, left'], d['shear web 3, right'], facecolor='green', edgecolor='green')
 
     # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
+
+    # TODO: twist the blade!
