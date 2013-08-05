@@ -1,7 +1,7 @@
 """A script to create the Sandia blade from its definition CSV file.
 
 Author: Perry Roth-Johnson
-Last updated: July 24, 2013
+Last updated: August 5, 2013
 
 """
 
@@ -25,3 +25,6 @@ for station in b.list_of_stations:
     station.plot_part_edges(axes)
     station.show_plot()
     station.save_plot(fig)
+
+# use Mayavi's mlab to make a 3D visualization of the entire blade
+b.plot_all_airfoils()

@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade definition.
 
 Author: Perry Roth-Johnson
-Last updated: July 24, 2013
+Last updated: August 5, 2013
 
 """
 
@@ -9,10 +9,12 @@ Last updated: July 24, 2013
 import os
 import shutil
 import datetime
+import numpy as np
 import pandas as pd
 import station as stn
 reload(stn)
 import matplotlib.pyplot as plt
+from mayavi import mlab
 
 
 class Blade:
@@ -151,3 +153,45 @@ class Blade:
         plt.xlabel('span, x1 [m]')
         plt.ylabel('twist [deg]')
         plt.show()
+
+    def plot_all_airfoils(self):
+        """Plot all the airfoils in the blade with Mayavi's mlab.
+
+        You must import the blade and its airfoil coordinates first.
+
+        Usage
+        -----
+        b = bl.Blade('Sandia blade SNL100-00', 'sandia_blade')
+        b.copy_all_airfoil_coords()
+        for station in b.list_of_stations:
+            station.read_airfoil_coords()
+        b.plot_all_airfoils()
+
+        """
+        # make a new figure
+        mlab.figure(1, size=(800,800))
+
+        for station in self.list_of_stations:
+            # assemble the airfoil coordinates for mlab
+            try:
+                x = station.airfoil.coords['x']
+            except AttributeError:
+                raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.read_airfoil_coords() first.")
+            y = station.airfoil.coords['y']
+            l = len(x)
+            z = np.ones((l,))*station.coords.x1  # spanwise coordinate
+            s = np.ones((l,))  # arbitrary scalar value, which has no meaning here (normally this is used for plotting how a scalar field that varies in 3D space)
+
+            # make connectivity information between points to draw lines
+            # taken from plotting_many_lines.py
+            connections = []
+            connections.append(np.vstack([np.arange(0,l-1.5),np.arange(1,l-0.5)]).T)
+
+            # plot the airfoil on the screen
+            src = mlab.pipeline.scalar_scatter(x,y,z,s)
+            src.mlab_source.dataset.lines=connections
+            lines = mlab.pipeline.stripper(src)
+            mlab.pipeline.surface(lines, line_width=1)
+
+        # show the final plot
+        mlab.show()

@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: July 24, 2013
+Last updated: August 5, 2013
 
 """
 
@@ -382,8 +382,11 @@ class Station:
 
         """
         af = self.airfoil
-        af.coords = np.loadtxt(af.path, dtype=[('x', 'f8'), ('y', 'f8')], 
-            comments=comment_char)
+        try:
+            af.coords = np.loadtxt(af.path, dtype=[('x', 'f8'), ('y', 'f8')], 
+                comments=comment_char)
+        except IOError:
+            raise IOError("Airfoil file does not exist yet!\n  Run <Blade>.copy_all_airfoil_coords() first.")
         # translate the airfoil horizontally, so pitch axis is at origin
         af.coords['x'] = af.coords['x'] - af.pitch_axis
         # scale the airfoil to the specified chord length
