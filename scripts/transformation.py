@@ -10,7 +10,7 @@ import numpy as np
 
 
 def rot_mat(theta):
-    """Define a 2D rotation matrix.
+    """Returns a 2D rotation matrix, given a rotation angle theta.
 
     Ref: http://en.wikipedia.org/wiki/Rotation_matrix
 
@@ -39,3 +39,4 @@ def rotate_coord_pair(x, y, t, degree_units=True):
                       [y]])
     p_new = np.dot(R, p_old)
     return (float(p_new[0]), float(p_new[1]))
+    

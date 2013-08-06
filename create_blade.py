@@ -17,18 +17,22 @@ b.copy_all_airfoil_coords()
 # b.plot_chord_schedule()
 # b.plot_twist_schedule()
 
-# create some airfoil plots
-# station = b.list_of_stations[15]
+# pre-process the airfoil coordinates
 for station in b.list_of_stations:
     station.read_airfoil_coords()
     station.scale_airfoil_coords()
     station.split_airfoil_at_LE_and_TE()
-    station.rotate_airfoil_coords()
+    station.part_edges2()
+    station.find_all_part_cs_coords()
+
+# create some airfoil plots in Matplotlib
+# station = b.list_of_stations[15]
+for station in b.list_of_stations:
     (fig, axes) = station.create_plot()
     station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
-    # station.plot_part_edges(axes)
+    station.plot_part_edges2(axes)
     station.show_plot()
     # station.save_plot(fig)
 
-# use Mayavi's mlab to make a 3D visualization of the entire blade
-b.plot_blade()
+# make a 3D visualization of the entire blade with Mayavi's mlab
+b.plot_blade(twist=True)

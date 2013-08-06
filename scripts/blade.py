@@ -202,7 +202,7 @@ class Blade:
             print mlab.view()
         mlab.show()
 
-    def plot_all_airfoils(self, lw):
+    def plot_all_airfoils(self, lw, twist_flag=True):
         """Plot all the airfoils in the blade with Mayavi's mlab.
 
         You must import the blade and its airfoil coordinates first.
@@ -217,6 +217,8 @@ class Blade:
 
         """
         for station in self.list_of_stations:
+            if twist_flag:
+                station.rotate_airfoil_coords()  # apply twist angle to airfoil
             # assemble the airfoil coordinates for mlab
             try:
                 y = station.airfoil.coords['x']  # chordwise coordinate
@@ -234,7 +236,7 @@ class Blade:
         tip = self.list_of_stations[-1].coords.x1
         mlab.plot3d([root,tip],[0,0],[0,0], tube_radius=lw)
 
-    def get_LE_coords(self):
+    def get_LE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade leading edge."""
         x = []  # spanwise coordinate
         y = []  # chordwise coordinate
@@ -244,20 +246,24 @@ class Blade:
             # grab the unrotated LE coordinates
             y_temp = -(station.airfoil.chord * station.airfoil.pitch_axis)
             z_temp = 0.0
-            # rotate the LE coordinates wrt the twist angle
-            (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
-                                                  station.airfoil.twist)
-            # append the rotated LE coordinates
+            if twist_flag:
+                # rotate the LE coordinates wrt the twist angle
+                (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
+                                                      station.airfoil.twist)
+            else:
+                # don't rotate the LE coordinates
+                (y_new, z_new) = (y_temp, z_temp)
+            # append the new LE coordinates
             y.append(y_new)
             z.append(z_new)
         return (x,y,z)
 
-    def plot_LE(self, lw):
+    def plot_LE(self, lw, twist_flag=True):
         """Plots the leading edge from root to tip."""
-        (x,y,z) = self.get_LE_coords()
+        (x,y,z) = self.get_LE_coords(twist_flag=twist_flag)
         mlab.plot3d(x,y,z, tube_radius=lw)
 
-    def get_TE_coords(self):
+    def get_TE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade trailing edge."""
         x = []  # spanwise coordinate
         y = []  # chordwise coordinate
@@ -267,21 +273,125 @@ class Blade:
             # grab the unrotated TE coordinates
             y_temp = station.airfoil.chord * (1.0-station.airfoil.pitch_axis)
             z_temp = 0.0
-            # rotate the TE coordinates wrt the twist angle
-            (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
-                                                  station.airfoil.twist)
-            # append the rotated TE coordinates
+            if twist_flag:
+                # rotate the TE coordinates wrt the twist angle
+                (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
+                                                      station.airfoil.twist)
+            else:
+                # don't rotate the TE coordinates
+                (y_new, z_new) = (y_temp, z_temp)
+            # append the new TE coordinates
             y.append(y_new)
             z.append(z_new)
         return (x,y,z)
 
-    def plot_TE(self, lw):
+    def plot_TE(self, lw, twist_flag=True):
         """Plots the trailing edge from root to tip."""
-        (x,y,z) = self.get_TE_coords()
+        (x,y,z) = self.get_TE_coords(twist_flag=twist_flag)
         mlab.plot3d(x,y,z, tube_radius=lw)
 
-    def plot_blade(self, airfoils=True, pitch_axis=False, LE=True, TE=True, 
-        line_width=0.08):
+    def get_SW_cross_section_coords(self, sw_num, twist_flag=True):
+        """Returns a list of (x,y,z) coordinates for shear web #1, #2, or #3.
+
+        Parameters
+        ----------
+        sw_num = int, (1, 2, or 3) selects the desired shear web
+
+        """
+        if sw_num is not 1 and sw_num is not 2 and sw_num is not 3:
+            raise ValueError("sw_num must be either 1, 2, or 3 (type: int)")
+        x = []  # spanwise coordinate
+        y = []  # chordwise coordinate
+        z = []  # flapwise coordinate
+        for station in self.list_of_stations:
+            if sw_num is 1:
+                if station.structure.shear_web_1.exists():
+                    for point in station.structure.shear_web_1.cs_coords:
+                        x.append(station.coords.x1)
+                        y_temp = point[0]
+                        z_temp = point[1]
+                        if twist_flag:
+                            # rotate the SW cross-section coords wrt twist angle
+                            (y_new, z_new) = tf.rotate_coord_pair(y_temp,
+                                z_temp, station.airfoil.twist)
+                        else:
+                            # don't rotate the SW cross-section coords
+                            (y_new, z_new) = (y_temp, z_temp)
+                        # append the new SW cross-section coords
+                        y.append(y_new)
+                        z.append(z_new)
+            elif sw_num is 2:
+                if station.structure.shear_web_2.exists():
+                    for point in station.structure.shear_web_2.cs_coords:
+                        x.append(station.coords.x1)
+                        y_temp = point[0]
+                        z_temp = point[1]
+                        if twist_flag:
+                            # rotate the SW cross-section coords wrt twist angle
+                            (y_new, z_new) = tf.rotate_coord_pair(y_temp,
+                                z_temp, station.airfoil.twist)
+                        else:
+                            # don't rotate the SW cross-section coords
+                            (y_new, z_new) = (y_temp, z_temp)
+                        # append the new SW cross-section coords
+                        y.append(y_new)
+                        z.append(z_new)
+            elif sw_num is 3:
+                if station.structure.shear_web_3.exists():
+                    for point in station.structure.shear_web_3.cs_coords:
+                        x.append(station.coords.x1)
+                        y_temp = point[0]
+                        z_temp = point[1]
+                        if twist_flag:
+                            # rotate the SW cross-section coords wrt twist angle
+                            (y_new, z_new) = tf.rotate_coord_pair(y_temp,
+                                z_temp, station.airfoil.twist)
+                        else:
+                            # don't rotate the SW cross-section coords
+                            (y_new, z_new) = (y_temp, z_temp)
+                        # append the new SW cross-section coords
+                        y.append(y_new)
+                        z.append(z_new)
+        return (x,y,z)
+
+    def plot_all_SW_cross_sections(self, lw, twist_flag=True):
+        """Plots all shear web cross-sections from root to tip."""
+        for sw in [1,2,3]:
+            (x,y,z) = self.get_SW_cross_section_coords(sw_num=sw,
+                                                       twist_flag=twist_flag)
+            for i in range(0,len(x),4):
+                (X,Y,Z) = (x[i:i+4], y[i:i+4], z[i:i+4])
+                mlab.plot3d(X,Y,Z, tube_radius=lw)
+
+    def plot_all_SW_spanwise_lines(self, lw, twist_flag=True):
+        """Plots spanwise lines for all shear webs from root to tip."""
+        for sw in [1,2,3]:
+            (x,y,z) = self.get_SW_cross_section_coords(sw_num=sw, 
+                                                       twist_flag=twist_flag)
+            (x1, y1, z1) = ([], [], [])
+            (x2, y2, z2) = ([], [], [])
+            (x3, y3, z3) = ([], [], [])
+            (x4, y4, z4) = ([], [], [])
+            for i in range(0,len(x),4):
+                x1.append(x[i])
+                y1.append(y[i])
+                z1.append(z[i])
+                x2.append(x[i+1])
+                y2.append(y[i+1])
+                z2.append(z[i+1])
+                x3.append(x[i+2])
+                y3.append(y[i+2])
+                z3.append(z[i+2])
+                x4.append(x[i+3])
+                y4.append(y[i+3])
+                z4.append(z[i+3])
+            mlab.plot3d(x1,y1,z1, tube_radius=lw)
+            mlab.plot3d(x2,y2,z2, tube_radius=lw)
+            mlab.plot3d(x3,y3,z3, tube_radius=lw)
+            mlab.plot3d(x4,y4,z4, tube_radius=lw)
+
+    def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
+        LE=True, TE=True, twist=True, SW=True):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -295,11 +405,14 @@ class Blade:
         """
         self.create_plot()
         if airfoils:
-            self.plot_all_airfoils(lw=line_width)
+            self.plot_all_airfoils(lw=line_width, twist_flag=twist)
         if pitch_axis:
             self.plot_pitch_axis(lw=line_width)
         if LE:
-            self.plot_LE(lw=line_width)
+            self.plot_LE(lw=line_width, twist_flag=twist)
         if TE:
-            self.plot_TE(lw=line_width)
+            self.plot_TE(lw=line_width, twist_flag=twist)
+        if SW:
+            self.plot_all_SW_cross_sections(lw=line_width, twist_flag=twist)
+            self.plot_all_SW_spanwise_lines(lw=line_width, twist_flag=twist)
         self.show_plot()

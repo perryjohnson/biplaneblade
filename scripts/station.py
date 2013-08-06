@@ -250,35 +250,52 @@ class Station:
             .spar_cap
                 .base : float, the spar cap base (meters)
                 .height : float, the spar cap height (meters)
+                .left : float, the left edge -- chordwise coord (meters)
+                .right : float, the right edge -- chordwise coord (meters)
             .shear_web_1
                 .base : float, the shear web #1 total base (meters)
                 .base_biax : float, the shear web #1 base for biax (meters)
                 .base_foam : float, the shear web #1 base for foam (meters)
                 .x2 : float, dist from pitch axis to edge of SW #1 (meters)
                 .height=np.nan
+                .left : float, the left edge -- chordwise coord (meters)
+                .right : float, the right edge -- chordwise coord (meters)
+                .cs_coords : numpy array, the 4 coordinates for the corners of
+                    the cross-section of the shear web at this station, ordered
+                    as [lower left, lower right, upper right, upper left]
             .shear_web_2
                 .base : float, the shear web #2 total base (meters)
                 .base_biax : float, the shear web #2 base for biax (meters)
                 .base_foam : float, the shear web #2 base for foam (meters)
                 .x2 : float, dist from pitch axis to edge of SW #2 (meters)
                 .height=np.nan
+                .left : float, the left edge -- chordwise coord (meters)
+                .right : float, the right edge -- chordwise coord (meters)
             .shear_web_3
                 .base : float, the shear web #3 total base (meters)
                 .base_biax : float, the shear web #3 base for biax (meters)
                 .base_foam : float, the shear web #3 base for foam (meters)
                 .x2 : float, dist from pitch axis to edge of SW #3 (meters)
                 .height=np.nan
+                .left : float, the left edge -- chordwise coord (meters)
+                .right : float, the right edge -- chordwise coord (meters)
             .TE_reinforcement
                 .base : float, the trailing edge reinforcement base (meters)
                 .height_uniax : float, the TE reinf height for uniax (meters)
                 .height_foam : float, the TE reinf height for foam (meters)
                 .height : float, the TE reinf total height (meters)
+                .left : float, the left edge -- chordwise coord (meters)
+                .right : float, the right edge -- chordwise coord (meters)
             .LE_panel
                 .base=np.nan
                 .height : the leading edge panel height (meters)
+                .left : float, the left edge -- chordwise coord (meters)
+                .right : float, the right edge -- chordwise coord (meters)
             .aft_panel
                 .base=np.nan
                 .height : the aft panel height (meters)
+                .left : float, the left edge -- chordwise coord (meters)
+                .right : float, the right edge -- chordwise coord (meters)
             .internal_surface
                 .base=np.nan
                 .height_triax : float, the internal surface height for triax (meters)
@@ -498,7 +515,7 @@ class Station:
     # TE reinforcement
 
     def part_edges(self):
-        """Find the edges of each structural part.
+        """Find the edges of each structural part. [DEPRECATED]
 
         Returns a dictionary of x-coordinates (in meters).
 
@@ -545,12 +562,60 @@ class Station:
                 raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
         return d
 
+    def part_edges2(self):
+        """Find the edges of each structural part.
+
+        Saves coordinates (in meters) as '.left' and '.right' attributes
+        (floats) within each Part instance (OOP style).
+
+        """
+        st = self.structure
+        af = self.airfoil
+        if st.spar_cap.exists():
+            st.spar_cap.left = -st.spar_cap.base/2.0
+            st.spar_cap.right = st.spar_cap.base/2.0
+        if st.TE_reinforcement.exists():
+            st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
+            st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
+        if st.shear_web_1.exists():
+            st.shear_web_1.right = st.shear_web_1.x2
+            st.shear_web_1.left = st.shear_web_1.x2-st.shear_web_1.base
+        if st.shear_web_2.exists():
+            st.shear_web_2.left = st.shear_web_2.x2
+            st.shear_web_2.right = st.shear_web_2.x2+st.shear_web_2.base
+        if st.shear_web_3.exists():
+            st.shear_web_3.left = st.shear_web_3.x2
+            st.shear_web_3.right = st.shear_web_3.x2+st.shear_web_3.base
+        if st.LE_panel.exists():
+            st.LE_panel.left = -af.pitch_axis*af.chord
+            if st.shear_web_1.exists():
+                st.LE_panel.right = st.shear_web_1.left
+            elif st.spar_cap.exists():
+                st.LE_panel.right = st.spar_cap.left
+            else:
+                st.LE_panel.right = np.nan
+                raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
+        if st.aft_panel.exists():
+            if st.shear_web_2.exists():
+                st.aft_panel.left = st.shear_web_2.right
+            elif st.spar_cap.exists():
+                st.aft_panel.left = st.spar_cap.right
+            else:
+                st.aft_panel.left = np.nan
+                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+            if st.TE_reinforcement.exists():
+                st.aft_panel.right = st.TE_reinforcement.left
+            else:
+                st.aft_panel.right = np.nan
+                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+
     def plot_part_edges(self, axes):
-        """Plot color block for each structural part region.
+        """Plot color block for each structural part region. [DEPRECATED]
 
         Each color block spans the plot from top to bottom.
 
         KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
+        (This feature will not be implemented.)
 
         """
         st = self.structure
@@ -570,6 +635,147 @@ class Station:
         if st.shear_web_3.exists():
             axes.axvspan(d['shear web 3, left'], d['shear web 3, right'], facecolor='green', edgecolor='green')
 
-    # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
+    def plot_part_edges2(self, axes):
+        """Plot color block for each structural part region.
 
-    # TODO: twist the blade!
+        Each color block spans the plot from top to bottom.
+
+        Uses coordinates saved as attributes within each Part instance
+        (OOP style) by <Station>.part_edges2().
+
+        Must run <Station>.part_edges2() first.
+
+        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
+        (This feature will not be implemented.)
+
+        """
+        st = self.structure
+        try:
+            if st.spar_cap.exists():
+                axes.axvspan(st.spar_cap.left, st.spar_cap.right, facecolor='cyan', edgecolor='cyan', alpha=0.7)
+            if st.TE_reinforcement.exists():
+                axes.axvspan(st.TE_reinforcement.left, st.TE_reinforcement.right, facecolor='pink', edgecolor='pink', alpha=0.7)
+            if st.LE_panel.exists():
+                axes.axvspan(st.LE_panel.left, st.LE_panel.right, facecolor='magenta', edgecolor='magenta', alpha=0.7)
+            if st.aft_panel.exists():
+                axes.axvspan(st.aft_panel.left, st.aft_panel.right, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.shear_web_1.exists():
+                axes.axvspan(st.shear_web_1.left, st.shear_web_1.right, facecolor='green', edgecolor='green')
+            if st.shear_web_2.exists():
+                axes.axvspan(st.shear_web_2.left, st.shear_web_2.right, facecolor='green', edgecolor='green')
+            if st.shear_web_3.exists():
+                axes.axvspan(st.shear_web_3.left, st.shear_web_3.right, facecolor='green', edgecolor='green')
+        except AttributeError:
+            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.part_edges2() first.")
+
+    def part_edge_on_airfoil(self, x_edge):
+        """Find the airfoil coordinates at the edges of each structural part.
+
+        Returns two coordinate pairs as tuples, one coordinate pair for the
+        lower surface (x_edge, y_edge_lower), and another for the upper surface
+        of the airfoil (x_edge, y_edge_upper).
+
+        Must run <Station>.split_airfoil_at_LE_and_TE() first.
+
+        """
+        af = self.airfoil
+        # lower airfoil surface -----------------------------------------------
+        try:
+            index_right = np.nonzero(af.lower['x']>x_edge)[0][-1]
+        except AttributeError:
+            raise AttributeError("Upper and lower surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.split_airfoil_at_LE_and_TE().".format(af.name, self.station_num))
+        index_left = index_right + 1
+        f = ipl.interp1d(af.lower[index_right:index_left+1][::-1]['x'],
+                         af.lower[index_right:index_left+1][::-1]['y'])
+        y_edge_lower = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_lower,'ro')
+        temp = np.append(af.lower[:index_left],
+                         np.array((x_edge,y_edge_lower),
+                                  dtype=[('x', 'f8'), ('y', 'f8')]))
+        af.lower = np.append(temp, af.lower[index_left:])
+        # upper airfoil surface -----------------------------------------------
+        index_right = np.nonzero(af.upper['x']>x_edge)[0][0]
+        index_left = index_right - 1
+        f = ipl.interp1d(af.upper[index_left:index_right+1]['x'],
+                         af.upper[index_left:index_right+1]['y'])
+        y_edge_upper = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_upper,'gs')
+        temp = np.append(af.upper[:index_right],
+                         np.array((x_edge,y_edge_upper),
+                                  dtype=[('x', 'f8'), ('y', 'f8')]))
+        af.upper = np.append(temp, af.upper[index_right:])
+        return ((x_edge,y_edge_lower),(x_edge,y_edge_upper))
+
+    def save_SW1_edge_coords(self):
+        """Save edge coordinates for shear web #1 cross-section."""
+        st = self.structure
+        d = self.part_edges()
+        ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(d['shear web 1, left'])
+        ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(d['shear web 1, right'])
+        st.shear_web_1.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
+                                             [x2,y2],  # point 2 (lower right)
+                                             [x3,y3],  # point 3 (upper right)
+                                             [x4,y4]]) # point 4 (upper left)
+
+    def find_all_part_cs_coords(self):
+        """Find the corners of the cross-sections for each structural part.
+
+        Saves cross-section coordinates (in meters) as the '.cs_coords' 
+        attribute (a numpy array) within each Part instance (OOP style).
+
+        NOTE: only shear webs have been implemented so far!
+
+        """
+        st = self.structure
+        af = self.airfoil
+        # if st.spar_cap.exists():
+        #     st.spar_cap.left = -st.spar_cap.base/2.0
+        #     st.spar_cap.right = st.spar_cap.base/2.0
+        # if st.TE_reinforcement.exists():
+        #     st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
+        #     st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
+        if st.shear_web_1.exists():
+            ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(st.shear_web_1.left)
+            ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(st.shear_web_1.right)
+            st.shear_web_1.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
+                                                 [x2,y2],  # point 2 (lower right)
+                                                 [x3,y3],  # point 3 (upper right)
+                                                 [x4,y4]]) # point 4 (upper left)
+        if st.shear_web_2.exists():
+            ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(st.shear_web_2.left)
+            ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(st.shear_web_2.right)
+            st.shear_web_2.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
+                                                 [x2,y2],  # point 2 (lower right)
+                                                 [x3,y3],  # point 3 (upper right)
+                                                 [x4,y4]]) # point 4 (upper left)
+        if st.shear_web_3.exists():
+            ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(st.shear_web_3.left)
+            ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(st.shear_web_3.right)
+            st.shear_web_3.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
+                                                 [x2,y2],  # point 2 (lower right)
+                                                 [x3,y3],  # point 3 (upper right)
+                                                 [x4,y4]]) # point 4 (upper left)
+        # if st.LE_panel.exists():
+        #     st.LE_panel.left = -af.pitch_axis*af.chord
+        #     if st.shear_web_1.exists():
+        #         st.LE_panel.right = st.shear_web_1.left
+        #     elif st.spar_cap.exists():
+        #         st.LE_panel.right = st.spar_cap.left
+        #     else:
+        #         st.LE_panel.right = np.nan
+        #         raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
+        # if st.aft_panel.exists():
+        #     if st.shear_web_2.exists():
+        #         st.aft_panel.left = st.shear_web_2.right
+        #     elif st.spar_cap.exists():
+        #         st.aft_panel.left = st.spar_cap.right
+        #     else:
+        #         st.aft_panel.left = np.nan
+        #         raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+        #     if st.TE_reinforcement.exists():
+        #         st.aft_panel.right = st.TE_reinforcement.left
+        #     else:
+        #         st.aft_panel.right = np.nan
+        #         raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+
+    # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
