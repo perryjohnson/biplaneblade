@@ -365,8 +365,6 @@ class Blade:
                 X.append(x[i])
                 Y.append(y[i])
                 Z.append(z[i])
-                print (X,Y,Z)
-                print "---"
                 mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
 
     def plot_all_SW_spanwise_lines(self, lw, twist_flag=True):
@@ -396,7 +394,7 @@ class Blade:
             mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
             mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
 
-    def plot_blade(self, line_width=0.06, airfoils=True, pitch_axis=False,
+    def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
