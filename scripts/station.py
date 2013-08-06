@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: August 5, 2013
+Last updated: August 6, 2013
 
 """
 
@@ -10,6 +10,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as ipl
+import transformation as tf
+reload(tf)
 from math import isnan
 
 
@@ -294,12 +296,12 @@ class Station:
             .<Part>
                 .exists() : bool, check if a Part exists at this station
         .read_airfoil_coords() : Read the airfoil coordinates and scale wrt the
-            airfoil dims. Create a new attribute, <station>.airfoil.coords, a
+            airfoil dims. Create a new attribute, <Station>.airfoil.coords, a
             numpy array of airfoil coordinates.
         .plot_airfoil_coords() : plot the airfoil coordinates of this station
         .split_airfoil_at_LE_and_TE() : Split the airfoil curve into upper and
-            lower segments. Create new attributes: <station>.airfoil.LE_index,
-            <station>.airfoil.upper, and <station>.airfoil.lower
+            lower segments. Create new attributes: <Station>.airfoil.LE_index,
+            <Station>.airfoil.upper, and <Station>.airfoil.lower
 
         Usage
         -----    
@@ -366,9 +368,9 @@ class Station:
         print " Station deleted, and now Station.number_of_stations = {0}".format(Station.number_of_stations)
 
     def read_airfoil_coords(self, comment_char='#'):
-        """Read the airfoil coordinates and scale wrt the airfoil dims.
+        """Read the airfoil coordinates into memory from a file in station_path.
 
-        Creates a new attribute for this station: <station>.airfoil.coords,
+        Creates a new attribute for this station: <Station>.airfoil.coords,
         which is a numpy array of airfoil coordinates.
 
         Note
@@ -387,11 +389,31 @@ class Station:
                 comments=comment_char)
         except IOError:
             raise IOError("Airfoil file does not exist yet!\n  Run <Blade>.copy_all_airfoil_coords() first.")
+
+    def scale_airfoil_coords(self):
+        """Scale the airfoil coordinates with respect to the airfoil dims.
+
+        Must run <Station>.read_airfoil_coords() first.
+
+        """
+        af = self.airfoil
         # translate the airfoil horizontally, so pitch axis is at origin
         af.coords['x'] = af.coords['x'] - af.pitch_axis
         # scale the airfoil to the specified chord length
         af.coords['x'] = af.coords['x'] * af.chord
         af.coords['y'] = af.coords['y'] * af.chord
+
+    def rotate_airfoil_coords(self, debug_flag=False):
+        """Rotate the airfoil coordinates wrt the local twist angle.
+
+        Must run <Station>.read_airfoil_coords() and 
+        <Station>.scale_airfoil_coords() first.
+
+        """
+        af = self.airfoil
+        for point in af.coords:
+            (x,y) = point
+            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)
 
     def create_plot(self, legend_flag=False):
         """Create a plot for this station.
@@ -429,28 +451,41 @@ class Station:
     def plot_airfoil_coords(self, fig, axes, upper_lower_flag=False):
         """Plot the airfoil coordinates of this station."""
         af = self.airfoil
-        try:
-            if upper_lower_flag:
+        if upper_lower_flag:
+            try:
                 axes.plot(af.upper['x'], af.upper['y'], 'bo-', label='upper surface')
                 axes.plot(af.lower['x'], af.lower['y'], 'rs-', label='lower surface')
-            else:
+            except AttributeError:
+                raise AttributeError("Upper and lower surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.split_airfoil_at_LE_and_TE().".format(af.name, self.station_num))
+        else:
+            try:
                 axes.plot(af.coords['x'], af.coords['y'])
-        except AttributeError:
-            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <station>.read_airfoil_coords().".format(af.name, self.station_num))        
+            except AttributeError:
+                raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.name, self.station_num))        
 
     def split_airfoil_at_LE_and_TE(self):
-        """Split the airfoil curve into upper and lower segments."""
+        """Split the airfoil curve into upper and lower segments.
+
+        <Station>.split_airfoil_at_LE_and_TE() should be run before
+        <Station>.rotate_airfoil_coords(). This is because 
+        .split_airfoil_at_LE_and_TE() identifies the LE by looking for a point
+        with y-coordinate = 0.0, which breaks if we rotate the airfoil first.
+
+        """
         af = self.airfoil
         try:
             temp_list = np.nonzero(af.coords['y']==0.0)[0]
         except AttributeError:
-            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <station>.read_airfoil_coords().".format(af.name, self.station_num))
+            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.name, self.station_num))
         else:
             # drop zeros from the list (which correspond to the TE, not the LE)
             temp_list = temp_list[np.nonzero(temp_list)[0]]
             # grab the first item in the list
             # (the last item will also correspond to the TE, not the LE)
-            af.LE_index = temp_list[0]
+            try:
+                af.LE_index = temp_list[0]
+            except IndexError:
+                raise IndexError("No LE indices were stored.\n  Try running <Station>.rotate_airfoil_coords() *BEFORE* running\n  <Station>.split_airfoil_at_LE_and_TE()")
             af.upper = af.coords[af.LE_index:]
             af.lower = af.coords[:af.LE_index+1]
 
@@ -514,6 +549,8 @@ class Station:
         """Plot color block for each structural part region.
 
         Each color block spans the plot from top to bottom.
+
+        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
 
         """
         st = self.structure

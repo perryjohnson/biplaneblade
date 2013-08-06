@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade definition.
 
 Author: Perry Roth-Johnson
-Last updated: August 5, 2013
+Last updated: August 6, 2013
 
 """
 
@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 import station as stn
 reload(stn)
+import transformation as tf
+reload(tf)
 import matplotlib.pyplot as plt
 from mayavi import mlab
 
@@ -200,7 +202,7 @@ class Blade:
             print mlab.view()
         mlab.show()
 
-    def plot_all_airfoils(self):
+    def plot_all_airfoils(self, lw):
         """Plot all the airfoils in the blade with Mayavi's mlab.
 
         You must import the blade and its airfoil coordinates first.
@@ -224,29 +226,13 @@ class Blade:
             l = len(y)
             x = np.ones((l,))*station.coords.x1  # spanwise coordinate
             # plot the airfoil on the screen
-            mlab.plot3d(x,y,z, color=(0,0,1), tube_radius=0.08)
+            mlab.plot3d(x,y,z, color=(0,0,1), tube_radius=lw)
 
-    def plot_pitch_axis(self):
+    def plot_pitch_axis(self, lw):
         """Plots the pitch axis from root to tip."""
         root = self.list_of_stations[0].coords.x1
         tip = self.list_of_stations[-1].coords.x1
-        mlab.plot3d([root,tip],[0,0],[0,0], tube_radius=0.08)
-
-    # def get_LE_coords(self):
-    #     """Returns a list of (x,y,z) coordinates for the blade leading edge.
-
-    #     You must run <Station>.split_airfoil_at_LE_and_TE() first.
-
-    #     """
-    #     x = []  # spanwise coordinate
-    #     y = []  # chordwise coordinate
-    #     z = []  # flapwise coordinate
-    #     for station in self.list_of_stations:
-    #         LE_index = station.airfoil.LE_index
-    #         x.append(station.coords.x1)
-    #         y.append(station.airfoil.coords['x'][LE_index])
-    #         z.append(station.airfoil.coords['y'][LE_index])
-    #     return (x,y,z)
+        mlab.plot3d([root,tip],[0,0],[0,0], tube_radius=lw)
 
     def get_LE_coords(self):
         """Returns a list of (x,y,z) coordinates for the blade leading edge."""
@@ -255,14 +241,21 @@ class Blade:
         z = []  # flapwise coordinate
         for station in self.list_of_stations:
             x.append(station.coords.x1)
-            y.append(-(station.airfoil.chord * station.airfoil.pitch_axis))
-            z.append(0.0)
+            # grab the unrotated LE coordinates
+            y_temp = -(station.airfoil.chord * station.airfoil.pitch_axis)
+            z_temp = 0.0
+            # rotate the LE coordinates wrt the twist angle
+            (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
+                                                  station.airfoil.twist)
+            # append the rotated LE coordinates
+            y.append(y_new)
+            z.append(z_new)
         return (x,y,z)
 
-    def plot_LE(self):
+    def plot_LE(self, lw):
         """Plots the leading edge from root to tip."""
         (x,y,z) = self.get_LE_coords()
-        mlab.plot3d(x,y,z, tube_radius=0.08)
+        mlab.plot3d(x,y,z, tube_radius=lw)
 
     def get_TE_coords(self):
         """Returns a list of (x,y,z) coordinates for the blade trailing edge."""
@@ -271,16 +264,24 @@ class Blade:
         z = []  # flapwise coordinate
         for station in self.list_of_stations:
             x.append(station.coords.x1)
-            y.append(station.airfoil.chord * (1.0-station.airfoil.pitch_axis))
-            z.append(0.0)
+            # grab the unrotated TE coordinates
+            y_temp = station.airfoil.chord * (1.0-station.airfoil.pitch_axis)
+            z_temp = 0.0
+            # rotate the TE coordinates wrt the twist angle
+            (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
+                                                  station.airfoil.twist)
+            # append the rotated TE coordinates
+            y.append(y_new)
+            z.append(z_new)
         return (x,y,z)
 
-    def plot_TE(self):
+    def plot_TE(self, lw):
         """Plots the trailing edge from root to tip."""
         (x,y,z) = self.get_TE_coords()
-        mlab.plot3d(x,y,z, tube_radius=0.08)
+        mlab.plot3d(x,y,z, tube_radius=lw)
 
-    def plot_blade(self, airfoils=True, pitch_axis=False, LE=True, TE=True):
+    def plot_blade(self, airfoils=True, pitch_axis=False, LE=True, TE=True, 
+        line_width=0.08):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -289,15 +290,16 @@ class Blade:
         pitch_axis : bool, plot/don't plot the pitch axis from root to tip
         LE : bool, plot/don't plot the leading edge from root to tip
         TE : bool, plot/don't plot the trailing edge from root to tip
+        line_width : float, line width for plotting
 
         """
         self.create_plot()
         if airfoils:
-            self.plot_all_airfoils()
+            self.plot_all_airfoils(lw=line_width)
         if pitch_axis:
-            self.plot_pitch_axis()
+            self.plot_pitch_axis(lw=line_width)
         if LE:
-            self.plot_LE()
+            self.plot_LE(lw=line_width)
         if TE:
-            self.plot_TE()
+            self.plot_TE(lw=line_width)
         self.show_plot()
