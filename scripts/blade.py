@@ -174,7 +174,7 @@ class Blade:
         """
         mlab.figure(figure=self.name, size=(fig_width,fig_height))
 
-    def show_plot(self, azimuth=45.0, elevation=54.74, distance=110.0,
+    def show_plot(self, azimuth=-45.0, elevation=54.74, distance=110.0,
                   focalpoint=[60.0,0.85,0.0], print_view=False):
         """Pick a nice view and show the plot.
 
@@ -228,7 +228,7 @@ class Blade:
             l = len(y)
             x = np.ones((l,))*station.coords.x1  # spanwise coordinate
             # plot the airfoil on the screen
-            mlab.plot3d(x,y,z, color=(0,0,1), tube_radius=lw)
+            mlab.plot3d(x,y,z, tube_radius=lw)
 
     def plot_pitch_axis(self, lw):
         """Plots the pitch axis from root to tip."""
@@ -361,7 +361,13 @@ class Blade:
                                                        twist_flag=twist_flag)
             for i in range(0,len(x),4):
                 (X,Y,Z) = (x[i:i+4], y[i:i+4], z[i:i+4])
-                mlab.plot3d(X,Y,Z, tube_radius=lw)
+                # add the first coord pair again, to form a closed loop
+                X.append(x[i])
+                Y.append(y[i])
+                Z.append(z[i])
+                print (X,Y,Z)
+                print "---"
+                mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
 
     def plot_all_SW_spanwise_lines(self, lw, twist_flag=True):
         """Plots spanwise lines for all shear webs from root to tip."""
@@ -385,22 +391,24 @@ class Blade:
                 x4.append(x[i+3])
                 y4.append(y[i+3])
                 z4.append(z[i+3])
-            mlab.plot3d(x1,y1,z1, tube_radius=lw)
-            mlab.plot3d(x2,y2,z2, tube_radius=lw)
-            mlab.plot3d(x3,y3,z3, tube_radius=lw)
-            mlab.plot3d(x4,y4,z4, tube_radius=lw)
+            mlab.plot3d(x1,y1,z1, color=(0,0,1), tube_radius=lw)
+            mlab.plot3d(x2,y2,z2, color=(0,0,1), tube_radius=lw)
+            mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
+            mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
 
-    def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
+    def plot_blade(self, line_width=0.06, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
         ----------
+        line_width : float, line width for plotting
         airfoils : bool, plot/don't plot the airfoils at each blade station
         pitch_axis : bool, plot/don't plot the pitch axis from root to tip
         LE : bool, plot/don't plot the leading edge from root to tip
         TE : bool, plot/don't plot the trailing edge from root to tip
-        line_width : float, line width for plotting
+        twist : bool, plot/don't plot the blade with twist from root to tip
+        SW : bool, plot/don't plot all shear webs along the span
 
         """
         self.create_plot()

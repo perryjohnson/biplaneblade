@@ -27,12 +27,12 @@ for station in b.list_of_stations:
 
 # create some airfoil plots in Matplotlib
 # station = b.list_of_stations[15]
-for station in b.list_of_stations:
-    (fig, axes) = station.create_plot()
-    station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
-    station.plot_part_edges(axes)
-    station.show_plot()
+# for station in b.list_of_stations:
+#     (fig, axes) = station.create_plot()
+#     station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
+#     station.plot_part_edges(axes)
+#     station.show_plot()
     # station.save_plot(fig)
 
 # make a 3D visualization of the entire blade with Mayavi's mlab
-b.plot_blade(twist=True)
+b.plot_blade()
