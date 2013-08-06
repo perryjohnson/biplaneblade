@@ -515,54 +515,6 @@ class Station:
     # TE reinforcement
 
     def part_edges(self):
-        """Find the edges of each structural part. [DEPRECATED]
-
-        Returns a dictionary of x-coordinates (in meters).
-
-        """
-        st = self.structure
-        af = self.airfoil
-        d = {}
-        if st.spar_cap.exists():
-            d['spar cap, left'] = -st.spar_cap.base/2.0
-            d['spar cap, right'] = st.spar_cap.base/2.0
-        if st.TE_reinforcement.exists():
-            d['TE reinf, left'] = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
-            d['TE reinf, right'] = -af.pitch_axis*af.chord+af.chord
-        if st.shear_web_1.exists():
-            d['shear web 1, right'] = st.shear_web_1.x2
-            d['shear web 1, left'] = st.shear_web_1.x2-st.shear_web_1.base
-        if st.shear_web_2.exists():
-            d['shear web 2, left'] = st.shear_web_2.x2
-            d['shear web 2, right'] = st.shear_web_2.x2+st.shear_web_2.base
-        if st.shear_web_3.exists():
-            d['shear web 3, left'] = st.shear_web_3.x2
-            d['shear web 3, right'] = st.shear_web_3.x2+st.shear_web_3.base
-        if st.LE_panel.exists():
-            d['LE panel, left'] = -af.pitch_axis*af.chord
-            if st.shear_web_1.exists():
-                d['LE panel, right'] = d['shear web 1, left']
-            elif st.spar_cap.exists():
-                d['LE panel, right'] = d['spar cap, left']
-            else:
-                d['LE panel, right'] = np.nan
-                raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
-        if st.aft_panel.exists():
-            if st.shear_web_2.exists():
-                d['aft panel, left'] = d['shear web 2, right']
-            elif st.spar_cap.exists():
-                d['aft panel, left'] = d['spar cap, right']
-            else:
-                d['aft panel, left'] = np.nan
-                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
-            if st.TE_reinforcement.exists():
-                d['aft panel, right'] = d['TE reinf, left']
-            else:
-                d['aft panel, right'] = np.nan
-                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
-        return d
-
-    def part_edges2(self):
         """Find the edges of each structural part.
 
         Saves coordinates (in meters) as '.left' and '.right' attributes
@@ -610,40 +562,14 @@ class Station:
                 raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
 
     def plot_part_edges(self, axes):
-        """Plot color block for each structural part region. [DEPRECATED]
-
-        Each color block spans the plot from top to bottom.
-
-        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
-        (This feature will not be implemented.)
-
-        """
-        st = self.structure
-        d = self.part_edges()
-        if st.spar_cap.exists():
-            axes.axvspan(d['spar cap, left'], d['spar cap, right'], facecolor='cyan', edgecolor='cyan', alpha=0.7)
-        if st.TE_reinforcement.exists():
-            axes.axvspan(d['TE reinf, left'], d['TE reinf, right'], facecolor='pink', edgecolor='pink', alpha=0.7)
-        if st.LE_panel.exists():
-            axes.axvspan(d['LE panel, left'], d['LE panel, right'], facecolor='magenta', edgecolor='magenta', alpha=0.7)
-        if st.aft_panel.exists():
-            axes.axvspan(d['aft panel, left'], d['aft panel, right'], facecolor='orange', edgecolor='orange', alpha=0.7)
-        if st.shear_web_1.exists():
-            axes.axvspan(d['shear web 1, left'], d['shear web 1, right'], facecolor='green', edgecolor='green')
-        if st.shear_web_2.exists():
-            axes.axvspan(d['shear web 2, left'], d['shear web 2, right'], facecolor='green', edgecolor='green')
-        if st.shear_web_3.exists():
-            axes.axvspan(d['shear web 3, left'], d['shear web 3, right'], facecolor='green', edgecolor='green')
-
-    def plot_part_edges2(self, axes):
         """Plot color block for each structural part region.
 
         Each color block spans the plot from top to bottom.
 
         Uses coordinates saved as attributes within each Part instance
-        (OOP style) by <Station>.part_edges2().
+        (OOP style) by <Station>.part_edges().
 
-        Must run <Station>.part_edges2() first.
+        Must run <Station>.part_edges() first.
 
         KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
         (This feature will not be implemented.)
@@ -666,7 +592,7 @@ class Station:
             if st.shear_web_3.exists():
                 axes.axvspan(st.shear_web_3.left, st.shear_web_3.right, facecolor='green', edgecolor='green')
         except AttributeError:
-            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.part_edges2() first.")
+            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.part_edges() first.")
 
     def part_edge_on_airfoil(self, x_edge):
         """Find the airfoil coordinates at the edges of each structural part.
@@ -705,17 +631,6 @@ class Station:
                                   dtype=[('x', 'f8'), ('y', 'f8')]))
         af.upper = np.append(temp, af.upper[index_right:])
         return ((x_edge,y_edge_lower),(x_edge,y_edge_upper))
-
-    def save_SW1_edge_coords(self):
-        """Save edge coordinates for shear web #1 cross-section."""
-        st = self.structure
-        d = self.part_edges()
-        ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(d['shear web 1, left'])
-        ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(d['shear web 1, right'])
-        st.shear_web_1.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
-                                             [x2,y2],  # point 2 (lower right)
-                                             [x3,y3],  # point 3 (upper right)
-                                             [x4,y4]]) # point 4 (upper left)
 
     def find_all_part_cs_coords(self):
         """Find the corners of the cross-sections for each structural part.

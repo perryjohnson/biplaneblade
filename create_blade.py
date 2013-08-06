@@ -22,7 +22,7 @@ for station in b.list_of_stations:
     station.read_airfoil_coords()
     station.scale_airfoil_coords()
     station.split_airfoil_at_LE_and_TE()
-    station.part_edges2()
+    station.part_edges()
     station.find_all_part_cs_coords()
 
 # create some airfoil plots in Matplotlib
@@ -30,7 +30,7 @@ for station in b.list_of_stations:
 for station in b.list_of_stations:
     (fig, axes) = station.create_plot()
     station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
-    station.plot_part_edges2(axes)
+    station.plot_part_edges(axes)
     station.show_plot()
     # station.save_plot(fig)
 
