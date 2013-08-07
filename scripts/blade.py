@@ -32,7 +32,8 @@ class Blade:
 
     """
     logfile_name = 'blade.log'
-    def __init__(self, name, blade_path, defn_filename='blade_definition.csv', airfoils_path='airfoils'):
+    def __init__(self, name, blade_path, defn_filename='blade_definition.csv',
+        airfoils_path='airfoils'):
         """Create a new wind turbine blade.
 
         Parameters
@@ -42,6 +43,41 @@ class Blade:
 
         defn_filename : str (for CSV file), the blade definition filename
         airfoils_path : str, local directory that contains airfoil coordinates
+
+        Attributes
+        ----------
+        .airfoils_path : str, local directory that contains airfoil coords
+        .blade_path : str, the local target directory for storing blade data
+        .defn_filename : str, (for CSV file), the blade definition filename
+        .list_of_stations : list, contains all the Stations of this blade
+        .name : str, the name of this blade
+        .number_of_stations : int, the total number of stations in this blade
+        .logfile_name : 'blade.log', the log file for this blade
+
+        Methods
+        -------
+        .copy_airfoil_coords(station) : copy airfoil coordinates from 
+            airfoils_path into this station_path
+        .copy_all_airfoil_coords() : copy all airfoil coordinates from
+            airfoils_path into each station_path
+        .create_all_stations() : create all stations for this blade
+        .create_plot() : create a plot for this blade
+        .create_station(station_num) : create a new station for this blade
+        .get_LE_coords() : list, returns (x,y,z) coords for the blade LE
+        .get_SW_cross_section_coords(sw_num) : list, returns (x,y,z) coords for
+            shear web 1, 2, or 3
+        .get_TE_coords() : list, returns (x,y,z) coords for the blade TE
+        .import_blade_definition() : import the blade defn from a CSV file
+        .plot_LE(lw) : plots the leading edge from root to tip
+        .plot_TE(lw) : plots the trailing edge from root to tip
+        .plot_all_SW_cross_sections(lw) : plots all shear web cross-sections
+        .plot_all_SW_spanwise_lines(lw) : plots spanwise lines for all SWs
+        .plot_all_airfoils(lw) : plot all the airfoils in the blade
+        .plot_blade() : plots a wirerame representation of the blade
+        .plot_chord_schedule() : plot the chord vs. span
+        .plot_pitch_axis(lw) : plots the pitch axis from root to tip
+        .plot_twist_schedule() : plot the twist vs. span
+        .show_plot() : pick a nice view and show the plot
 
         Usage
         -----
@@ -105,7 +141,15 @@ class Blade:
 
     def create_station(self, station_num):
         """Create a new station for this blade."""
-        return stn.Station(self._df.ix[station_num], self.blade_path)
+        # check if _df['airfoil upper'] is NaN
+        # to decide which type of station to create: Station or BiplaneStation
+        if self._df.ix[station_num]['type'] == 'monoplane':
+            this_stn = stn.MonoplaneStation(self._df.ix[station_num], self.blade_path)
+        elif self._df.ix[station_num]['type'] == 'biplane':
+            this_stn = stn.BiplaneStation(self._df.ix[station_num], self.blade_path)
+        else:
+            raise ValueError("Values in the 'type' column of {0} must be either 'monoplane' or 'biplane'.".format(self.defn_filename))
+        return this_stn
 
     def create_all_stations(self):
         """Create all stations for this blade."""
@@ -234,7 +278,7 @@ class Blade:
         """Plots the pitch axis from root to tip."""
         root = self.list_of_stations[0].coords.x1
         tip = self.list_of_stations[-1].coords.x1
-        mlab.plot3d([root,tip],[0,0],[0,0], tube_radius=lw)
+        mlab.plot3d([root,tip],[0,0],[0,0], color=(1,0,0), tube_radius=lw)
 
     def get_LE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade leading edge."""
