@@ -36,3 +36,13 @@ for station_path in list_of_station_paths:
         # delete the station path, even if it has contents
         shutil.rmtree(station_path)
         print " [Deleted station path] {0}".format(station_path)
+
+# clean up unused variables
+del list_of_station_paths
+del root_path
+del d
+del p
+del station
+del station_path
+del os
+del shutil

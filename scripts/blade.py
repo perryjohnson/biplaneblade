@@ -19,12 +19,15 @@ import matplotlib.pyplot as plt
 from mayavi import mlab
 
 
-class Blade:
+class _Blade:
     """Define a wind turbine blade.
+
+    The _Blade base class is not intended for use.
+    Use MonoplaneBlade or BiplaneBlade instead
 
     Usage:
     import blade as bld
-    b = bld.Blade('Sandia blade SNL100-00', 'sandia_blade')
+    b = bld.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
 
     # access the chord length of blade station 2
     stn2 = b.list_of_stations[1]
@@ -81,13 +84,13 @@ class Blade:
 
         Usage
         -----
-        Blade('Sandia blade SNL100-00', 'sandia_blade')
-        Blade('Sandia blade SNL100-00', 'sandia_blade',
+        _Blade('Sandia blade SNL100-00', 'sandia_blade')
+        _Blade('Sandia blade SNL100-00', 'sandia_blade',
               defn_filename='blade_definition.csv', airfoils_path='airfoils')
 
         """
         self.name = name
-        self.logf = open(Blade.logfile_name, "a")
+        self.logf = open(_Blade.logfile_name, "a")
         self.logf.write("[{0}] Created blade: {1}\n".format(datetime.datetime.now(), self.name))
         if not os.path.exists(blade_path):
             raise ValueError("The blade path '{0}' does not exist!\n  Check the 'blade_path' passed to the Blade class.".format(blade_path))
@@ -111,7 +114,7 @@ class Blade:
         Also deletes all the station paths inside the blade path.
 
         """
-        self.logf = open(Blade.logfile_name, "a")
+        self.logf = open(_Blade.logfile_name, "a")
         for station in self.list_of_stations:
             if os.path.exists(station.station_path):
                 # delete the station path, even if it has contents
@@ -139,43 +142,16 @@ class Blade:
             import_result = 1
         return import_result
 
-    def create_station(self, station_num):
-        """Create a new station for this blade."""
-        # check if _df['airfoil upper'] is NaN
-        # to decide which type of station to create: Station or BiplaneStation
-        if self._df.ix[station_num]['type'] == 'monoplane':
-            this_stn = stn.MonoplaneStation(self._df.ix[station_num], self.blade_path)
-        elif self._df.ix[station_num]['type'] == 'biplane':
-            this_stn = stn.BiplaneStation(self._df.ix[station_num], self.blade_path)
-        else:
-            raise ValueError("Values in the 'type' column of {0} must be either 'monoplane' or 'biplane'.".format(self.defn_filename))
-        return this_stn
-
     def create_all_stations(self):
         """Create all stations for this blade."""
-        if stn.Station.number_of_stations != 0:
-            stn.Station.number_of_stations = 0  # initialize to zero
+        if stn._Station.number_of_stations != 0:
+            stn._Station.number_of_stations = 0  # initialize to zero
             print " [Warning] The number of stations has been reset to zero."
-            self.logf = open(Blade.logfile_name, 'a')
-            self.logf.write("[{0}] [Warning] The number of stations (Station.number_of_stations) was reset to zero.\n")
+            self.logf = open(_Blade.logfile_name, 'a')
+            self.logf.write("[{0}] [Warning] The number of stations (_Station.number_of_stations) was reset to zero.\n".format(datetime.datetime.now()))
         self.list_of_stations = []
         for station in range(1, self.number_of_stations+1):
             self.list_of_stations.append(self.create_station(station))
-
-    def copy_airfoil_coords(self, station):
-        """Copy airfoil coordinates from airfoils_path into this station_path."""
-        try:
-            shutil.copy(os.path.join(self.airfoils_path, station.airfoil.filename), station.station_path)
-        except IOError:
-            raise IOError("The airfoil file '{0}' for station {1} does not exist!\n  Check '{2}' for errors.".format(station.airfoil.filename, station.station_num, self.defn_filename))
-        else:
-            print " Copied station #{0} airfoil: {1}".format(station.station_num, station.airfoil.name)
-            station.airfoil.path = os.path.join(station.station_path, station.airfoil.filename)
-            print " ... Assigned station.airfoil.path!"
-            self.logf = open(Blade.logfile_name, 'a')
-            self.logf.write("[{0}] Assigned station.airfoil.path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.path))
-            self.logf.flush()
-            self.logf.close()
 
     def copy_all_airfoil_coords(self):
         """Copy all airfoil coordinates from airfoils_path into each station_path."""
@@ -245,34 +221,6 @@ class Blade:
             print "[**Mayavi mlab view parameters**]"
             print mlab.view()
         mlab.show()
-
-    def plot_all_airfoils(self, lw, twist_flag=True):
-        """Plot all the airfoils in the blade with Mayavi's mlab.
-
-        You must import the blade and its airfoil coordinates first.
-
-        Usage
-        -----
-        b = bl.Blade('Sandia blade SNL100-00', 'sandia_blade')
-        b.copy_all_airfoil_coords()
-        for station in b.list_of_stations:
-            station.read_airfoil_coords()
-        b.plot_all_airfoils()
-
-        """
-        for station in self.list_of_stations:
-            if twist_flag:
-                station.rotate_airfoil_coords()  # apply twist angle to airfoil
-            # assemble the airfoil coordinates for mlab
-            try:
-                y = station.airfoil.coords['x']  # chordwise coordinate
-            except AttributeError:
-                raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.read_airfoil_coords() first.")
-            z = station.airfoil.coords['y']  # flapwise coordinate
-            l = len(y)
-            x = np.ones((l,))*station.coords.x1  # spanwise coordinate
-            # plot the airfoil on the screen
-            mlab.plot3d(x,y,z, tube_radius=lw)
 
     def plot_pitch_axis(self, lw):
         """Plots the pitch axis from root to tip."""
@@ -466,3 +414,159 @@ class Blade:
             self.plot_all_SW_cross_sections(lw=line_width, twist_flag=twist)
             self.plot_all_SW_spanwise_lines(lw=line_width, twist_flag=twist)
         self.show_plot()
+
+
+class MonoplaneBlade(_Blade):
+    """Define a monoplane (conventional) wind turbine blade."""
+    def create_station(self, station_num):
+        """Create a new station for this blade."""
+        return stn.MonoplaneStation(self._df.ix[station_num], self.blade_path)
+
+    def copy_airfoil_coords(self, station):
+        """Copy airfoil coordinates from airfoils_path into this station_path."""
+        try:
+            shutil.copy(os.path.join(self.airfoils_path, station.airfoil.filename), station.station_path)
+        except IOError:
+            raise IOError("The airfoil file '{0}' for station {1} does not exist!\n  Check '{2}' for errors.".format(station.airfoil.filename, station.station_num, self.defn_filename))
+        else:
+            print " Copied station #{0} airfoil: {1}".format(station.station_num, station.airfoil.name)
+            station.airfoil.path = os.path.join(station.station_path, station.airfoil.filename)
+            print " ... Assigned station.airfoil.path!"
+            self.logf = open(_Blade.logfile_name, 'a')
+            self.logf.write("[{0}] Assigned station.airfoil.path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.path))
+            self.logf.flush()
+            self.logf.close()
+
+    def plot_all_airfoils(self, lw, twist_flag=True):
+        """Plot all the airfoils in the blade with Mayavi's mlab.
+
+        You must import the blade and its airfoil coordinates first.
+
+        Usage
+        -----
+        b = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
+        b.copy_all_airfoil_coords()
+        for station in b.list_of_stations:
+            station.read_airfoil_coords()
+        b.plot_all_airfoils()
+
+        """
+        for station in self.list_of_stations:
+            if twist_flag:
+                station.rotate_airfoil_coords()  # apply twist angle to airfoil
+            # assemble the airfoil coordinates for mlab
+            try:
+                y = station.airfoil.coords['x']  # chordwise coordinate
+            except AttributeError:
+                raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.read_airfoil_coords() first.")
+            z = station.airfoil.coords['y']  # flapwise coordinate
+            l = len(y)
+            x = np.ones((l,))*station.coords.x1  # spanwise coordinate
+            # plot the airfoil on the screen
+            mlab.plot3d(x,y,z, tube_radius=lw)
+
+
+class BiplaneBlade(_Blade):
+    """Define a biplane wind turbine blade."""
+    def create_station(self, station_num):
+        """Create a new station for this blade."""
+        if self._df.ix[station_num]['type'] == 'monoplane':
+            this_stn = stn.MonoplaneStation(self._df.ix[station_num], self.blade_path)
+        elif self._df.ix[station_num]['type'] == 'biplane':
+            this_stn = stn.BiplaneStation(self._df.ix[station_num], self.blade_path)
+        else:
+            raise ValueError("Values in the 'type' column of {0} must be either 'monoplane' or 'biplane'.".format(self.defn_filename))
+        return this_stn
+
+    def copy_airfoil_coords(self, station):
+        """Copy airfoil coordinates from airfoils_path into this station_path."""
+        if station.type == 'monoplane':
+            try:
+                shutil.copy(os.path.join(self.airfoils_path, station.airfoil.filename), station.station_path)
+            except IOError:
+                raise IOError("The airfoil file '{0}' for station {1} does not exist!\n  Check '{2}' for errors.".format(station.airfoil.filename, station.station_num, self.defn_filename))
+            else:
+                print " Copied station #{0} airfoil: {1}".format(station.station_num, station.airfoil.name)
+                station.airfoil.path = os.path.join(station.station_path, station.airfoil.filename)
+                print " ... Assigned station.airfoil.path!"
+                self.logf = open(_Blade.logfile_name, 'a')
+                self.logf.write("[{0}] Assigned station.airfoil.path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.path))
+                self.logf.flush()
+                self.logf.close()
+        elif station.type == 'biplane':
+            # lower airfoil
+            try:
+                shutil.copy(os.path.join(self.airfoils_path, station.airfoil.lower_filename), station.station_path)
+            except IOError:
+                raise IOError("The lower airfoil file '{0}' for station {1} does not exist!\n  Check '{2}' for errors.".format(station.airfoil.lower_filename, station.station_num, self.defn_filename))
+            else:
+                print " Copied station #{0} lower airfoil: {1}".format(station.station_num, station.airfoil.lower_name)
+                station.airfoil.lower_path = os.path.join(station.station_path, station.airfoil.lower_filename)
+                print " ... Assigned station.airfoil.lower_path!"
+                self.logf = open(_Blade.logfile_name, 'a')
+                self.logf.write("[{0}] Assigned station.airfoil.lower_path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.lower_path))
+                self.logf.flush()
+                self.logf.close()
+            # upper airfoil
+            try:
+                shutil.copy(os.path.join(self.airfoils_path, station.airfoil.upper_filename), station.station_path)
+            except IOError:
+                raise IOError("The upper airfoil file '{0}' for station {1} does not exist!\n  Check '{2}' for errors.".format(station.airfoil.upper_filename, station.station_num, self.defn_filename))
+            else:
+                print " Copied station #{0} upper airfoil: {1}".format(station.station_num, station.airfoil.upper_name)
+                station.airfoil.upper_path = os.path.join(station.station_path, station.airfoil.upper_filename)
+                print " ... Assigned station.airfoil.upper_path!"
+                self.logf = open(_Blade.logfile_name, 'a')
+                self.logf.write("[{0}] Assigned station.airfoil.upper_path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.upper_path))
+                self.logf.flush()
+                self.logf.close()
+
+    def plot_all_airfoils(self, lw, twist_flag=True):
+        """Plot all the airfoils in the biplane blade with Mayavi's mlab.
+
+        You must import the blade and its airfoil coordinates first.
+
+        Usage
+        -----
+        a = bl.BiplaneBlade('biplane blade', 'biplane_blade')
+        a.copy_all_airfoil_coords()
+        for station in a.list_of_stations:
+            station.read_airfoil_coords()
+        a.plot_all_airfoils()
+
+        """
+        for station in self.list_of_stations:
+            if station.type == 'monoplane':
+                if twist_flag:
+                    station.rotate_airfoil_coords()  # apply twist angle to airfoil
+                # assemble the airfoil coordinates for mlab
+                try:
+                    y = station.airfoil.coords['x']  # chordwise coordinate
+                except AttributeError:
+                    raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.read_airfoil_coords() first.")
+                z = station.airfoil.coords['y']  # flapwise coordinate
+                l = len(y)
+                x = np.ones((l,))*station.coords.x1  # spanwise coordinate
+                # plot the airfoil on the screen
+                mlab.plot3d(x,y,z, tube_radius=lw)
+            elif station.type == 'biplane':
+                # assemble lower airfoil coordinates for mlab -----------------
+                try:
+                    y = station.airfoil.lower_coords['x']  # chordwise coordinate
+                except AttributeError:
+                    raise AttributeError("Lower airfoil coordinates haven't been read yet!\n  Run <Station>.read_airfoil_coords() first.")
+                z = station.airfoil.lower_coords['y']  # flapwise coordinate
+                l = len(y)
+                x = np.ones((l,))*station.coords.x1  # spanwise coordinate
+                # plot the lower airfoil on the screen
+                mlab.plot3d(x,y,z, tube_radius=lw)
+                # assemble upper airfoil coordinates for mlab -----------------
+                try:
+                    y = station.airfoil.upper_coords['x']  # chordwise coordinate
+                except AttributeError:
+                    raise AttributeError("Upper airfoil coordinates haven't been read yet!\n  Run <Station>.read_airfoil_coords() first.")
+                z = station.airfoil.upper_coords['y']  # flapwise coordinate
+                l = len(y)
+                # (reuse same spanwise coordinates): x
+                # plot the lower airfoil on the screen
+                mlab.plot3d(x,y,z, tube_radius=lw)

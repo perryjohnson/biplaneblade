@@ -7,7 +7,12 @@ Last updated: August 7, 2013
 
 
 class _Airfoil:
-    """Define an airfoil (external dimensions)."""
+    """Define an airfoil (external dimensions).
+
+    The _Airfoil base class is not intended for use.
+    Use MonoplaneAirfoil or BiplaneAirfoil instead.
+
+    """
     def __init__(self, name, pitch_axis, twist):
         self.name = name
         self.pitch_axis = pitch_axis  # units [-]  (chord fraction)
