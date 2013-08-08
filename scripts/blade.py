@@ -289,18 +289,18 @@ class MonoplaneBlade(_Blade):
         b = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
         b.copy_all_airfoil_coords()
         for station in b.list_of_stations:
-            station.read_airfoil_coords()
+            station.airfoil.read_coords()
         b.plot_all_airfoils()
 
         """
         for station in self.list_of_stations:
             if twist_flag:
-                station.rotate_airfoil_coords()  # apply twist angle to airfoil
+                station.airfoil.rotate_coords()  # apply twist angle to airfoil
             # assemble the airfoil coordinates for mlab
             try:
                 y = station.airfoil.coords['x']  # chordwise coordinate
             except AttributeError:
-                raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.read_airfoil_coords() first.")
+                raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.airfoil.read_coords() first.")
             z = station.airfoil.coords['y']  # flapwise coordinate
             l = len(y)
             x = np.ones((l,))*station.coords.x1  # spanwise coordinate
@@ -513,19 +513,19 @@ class BiplaneBlade(_Blade):
         a = bl.BiplaneBlade('biplane blade', 'biplane_blade')
         a.copy_all_airfoil_coords()
         for station in a.list_of_stations:
-            station.read_airfoil_coords()
+            station.airfoil.read_coords()
         a.plot_all_airfoils()
 
         """
         for station in self.list_of_stations:
             if station.type == 'monoplane':
                 if twist_flag:
-                    station.rotate_airfoil_coords()  # apply twist angle to airfoil
+                    station.airfoil.rotate_coords()  # apply twist angle to airfoil
                 # assemble the airfoil coordinates for mlab
                 try:
                     y = station.airfoil.coords['x']  # chordwise coordinate
                 except AttributeError:
-                    raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.read_airfoil_coords() first.")
+                    raise AttributeError("Airfoil coordinates haven't been read yet!\n Run <Station>.airfoil.read_coords() first.")
                 z = station.airfoil.coords['y']  # flapwise coordinate
                 l = len(y)
                 x = np.ones((l,))*station.coords.x1  # spanwise coordinate
@@ -533,12 +533,12 @@ class BiplaneBlade(_Blade):
                 mlab.plot3d(x,y,z, tube_radius=lw)
             elif station.type == 'biplane':
                 if twist_flag:
-                    station.rotate_airfoil_coords()
+                    station.airfoil.rotate_coords()
                 # assemble lower airfoil coordinates for mlab -----------------
                 try:
                     y = station.airfoil.lower_coords['x']  # chordwise coordinate
                 except AttributeError:
-                    raise AttributeError("Lower airfoil coordinates haven't been read yet!\n  Run <Station>.read_airfoil_coords() first.")
+                    raise AttributeError("Lower airfoil coordinates haven't been read yet!\n  Run <Station>.airfoil.read_coords() first.")
                 z = station.airfoil.lower_coords['y']  # flapwise coordinate
                 l = len(y)
                 x = np.ones((l,))*station.coords.x1  # spanwise coordinate
@@ -548,7 +548,7 @@ class BiplaneBlade(_Blade):
                 try:
                     y = station.airfoil.upper_coords['x']  # chordwise coordinate
                 except AttributeError:
-                    raise AttributeError("Upper airfoil coordinates haven't been read yet!\n  Run <Station>.read_airfoil_coords() first.")
+                    raise AttributeError("Upper airfoil coordinates haven't been read yet!\n  Run <Station>.airfoil.read_coords() first.")
                 z = station.airfoil.upper_coords['y']  # flapwise coordinate
                 l = len(y)
                 # (reuse same spanwise coordinates): x

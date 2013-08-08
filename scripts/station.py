@@ -63,13 +63,13 @@ class _Station:
             .twist : float, the twist about the x1 axis (degrees)
             .coords : numpy array, the airfoil coordinates (scaled by the
                 .chord and .pitch_axis dimensions)
-                [note: created by .read_airfoil_coords()]
+                [note: created by .read_coords()]
             .LE_index : int, the index of .coords for the leading edge of this
                 airfoil
-            .upper : numpy array, the (scaled) airfoil coordinates of the upper
-                surface
-            .lower : numpy array, the (scaled) airfoil coordinates of the lower
-                surface
+            .suction : numpy array, the (scaled) airfoil coordinates of the
+                suction surface
+            .pressure : numpy array, the (scaled) airfoil coordinates of the
+                pressure surface
         .structure
             .root_buildup
                 .base=np.nan
@@ -145,13 +145,17 @@ class _Station:
         .structure
             .<Part>
                 .exists() : bool, check if a Part exists at this station
-        .read_airfoil_coords() : Read the airfoil coordinates and scale wrt the
-            airfoil dims. Create a new attribute, <Station>.airfoil.coords, a
-            numpy array of airfoil coordinates.
+        .airfoil
+            .read_coords() : Read the airfoil coordinates and scale wrt the
+                airfoil dims. Create a new attribute, <Station>.airfoil.coords,
+                a numpy array of airfoil coordinates.
+            .scale_coords()
+            .rotate_coords()
+            .split_at_LE_and_TE() : Split the airfoil curve into suction and
+                pressure segments. Create new attributes: 
+                <Station>.airfoil.LE_index, <Station>.airfoil.suction, and 
+                <Station>.airfoil.pressure
         .plot_airfoil_coords() : plot the airfoil coordinates of this station
-        .split_airfoil_at_LE_and_TE() : Split the airfoil curve into upper and
-            lower segments. Create new attributes: <Station>.airfoil.LE_index,
-            <Station>.airfoil.upper, and <Station>.airfoil.lower
 
         Usage
         -----    
@@ -250,32 +254,6 @@ class _Station:
         fname = os.path.join(self.station_path, 'stn{0:02d}.png'.format(self.station_num))
         fig.savefig(fname)
 
-    def split_airfoil_at_LE_and_TE(self):
-        """Split the airfoil curve into upper and lower segments.
-
-        <Station>.split_airfoil_at_LE_and_TE() should be run before
-        <Station>.rotate_airfoil_coords(). This is because 
-        .split_airfoil_at_LE_and_TE() identifies the LE by looking for a point
-        with y-coordinate = 0.0, which breaks if we rotate the airfoil first.
-
-        """
-        af = self.airfoil
-        try:
-            temp_list = np.nonzero(af.coords['y']==0.0)[0]
-        except AttributeError:
-            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.name, self.station_num))
-        else:
-            # drop zeros from the list (which correspond to the TE, not the LE)
-            temp_list = temp_list[np.nonzero(temp_list)[0]]
-            # grab the first item in the list
-            # (the last item will also correspond to the TE, not the LE)
-            try:
-                af.LE_index = temp_list[0]
-            except IndexError:
-                raise IndexError("No LE indices were stored.\n  Try running <Station>.rotate_airfoil_coords() *BEFORE* running\n  <Station>.split_airfoil_at_LE_and_TE()")
-            af.upper = af.coords[af.LE_index:]
-            af.lower = af.coords[:af.LE_index+1]
-
     # note: use <Part>.exists() method to decide whether or not to split the airfoil curve for a particular Part
     # check these parts:
     # leading edge panel
@@ -368,39 +346,77 @@ class _Station:
         """Find the airfoil coordinates at the edges of each structural part.
 
         Returns two coordinate pairs as tuples, one coordinate pair for the
-        lower surface (x_edge, y_edge_lower), and another for the upper surface
-        of the airfoil (x_edge, y_edge_upper).
+        pressure surface (x_edge, y_edge_pressure), and another for the suction
+        surface of the airfoil (x_edge, y_edge_suction).
 
-        Must run <Station>.split_airfoil_at_LE_and_TE() first.
+        Must run <Station>.airfoil.split_at_LE_and_TE() first.
 
         """
         af = self.airfoil
-        # lower airfoil surface -----------------------------------------------
+        # pressure airfoil surface --------------------------------------------
         try:
-            index_right = np.nonzero(af.lower['x']>x_edge)[0][-1]
+            index_right = np.nonzero(af.pressure['x']>x_edge)[0][-1]
         except AttributeError:
-            raise AttributeError("Upper and lower surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.split_airfoil_at_LE_and_TE().".format(af.name, self.station_num))
+            raise AttributeError("Upper and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(af.name, self.station_num))
         index_left = index_right + 1
-        f = ipl.interp1d(af.lower[index_right:index_left+1][::-1]['x'],
-                         af.lower[index_right:index_left+1][::-1]['y'])
-        y_edge_lower = float(f(x_edge))
-        # plt.plot(x_edge,y_edge_lower,'ro')
-        temp = np.append(af.lower[:index_left],
-                         np.array((x_edge,y_edge_lower),
+        f = ipl.interp1d(af.pressure[index_right:index_left+1][::-1]['x'],
+                         af.pressure[index_right:index_left+1][::-1]['y'])
+        y_edge_pressure = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_pressure,'ro')
+        temp = np.append(af.pressure[:index_left],
+                         np.array((x_edge,y_edge_pressure),
                                   dtype=[('x', 'f8'), ('y', 'f8')]))
-        af.lower = np.append(temp, af.lower[index_left:])
-        # upper airfoil surface -----------------------------------------------
-        index_right = np.nonzero(af.upper['x']>x_edge)[0][0]
+        af.pressure = np.append(temp, af.pressure[index_left:])
+        # suction airfoil surface ---------------------------------------------
+        index_right = np.nonzero(af.suction['x']>x_edge)[0][0]
         index_left = index_right - 1
-        f = ipl.interp1d(af.upper[index_left:index_right+1]['x'],
-                         af.upper[index_left:index_right+1]['y'])
-        y_edge_upper = float(f(x_edge))
-        # plt.plot(x_edge,y_edge_upper,'gs')
-        temp = np.append(af.upper[:index_right],
-                         np.array((x_edge,y_edge_upper),
+        f = ipl.interp1d(af.suction[index_left:index_right+1]['x'],
+                         af.suction[index_left:index_right+1]['y'])
+        y_edge_suction = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_suction,'gs')
+        temp = np.append(af.suction[:index_right],
+                         np.array((x_edge,y_edge_suction),
                                   dtype=[('x', 'f8'), ('y', 'f8')]))
-        af.upper = np.append(temp, af.upper[index_right:])
-        return ((x_edge,y_edge_lower),(x_edge,y_edge_upper))
+        af.suction = np.append(temp, af.suction[index_right:])
+        return ((x_edge,y_edge_pressure),(x_edge,y_edge_suction))
+
+    # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
+
+
+class MonoplaneStation(_Station):
+    """Define a monoplane station for a wind turbine blade."""
+    def __init__(self, stn_series, blade_path):
+        """Create a new biplane station for a biplane blade."""
+        _Station.__init__(self, stn_series, blade_path)
+        self.type = 'monoplane'
+        self.airfoil = MonoplaneAirfoil(
+            name=stn_series['airfoil'],
+            filename=stn_series['airfoil']+'.txt',
+            chord=stn_series['chord'],
+            pitch_axis=stn_series['pitch axis'],
+            twist=stn_series['twist'])
+        self.logf = open(_Station.logfile_name, "a")
+        self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
+        self.logf.write(str(self.airfoil) + '\n')
+        self.logf.flush()
+        self.logf.close()
+
+    def plot_airfoil_coords(self, fig, axes, split_flag=False):
+        """Plot the airfoil coordinates of this station."""
+        af = self.airfoil
+        if split_flag:
+            try:
+                axes.plot(af.suction['x'], af.suction['y'], 'bo-',
+                    label='suction surface')
+                axes.plot(af.pressure['x'], af.pressure['y'], 'rs-',
+                    label='pressure surface')
+            except AttributeError:
+                raise AttributeError("Suction and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(af.name, self.station_num))
+        else:
+            try:
+                axes.plot(af.coords['x'], af.coords['y'])
+            except AttributeError:
+                raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(af.name, self.station_num))
 
     def find_all_part_cs_coords(self):
         """Find the corners of the cross-sections for each structural part.
@@ -463,90 +479,6 @@ class _Station:
         #         st.aft_panel.right = np.nan
         #         raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
 
-    # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
-
-
-class MonoplaneStation(_Station):
-    """Define a monoplane station for a wind turbine blade."""
-    def __init__(self, stn_series, blade_path):
-        """Create a new biplane station for a biplane blade."""
-        _Station.__init__(self, stn_series, blade_path)
-        self.type = 'monoplane'
-        self.airfoil = MonoplaneAirfoil(
-            name=stn_series['airfoil'],
-            filename=stn_series['airfoil']+'.txt',
-            chord=stn_series['chord'],
-            pitch_axis=stn_series['pitch axis'],
-            twist=stn_series['twist'])
-        self.logf = open(_Station.logfile_name, "a")
-        self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
-        self.logf.write(str(self.airfoil) + '\n')
-        self.logf.flush()
-        self.logf.close()
-
-    def read_airfoil_coords(self, comment_char='#'):
-        """Read the airfoil coordinates into memory from a file in station_path.
-
-        Creates a new attribute for this station: <Station>.airfoil.coords,
-        which is a numpy array of airfoil coordinates.
-
-        Note
-        ----
-        If the trailing edge of the airfoil is a thin feature, it must have a
-        finite thickness. Check the airfoil coordinates files to make sure this
-        is true.
-
-        For "airfoils" with thick trailing edges (transition, ellipse, or
-        cylinder), it is okay to have a trailing edge with zero thickness.
-
-        """
-        af = self.airfoil
-        try:
-            af.coords = np.loadtxt(af.path, dtype=[('x', 'f8'), ('y', 'f8')], 
-                comments=comment_char)
-        except IOError:
-            raise IOError("Airfoil file does not exist yet!\n  Run <Blade>.copy_all_airfoil_coords() first.")
-
-    def scale_airfoil_coords(self):
-        """Scale the airfoil coordinates with respect to the airfoil dims.
-
-        Must run <Station>.read_airfoil_coords() first.
-
-        """
-        af = self.airfoil
-        # scale the airfoil to the specified chord length
-        af.coords['x'] = af.coords['x'] * af.chord
-        af.coords['y'] = af.coords['y'] * af.chord
-        # translate the airfoil horizontally, so pitch axis is at origin
-        af.coords['x'] = af.coords['x'] - af.pitch_axis*af.chord
-
-    def plot_airfoil_coords(self, fig, axes, upper_lower_flag=False):
-        """Plot the airfoil coordinates of this station."""
-        af = self.airfoil
-        if upper_lower_flag:
-            try:
-                axes.plot(af.upper['x'], af.upper['y'], 'bo-', label='upper surface')
-                axes.plot(af.lower['x'], af.lower['y'], 'rs-', label='lower surface')
-            except AttributeError:
-                raise AttributeError("Upper and lower surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.split_airfoil_at_LE_and_TE().".format(af.name, self.station_num))
-        else:
-            try:
-                axes.plot(af.coords['x'], af.coords['y'])
-            except AttributeError:
-                raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.name, self.station_num))
-
-    def rotate_airfoil_coords(self, debug_flag=False):
-        """Rotate the airfoil coordinates wrt the local twist angle.
-
-        Must run <Station>.read_airfoil_coords() and 
-        <Station>.scale_airfoil_coords() first.
-
-        """
-        af = self.airfoil
-        for point in af.coords:
-            (x,y) = point
-            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)
-
 
 class BiplaneStation(_Station):
     """Define a biplane station for a biplane wind turbine blade."""
@@ -572,114 +504,3 @@ class BiplaneStation(_Station):
         self.logf.write(str(self.airfoil) + '\n')
         self.logf.flush()
         self.logf.close()
-
-    def read_airfoil_coords(self, comment_char='#'):
-        """Read the airfoil coordinates into memory from a file in station_path.
-
-        Creates a new attribute for this station: <Station>.airfoil.coords,
-        which is a numpy array of airfoil coordinates.
-
-        Note
-        ----
-        If the trailing edge of the airfoil is a thin feature, it must have a
-        finite thickness. Check the airfoil coordinates files to make sure this
-        is true.
-
-        For "airfoils" with thick trailing edges (transition, ellipse, or
-        cylinder), it is okay to have a trailing edge with zero thickness.
-
-        """
-        af = self.airfoil
-        if self.type == 'monoplane':
-            try:
-                af.coords = np.loadtxt(af.path, dtype=[('x', 'f8'), ('y', 'f8')], 
-                    comments=comment_char)
-            except IOError:
-                raise IOError("Airfoil file does not exist yet!\n  Run <Blade>.copy_all_airfoil_coords() first.")
-        elif self.type == 'biplane':
-            # lower airfoil
-            try:
-                af.lower_coords = np.loadtxt(af.lower_path, 
-                    dtype=[('x', 'f8'), ('y', 'f8')], comments=comment_char)
-            except IOError:
-                raise IOError("Lower airfoil file does not exist yet!\n  Run <Blade>.copy_all_airfoil_coords() first.")
-            # upper airfoil
-            try:
-                af.upper_coords = np.loadtxt(af.upper_path, 
-                    dtype=[('x', 'f8'), ('y', 'f8')], comments=comment_char)
-            except IOError:
-                raise IOError("Upper airfoil file does not exist yet!\n  Run <Blade>.copy_all_airfoil_coords() first.")
-
-    def scale_airfoil_coords(self):
-        """Scale the airfoil coordinates with respect to the airfoil dims.
-
-        Must run <Station>.read_airfoil_coords() first.
-
-        """
-        af = self.airfoil
-        if self.type == 'monoplane':
-            # scale the airfoil to the specified chord length
-            af.coords['x'] = af.coords['x'] * af.chord
-            af.coords['y'] = af.coords['y'] * af.chord
-            # translate the airfoil horizontally, so pitch axis is at origin
-            af.coords['x'] = af.coords['x'] - af.pitch_axis*af.chord
-        elif self.type == 'biplane':
-            # scale upper airfoil to the specified chord length
-            af.upper_coords['x'] = af.upper_coords['x'] * af.upper_chord
-            af.upper_coords['y'] = af.upper_coords['y'] * af.upper_chord
-            # scale lower airfoil to the specified chord length
-            af.lower_coords['x'] = af.lower_coords['x'] * af.lower_chord
-            af.lower_coords['y'] = af.lower_coords['y'] * af.lower_chord
-            # shift upper airfoil up by (gap fraction)*(gap)
-            af.upper_coords['y'] = af.upper_coords['y'] + af.gap_fraction*af.gap
-            # shift lower airfoil down by (1 - gap fraction)*(gap)
-            af.lower_coords['y'] = af.lower_coords['y'] - (1.0-af.gap_fraction)*af.gap
-            # shift lower airfoil back by stagger
-            af.lower_coords['x'] = af.lower_coords['x'] + af.stagger
-            # shift BOTH airfoils forward by (pitch axis frac)*(total chord)
-            af.upper_coords['x'] = af.upper_coords['x'] - af.pitch_axis*af.total_chord
-            af.lower_coords['x'] = af.lower_coords['x'] - af.pitch_axis*af.total_chord
-
-    def plot_airfoil_coords(self, fig, axes, upper_lower_flag=False):
-        """Plot the airfoil coordinates of this station."""
-        af = self.airfoil
-        if self.type == 'monoplane':
-            if upper_lower_flag:
-                try:
-                    axes.plot(af.upper['x'], af.upper['y'], 'bo-', 
-                        label='upper surface')
-                    axes.plot(af.lower['x'], af.lower['y'], 'rs-', 
-                        label='lower surface')
-                except AttributeError:
-                    raise AttributeError("Upper and lower surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.split_airfoil_at_LE_and_TE().".format(af.name, self.station_num))
-            else:
-                try:
-                    axes.plot(af.coords['x'], af.coords['y'])
-                except AttributeError:
-                    raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.name, self.station_num))
-        elif self.type == 'biplane':
-            try:
-                axes.plot(af.lower_coords['x'], af.lower_coords['y'])
-            except AttributeError:
-                raise AttributeError("{0} lower coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.lower_name, self.station_num))
-            try:
-                axes.plot(af.upper_coords['x'], af.upper_coords['y'])
-            except AttributeError:
-                raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.lower_name, self.station_num))
-
-    def rotate_airfoil_coords(self, debug_flag=False):
-        """Rotate the airfoil coordinates wrt the local twist angle.
-
-        Must run <Station>.read_airfoil_coords() and 
-        <Station>.scale_airfoil_coords() first.
-
-        """
-        af = self.airfoil
-        # rotate the lower airfoil
-        for point in af.lower_coords:
-            (x,y) = point
-            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)
-        # rotate the upper airfoil
-        for point in af.upper_coords:
-            (x,y) = point
-            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)

@@ -43,7 +43,7 @@ reload(bl)
 
 
 sandia_flag = True
-biplane_flap_sym_no_stagger_flag = False
+biplane_flap_sym_no_stagger_flag = True
 biplane_flap_sym_stagger_flag = False
 biplane_flap_asym_no_stagger_flag = False
 biplane_flap_asym_stagger_flag = False
@@ -59,23 +59,23 @@ if sandia_flag:
 
     # pre-process the airfoil coordinates
     for station in m.list_of_stations:
-        station.read_airfoil_coords()
-        station.scale_airfoil_coords()
-        station.split_airfoil_at_LE_and_TE()
-        station.part_edges()
-        station.find_all_part_cs_coords()
+        station.airfoil.read_coords()
+        station.airfoil.scale_and_translate_coords()
+        station.airfoil.split_at_LE_and_TE()
+        # station.part_edges()
+        # station.find_all_part_cs_coords()
 
     # create some airfoil plots in Matplotlib
-    # station = m.list_of_stations[15]
-    # for station in m.list_of_stations:
-    #     (fig, axes) = station.create_plot()
-    #     station.plot_airfoil_coords(fig, axes, upper_lower_flag=True)
-    #     station.plot_part_edges(axes)
-    #     station.show_plot()
+    # station = m.list_of_stations[10]
+    for station in m.list_of_stations:
+        (fig, axes) = station.create_plot()
+        station.airfoil.plot_coords(fig, axes, split_flag=True)
+        # station.plot_part_edges(axes)
+        station.show_plot()
         # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    m.plot_blade()
+    # m.plot_blade(SW=False)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
@@ -87,23 +87,23 @@ if biplane_flap_sym_no_stagger_flag:
 
     # pre-process the airfoil coordinates
     for station in b1.list_of_stations:
-        station.read_airfoil_coords()
-        station.scale_airfoil_coords()
-    #     # station.split_airfoil_at_LE_and_TE()
-    #     # station.part_edges()
-    #     # station.find_all_part_cs_coords()
+        station.airfoil.read_coords()
+        station.airfoil.scale_and_translate_coords()
+        station.airfoil.split_at_LE_and_TE()
+        # station.part_edges()
+        # station.find_all_part_cs_coords()
 
-    # # create some airfoil plots in Matplotlib
-    # # station = b1.list_of_stations[10]
-    # for station in b1.list_of_stations:
-    #     (fig, axes) = station.create_plot()
-    #     station.plot_airfoil_coords(fig, axes, upper_lower_flag=False)
-    # #     station.plot_part_edges(axes)
-    #     station.show_plot()
-    #     # station.save_plot(fig)
+    # create some airfoil plots in Matplotlib
+    # station = b1.list_of_stations[10]
+    for station in b1.list_of_stations:
+        (fig, axes) = station.create_plot()
+        station.airfoil.plot_coords(fig, axes, split_flag=True)
+        # station.plot_part_edges(axes)
+        station.show_plot()
+        # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b1.plot_blade(LE=True, TE=True, twist=True, SW=True, pitch_axis=True)
+    # b1.plot_blade(LE=True, TE=True, twist=True, SW=False, pitch_axis=True)
 
 
 # --- biplane blade, flapwise symmetric, stagger-------------------------------
@@ -115,9 +115,9 @@ if biplane_flap_sym_stagger_flag:
 
     # pre-process the airfoil coordinates
     for station in b2.list_of_stations:
-        station.read_airfoil_coords()
-        station.scale_airfoil_coords()
-    #     # station.split_airfoil_at_LE_and_TE()
+        station.airfoil.read_coords()
+        station.airfoil.scale_coords()
+        # station.airfoil.split_at_LE_and_TE()
     #     # station.part_edges()
     #     # station.find_all_part_cs_coords()
 
@@ -125,13 +125,13 @@ if biplane_flap_sym_stagger_flag:
     # # station = b2.list_of_stations[10]
     # for station in b2.list_of_stations:
     #     (fig, axes) = station.create_plot()
-    #     station.plot_airfoil_coords(fig, axes, upper_lower_flag=False)
+    #     station.plot_airfoil_coords(fig, axes, split_flag=False)
     # #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b2.plot_blade(LE=True, TE=True, twist=True, SW=False, pitch_axis=True)
+    # b2.plot_blade(LE=True, TE=True, twist=True, SW=False, pitch_axis=True)
 
 
 # --- biplane blade, flapwise asymmetric, no stagger----------------------------
@@ -143,9 +143,9 @@ if biplane_flap_asym_no_stagger_flag:
 
     # pre-process the airfoil coordinates
     for station in b3.list_of_stations:
-        station.read_airfoil_coords()
-        station.scale_airfoil_coords()
-    #     # station.split_airfoil_at_LE_and_TE()
+        station.airfoil.read_coords()
+        station.airfoil.scale_coords()
+        # station.airfoil.split_at_LE_and_TE()
     #     # station.part_edges()
     #     # station.find_all_part_cs_coords()
 
@@ -153,13 +153,13 @@ if biplane_flap_asym_no_stagger_flag:
     # # station = b3.list_of_stations[10]
     # for station in b3.list_of_stations:
     #     (fig, axes) = station.create_plot()
-    #     station.plot_airfoil_coords(fig, axes, upper_lower_flag=False)
+    #     station.plot_airfoil_coords(fig, axes, split_flag=False)
     # #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b3.plot_blade(LE=True, TE=True, twist=True, SW=False, pitch_axis=True)
+    # b3.plot_blade(LE=True, TE=True, twist=True, SW=False, pitch_axis=True)
 
 
 # --- biplane blade, flapwise asymmetric, stagger-------------------------------
@@ -171,9 +171,9 @@ if biplane_flap_asym_stagger_flag:
 
     # pre-process the airfoil coordinates
     for station in b4.list_of_stations:
-        station.read_airfoil_coords()
-        station.scale_airfoil_coords()
-    #     # station.split_airfoil_at_LE_and_TE()
+        station.airfoil.read_coords()
+        station.airfoil.scale_coords()
+        # station.airfoil.split_at_LE_and_TE()
     #     # station.part_edges()
     #     # station.find_all_part_cs_coords()
 
@@ -181,10 +181,10 @@ if biplane_flap_asym_stagger_flag:
     # # station = b4.list_of_stations[10]
     # for station in b4.list_of_stations:
     #     (fig, axes) = station.create_plot()
-    #     station.plot_airfoil_coords(fig, axes, upper_lower_flag=False)
+    #     station.plot_airfoil_coords(fig, axes, split_flag=False)
     # #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b4.plot_blade(LE=True, TE=True, twist=True, SW=False, pitch_axis=True)
+    # b4.plot_blade(LE=True, TE=True, twist=True, SW=False, pitch_axis=True)
