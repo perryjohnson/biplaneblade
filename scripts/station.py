@@ -214,8 +214,8 @@ class _Station:
         self.logf.close()
 
     def __del__(self):
-        Station.number_of_stations = Station.number_of_stations - 1
-        print " Station deleted, and now Station.number_of_stations = {0}".format(Station.number_of_stations)
+        _Station.number_of_stations = _Station.number_of_stations - 1
+        print " Station deleted, and now _Station.number_of_stations = {0}".format(_Station.number_of_stations)
 
     def rotate_airfoil_coords(self, debug_flag=False):
         """Rotate the airfoil coordinates wrt the local twist angle.

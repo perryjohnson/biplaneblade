@@ -228,33 +228,6 @@ class _Blade:
         tip = self.list_of_stations[-1].coords.x1
         mlab.plot3d([root,tip],[0,0],[0,0], color=(1,0,0), tube_radius=lw)
 
-    def get_LE_coords(self, twist_flag=True):
-        """Returns a list of (x,y,z) coordinates for the blade leading edge."""
-        x = []  # spanwise coordinate
-        y = []  # chordwise coordinate
-        z = []  # flapwise coordinate
-        for station in self.list_of_stations:
-            x.append(station.coords.x1)
-            # grab the unrotated LE coordinates
-            y_temp = -(station.airfoil.chord * station.airfoil.pitch_axis)
-            z_temp = 0.0
-            if twist_flag:
-                # rotate the LE coordinates wrt the twist angle
-                (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
-                                                      station.airfoil.twist)
-            else:
-                # don't rotate the LE coordinates
-                (y_new, z_new) = (y_temp, z_temp)
-            # append the new LE coordinates
-            y.append(y_new)
-            z.append(z_new)
-        return (x,y,z)
-
-    def plot_LE(self, lw, twist_flag=True):
-        """Plots the leading edge from root to tip."""
-        (x,y,z) = self.get_LE_coords(twist_flag=twist_flag)
-        mlab.plot3d(x,y,z, tube_radius=lw)
-
     def get_TE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade trailing edge."""
         x = []  # spanwise coordinate
@@ -465,6 +438,33 @@ class MonoplaneBlade(_Blade):
             # plot the airfoil on the screen
             mlab.plot3d(x,y,z, tube_radius=lw)
 
+    def get_LE_coords(self, twist_flag=True):
+        """Returns a list of (x,y,z) coordinates for the blade leading edge."""
+        x = []  # spanwise coordinate
+        y = []  # chordwise coordinate
+        z = []  # flapwise coordinate
+        for station in self.list_of_stations:
+            x.append(station.coords.x1)
+            # grab the unrotated LE coordinates
+            y_temp = -(station.airfoil.chord * station.airfoil.pitch_axis)
+            z_temp = 0.0
+            if twist_flag:
+                # rotate the LE coordinates wrt the twist angle
+                (y_new, z_new) = tf.rotate_coord_pair(y_temp, z_temp,
+                                                      station.airfoil.twist)
+            else:
+                # don't rotate the LE coordinates
+                (y_new, z_new) = (y_temp, z_temp)
+            # append the new LE coordinates
+            y.append(y_new)
+            z.append(z_new)
+        return (x,y,z)
+
+    def plot_LE(self, lw, twist_flag=True):
+        """Plots the leading edge from root to tip."""
+        (x,y,z) = self.get_LE_coords(twist_flag=twist_flag)
+        mlab.plot3d(x,y,z, tube_radius=lw)
+
 
 class BiplaneBlade(_Blade):
     """Define a biplane wind turbine blade."""
@@ -570,3 +570,72 @@ class BiplaneBlade(_Blade):
                 # (reuse same spanwise coordinates): x
                 # plot the lower airfoil on the screen
                 mlab.plot3d(x,y,z, tube_radius=lw)
+
+    def get_LE_coords(self, twist_flag=True):
+        """Returns a list of (x,y,z) coordinates for the blade leading edge."""
+        xL = []  # spanwise coordinate (monoplane and lower biplane airfoils)
+        yL = []  # chordwise coordinate (monoplane and lower biplane airfoils)
+        zL = []  # flapwise coordinate (monoplane and lower biplane airfoils)
+        xU = []  # spanwise coordinate (upper biplane airfoils)
+        yU = []  # chordwise coordinate (upper biplane airfoils)
+        zU = []  # flapwise coordinate (upper biplane airfoils)
+        inboard_transition_stn_num = 0
+        outboard_transition_stn_num = 0
+        for station in self.list_of_stations:
+            if station.type == 'monoplane':
+                xL.append(station.coords.x1)
+                # grab the unrotated LE coordinates
+                yL_temp = -(station.airfoil.chord * station.airfoil.pitch_axis)
+                zL_temp = 0.0
+                if twist_flag:
+                    # rotate the LE coordinates wrt the twist angle
+                    (yL_new, zL_new) = tf.rotate_coord_pair(
+                        yL_temp, zL_temp, station.airfoil.twist)
+                else:
+                    # don't rotate the LE coordinates
+                    (yL_new, zL_new) = (yL_temp, zL_temp)
+                # append the new LE coordinates
+                yL.append(yL_new)
+                zL.append(zL_new)
+                if inboard_transition_stn_num != 0 and outboard_transition_stn_num == 0:
+                    outboard_transition_stn_num = station.station_num
+                    # append the last LOWER coordinates that were added
+                    xU.append(xL[-1])
+                    yU.append(yL[-1])
+                    zU.append(zL[-1])
+            elif station.type == 'biplane':
+                if inboard_transition_stn_num == 0:
+                    inboard_transition_stn_num = station.station_num - 1
+                    # append the last LOWER coordinates that were added
+                    xU.append(xL[-1])
+                    yU.append(yL[-1])
+                    zU.append(zL[-1])
+                xL.append(station.coords.x1)
+                xU.append(station.coords.x1)
+                # grab the unrotated LE coordinates
+                yU_temp = -(station.airfoil.total_chord * station.airfoil.pitch_axis)
+                yL_temp = yU_temp + station.airfoil.stagger
+                zU_temp = station.airfoil.gap_fraction * station.airfoil.gap
+                zL_temp = -(1.0-station.airfoil.gap_fraction) * station.airfoil.gap
+                if twist_flag:
+                    # rotate the LE coordinates wrt the twist angle
+                    (yL_new, zL_new) = tf.rotate_coord_pair(
+                        yL_temp, zL_temp, station.airfoil.twist)
+                    (yU_new, zU_new) = tf.rotate_coord_pair(
+                        yU_temp, zU_temp, station.airfoil.twist)
+                else:
+                    # don't rotate the LE coordinates
+                    (yL_new, zL_new) = (yL_temp, zL_temp)
+                    (yU_new, zU_new) = (yU_temp, zU_temp)
+                # append the new LE coordinates
+                yL.append(yL_new)
+                zL.append(zL_new)
+                yU.append(yU_new)
+                zU.append(zU_new)
+        return ((xL,yL,zL),(xU,yU,zU))
+
+    def plot_LE(self, lw, twist_flag=True):
+        """Plots the leading edge from root to tip."""
+        ((xL,yL,zL),(xU,yU,zU)) = self.get_LE_coords(twist_flag=twist_flag)
+        mlab.plot3d(xL,yL,zL, tube_radius=lw)
+        mlab.plot3d(xU,yU,zU, tube_radius=lw)
