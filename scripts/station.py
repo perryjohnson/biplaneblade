@@ -217,18 +217,6 @@ class _Station:
         _Station.number_of_stations = _Station.number_of_stations - 1
         print " Station deleted, and now _Station.number_of_stations = {0}".format(_Station.number_of_stations)
 
-    def rotate_airfoil_coords(self, debug_flag=False):
-        """Rotate the airfoil coordinates wrt the local twist angle.
-
-        Must run <Station>.read_airfoil_coords() and 
-        <Station>.scale_airfoil_coords() first.
-
-        """
-        af = self.airfoil
-        for point in af.coords:
-            (x,y) = point
-            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)
-
     def create_plot(self, legend_flag=False):
         """Create a plot for this station.
 
@@ -547,6 +535,18 @@ class MonoplaneStation(_Station):
             except AttributeError:
                 raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.name, self.station_num))
 
+    def rotate_airfoil_coords(self, debug_flag=False):
+        """Rotate the airfoil coordinates wrt the local twist angle.
+
+        Must run <Station>.read_airfoil_coords() and 
+        <Station>.scale_airfoil_coords() first.
+
+        """
+        af = self.airfoil
+        for point in af.coords:
+            (x,y) = point
+            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)
+
 
 class BiplaneStation(_Station):
     """Define a biplane station for a biplane wind turbine blade."""
@@ -666,3 +666,20 @@ class BiplaneStation(_Station):
                 axes.plot(af.upper_coords['x'], af.upper_coords['y'])
             except AttributeError:
                 raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.read_airfoil_coords().".format(af.lower_name, self.station_num))
+
+    def rotate_airfoil_coords(self, debug_flag=False):
+        """Rotate the airfoil coordinates wrt the local twist angle.
+
+        Must run <Station>.read_airfoil_coords() and 
+        <Station>.scale_airfoil_coords() first.
+
+        """
+        af = self.airfoil
+        # rotate the lower airfoil
+        for point in af.lower_coords:
+            (x,y) = point
+            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)
+        # rotate the upper airfoil
+        for point in af.upper_coords:
+            (x,y) = point
+            (point['x'], point['y']) = tf.rotate_coord_pair(x, y, af.twist)

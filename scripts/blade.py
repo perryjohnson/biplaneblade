@@ -550,6 +550,8 @@ class BiplaneBlade(_Blade):
                 # plot the airfoil on the screen
                 mlab.plot3d(x,y,z, tube_radius=lw)
             elif station.type == 'biplane':
+                if twist_flag:
+                    station.rotate_airfoil_coords()
                 # assemble lower airfoil coordinates for mlab -----------------
                 try:
                     y = station.airfoil.lower_coords['x']  # chordwise coordinate

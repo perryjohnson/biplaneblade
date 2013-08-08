@@ -1,3 +1,7 @@
 *.pyc
 sandia_blade/stn*
+biplane_flap-asym_no-stagger/stn*
+biplane_flap-asym_stagger/stn*
+biplane_flap-sym_no-stagger/stn*
+biplane_flap-sym_stagger/stn*
 *.log
