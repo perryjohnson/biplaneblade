@@ -11,7 +11,7 @@ import scripts.blade as bl
 reload(bl)
 
 
-sandia_flag = True
+sandia_flag = False
 biplane_flap_sym_no_stagger_flag = True
 biplane_flap_sym_stagger_flag = True
 biplane_flap_asym_no_stagger_flag = True
@@ -70,7 +70,7 @@ if biplane_flap_sym_no_stagger_flag:
     #     # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b1.plot_blade(LE=True, TE=False, twist=False, SW=False, pitch_axis=True)
+    b1.plot_blade(LE=True, TE=True, twist=False, SW=False, pitch_axis=True)
 
 
 # --- biplane blade, flapwise symmetric, stagger-------------------------------
@@ -96,7 +96,7 @@ if biplane_flap_sym_stagger_flag:
     #     # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b2.plot_blade(LE=True, TE=False, twist=False, SW=False, pitch_axis=True)
+    b2.plot_blade(LE=True, TE=True, twist=False, SW=False, pitch_axis=True)
 
 
 # --- biplane blade, flapwise asymmetric, no stagger----------------------------
@@ -122,7 +122,7 @@ if biplane_flap_asym_no_stagger_flag:
     #     # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b3.plot_blade(LE=True, TE=False, twist=False, SW=False, pitch_axis=True)
+    b3.plot_blade(LE=True, TE=True, twist=False, SW=False, pitch_axis=True)
 
 
 # --- biplane blade, flapwise asymmetric, stagger-------------------------------
@@ -148,4 +148,4 @@ if biplane_flap_asym_stagger_flag:
     #     # station.save_plot(fig)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b4.plot_blade(LE=True, TE=False, twist=False, SW=False, pitch_axis=True)
+    b4.plot_blade(LE=True, TE=True, twist=False, SW=False, pitch_axis=True)
