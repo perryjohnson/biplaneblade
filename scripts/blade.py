@@ -669,17 +669,12 @@ class BiplaneBlade(_Blade):
                 # append the new LE coordinates
                 yL.append(yL_new)
                 zL.append(zL_new)
-                if station.joint == 'midblade':
-                    # append the last LOWER coordinates that were added
+                if station.joint is not None:
+                    # append the last LOWER coordinates to the UPPER coords
                     xU.append(xL[-1])
                     yU.append(yL[-1])
                     zU.append(zL[-1])
             elif station.type == 'biplane':
-                if station.joint == 'root':
-                    # append the last LOWER coordinates that were added
-                    xU.append(xL[-1])
-                    yU.append(yL[-1])
-                    zU.append(zL[-1])
                 xL.append(station.coords.x1)
                 xU.append(station.coords.x1)
                 # grab the unrotated LE coordinates
@@ -718,8 +713,6 @@ class BiplaneBlade(_Blade):
         xU = []  # spanwise coordinate (upper biplane airfoils)
         yU = []  # chordwise coordinate (upper biplane airfoils)
         zU = []  # flapwise coordinate (upper biplane airfoils)
-        inboard_trans = False # flag to find inboard mono-biplane transition
-        outboard_trans = False # flag to find outboard bi-monoplane transition
         for station in self.list_of_stations:
             if station.type == 'monoplane':
                 xL.append(station.coords.x1)
@@ -736,19 +729,12 @@ class BiplaneBlade(_Blade):
                 # append the new TE coordinates
                 yL.append(yL_new)
                 zL.append(zL_new)
-                if inboard_trans is True and outboard_trans is False:
-                    outboard_trans = True
-                    # append the last LOWER coordinates that were added
+                if station.joint is not None:
+                    # append the last LOWER coordinates to the UPPER coords
                     xU.append(xL[-1])
                     yU.append(yL[-1])
                     zU.append(zL[-1])
             elif station.type == 'biplane':
-                if inboard_trans is False:
-                    inboard_trans = True
-                    # append the last LOWER coordinates that were added
-                    xU.append(xL[-1])
-                    yU.append(yL[-1])
-                    zU.append(zL[-1])
                 xL.append(station.coords.x1)
                 xU.append(station.coords.x1)
                 # grab the unrotated TE coordinates
