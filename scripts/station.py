@@ -9,7 +9,6 @@ Last updated: August 6, 2013
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.interpolate as ipl
 import transformation as tf
 reload(tf)
 from coordinates import *
@@ -230,44 +229,6 @@ class _Station:
     # aft panels
     # TE reinforcement
 
-    def part_edge_on_airfoil(self, x_edge):
-        """Find the airfoil coordinates at the edges of each structural part.
-
-        Returns two coordinate pairs as tuples, one coordinate pair for the
-        pressure surface (x_edge, y_edge_pressure), and another for the suction
-        surface of the airfoil (x_edge, y_edge_suction).
-
-        Must run <Station>.airfoil.split_at_LE_and_TE() first.
-
-        """
-        af = self.airfoil
-        # pressure airfoil surface --------------------------------------------
-        try:
-            index_right = np.nonzero(af.pressure['x']>x_edge)[0][-1]
-        except AttributeError:
-            raise AttributeError("Upper and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(af.name, self.station_num))
-        index_left = index_right + 1
-        f = ipl.interp1d(af.pressure[index_right:index_left+1][::-1]['x'],
-                         af.pressure[index_right:index_left+1][::-1]['y'])
-        y_edge_pressure = float(f(x_edge))
-        # plt.plot(x_edge,y_edge_pressure,'ro')
-        temp = np.append(af.pressure[:index_left],
-                         np.array((x_edge,y_edge_pressure),
-                                  dtype=[('x', 'f8'), ('y', 'f8')]))
-        af.pressure = np.append(temp, af.pressure[index_left:])
-        # suction airfoil surface ---------------------------------------------
-        index_right = np.nonzero(af.suction['x']>x_edge)[0][0]
-        index_left = index_right - 1
-        f = ipl.interp1d(af.suction[index_left:index_right+1]['x'],
-                         af.suction[index_left:index_right+1]['y'])
-        y_edge_suction = float(f(x_edge))
-        # plt.plot(x_edge,y_edge_suction,'gs')
-        temp = np.append(af.suction[:index_right],
-                         np.array((x_edge,y_edge_suction),
-                                  dtype=[('x', 'f8'), ('y', 'f8')]))
-        af.suction = np.append(temp, af.suction[index_right:])
-        return ((x_edge,y_edge_pressure),(x_edge,y_edge_suction))
-
     # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
 
 
@@ -331,26 +292,26 @@ class MonoplaneStation(_Station):
         #     st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
         #     st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
         if st.shear_web_1.exists():
-            ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(st.shear_web_1.left)
-            ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(st.shear_web_1.right)
-            st.shear_web_1.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
-                                                 [x2,y2],  # point 2 (lower right)
-                                                 [x3,y3],  # point 3 (upper right)
-                                                 [x4,y4]]) # point 4 (upper left)
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.shear_web_1.left)
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.shear_web_1.right)
+            st.shear_web_1.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
         if st.shear_web_2.exists():
-            ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(st.shear_web_2.left)
-            ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(st.shear_web_2.right)
-            st.shear_web_2.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
-                                                 [x2,y2],  # point 2 (lower right)
-                                                 [x3,y3],  # point 3 (upper right)
-                                                 [x4,y4]]) # point 4 (upper left)
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.shear_web_2.left)
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.shear_web_2.right)
+            st.shear_web_2.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
         if st.shear_web_3.exists():
-            ((x1,y1),(x4,y4)) = self.part_edge_on_airfoil(st.shear_web_3.left)
-            ((x2,y2),(x3,y3)) = self.part_edge_on_airfoil(st.shear_web_3.right)
-            st.shear_web_3.cs_coords = np.array([[x1,y1],  # point 1 (lower left)
-                                                 [x2,y2],  # point 2 (lower right)
-                                                 [x3,y3],  # point 3 (upper right)
-                                                 [x4,y4]]) # point 4 (upper left)
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.shear_web_3.left)
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.shear_web_3.right)
+            st.shear_web_3.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
         # if st.LE_panel.exists():
         #     st.LE_panel.left = -af.pitch_axis*af.chord
         #     if st.shear_web_1.exists():
@@ -671,3 +632,87 @@ class BiplaneStation(_Station):
                 axes.axvspan(st.lower_shear_web_3.left, st.lower_shear_web_3.right, ymax=0.5, facecolor='green', edgecolor='green')
         except AttributeError:
             raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
+
+    def find_all_part_cs_coords(self):
+        """Find the corners of the cross-sections for each structural part.
+
+        Saves cross-section coordinates (in meters) as the '.cs_coords' 
+        attribute (a numpy array) within each Part instance (OOP style).
+
+        NOTE: only shear webs have been implemented so far!
+
+        """
+        st = self.structure
+        af = self.airfoil
+        # if st.spar_cap.exists():
+        #     st.spar_cap.left = -st.spar_cap.base/2.0
+        #     st.spar_cap.right = st.spar_cap.base/2.0
+        # if st.TE_reinforcement.exists():
+        #     st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
+        #     st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
+        # lower airfoil
+        if st.lower_shear_web_1.exists():
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.lower_shear_web_1.left, airfoil='lower')
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.lower_shear_web_1.right, airfoil='lower')
+            st.lower_shear_web_1.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
+        if st.lower_shear_web_2.exists():
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.lower_shear_web_2.left, airfoil='lower')
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.lower_shear_web_2.right, airfoil='lower')
+            st.lower_shear_web_2.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
+        if st.lower_shear_web_3.exists():
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.lower_shear_web_3.left, airfoil='lower')
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.lower_shear_web_3.right, airfoil='lower')
+            st.lower_shear_web_3.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
+        # upper airfoil
+        if st.upper_shear_web_1.exists():
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.upper_shear_web_1.left, airfoil='upper')
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.upper_shear_web_1.right, airfoil='upper')
+            st.upper_shear_web_1.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
+        if st.upper_shear_web_2.exists():
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.upper_shear_web_2.left, airfoil='upper')
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.upper_shear_web_2.right, airfoil='upper')
+            st.upper_shear_web_2.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
+        if st.upper_shear_web_3.exists():
+            ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.upper_shear_web_3.left, airfoil='upper')
+            ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.upper_shear_web_3.right, airfoil='upper')
+            st.upper_shear_web_3.cs_coords = np.array([[x1,y1],  # 1 (lower left)
+                                                 [x2,y2],  # 2 (lower right)
+                                                 [x3,y3],  # 3 (upper right)
+                                                 [x4,y4]]) # 4 (upper left)
+        # if st.LE_panel.exists():
+        #     st.LE_panel.left = -af.pitch_axis*af.chord
+        #     if st.shear_web_1.exists():
+        #         st.LE_panel.right = st.shear_web_1.left
+        #     elif st.spar_cap.exists():
+        #         st.LE_panel.right = st.spar_cap.left
+        #     else:
+        #         st.LE_panel.right = np.nan
+        #         raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
+        # if st.aft_panel.exists():
+        #     if st.shear_web_2.exists():
+        #         st.aft_panel.left = st.shear_web_2.right
+        #     elif st.spar_cap.exists():
+        #         st.aft_panel.left = st.spar_cap.right
+        #     else:
+        #         st.aft_panel.left = np.nan
+        #         raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+        #     if st.TE_reinforcement.exists():
+        #         st.aft_panel.right = st.TE_reinforcement.left
+        #     else:
+        #         st.aft_panel.right = np.nan
+        #         raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))

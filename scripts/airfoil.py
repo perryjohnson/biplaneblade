@@ -8,6 +8,7 @@ Last updated: August 7, 2013
 
 import numpy as np
 import transformation as tf
+import scipy.interpolate as ipl
 
 
 class _Airfoil:
@@ -164,6 +165,43 @@ Twist:       {4:6.4f} (degrees)""".format(self.name, self.filename,
                 axes.plot(self.coords['x'], self.coords['y'])
             except AttributeError:
                 raise AttributeError("{0} coordinates haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.name))
+
+    def find_part_edge_coords(self, x_edge):
+        """Find the airfoil coordinates at the edges of each structural part.
+
+        Returns two coordinate pairs as tuples, one coordinate pair for the
+        pressure surface (x_edge, y_edge_pressure), and another for the suction
+        surface of the airfoil (x_edge, y_edge_suction).
+
+        Must run <Station>.airfoil.split_at_LE_and_TE() first.
+
+        """
+        # pressure airfoil surface --------------------------------------------
+        try:
+            index_right = np.nonzero(self.pressure['x']>x_edge)[0][-1]
+        except AttributeError:
+            raise AttributeError("Upper and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(self.name, self.station_num))
+        index_left = index_right + 1
+        f = ipl.interp1d(self.pressure[index_right:index_left+1][::-1]['x'],
+                         self.pressure[index_right:index_left+1][::-1]['y'])
+        y_edge_pressure = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_pressure,'ro')
+        temp = np.append(self.pressure[:index_left],
+                         np.array((x_edge,y_edge_pressure),
+                                  dtype=[('x', 'f8'), ('y', 'f8')]))
+        self.pressure = np.append(temp, self.pressure[index_left:])
+        # suction airfoil surface ---------------------------------------------
+        index_right = np.nonzero(self.suction['x']>x_edge)[0][0]
+        index_left = index_right - 1
+        f = ipl.interp1d(self.suction[index_left:index_right+1]['x'],
+                         self.suction[index_left:index_right+1]['y'])
+        y_edge_suction = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_suction,'gs')
+        temp = np.append(self.suction[:index_right],
+                         np.array((x_edge,y_edge_suction),
+                                  dtype=[('x', 'f8'), ('y', 'f8')]))
+        self.suction = np.append(temp, self.suction[index_right:])
+        return ((x_edge,y_edge_pressure),(x_edge,y_edge_suction))
 
 
 class BiplaneAirfoil(_Airfoil):
@@ -493,3 +531,57 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
                 axes.plot(self.upper_coords['x'], self.upper_coords['y'])
             except AttributeError:
                 raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.station_num))
+
+    def find_part_edge_coords(self, x_edge, airfoil):
+        """Find the airfoil coordinates at the edges of each structural part.
+
+        Returns two coordinate pairs as tuples, one coordinate pair for the
+        pressure surface (x_edge, y_edge_pressure), and another for the suction
+        surface of the airfoil (x_edge, y_edge_suction).
+
+        Must run <Station>.airfoil.split_at_LE_and_TE() first.
+
+        Parameters
+        ----------
+        x_edge : float, the x-coordinate of the part edge
+        airfoil : str, ('lower' or 'upper') desired airfoil to find part edge
+            (x,y) coordinates on
+
+        """
+        if airfoil != 'lower' and airfoil != 'upper':
+            raise ValueError("keyword 'airfoil' must be 'lower' or 'upper'.")
+        # select either the lower or upper airfoil
+        if airfoil == 'lower':
+            pressure = self.lower_pressure
+            name = self.lower_name
+            suction = self.lower_suction
+        elif airfoil == 'upper':
+            pressure = self.upper_pressure
+            name = self.upper_name
+            suction = self.upper_suction
+        # pressure airfoil surface ----------------------------------------
+        try:
+            index_right = np.nonzero(pressure['x']>x_edge)[0][-1]
+        except AttributeError:
+            raise AttributeError("Suction and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(name, self.station_num))
+        index_left = index_right + 1
+        f = ipl.interp1d(pressure[index_right:index_left+1][::-1]['x'],
+                         pressure[index_right:index_left+1][::-1]['y'])
+        y_edge_pressure = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_pressure,'ro')
+        temp = np.append(pressure[:index_left],
+                         np.array((x_edge,y_edge_pressure),
+                                  dtype=[('x', 'f8'), ('y', 'f8')]))
+        pressure = np.append(temp, pressure[index_left:])
+        # suction airfoil surface -----------------------------------------
+        index_right = np.nonzero(suction['x']>x_edge)[0][0]
+        index_left = index_right - 1
+        f = ipl.interp1d(suction[index_left:index_right+1]['x'],
+                         suction[index_left:index_right+1]['y'])
+        y_edge_suction = float(f(x_edge))
+        # plt.plot(x_edge,y_edge_suction,'gs')
+        temp = np.append(suction[:index_right],
+                         np.array((x_edge,y_edge_suction),
+                                  dtype=[('x', 'f8'), ('y', 'f8')]))
+        suction = np.append(temp, suction[index_right:])
+        return ((x_edge,y_edge_pressure),(x_edge,y_edge_suction))

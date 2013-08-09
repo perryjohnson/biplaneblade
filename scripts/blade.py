@@ -447,6 +447,52 @@ class MonoplaneBlade(_Blade):
             mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
             mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
 
+    def get_SW_cross_section_coords(self, sw_num, twist_flag=True):
+        """Returns a list of (x,y,z) coordinates for shear web #1, #2, or #3.
+
+        Parameters
+        ----------
+        sw_num = int, (1, 2, or 3) selects the desired shear web
+
+        """
+        if sw_num is not 1 and sw_num is not 2 and sw_num is not 3:
+            raise ValueError("sw_num must be either 1, 2, or 3 (type: int)")
+        x = []  # spanwise coordinate
+        y = []  # chordwise coordinate
+        z = []  # flapwise coordinate
+        for station in self.list_of_stations:
+            SW_cs_coords = np.array([])
+            if sw_num is 1 and station.structure.shear_web_1.exists():
+                try:
+                    SW_cs_coords = station.structure.shear_web_1.cs_coords
+                except AttributeError:
+                    raise AttributeError("Shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+            elif sw_num is 2 and station.structure.shear_web_2.exists():
+                try:
+                    SW_cs_coords = station.structure.shear_web_2.cs_coords
+                except AttributeError:
+                    raise AttributeError("Shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+            elif sw_num is 3 and station.structure.shear_web_3.exists():
+                try:
+                    SW_cs_coords = station.structure.shear_web_3.cs_coords
+                except AttributeError:
+                    raise AttributeError("Shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+            for point in SW_cs_coords:
+                x.append(station.coords.x1)
+                y_temp = point[0]
+                z_temp = point[1]
+                if twist_flag:
+                    # rotate the SW cross-section coords wrt twist angle
+                    (y_new, z_new) = tf.rotate_coord_pair(y_temp,
+                        z_temp, station.airfoil.twist)
+                else:
+                    # don't rotate the SW cross-section coords
+                    (y_new, z_new) = (y_temp, z_temp)
+                # append the new SW cross-section coords
+                y.append(y_new)
+                z.append(z_new)
+        return (x,y,z)
+
 
 class BiplaneBlade(_Blade):
     """Define a biplane wind turbine blade."""
@@ -708,21 +754,74 @@ class BiplaneBlade(_Blade):
         z = []  # flapwise coordinate
         for station in self.list_of_stations:
             SW_cs_coords = np.array([])
-            if sw_num is 1 and station.structure.shear_web_1.exists():
-                try:
-                    SW_cs_coords = station.structure.shear_web_1.cs_coords
-                except AttributeError:
-                    raise AttributeError("Shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
-            elif sw_num is 2 and station.structure.shear_web_2.exists():
-                try:
-                    SW_cs_coords = station.structure.shear_web_2.cs_coords
-                except AttributeError:
-                    raise AttributeError("Shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
-            elif sw_num is 3 and station.structure.shear_web_3.exists():
-                try:
-                    SW_cs_coords = station.structure.shear_web_3.cs_coords
-                except AttributeError:
-                    raise AttributeError("Shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+            if station.type == 'monoplane':
+                if sw_num is 1 and station.structure.shear_web_1.exists():
+                    try:
+                        SW_cs_coords = station.structure.shear_web_1.cs_coords
+                    except AttributeError:
+                        raise AttributeError("Shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+                elif sw_num is 2 and station.structure.shear_web_2.exists():
+                    try:
+                        SW_cs_coords = station.structure.shear_web_2.cs_coords
+                    except AttributeError:
+                        raise AttributeError("Shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+                elif sw_num is 3 and station.structure.shear_web_3.exists():
+                    try:
+                        SW_cs_coords = station.structure.shear_web_3.cs_coords
+                    except AttributeError:
+                        raise AttributeError("Shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+            elif station.type == 'biplane':
+                if sw_num is 1:
+                    if station.structure.lower_shear_web_1.exists():
+                        try:
+                            if SW_cs_coords.shape == (0,):
+                                SW_cs_coords = station.structure.lower_shear_web_1.cs_coords
+                            else:
+                                np.vstack((SW_cs_coords,station.structure.lower_shear_web_1.cs_coords))
+                        except AttributeError:
+                            raise AttributeError("Lower shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+                    if station.structure.upper_shear_web_1.exists():
+                        try:
+                            if SW_cs_coords.shape == (0,):
+                                SW_cs_coords = station.structure.upper_shear_web_1.cs_coords
+                            else:
+                                np.vstack((SW_cs_coords,station.structure.upper_shear_web_1.cs_coords))
+                        except AttributeError:
+                            raise AttributeError("Upper shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+                elif sw_num is 2:
+                    if station.structure.lower_shear_web_2.exists():
+                        try:
+                            if SW_cs_coords.shape == (0,):
+                                SW_cs_coords = station.structure.lower_shear_web_2.cs_coords
+                            else:
+                                np.vstack((SW_cs_coords,station.structure.lower_shear_web_2.cs_coords))
+                        except AttributeError:
+                            raise AttributeError("Lower shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+                    if station.structure.upper_shear_web_2.exists():
+                        try:
+                            if SW_cs_coords.shape == (0,):
+                                SW_cs_coords = station.structure.upper_shear_web_2.cs_coords
+                            else:
+                                np.vstack((SW_cs_coords,station.structure.upper_shear_web_2.cs_coords))
+                        except AttributeError:
+                            raise AttributeError("Upper shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+                elif sw_num is 3:
+                    if station.structure.lower_shear_web_3.exists():
+                        try:
+                            if SW_cs_coords.shape == (0,):
+                                SW_cs_coords = station.structure.lower_shear_web_3.cs_coords
+                            else:
+                                np.vstack((SW_cs_coords,station.structure.lower_shear_web_3.cs_coords))
+                        except AttributeError:
+                            raise AttributeError("Lower shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+                    if station.structure.upper_shear_web_3.exists():
+                        try:
+                            if SW_cs_coords.shape == (0,):
+                                SW_cs_coords = station.structure.upper_shear_web_3.cs_coords
+                            else:
+                                np.vstack((SW_cs_coords,station.structure.upper_shear_web_3.cs_coords))
+                        except AttributeError:
+                            raise AttributeError("Upper shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
             for point in SW_cs_coords:
                 x.append(station.coords.x1)
                 y_temp = point[0]
