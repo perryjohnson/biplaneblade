@@ -230,39 +230,6 @@ class _Station:
     # aft panels
     # TE reinforcement
 
-    def plot_part_edges(self, axes):
-        """Plot color block for each structural part region.
-
-        Each color block spans the plot from top to bottom.
-
-        Uses coordinates saved as attributes within each Part instance
-        (OOP style) by <Station>.find_part_edges().
-
-        Must run <Station>.find_part_edges() first.
-
-        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
-        (This feature will not be implemented.)
-
-        """
-        st = self.structure
-        try:
-            if st.spar_cap.exists():
-                axes.axvspan(st.spar_cap.left, st.spar_cap.right, facecolor='cyan', edgecolor='cyan', alpha=0.7)
-            if st.TE_reinforcement.exists():
-                axes.axvspan(st.TE_reinforcement.left, st.TE_reinforcement.right, facecolor='pink', edgecolor='pink', alpha=0.7)
-            if st.LE_panel.exists():
-                axes.axvspan(st.LE_panel.left, st.LE_panel.right, facecolor='magenta', edgecolor='magenta', alpha=0.7)
-            if st.aft_panel.exists():
-                axes.axvspan(st.aft_panel.left, st.aft_panel.right, facecolor='orange', edgecolor='orange', alpha=0.7)
-            if st.shear_web_1.exists():
-                axes.axvspan(st.shear_web_1.left, st.shear_web_1.right, facecolor='green', edgecolor='green')
-            if st.shear_web_2.exists():
-                axes.axvspan(st.shear_web_2.left, st.shear_web_2.right, facecolor='green', edgecolor='green')
-            if st.shear_web_3.exists():
-                axes.axvspan(st.shear_web_3.left, st.shear_web_3.right, facecolor='green', edgecolor='green')
-        except AttributeError:
-            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
-
     def part_edge_on_airfoil(self, x_edge):
         """Find the airfoil coordinates at the edges of each structural part.
 
@@ -454,6 +421,39 @@ class MonoplaneStation(_Station):
                 st.aft_panel.right = np.nan
                 raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
 
+    def plot_part_edges(self, axes):
+        """Plot color block for each structural part region.
+
+        Each color block spans the plot from top to bottom.
+
+        Uses coordinates saved as attributes within each Part instance
+        (OOP style) by <Station>.find_part_edges().
+
+        Must run <Station>.find_part_edges() first.
+
+        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
+        (This feature will not be implemented.)
+
+        """
+        st = self.structure
+        try:
+            if st.spar_cap.exists():
+                axes.axvspan(st.spar_cap.left, st.spar_cap.right, facecolor='cyan', edgecolor='cyan', alpha=0.7)
+            if st.TE_reinforcement.exists():
+                axes.axvspan(st.TE_reinforcement.left, st.TE_reinforcement.right, facecolor='pink', edgecolor='pink', alpha=0.7)
+            if st.LE_panel.exists():
+                axes.axvspan(st.LE_panel.left, st.LE_panel.right, facecolor='magenta', edgecolor='magenta', alpha=0.7)
+            if st.aft_panel.exists():
+                axes.axvspan(st.aft_panel.left, st.aft_panel.right, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.shear_web_1.exists():
+                axes.axvspan(st.shear_web_1.left, st.shear_web_1.right, facecolor='green', edgecolor='green')
+            if st.shear_web_2.exists():
+                axes.axvspan(st.shear_web_2.left, st.shear_web_2.right, facecolor='green', edgecolor='green')
+            if st.shear_web_3.exists():
+                axes.axvspan(st.shear_web_3.left, st.shear_web_3.right, facecolor='green', edgecolor='green')
+        except AttributeError:
+            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
+
 
 class BiplaneStation(_Station):
     """Define a biplane station for a biplane wind turbine blade."""
@@ -620,3 +620,54 @@ class BiplaneStation(_Station):
                 st.lower_aft_panel.right = np.nan
                 raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
 
+    def plot_part_edges(self, axes):
+        """Plot color block for each structural part region.
+
+        Each color block spans the plot from top to bottom.
+
+        Uses coordinates saved as attributes within each Part instance
+        (OOP style) by <Station>.find_part_edges().
+
+        Must run <Station>.find_part_edges() first.
+
+        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
+        (This feature will not be implemented.)
+
+        """
+        st = self.structure
+        # upper airfoil
+        try:
+            if st.upper_spar_cap.exists():
+                axes.axvspan(st.upper_spar_cap.left, st.upper_spar_cap.right, ymin=0.5, facecolor='cyan', edgecolor='cyan', alpha=0.7)
+            if st.upper_TE_reinforcement.exists():
+                axes.axvspan(st.upper_TE_reinforcement.left, st.upper_TE_reinforcement.right, ymin=0.5, facecolor='pink', edgecolor='pink', alpha=0.7)
+            if st.upper_LE_panel.exists():
+                axes.axvspan(st.upper_LE_panel.left, st.upper_LE_panel.right, ymin=0.5, facecolor='magenta', edgecolor='magenta', alpha=0.7)
+            if st.upper_aft_panel.exists():
+                axes.axvspan(st.upper_aft_panel.left, st.upper_aft_panel.right, ymin=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.upper_shear_web_1.exists():
+                axes.axvspan(st.upper_shear_web_1.left, st.upper_shear_web_1.right, ymin=0.5, facecolor='green', edgecolor='green')
+            if st.upper_shear_web_2.exists():
+                axes.axvspan(st.upper_shear_web_2.left, st.upper_shear_web_2.right, ymin=0.5, facecolor='green', edgecolor='green')
+            if st.upper_shear_web_3.exists():
+                axes.axvspan(st.upper_shear_web_3.left, st.upper_shear_web_3.right, ymin=0.5, facecolor='green', edgecolor='green')
+        except AttributeError:
+            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
+        # lower airfoil
+        try:
+            if st.lower_spar_cap.exists():
+                axes.axvspan(st.lower_spar_cap.left, st.lower_spar_cap.right, ymax=0.5, facecolor='cyan', edgecolor='cyan', alpha=0.7)
+            if st.lower_TE_reinforcement.exists():
+                axes.axvspan(st.lower_TE_reinforcement.left, st.lower_TE_reinforcement.right, ymax=0.5, facecolor='pink', edgecolor='pink', alpha=0.7)
+            if st.lower_LE_panel.exists():
+                axes.axvspan(st.lower_LE_panel.left, st.lower_LE_panel.right, ymax=0.5, facecolor='magenta', edgecolor='magenta', alpha=0.7)
+            if st.lower_aft_panel.exists():
+                axes.axvspan(st.lower_aft_panel.left, st.lower_aft_panel.right, ymax=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.lower_shear_web_1.exists():
+                axes.axvspan(st.lower_shear_web_1.left, st.lower_shear_web_1.right, ymax=0.5, facecolor='green', edgecolor='green')
+            if st.lower_shear_web_2.exists():
+                axes.axvspan(st.lower_shear_web_2.left, st.lower_shear_web_2.right, ymax=0.5, facecolor='green', edgecolor='green')
+            if st.lower_shear_web_3.exists():
+                axes.axvspan(st.lower_shear_web_3.left, st.lower_shear_web_3.right, ymax=0.5, facecolor='green', edgecolor='green')
+        except AttributeError:
+            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
