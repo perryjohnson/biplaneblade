@@ -486,10 +486,10 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
                 raise AttributeError("Upper suction and pressure surface {0} coordinates\n  haven't been read!\n  You need to first run <Airfoil>.split_at_LE_and_TE().".format(self.upper_name))
         else:
             try:
-                axes.plot(af.lower_coords['x'], af.lower_coords['y'])
+                axes.plot(self.lower_coords['x'], self.lower_coords['y'])
             except AttributeError:
-                raise AttributeError("{0} lower coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(af.lower_name, self.station_num))
+                raise AttributeError("{0} lower coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.station_num))
             try:
-                axes.plot(af.upper_coords['x'], af.upper_coords['y'])
+                axes.plot(self.upper_coords['x'], self.upper_coords['y'])
             except AttributeError:
-                raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(af.lower_name, self.station_num))
+                raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.station_num))

@@ -155,7 +155,7 @@ class _Station:
                 pressure segments. Create new attributes: 
                 <Station>.airfoil.LE_index, <Station>.airfoil.suction, and 
                 <Station>.airfoil.pressure
-        .plot_airfoil_coords() : plot the airfoil coordinates of this station
+            .plot_coords() : plot the airfoil coordinates of this station
 
         Usage
         -----    
@@ -182,38 +182,6 @@ class _Station:
                                   stn_series['x3'])
         self.logf.write("****** COORDINATES ******\n")
         self.logf.write(str(self.coords) + '\n')
-        # self.airfoil = MonoplaneAirfoil(stn_series['airfoil'], 
-        #                                 stn_series['airfoil']+'.txt', 
-        #                                 stn_series['chord'], 
-        #                                 stn_series['pitch axis'], 
-        #                                 stn_series['twist'])
-        # self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
-        # self.logf.write(str(self.airfoil) + '\n')
-        self.structure = Structure(
-            h_RB=stn_series['root buildup height'],
-            b_SC=stn_series['spar cap base'],
-            h_SC=stn_series['spar cap height'],
-            b_SW1_biax=stn_series['shear web 1 base biax'],
-            b_SW1_foam=stn_series['shear web 1 base foam'],
-            x2_SW1=stn_series['shear web 1 x2'],
-            b_SW2_biax=stn_series['shear web 2 base biax'],
-            b_SW2_foam=stn_series['shear web 2 base foam'],
-            x2_SW2=stn_series['shear web 2 x2'],
-            b_SW3_biax=stn_series['shear web 3 base biax'],
-            b_SW3_foam=stn_series['shear web 3 base foam'],
-            x2_SW3=stn_series['shear web 3 x2'],
-            b_TE_reinf=stn_series['TE reinf base'],
-            h_TE_reinf_uniax=stn_series['TE reinf height uniax'],
-            h_TE_reinf_foam=stn_series['TE reinf height foam'],
-            h_LE_panel=stn_series['LE panel height'],
-            h_aft_panel=stn_series['aft panel height'],
-            h_int_surf_triax=stn_series['internal surface height triax'],
-            h_int_surf_resin=stn_series['internal surface height resin'],
-            h_ext_surf_triax=stn_series['external surface height triax'],
-            h_ext_surf_gelcoat=stn_series['external surface height gelcoat'])
-        self.logf.write("****** LAMINATE SCHEDULE ******\n")
-        self.logf.write(str(self.structure) + '\n')
-        self.logf.write('\n')
         self.logf.flush()
         self.logf.close()
 
@@ -262,62 +230,15 @@ class _Station:
     # aft panels
     # TE reinforcement
 
-    def part_edges(self):
-        """Find the edges of each structural part.
-
-        Saves coordinates (in meters) as '.left' and '.right' attributes
-        (floats) within each Part instance (OOP style).
-
-        """
-        st = self.structure
-        af = self.airfoil
-        if st.spar_cap.exists():
-            st.spar_cap.left = -st.spar_cap.base/2.0
-            st.spar_cap.right = st.spar_cap.base/2.0
-        if st.TE_reinforcement.exists():
-            st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
-            st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
-        if st.shear_web_1.exists():
-            st.shear_web_1.right = st.shear_web_1.x2
-            st.shear_web_1.left = st.shear_web_1.x2-st.shear_web_1.base
-        if st.shear_web_2.exists():
-            st.shear_web_2.left = st.shear_web_2.x2
-            st.shear_web_2.right = st.shear_web_2.x2+st.shear_web_2.base
-        if st.shear_web_3.exists():
-            st.shear_web_3.left = st.shear_web_3.x2
-            st.shear_web_3.right = st.shear_web_3.x2+st.shear_web_3.base
-        if st.LE_panel.exists():
-            st.LE_panel.left = -af.pitch_axis*af.chord
-            if st.shear_web_1.exists():
-                st.LE_panel.right = st.shear_web_1.left
-            elif st.spar_cap.exists():
-                st.LE_panel.right = st.spar_cap.left
-            else:
-                st.LE_panel.right = np.nan
-                raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
-        if st.aft_panel.exists():
-            if st.shear_web_2.exists():
-                st.aft_panel.left = st.shear_web_2.right
-            elif st.spar_cap.exists():
-                st.aft_panel.left = st.spar_cap.right
-            else:
-                st.aft_panel.left = np.nan
-                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
-            if st.TE_reinforcement.exists():
-                st.aft_panel.right = st.TE_reinforcement.left
-            else:
-                st.aft_panel.right = np.nan
-                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
-
     def plot_part_edges(self, axes):
         """Plot color block for each structural part region.
 
         Each color block spans the plot from top to bottom.
 
         Uses coordinates saved as attributes within each Part instance
-        (OOP style) by <Station>.part_edges().
+        (OOP style) by <Station>.find_part_edges().
 
-        Must run <Station>.part_edges() first.
+        Must run <Station>.find_part_edges() first.
 
         KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
         (This feature will not be implemented.)
@@ -340,7 +261,7 @@ class _Station:
             if st.shear_web_3.exists():
                 axes.axvspan(st.shear_web_3.left, st.shear_web_3.right, facecolor='green', edgecolor='green')
         except AttributeError:
-            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.part_edges() first.")
+            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
 
     def part_edge_on_airfoil(self, x_edge):
         """Find the airfoil coordinates at the edges of each structural part.
@@ -398,25 +319,32 @@ class MonoplaneStation(_Station):
         self.logf = open(_Station.logfile_name, "a")
         self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
         self.logf.write(str(self.airfoil) + '\n')
+        self.structure = MonoplaneStructure(
+            h_RB=stn_series['root buildup height'],
+            b_SC=stn_series['spar cap base'],
+            h_SC=stn_series['spar cap height'],
+            b_SW1_biax=stn_series['shear web 1 base biax'],
+            b_SW1_foam=stn_series['shear web 1 base foam'],
+            x2_SW1=stn_series['shear web 1 x2'],
+            b_SW2_biax=stn_series['shear web 2 base biax'],
+            b_SW2_foam=stn_series['shear web 2 base foam'],
+            x2_SW2=stn_series['shear web 2 x2'],
+            b_SW3_biax=stn_series['shear web 3 base biax'],
+            b_SW3_foam=stn_series['shear web 3 base foam'],
+            x2_SW3=stn_series['shear web 3 x2'],
+            b_TE_reinf=stn_series['TE reinf base'],
+            h_TE_reinf_uniax=stn_series['TE reinf height uniax'],
+            h_TE_reinf_foam=stn_series['TE reinf height foam'],
+            h_LE_panel=stn_series['LE panel height'],
+            h_aft_panel=stn_series['aft panel height'],
+            h_int_surf_triax=stn_series['internal surface height triax'],
+            h_int_surf_resin=stn_series['internal surface height resin'],
+            h_ext_surf_triax=stn_series['external surface height triax'],
+            h_ext_surf_gelcoat=stn_series['external surface height gelcoat'])
+        self.logf.write("****** LAMINATE SCHEDULE ******\n")
+        self.logf.write(str(self.structure) + '\n')
         self.logf.flush()
         self.logf.close()
-
-    def plot_airfoil_coords(self, fig, axes, split_flag=False):
-        """Plot the airfoil coordinates of this station."""
-        af = self.airfoil
-        if split_flag:
-            try:
-                axes.plot(af.suction['x'], af.suction['y'], 'bo-',
-                    label='suction surface')
-                axes.plot(af.pressure['x'], af.pressure['y'], 'rs-',
-                    label='pressure surface')
-            except AttributeError:
-                raise AttributeError("Suction and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(af.name, self.station_num))
-        else:
-            try:
-                axes.plot(af.coords['x'], af.coords['y'])
-            except AttributeError:
-                raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(af.name, self.station_num))
 
     def find_all_part_cs_coords(self):
         """Find the corners of the cross-sections for each structural part.
@@ -479,6 +407,53 @@ class MonoplaneStation(_Station):
         #         st.aft_panel.right = np.nan
         #         raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
 
+    def find_part_edges(self):
+        """Find the edges of each structural part in this monoplane station.
+
+        Saves coordinates (in meters) as '.left' and '.right' attributes
+        (floats) within each Part instance (OOP style).
+
+        """
+        st = self.structure
+        af = self.airfoil
+        if st.spar_cap.exists():
+            st.spar_cap.left = -st.spar_cap.base/2.0
+            st.spar_cap.right = st.spar_cap.base/2.0
+        if st.TE_reinforcement.exists():
+            st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
+            st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
+        if st.shear_web_1.exists():
+            st.shear_web_1.right = st.shear_web_1.x2
+            st.shear_web_1.left = st.shear_web_1.x2-st.shear_web_1.base
+        if st.shear_web_2.exists():
+            st.shear_web_2.left = st.shear_web_2.x2
+            st.shear_web_2.right = st.shear_web_2.x2+st.shear_web_2.base
+        if st.shear_web_3.exists():
+            st.shear_web_3.left = st.shear_web_3.x2
+            st.shear_web_3.right = st.shear_web_3.x2+st.shear_web_3.base
+        if st.LE_panel.exists():
+            st.LE_panel.left = -af.pitch_axis*af.chord
+            if st.shear_web_1.exists():
+                st.LE_panel.right = st.shear_web_1.left
+            elif st.spar_cap.exists():
+                st.LE_panel.right = st.spar_cap.left
+            else:
+                st.LE_panel.right = np.nan
+                raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
+        if st.aft_panel.exists():
+            if st.shear_web_2.exists():
+                st.aft_panel.left = st.shear_web_2.right
+            elif st.spar_cap.exists():
+                st.aft_panel.left = st.spar_cap.right
+            else:
+                st.aft_panel.left = np.nan
+                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+            if st.TE_reinforcement.exists():
+                st.aft_panel.right = st.TE_reinforcement.left
+            else:
+                st.aft_panel.right = np.nan
+                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+
 
 class BiplaneStation(_Station):
     """Define a biplane station for a biplane wind turbine blade."""
@@ -502,5 +477,146 @@ class BiplaneStation(_Station):
         self.logf = open(_Station.logfile_name, "a")
         self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
         self.logf.write(str(self.airfoil) + '\n')
+        self.structure = BiplaneStructure(
+            h_RB=stn_series['root buildup height'],
+            b_SC=stn_series['spar cap base'],
+            h_SC=stn_series['spar cap height'],
+            b_SW1_biax=stn_series['shear web 1 base biax'],
+            b_SW1_foam=stn_series['shear web 1 base foam'],
+            x2_SW1=stn_series['shear web 1 x2'],
+            b_SW2_biax=stn_series['shear web 2 base biax'],
+            b_SW2_foam=stn_series['shear web 2 base foam'],
+            x2_SW2=stn_series['shear web 2 x2'],
+            b_SW3_biax=stn_series['shear web 3 base biax'],
+            b_SW3_foam=stn_series['shear web 3 base foam'],
+            x2_SW3=stn_series['shear web 3 x2'],
+            b_TE_reinf=stn_series['TE reinf base'],
+            h_TE_reinf_uniax=stn_series['TE reinf height uniax'],
+            h_TE_reinf_foam=stn_series['TE reinf height foam'],
+            h_LE_panel=stn_series['LE panel height'],
+            h_aft_panel=stn_series['aft panel height'],
+            h_int_surf_triax=stn_series['internal surface height triax'],
+            h_int_surf_resin=stn_series['internal surface height resin'],
+            h_ext_surf_triax=stn_series['external surface height triax'],
+            h_ext_surf_gelcoat=stn_series['external surface height gelcoat'],
+            h_RB_u=stn_series['root buildup height upper'],
+            b_SC_u=stn_series['spar cap base upper'],
+            h_SC_u=stn_series['spar cap height upper'],
+            b_SW1_biax_u=stn_series['shear web 1 base biax upper'],
+            b_SW1_foam_u=stn_series['shear web 1 base foam upper'],
+            x2_SW1_u=stn_series['shear web 1 x2 upper'],
+            b_SW2_biax_u=stn_series['shear web 2 base biax upper'],
+            b_SW2_foam_u=stn_series['shear web 2 base foam upper'],
+            x2_SW2_u=stn_series['shear web 2 x2 upper'],
+            b_SW3_biax_u=stn_series['shear web 3 base biax upper'],
+            b_SW3_foam_u=stn_series['shear web 3 base foam upper'],
+            x2_SW3_u=stn_series['shear web 3 x2 upper'],
+            b_TE_reinf_u=stn_series['TE reinf base upper'],
+            h_TE_reinf_uniax_u=stn_series['TE reinf height uniax upper'],
+            h_TE_reinf_foam_u=stn_series['TE reinf height foam upper'],
+            h_LE_panel_u=stn_series['LE panel height upper'],
+            h_aft_panel_u=stn_series['aft panel height upper'],
+            h_int_surf_triax_u=stn_series['internal surface height triax upper'],
+            h_int_surf_resin_u=stn_series['internal surface height resin upper'],
+            h_ext_surf_triax_u=stn_series['external surface height triax upper'],
+            h_ext_surf_gelcoat_u=stn_series['external surface height gelcoat upper'])
+        self.logf.write("****** LAMINATE SCHEDULE ******\n")
+        self.logf.write(str(self.structure) + '\n')
         self.logf.flush()
         self.logf.close()
+
+    def find_part_edges(self, upper_lower_pitch_axis=0.375):
+        """Find the edges of each structural part in this biplane station.
+
+        Saves coordinates (in meters) as '.left' and '.right' attributes
+        (floats) within each Part instance (OOP style).
+
+        Parameters
+        ----------
+        upper_lower_pitch_axis : float, (default: 0.375) the "steady state"
+            pitch axis fraction in the outboard region of the Sandia blade,
+            used to provide a reference point for building internal structural
+            parts in STAGGERED biplane sections.
+
+        """
+        st = self.structure
+        af = self.airfoil
+        # upper airfoil
+        upper_refpt = -(af.pitch_axis*af.total_chord)+(upper_lower_pitch_axis*af.upper_chord)
+        if st.upper_spar_cap.exists():
+            st.upper_spar_cap.left = upper_refpt - st.upper_spar_cap.base/2.0
+            st.upper_spar_cap.right = upper_refpt + st.upper_spar_cap.base/2.0
+        if st.upper_TE_reinforcement.exists():
+            st.upper_TE_reinforcement.left = upper_refpt - upper_lower_pitch_axis*af.upper_chord+af.upper_chord-st.upper_TE_reinforcement.base
+            st.upper_TE_reinforcement.right = upper_refpt - upper_lower_pitch_axis*af.upper_chord+af.upper_chord
+        if st.upper_shear_web_1.exists():
+            st.upper_shear_web_1.right = upper_refpt + st.upper_shear_web_1.x2
+            st.upper_shear_web_1.left = upper_refpt + st.upper_shear_web_1.x2-st.upper_shear_web_1.base
+        if st.upper_shear_web_2.exists():
+            st.upper_shear_web_2.left = upper_refpt + st.upper_shear_web_2.x2
+            st.upper_shear_web_2.right = upper_refpt + st.upper_shear_web_2.x2+st.upper_shear_web_2.base
+        if st.upper_shear_web_3.exists():
+            st.upper_shear_web_3.left = upper_refpt + st.upper_shear_web_3.x2
+            st.upper_shear_web_3.right = upper_refpt + st.upper_shear_web_3.x2+st.upper_shear_web_3.base
+        if st.upper_LE_panel.exists():
+            st.upper_LE_panel.left = upper_refpt - upper_lower_pitch_axis*af.upper_chord
+            if st.upper_shear_web_1.exists():
+                st.upper_LE_panel.right = st.upper_shear_web_1.left
+            elif st.upper_spar_cap.exists():
+                st.upper_LE_panel.right = st.upper_spar_cap.left
+            else:
+                st.upper_LE_panel.right = np.nan
+                raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
+        if st.upper_aft_panel.exists():
+            if st.upper_shear_web_2.exists():
+                st.upper_aft_panel.left = st.upper_shear_web_2.right
+            elif st.upper_spar_cap.exists():
+                st.upper_aft_panel.left = st.upper_spar_cap.right
+            else:
+                st.upper_aft_panel.left = np.nan
+                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+            if st.upper_TE_reinforcement.exists():
+                st.upper_aft_panel.right = st.upper_TE_reinforcement.left
+            else:
+                st.upper_aft_panel.right = np.nan
+                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+        # lower airfoil
+        lower_refpt = -(af.pitch_axis*af.total_chord)+(af.stagger)+(upper_lower_pitch_axis*af.lower_chord)
+        if st.lower_spar_cap.exists():
+            st.lower_spar_cap.left = lower_refpt - st.lower_spar_cap.base/2.0
+            st.lower_spar_cap.right = lower_refpt + st.lower_spar_cap.base/2.0
+        if st.lower_TE_reinforcement.exists():
+            st.lower_TE_reinforcement.left = lower_refpt - upper_lower_pitch_axis*af.lower_chord+af.lower_chord-st.lower_TE_reinforcement.base
+            st.lower_TE_reinforcement.right = lower_refpt - upper_lower_pitch_axis*af.lower_chord+af.lower_chord
+        if st.lower_shear_web_1.exists():
+            st.lower_shear_web_1.right = lower_refpt + st.lower_shear_web_1.x2
+            st.lower_shear_web_1.left = lower_refpt + st.lower_shear_web_1.x2-st.lower_shear_web_1.base
+        if st.lower_shear_web_2.exists():
+            st.lower_shear_web_2.left = lower_refpt + st.lower_shear_web_2.x2
+            st.lower_shear_web_2.right = lower_refpt + st.lower_shear_web_2.x2+st.lower_shear_web_2.base
+        if st.lower_shear_web_3.exists():
+            st.lower_shear_web_3.left = lower_refpt + st.lower_shear_web_3.x2
+            st.lower_shear_web_3.right = lower_refpt + st.lower_shear_web_3.x2+st.lower_shear_web_3.base
+        if st.lower_LE_panel.exists():
+            st.lower_LE_panel.left = lower_refpt - upper_lower_pitch_axis*af.lower_chord
+            if st.lower_shear_web_1.exists():
+                st.lower_LE_panel.right = st.lower_shear_web_1.left
+            elif st.lower_spar_cap.exists():
+                st.lower_LE_panel.right = st.lower_spar_cap.left
+            else:
+                st.lower_LE_panel.right = np.nan
+                raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
+        if st.lower_aft_panel.exists():
+            if st.lower_shear_web_2.exists():
+                st.lower_aft_panel.left = st.lower_shear_web_2.right
+            elif st.lower_spar_cap.exists():
+                st.lower_aft_panel.left = st.lower_spar_cap.right
+            else:
+                st.lower_aft_panel.left = np.nan
+                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+            if st.lower_TE_reinforcement.exists():
+                st.lower_aft_panel.right = st.lower_TE_reinforcement.left
+            else:
+                st.lower_aft_panel.right = np.nan
+                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+

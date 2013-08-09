@@ -93,8 +93,8 @@ height:  {1:6.4f} (meters)
     self.height_triax, self.height_gelcoat)
 
 
-class Structure:
-    """Define the laminate schedule (internal dimensions)."""
+class MonoplaneStructure:
+    """Define the monoplane laminate schedule (internal dimensions)."""
     def __init__(self, h_RB, b_SC, h_SC, b_SW1_biax, b_SW1_foam, x2_SW1,
                  b_SW2_biax, b_SW2_foam, x2_SW2, b_SW3_biax, b_SW3_foam,
                  x2_SW3, b_TE_reinf, h_TE_reinf_uniax, h_TE_reinf_foam,
@@ -138,7 +138,7 @@ class Structure:
         return s
 
     def which_parts_exist(self):
-        """Check which structural parts exist at this station.
+        """Check which structural parts exist at this monoplane station.
 
         Returns a dictionary of booleans.
 
@@ -154,4 +154,116 @@ class Structure:
              'internal surface': self.internal_surface.exists(),
              'external surface': self.external_surface.exists()}
         return d
-        
+
+
+class BiplaneStructure:
+    """Define the biplane laminate schedule (internal dimensions)."""
+    def __init__(self, h_RB, b_SC, h_SC, b_SW1_biax, b_SW1_foam, x2_SW1,
+                 b_SW2_biax, b_SW2_foam, x2_SW2, b_SW3_biax, b_SW3_foam,
+                 x2_SW3, b_TE_reinf, h_TE_reinf_uniax, h_TE_reinf_foam,
+                 h_LE_panel, h_aft_panel, h_int_surf_triax, h_int_surf_resin,
+                 h_ext_surf_triax, h_ext_surf_gelcoat, h_RB_u, b_SC_u, h_SC_u,
+                 b_SW1_biax_u, b_SW1_foam_u, x2_SW1_u, b_SW2_biax_u,
+                 b_SW2_foam_u, x2_SW2_u, b_SW3_biax_u, b_SW3_foam_u, x2_SW3_u,
+                 b_TE_reinf_u, h_TE_reinf_uniax_u, h_TE_reinf_foam_u,
+                 h_LE_panel_u, h_aft_panel_u, h_int_surf_triax_u,
+                 h_int_surf_resin_u, h_ext_surf_triax_u, h_ext_surf_gelcoat_u):
+        self.lower_root_buildup = Part(np.nan, h_RB)
+        self.lower_spar_cap = Part(b_SC, h_SC)
+        self.lower_shear_web_1 = ShearWeb(b_SW1_biax, b_SW1_foam, x2_SW1)
+        self.lower_shear_web_2 = ShearWeb(b_SW2_biax, b_SW2_foam, x2_SW2)
+        self.lower_shear_web_3 = ShearWeb(b_SW3_biax, b_SW3_foam, x2_SW3)
+        self.lower_TE_reinforcement = TE_Reinforcement(b_TE_reinf, h_TE_reinf_uniax, 
+                                                 h_TE_reinf_foam)
+        self.lower_LE_panel = Part(np.nan, h_LE_panel)
+        self.lower_aft_panel = Part(np.nan, h_aft_panel)
+        self.lower_internal_surface = InternalSurface(np.nan, h_int_surf_triax, h_int_surf_resin)
+        self.lower_external_surface = ExternalSurface(np.nan, h_ext_surf_triax, h_ext_surf_gelcoat)
+        self.upper_root_buildup = Part(np.nan, h_RB_u)
+        self.upper_spar_cap = Part(b_SC_u, h_SC_u)
+        self.upper_shear_web_1 = ShearWeb(b_SW1_biax_u, b_SW1_foam_u, x2_SW1_u)
+        self.upper_shear_web_2 = ShearWeb(b_SW2_biax_u, b_SW2_foam_u, x2_SW2_u)
+        self.upper_shear_web_3 = ShearWeb(b_SW3_biax_u, b_SW3_foam_u, x2_SW3_u)
+        self.upper_TE_reinforcement = TE_Reinforcement(b_TE_reinf_u,
+            h_TE_reinf_uniax_u, h_TE_reinf_foam_u)
+        self.upper_LE_panel = Part(np.nan, h_LE_panel_u)
+        self.upper_aft_panel = Part(np.nan, h_aft_panel_u)
+        self.upper_internal_surface = InternalSurface(np.nan,
+            h_int_surf_triax_u, h_int_surf_resin_u)
+        self.upper_external_surface = ExternalSurface(np.nan,
+            h_ext_surf_triax_u, h_ext_surf_gelcoat_u)
+
+    def __str__(self):
+        """Returns a string of all the internal dimensions for this structure."""
+        s = ''
+        s += "****** Lower Airfoil ******"
+        s += "  --- ROOT BUILDUP ---\n"
+        s += "  " + str(self.lower_root_buildup) + '\n'
+        s += "  --- SPAR CAP ---\n"
+        s += "  " + str(self.lower_spar_cap) + '\n'
+        s += "  --- SHEAR WEB 1 ---\n"
+        s += "  " + str(self.lower_shear_web_1) + '\n'
+        s += "  --- SHEAR WEB 2 ---\n"
+        s += "  " + str(self.lower_shear_web_2) + '\n'
+        s += "  --- SHEAR WEB 3 ---\n"
+        s += "  " + str(self.lower_shear_web_3) + '\n'
+        s += "  ---TE REINFORCEMENT ---\n"
+        s += "  " + str(self.lower_TE_reinforcement) + '\n'
+        s += "  --- LE PANEL ---\n"
+        s += "  " + str(self.lower_LE_panel) + '\n'
+        s += "  --- AFT PANEL ---\n"
+        s += "  " + str(self.lower_aft_panel) + '\n'
+        s += "  --- INTERNAL SURFACE ---\n"
+        s += "  " + str(self.lower_internal_surface) + '\n'
+        s += "  --- EXTERNAL SURFACE ---\n"
+        s += "  " + str(self.lower_external_surface) + '\n'
+        s += "****** Upper Airfoil ******"
+        s += "  --- ROOT BUILDUP ---\n"
+        s += "  " + str(self.upper_root_buildup) + '\n'
+        s += "  --- SPAR CAP ---\n"
+        s += "  " + str(self.upper_spar_cap) + '\n'
+        s += "  --- SHEAR WEB 1 ---\n"
+        s += "  " + str(self.upper_shear_web_1) + '\n'
+        s += "  --- SHEAR WEB 2 ---\n"
+        s += "  " + str(self.upper_shear_web_2) + '\n'
+        s += "  --- SHEAR WEB 3 ---\n"
+        s += "  " + str(self.upper_shear_web_3) + '\n'
+        s += "  ---TE REINFORCEMENT ---\n"
+        s += "  " + str(self.upper_TE_reinforcement) + '\n'
+        s += "  --- LE PANEL ---\n"
+        s += "  " + str(self.upper_LE_panel) + '\n'
+        s += "  --- AFT PANEL ---\n"
+        s += "  " + str(self.upper_aft_panel) + '\n'
+        s += "  --- INTERNAL SURFACE ---\n"
+        s += "  " + str(self.upper_internal_surface) + '\n'
+        s += "  --- EXTERNAL SURFACE ---\n"
+        s += "  " + str(self.upper_external_surface) + '\n'
+        return s
+
+    def which_parts_exist(self):
+        """Check which structural parts exist at this biplane station.
+
+        Returns a dictionary of booleans.
+
+        """
+        d = {'lower root buildup': self.lower_root_buildup.exists(),
+             'lower spar cap': self.lower_spar_cap.exists(),
+             'lower shear web 1': self.lower_shear_web_1.exists(),
+             'lower shear web 2': self.lower_shear_web_2.exists(),
+             'lower shear web 3': self.lower_shear_web_3.exists(),
+             'lower TE reinforcement': self.lower_TE_reinforcement.exists(),
+             'lower LE panel': self.lower_LE_panel.exists(),
+             'lower aft panel': self.lower_aft_panel.exists(),
+             'lower internal surface': self.lower_internal_surface.exists(),
+             'lower external surface': self.lower_external_surface.exists(),
+             'upper root buildup': self.upper_root_buildup.exists(),
+             'upper spar cap': self.upper_spar_cap.exists(),
+             'upper shear web 1': self.upper_shear_web_1.exists(),
+             'upper shear web 2': self.upper_shear_web_2.exists(),
+             'upper shear web 3': self.upper_shear_web_3.exists(),
+             'upper TE reinforcement': self.upper_TE_reinforcement.exists(),
+             'upper LE panel': self.upper_LE_panel.exists(),
+             'upper aft panel': self.upper_aft_panel.exists(),
+             'upper internal surface': self.upper_internal_surface.exists(),
+             'upper external surface': self.upper_external_surface.exists()}
+        return d
