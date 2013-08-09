@@ -228,35 +228,6 @@ class _Blade:
         tip = self.list_of_stations[-1].coords.x1
         mlab.plot3d([root,tip],[0,0],[0,0], color=(1,0,0), tube_radius=lw)
 
-    def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
-        LE=True, TE=True, twist=True, SW=True):
-        """Plots a wireframe representation of the blade, with Mayavi mlab.
-
-        Parameters
-        ----------
-        line_width : float, line width for plotting
-        airfoils : bool, plot/don't plot the airfoils at each blade station
-        pitch_axis : bool, plot/don't plot the pitch axis from root to tip
-        LE : bool, plot/don't plot the leading edge from root to tip
-        TE : bool, plot/don't plot the trailing edge from root to tip
-        twist : bool, plot/don't plot the blade with twist from root to tip
-        SW : bool, plot/don't plot all shear webs along the span
-
-        """
-        self.create_plot()
-        if airfoils:
-            self.plot_all_airfoils(lw=line_width, twist_flag=twist)
-        if pitch_axis:
-            self.plot_pitch_axis(lw=line_width)
-        if LE:
-            self.plot_LE(lw=line_width, twist_flag=twist)
-        if TE:
-            self.plot_TE(lw=line_width, twist_flag=twist)
-        if SW:
-            self.plot_all_SW_cross_sections(lw=line_width, twist_flag=twist)
-            # self.plot_all_SW_spanwise_lines(lw=line_width, twist_flag=twist)
-        self.show_plot()
-
 
 class MonoplaneBlade(_Blade):
     """Define a monoplane (conventional) wind turbine blade."""
@@ -493,9 +464,56 @@ class MonoplaneBlade(_Blade):
                 z.append(z_new)
         return (x,y,z)
 
+    def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
+        LE=True, TE=True, twist=True, SW=True):
+        """Plots a wireframe representation of the blade, with Mayavi mlab.
+
+        Parameters
+        ----------
+        line_width : float, line width for plotting
+        airfoils : bool, plot/don't plot the airfoils at each blade station
+        pitch_axis : bool, plot/don't plot the pitch axis from root to tip
+        LE : bool, plot/don't plot the leading edge from root to tip
+        TE : bool, plot/don't plot the trailing edge from root to tip
+        twist : bool, plot/don't plot the blade with twist from root to tip
+        SW : bool, plot/don't plot all shear webs along the span
+
+        """
+        self.create_plot()
+        if airfoils:
+            self.plot_all_airfoils(lw=line_width, twist_flag=twist)
+        if pitch_axis:
+            self.plot_pitch_axis(lw=line_width)
+        if LE:
+            self.plot_LE(lw=line_width, twist_flag=twist)
+        if TE:
+            self.plot_TE(lw=line_width, twist_flag=twist)
+        if SW:
+            self.plot_all_SW_cross_sections(lw=line_width, twist_flag=twist)
+            self.plot_all_SW_spanwise_lines(lw=line_width, twist_flag=twist)
+        self.show_plot()
+
 
 class BiplaneBlade(_Blade):
     """Define a biplane wind turbine blade."""
+    def __init__(self, name, blade_path, defn_filename='blade_definition.csv',
+        airfoils_path='airfoils'):
+        """Create a new biplane wind turbine blade."""
+        _Blade.__init__(self, name, blade_path, defn_filename, airfoils_path)
+        (self.root_joint_station,
+            self.midblade_joint_station) = self.assign_joint_stations()
+        print " Root joint found at station #{0}".format(
+            self.root_joint_station)
+        print " Mid-blade joint found at station #{0}".format(
+            self.midblade_joint_station)
+        self.logf = open(_Blade.logfile_name, "a")
+        self.logf.write("[{0}] Root joint found at station #{1}\n".format(
+            datetime.datetime.now(), self.root_joint_station))
+        self.logf.write("[{0}] Mid-blade joint found at station #{1}\n".format(
+            datetime.datetime.now(), self.midblade_joint_station))
+        self.logf.flush()
+        self.logf.close()
+
     def create_station(self, station_num):
         """Create a new station for this blade."""
         if self._df.ix[station_num]['type'] == 'monoplane':
@@ -505,6 +523,32 @@ class BiplaneBlade(_Blade):
         else:
             raise ValueError("Values in the 'type' column of {0} must be either 'monoplane' or 'biplane'.".format(self.defn_filename))
         return this_stn
+
+    def assign_joint_stations(self):
+        """Identify and mark the root and mid-blade joint stations.
+
+        Creates a '<_Station>.joint' attribute, which is 'root',
+        'midblade', or None.
+
+        """
+        root_joint = 0
+        midblade_joint = 0
+        # identify joint stations
+        for station in self.list_of_stations:
+            if station.type == 'biplane' and root_joint == 0:
+                root_joint = station.station_num - 1
+            if (station.type == 'monoplane' and root_joint != 0 and 
+                midblade_joint == 0):
+                midblade_joint = station.station_num
+        # mark joint stations, by creating the '.joint' attribute
+        for station in self.list_of_stations:
+            if station.station_num == root_joint:
+                station.joint = 'root'
+            elif station.station_num == midblade_joint:
+                station.joint = 'midblade'
+            else:
+                station.joint = None
+        return (root_joint, midblade_joint)
 
     def copy_airfoil_coords(self, station):
         """Copy airfoil coordinates from airfoils_path into this station_path."""
@@ -609,8 +653,6 @@ class BiplaneBlade(_Blade):
         xU = []  # spanwise coordinate (upper biplane airfoils)
         yU = []  # chordwise coordinate (upper biplane airfoils)
         zU = []  # flapwise coordinate (upper biplane airfoils)
-        inboard_trans = False # flag to find inboard mono-biplane transition
-        outboard_trans = False # flag to find outboard bi-monoplane transition
         for station in self.list_of_stations:
             if station.type == 'monoplane':
                 xL.append(station.coords.x1)
@@ -627,15 +669,13 @@ class BiplaneBlade(_Blade):
                 # append the new LE coordinates
                 yL.append(yL_new)
                 zL.append(zL_new)
-                if inboard_trans is True and outboard_trans is False:
-                    outboard_trans = True
+                if station.joint == 'midblade':
                     # append the last LOWER coordinates that were added
                     xU.append(xL[-1])
                     yU.append(yL[-1])
                     zU.append(zL[-1])
             elif station.type == 'biplane':
-                if inboard_trans is False:
-                    inboard_trans = True
+                if station.joint == 'root':
                     # append the last LOWER coordinates that were added
                     xU.append(xL[-1])
                     yU.append(yL[-1])
@@ -749,132 +789,290 @@ class BiplaneBlade(_Blade):
         """
         if sw_num is not 1 and sw_num is not 2 and sw_num is not 3:
             raise ValueError("sw_num must be either 1, 2, or 3 (type: int)")
-        x = []  # spanwise coordinate
-        y = []  # chordwise coordinate
-        z = []  # flapwise coordinate
+        xL = []  # spanwise coordinate (monoplane and lower biplane airfoils)
+        yL = []  # chordwise coordinate (monoplane and lower biplane airfoils)
+        zL = []  # flapwise coordinate (monoplane and lower biplane airfoils)
+        xU = []  # spanwise coordinate (upper biplane airfoils)
+        yU = []  # chordwise coordinate (upper biplane airfoils)
+        zU = []  # flapwise coordinate (upper biplane airfoils)
         for station in self.list_of_stations:
-            SW_cs_coords = np.array([])
+            # shear web CS coords for monoplane and lower biplane airfoils
+            SW_cs_coords_L = np.array([])
+            # shear web CS coords for upper biplane airfoils
+            SW_cs_coords_U = np.array([])
             if station.type == 'monoplane':
                 if sw_num is 1 and station.structure.shear_web_1.exists():
                     try:
-                        SW_cs_coords = station.structure.shear_web_1.cs_coords
+                        SW_cs_coords_L = station.structure.shear_web_1.cs_coords
                     except AttributeError:
                         raise AttributeError("Shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
                 elif sw_num is 2 and station.structure.shear_web_2.exists():
                     try:
-                        SW_cs_coords = station.structure.shear_web_2.cs_coords
+                        SW_cs_coords_L = station.structure.shear_web_2.cs_coords
                     except AttributeError:
                         raise AttributeError("Shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
                 elif sw_num is 3 and station.structure.shear_web_3.exists():
                     try:
-                        SW_cs_coords = station.structure.shear_web_3.cs_coords
+                        SW_cs_coords_L = station.structure.shear_web_3.cs_coords
                     except AttributeError:
                         raise AttributeError("Shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
             elif station.type == 'biplane':
                 if sw_num is 1:
                     if station.structure.lower_shear_web_1.exists():
                         try:
-                            if SW_cs_coords.shape == (0,):
-                                SW_cs_coords = station.structure.lower_shear_web_1.cs_coords
-                            else:
-                                np.vstack((SW_cs_coords,station.structure.lower_shear_web_1.cs_coords))
+                            SW_cs_coords_L = station.structure.lower_shear_web_1.cs_coords
                         except AttributeError:
                             raise AttributeError("Lower shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
                     if station.structure.upper_shear_web_1.exists():
                         try:
-                            if SW_cs_coords.shape == (0,):
-                                SW_cs_coords = station.structure.upper_shear_web_1.cs_coords
-                            else:
-                                np.vstack((SW_cs_coords,station.structure.upper_shear_web_1.cs_coords))
+                            SW_cs_coords_U = station.structure.upper_shear_web_1.cs_coords
                         except AttributeError:
                             raise AttributeError("Upper shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
                 elif sw_num is 2:
                     if station.structure.lower_shear_web_2.exists():
                         try:
-                            if SW_cs_coords.shape == (0,):
-                                SW_cs_coords = station.structure.lower_shear_web_2.cs_coords
-                            else:
-                                np.vstack((SW_cs_coords,station.structure.lower_shear_web_2.cs_coords))
+                            SW_cs_coords_L = station.structure.lower_shear_web_2.cs_coords
                         except AttributeError:
                             raise AttributeError("Lower shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
                     if station.structure.upper_shear_web_2.exists():
                         try:
-                            if SW_cs_coords.shape == (0,):
-                                SW_cs_coords = station.structure.upper_shear_web_2.cs_coords
-                            else:
-                                np.vstack((SW_cs_coords,station.structure.upper_shear_web_2.cs_coords))
+                            SW_cs_coords_U = station.structure.upper_shear_web_2.cs_coords
                         except AttributeError:
                             raise AttributeError("Upper shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
                 elif sw_num is 3:
                     if station.structure.lower_shear_web_3.exists():
                         try:
-                            if SW_cs_coords.shape == (0,):
-                                SW_cs_coords = station.structure.lower_shear_web_3.cs_coords
-                            else:
-                                np.vstack((SW_cs_coords,station.structure.lower_shear_web_3.cs_coords))
+                            SW_cs_coords_L = station.structure.lower_shear_web_3.cs_coords
                         except AttributeError:
                             raise AttributeError("Lower shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
                     if station.structure.upper_shear_web_3.exists():
                         try:
-                            if SW_cs_coords.shape == (0,):
-                                SW_cs_coords = station.structure.upper_shear_web_3.cs_coords
-                            else:
-                                np.vstack((SW_cs_coords,station.structure.upper_shear_web_3.cs_coords))
+                            SW_cs_coords_U = station.structure.upper_shear_web_3.cs_coords
                         except AttributeError:
                             raise AttributeError("Upper shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
-            for point in SW_cs_coords:
-                x.append(station.coords.x1)
-                y_temp = point[0]
-                z_temp = point[1]
+            # assemble the lower coordinates
+            for point in SW_cs_coords_L:
+                xL.append(station.coords.x1)
+                yL_temp = point[0]
+                zL_temp = point[1]
                 if twist_flag:
-                    # rotate the SW cross-section coords wrt twist angle
-                    (y_new, z_new) = tf.rotate_coord_pair(y_temp,
-                        z_temp, station.airfoil.twist)
+                    # rotate the lower SW cross-section coords wrt twist angle
+                    (yL_new, zL_new) = tf.rotate_coord_pair(yL_temp,
+                        zL_temp, station.airfoil.twist)
                 else:
                     # don't rotate the SW cross-section coords
-                    (y_new, z_new) = (y_temp, z_temp)
+                    (yL_new, zL_new) = (yL_temp, zL_temp)
                 # append the new SW cross-section coords
-                y.append(y_new)
-                z.append(z_new)
+                yL.append(yL_new)
+                zL.append(zL_new)
+            # assemble the upper coordinates
+            for point in SW_cs_coords_U:
+                xU.append(station.coords.x1)
+                yU_temp = point[0]
+                zU_temp = point[1]
+                if twist_flag:
+                    # rotate the lower SW cross-section coords wrt twist angle
+                    (yU_new, zU_new) = tf.rotate_coord_pair(yU_temp,
+                        zU_temp, station.airfoil.twist)
+                else:
+                    # don't rotate the SW cross-section coords
+                    (yU_new, zU_new) = (yU_temp, zU_temp)
+                # append the new SW cross-section coords
+                yU.append(yU_new)
+                zU.append(zU_new)
+        return ((xL,yL,zL),(xU,yU,zU))
+
+    def get_SW_cross_section_coords_at_joint(self, joint, sw_num,
+        twist_flag=True):
+        """Returns (x,y,z) coordinates for shear web #1, #2, or #3 at joints.
+
+        Parameters
+        ----------
+        joint : str, ('root' or 'midblade') selects the desired joint
+        sw_num : int, (1, 2, or 3) selects the desired shear web
+
+        """
+        if sw_num is not 1 and sw_num is not 2 and sw_num is not 3:
+            raise ValueError("sw_num must be either 1, 2, or 3 (type: int)")
+        x = []  # spanwise coordinate
+        y = []  # chordwise coordinate
+        z = []  # flapwise coordinate
+        if joint != 'root' and joint != 'midblade':
+            raise ValueError("joint must be 'root' or 'midblade' (type: str)")
+        if joint == 'root':
+            stn_num = self.root_joint_station
+        elif joint == 'midblade':
+            stn_num = self.midblade_joint_station
+        station = self.list_of_stations[stn_num-1]
+        SW_cs_coords = np.array([])
+        if sw_num is 1 and station.structure.shear_web_1.exists():
+            try:
+                SW_cs_coords = station.structure.shear_web_1.cs_coords
+            except AttributeError:
+                raise AttributeError("Shear web #1's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+        elif sw_num is 2 and station.structure.shear_web_2.exists():
+            try:
+                SW_cs_coords = station.structure.shear_web_2.cs_coords
+            except AttributeError:
+                raise AttributeError("Shear web #2's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+        elif sw_num is 3 and station.structure.shear_web_3.exists():
+            try:
+                SW_cs_coords = station.structure.shear_web_3.cs_coords
+            except AttributeError:
+                raise AttributeError("Shear web #3's cross-section coordinates have not been read yet!\n  Try running <Station>.find_all_part_cs_coords() first.")
+        for point in SW_cs_coords:
+            x.append(station.coords.x1)
+            y_temp = point[0]
+            z_temp = point[1]
+            if twist_flag:
+                # rotate the SW cross-section coords wrt twist angle
+                (y_new, z_new) = tf.rotate_coord_pair(y_temp,
+                    z_temp, station.airfoil.twist)
+            else:
+                # don't rotate the SW cross-section coords
+                (y_new, z_new) = (y_temp, z_temp)
+            # append the new SW cross-section coords
+            y.append(y_new)
+            z.append(z_new)
         return (x,y,z)
 
-    def plot_all_SW_cross_sections(self, lw, twist_flag=True):
+    def plot_all_SW_cross_sections(self, lw, twist_flag=True, lower=True,
+        upper=True):
         """Plots all shear web cross-sections from root to tip."""
         for sw in [1,2,3]:
-            (x,y,z) = self.get_SW_cross_section_coords(sw_num=sw,
-                                                       twist_flag=twist_flag)
-            for i in range(0,len(x),4):
-                (X,Y,Z) = (x[i:i+4], y[i:i+4], z[i:i+4])
-                # add the first coord pair again, to form a closed loop
-                X.append(x[i])
-                Y.append(y[i])
-                Z.append(z[i])
-                mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
+            ((xL,yL,zL),(xU,yU,zU)) = self.get_SW_cross_section_coords(
+                sw_num=sw, twist_flag=twist_flag)
+            if lower:
+                # plot the lower shear web
+                for i in range(0,len(xL),4):
+                    (X,Y,Z) = (xL[i:i+4], yL[i:i+4], zL[i:i+4])
+                    # add the first coord pair again, to form a closed loop
+                    X.append(xL[i])
+                    Y.append(yL[i])
+                    Z.append(zL[i])
+                    mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
+            if upper:
+                # plot the upper shear web
+                for i in range(0,len(xU),4):
+                    (X,Y,Z) = (xU[i:i+4], yU[i:i+4], zU[i:i+4])
+                    # add the first coord pair again, to form a closed loop
+                    X.append(xU[i])
+                    Y.append(yU[i])
+                    Z.append(zU[i])
+                    mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
 
-    def plot_all_SW_spanwise_lines(self, lw, twist_flag=True):
+    def plot_all_SW_spanwise_lines(self, lw, twist_flag=True, lower=True,
+        upper=True, sw_list=[1,2,3]):
         """Plots spanwise lines for all shear webs from root to tip."""
-        for sw in [1,2,3]:
-            (x,y,z) = self.get_SW_cross_section_coords(sw_num=sw, 
-                                                       twist_flag=twist_flag)
-            (x1, y1, z1) = ([], [], [])
-            (x2, y2, z2) = ([], [], [])
-            (x3, y3, z3) = ([], [], [])
-            (x4, y4, z4) = ([], [], [])
-            for i in range(0,len(x),4):
-                x1.append(x[i])
-                y1.append(y[i])
-                z1.append(z[i])
-                x2.append(x[i+1])
-                y2.append(y[i+1])
-                z2.append(z[i+1])
-                x3.append(x[i+2])
-                y3.append(y[i+2])
-                z3.append(z[i+2])
-                x4.append(x[i+3])
-                y4.append(y[i+3])
-                z4.append(z[i+3])
-            mlab.plot3d(x1,y1,z1, color=(0,0,1), tube_radius=lw)
-            mlab.plot3d(x2,y2,z2, color=(0,0,1), tube_radius=lw)
-            mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
-            mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
+        for sw in sw_list:
+            ((xL,yL,zL),(xU,yU,zU)) = self.get_SW_cross_section_coords(
+                sw_num=sw, twist_flag=twist_flag)
+            if lower:
+                # plot the lower shear web
+                (x1, y1, z1) = ([], [], [])
+                (x2, y2, z2) = ([], [], [])
+                (x3, y3, z3) = ([], [], [])
+                (x4, y4, z4) = ([], [], [])
+                for i in range(0,len(xL),4):
+                    x1.append(xL[i])
+                    y1.append(yL[i])
+                    z1.append(zL[i])
+                    x2.append(xL[i+1])
+                    y2.append(yL[i+1])
+                    z2.append(zL[i+1])
+                    x3.append(xL[i+2])
+                    y3.append(yL[i+2])
+                    z3.append(zL[i+2])
+                    x4.append(xL[i+3])
+                    y4.append(yL[i+3])
+                    z4.append(zL[i+3])
+                mlab.plot3d(x1,y1,z1, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x2,y2,z2, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
+            if upper:
+                # plot the upper shear web
+                (x1, y1, z1) = ([], [], [])
+                (x2, y2, z2) = ([], [], [])
+                (x3, y3, z3) = ([], [], [])
+                (x4, y4, z4) = ([], [], [])
+                # append coords for shear web (if it exists) at the root joint
+                (xr,yr,zr) = self.get_SW_cross_section_coords_at_joint(
+                    joint='root', sw_num=sw)
+                if len(xr) > 0:
+                    x1.append(xr[0])
+                    y1.append(yr[0])
+                    z1.append(zr[0])
+                    x2.append(xr[1])
+                    y2.append(yr[1])
+                    z2.append(zr[1])
+                    x3.append(xr[2])
+                    y3.append(yr[2])
+                    z3.append(zr[2])
+                    x4.append(xr[3])
+                    y4.append(yr[3])
+                    z4.append(zr[3])
+                for i in range(0,len(xU),4):
+                    x1.append(xU[i])
+                    y1.append(yU[i])
+                    z1.append(zU[i])
+                    x2.append(xU[i+1])
+                    y2.append(yU[i+1])
+                    z2.append(zU[i+1])
+                    x3.append(xU[i+2])
+                    y3.append(yU[i+2])
+                    z3.append(zU[i+2])
+                    x4.append(xU[i+3])
+                    y4.append(yU[i+3])
+                    z4.append(zU[i+3])
+                # append coords for shear web (if it exists) at the midblade joint
+                (xm,ym,zm) = self.get_SW_cross_section_coords_at_joint(
+                    joint='midblade', sw_num=sw)
+                if len(xm) > 0:
+                    x1.append(xm[0])
+                    y1.append(ym[0])
+                    z1.append(zm[0])
+                    x2.append(xm[1])
+                    y2.append(ym[1])
+                    z2.append(zm[1])
+                    x3.append(xm[2])
+                    y3.append(ym[2])
+                    z3.append(zm[2])
+                    x4.append(xm[3])
+                    y4.append(ym[3])
+                    z4.append(zm[3])
+                mlab.plot3d(x1,y1,z1, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x2,y2,z2, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
+
+    def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
+        LE=True, TE=True, twist=True, SW=True):
+        """Plots a wireframe representation of the blade, with Mayavi mlab.
+
+        Parameters
+        ----------
+        line_width : float, line width for plotting
+        airfoils : bool, plot/don't plot the airfoils at each blade station
+        pitch_axis : bool, plot/don't plot the pitch axis from root to tip
+        LE : bool, plot/don't plot the leading edge from root to tip
+        TE : bool, plot/don't plot the trailing edge from root to tip
+        twist : bool, plot/don't plot the blade with twist from root to tip
+        SW : bool, plot/don't plot all shear webs along the span
+
+        """
+        self.create_plot()
+        if airfoils:
+            self.plot_all_airfoils(lw=line_width, twist_flag=twist)
+        if pitch_axis:
+            self.plot_pitch_axis(lw=line_width)
+        if LE:
+            self.plot_LE(lw=line_width, twist_flag=twist)
+        if TE:
+            self.plot_TE(lw=line_width, twist_flag=twist)
+        if SW:
+            self.plot_all_SW_cross_sections(lw=line_width, twist_flag=twist)
+            self.plot_all_SW_spanwise_lines(lw=line_width, twist_flag=twist,
+                lower=True, upper=True, sw_list=[1,2,3])
+        self.show_plot()
             

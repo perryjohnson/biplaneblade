@@ -196,7 +196,7 @@ class BiplaneStructure:
     def __str__(self):
         """Returns a string of all the internal dimensions for this structure."""
         s = ''
-        s += "****** Lower Airfoil ******"
+        s += "****** Lower Airfoil ******\n"
         s += "  --- ROOT BUILDUP ---\n"
         s += "  " + str(self.lower_root_buildup) + '\n'
         s += "  --- SPAR CAP ---\n"
@@ -217,7 +217,7 @@ class BiplaneStructure:
         s += "  " + str(self.lower_internal_surface) + '\n'
         s += "  --- EXTERNAL SURFACE ---\n"
         s += "  " + str(self.lower_external_surface) + '\n'
-        s += "****** Upper Airfoil ******"
+        s += "****** Upper Airfoil ******\n"
         s += "  --- ROOT BUILDUP ---\n"
         s += "  " + str(self.upper_root_buildup) + '\n'
         s += "  --- SPAR CAP ---\n"
