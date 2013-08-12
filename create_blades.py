@@ -40,20 +40,21 @@ Last updated: August 8, 2013
 
 import scripts.blade as bl
 reload(bl)
+import scripts.compare_blades as cb
 
 
 sandia_flag = True
 biplane_flap_sym_no_stagger_flag = True
-biplane_flap_sym_stagger_flag = True
-biplane_flap_asym_no_stagger_flag = True
-biplane_flap_asym_stagger_flag = True
+biplane_flap_sym_stagger_flag = False
+biplane_flap_asym_no_stagger_flag = False
+biplane_flap_asym_stagger_flag = False
 
 # --- sandia blade ------------------------------------------------------------
 if sandia_flag:
     m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
     m.copy_all_airfoil_coords()
 
-    # make some plots of the chord and twist schedules
+    # # plot the chord and twist schedules
     # m.plot_chord_schedule()
     # m.plot_twist_schedule()
 
@@ -76,6 +77,8 @@ if sandia_flag:
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     m.plot_blade()
+    # m.plot_blade(airfoils=False, pitch_axis=False,
+        # LE=False, TE=False, twist=True, SW=True)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
@@ -84,6 +87,10 @@ if biplane_flap_sym_no_stagger_flag:
         'biplane blade, flapwise symmetric, no stagger, rj/R=0.452, g/c=1.25',
         'biplane_flap-sym_no-stagger')
     b1.copy_all_airfoil_coords()
+
+    # # plot the chord and twist schedules
+    # b1.plot_chord_schedule()
+    # b1.plot_twist_schedule()
 
     # pre-process the airfoil coordinates
     for station in b1.list_of_stations:
@@ -104,6 +111,8 @@ if biplane_flap_sym_no_stagger_flag:
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     b1.plot_blade()
+    # b1.plot_blade(airfoils=False, pitch_axis=False,
+        # LE=False, TE=False, twist=True, SW=True)
 
 
 # --- biplane blade, flapwise symmetric, stagger-------------------------------
@@ -134,7 +143,7 @@ if biplane_flap_sym_stagger_flag:
     b2.plot_blade()
 
 
-# --- biplane blade, flapwise asymmetric, no stagger----------------------------
+# --- biplane blade, flapwise asymmetric, no stagger---------------------------
 if biplane_flap_asym_no_stagger_flag:
     b3 = bl.BiplaneBlade(
         'biplane blade, flapwise asymmetric, no stagger, rj/R=0.452, g/c=1.25', 
@@ -162,7 +171,7 @@ if biplane_flap_asym_no_stagger_flag:
     b3.plot_blade()
 
 
-# --- biplane blade, flapwise asymmetric, stagger-------------------------------
+# --- biplane blade, flapwise asymmetric, stagger------------------------------
 if biplane_flap_asym_stagger_flag:
     b4 = bl.BiplaneBlade(
         'biplane blade, flapwise asymmetric, stagger, rj/R=0.452, g/c=1.25', 
@@ -188,3 +197,26 @@ if biplane_flap_asym_stagger_flag:
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     b4.plot_blade()
+
+# # --- compare blades ----------------------------------------------------------
+
+# m.linestyle='ro-'
+# m.name='Sandia blade'
+# m.lw=1.5
+# m.mfc='None'
+# m.mec='r'
+# m.mew=2
+# m.ms=8
+# b1.linestyle='b^-.'
+# b1.name='biplane blade'
+# b1.lw=4
+# b1.mfc='None'
+# b1.mec='b'
+# b1.mew=2
+# b1.ms=8
+# cb.plot_chord_schedule(list_of_blades=[m,b1])
+# cb.plot_twist_schedule(list_of_blades=[m,b1])
+# cb.plot_thickness_schedule(list_of_blades=[m,b1])
+# cb.plot_gap_schedule(list_of_blades=[b1])
+# cb.plot_thickness_to_chord_schedule(list_of_blades=[m,b1])
+# cb.plot_gap_to_chord_schedule(list_of_blades=[b1])
