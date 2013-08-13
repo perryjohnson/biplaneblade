@@ -228,6 +228,34 @@ class _Blade:
         tip = self.list_of_stations[-1].coords.x1
         mlab.plot3d([root,tip],[0,0],[0,0], color=(1,0,0), tube_radius=lw)
 
+    def plot_selected_cross_sections(self, figsize=(22,12), nrows=4, ncols=3,
+        selected_stations=[1,7,11,13,16,20,21,23,26,28,30,33], save_flag=True):
+        """Plots selected cross-sections of the blade."""
+        if len(selected_stations) != nrows*ncols:
+            raise ValueError("The number of items in 'selected_stations' must equal nrows*ncols.")
+        fig, axes = plt.subplots(figsize=figsize, nrows=nrows, ncols=ncols)
+        # fig.set_title('Selected cross-sections for {0}'.format(self.name))
+        # format each subplot
+        i = 0
+        for row_of_axes in axes:
+            for ax in row_of_axes:
+                station = self.list_of_stations[selected_stations[i]-1]
+                ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
+                ax.set_aspect('equal')
+                ax.grid('on')
+                ax.set_xlabel('x2 [meters]')
+                ax.set_ylabel('x3 [meters]')
+                station.airfoil.plot_coords(fig, ax, split_flag=True)
+                station.plot_part_edges(ax)
+                i += 1
+        fig.tight_layout()  # don't allow figure axes and labels to overlap
+        plt.show()
+        if save_flag:
+            # Save the plot in the station path as a PNG file
+            fname = os.path.join(self.blade_path, 'selected_cross-sections.png')
+            fig.savefig(fname)
+        return (fig, axes)
+
 
 class MonoplaneBlade(_Blade):
     """Define a monoplane (conventional) wind turbine blade."""

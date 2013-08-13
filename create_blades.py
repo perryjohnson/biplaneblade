@@ -45,9 +45,9 @@ import scripts.compare_blades as cb
 
 sandia_flag = True
 biplane_flap_sym_no_stagger_flag = True
-biplane_flap_sym_stagger_flag = False
-biplane_flap_asym_no_stagger_flag = False
-biplane_flap_asym_stagger_flag = False
+biplane_flap_sym_stagger_flag = True
+biplane_flap_asym_no_stagger_flag = True
+biplane_flap_asym_stagger_flag = True
 
 # --- sandia blade ------------------------------------------------------------
 if sandia_flag:
@@ -74,9 +74,10 @@ if sandia_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
+    m.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    m.plot_blade()
+    # m.plot_blade()
     # m.plot_blade(airfoils=False, pitch_axis=False,
         # LE=False, TE=False, twist=True, SW=True)
 
@@ -108,9 +109,10 @@ if biplane_flap_sym_no_stagger_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
+    b1.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b1.plot_blade()
+    # b1.plot_blade()
     # b1.plot_blade(airfoils=False, pitch_axis=False,
         # LE=False, TE=False, twist=True, SW=True)
 
@@ -138,9 +140,10 @@ if biplane_flap_sym_stagger_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
+    b2.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b2.plot_blade()
+    # b2.plot_blade()
 
 
 # --- biplane blade, flapwise asymmetric, no stagger---------------------------
@@ -166,9 +169,10 @@ if biplane_flap_asym_no_stagger_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     # #     # station.save_plot(fig)
+    b3.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b3.plot_blade()
+    # b3.plot_blade()
 
 
 # --- biplane blade, flapwise asymmetric, stagger------------------------------
@@ -194,9 +198,10 @@ if biplane_flap_asym_stagger_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     # #     # station.save_plot(fig)
+    b4.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b4.plot_blade()
+    # b4.plot_blade()
 
 # # --- compare blades ----------------------------------------------------------
 

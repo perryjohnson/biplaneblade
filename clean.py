@@ -21,6 +21,12 @@ for station_path in list_of_station_paths:
         shutil.rmtree(station_path)
         print " [Deleted station path] {0}".format(station_path)
 
+# delete 'selected_cross-sections.png'
+scs_file = os.path.join(root_path, 'selected_cross-sections.png')
+if os.path.isfile(scs_file):
+    os.remove(scs_file)
+    print " [Deleted selected cross-sections] {0}".format(scs_file)
+
 # --- biplane blade 1 ---------------------------------------------------------
 # generate list of station paths
 list_of_station_paths = []
@@ -36,6 +42,12 @@ for station_path in list_of_station_paths:
         # delete the station path, even if it has contents
         shutil.rmtree(station_path)
         print " [Deleted station path] {0}".format(station_path)
+
+# delete 'selected_cross-sections.png'
+scs_file = os.path.join(root_path, 'selected_cross-sections.png')
+if os.path.isfile(scs_file):
+    os.remove(scs_file)
+    print " [Deleted selected cross-sections] {0}".format(scs_file)
 
 # --- biplane blade 2 ---------------------------------------------------------
 # generate list of station paths
@@ -53,6 +65,12 @@ for station_path in list_of_station_paths:
         shutil.rmtree(station_path)
         print " [Deleted station path] {0}".format(station_path)
 
+# delete 'selected_cross-sections.png'
+scs_file = os.path.join(root_path, 'selected_cross-sections.png')
+if os.path.isfile(scs_file):
+    os.remove(scs_file)
+    print " [Deleted selected cross-sections] {0}".format(scs_file)
+
 # --- biplane blade 3 ---------------------------------------------------------
 # generate list of station paths
 list_of_station_paths = []
@@ -69,6 +87,12 @@ for station_path in list_of_station_paths:
         shutil.rmtree(station_path)
         print " [Deleted station path] {0}".format(station_path)
 
+# delete 'selected_cross-sections.png'
+scs_file = os.path.join(root_path, 'selected_cross-sections.png')
+if os.path.isfile(scs_file):
+    os.remove(scs_file)
+    print " [Deleted selected cross-sections] {0}".format(scs_file)
+
 # --- biplane blade 4 ---------------------------------------------------------
 # generate list of station paths
 list_of_station_paths = []
@@ -84,6 +108,12 @@ for station_path in list_of_station_paths:
         # delete the station path, even if it has contents
         shutil.rmtree(station_path)
         print " [Deleted station path] {0}".format(station_path)
+
+# delete 'selected_cross-sections.png'
+scs_file = os.path.join(root_path, 'selected_cross-sections.png')
+if os.path.isfile(scs_file):
+    os.remove(scs_file)
+    print " [Deleted selected cross-sections] {0}".format(scs_file)
 
 # clean up unused variables
 del list_of_station_paths
