@@ -227,7 +227,6 @@ class _Blade:
             mlab.orientation_axes(xlabel='x1', ylabel='x2', zlabel='x3')
         mlab.show()
 
-
     def plot_pitch_axis(self, lw, color='r'):
         """Plots the pitch axis from root to tip.
 
@@ -573,10 +572,21 @@ class MonoplaneBlade(_Blade):
                 z.append(z_new)
         return (x,y,z)
 
+    def plot_station_nums(self):
+        """Plots station numbers next to each cross-section."""
+        for station in self.list_of_stations:
+            mlab.text3d(
+                x=station.coords.x1,
+                y=(station.coords.x2 - 
+                   station.airfoil.chord*station.airfoil.pitch_axis - 4.0),
+                z=station.coords.x3,
+                text='{0}'.format(station.station_num),
+                scale=0.5)
+
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
         color_pitch_axis='r', color_LE='0.1', color_TE='0.1',
-        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0)):
+        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0), stn_nums=False):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -598,6 +608,7 @@ class MonoplaneBlade(_Blade):
             (default: dark grey)
         color_SW : str or RGB tuple, line color of shear webs
             (default: light green)
+        stn_nums : boolean, plot/don't plot station numbers
 
         """
         self.create_plot()
@@ -615,6 +626,8 @@ class MonoplaneBlade(_Blade):
                 twist_flag=twist)
             self.plot_all_SW_spanwise_lines(lw=line_width, color=color_SW,
                 twist_flag=twist)
+        if stn_nums:
+            self.plot_station_nums()
         self.show_plot()
 
 
@@ -1219,10 +1232,30 @@ class BiplaneBlade(_Blade):
                 mlab.plot3d(x3,y3,z3, color=c, tube_radius=lw)
                 mlab.plot3d(x4,y4,z4, color=c, tube_radius=lw)
 
+    def plot_station_nums(self):
+        """Plots station numbers next to each cross-section."""
+        for station in self.list_of_stations:
+            if station.type == 'monoplane':
+                mlab.text3d(
+                    x=station.coords.x1,
+                    y=(station.coords.x2 - 
+                       station.airfoil.chord*station.airfoil.pitch_axis - 4.0),
+                    z=station.coords.x3,
+                    text='{0}'.format(station.station_num),
+                    scale=0.5)
+            elif station.type == 'biplane':
+                mlab.text3d(
+                    x=station.coords.x1,
+                    y=(station.coords.x2 - 4.0 -
+                       station.airfoil.total_chord*station.airfoil.pitch_axis),
+                    z=station.coords.x3,
+                    text='{0}'.format(station.station_num),
+                    scale=0.5)
+
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
         color_pitch_axis='r', color_LE='0.1', color_TE='0.1',
-        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0)):
+        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0), stn_nums=False):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -1244,6 +1277,7 @@ class BiplaneBlade(_Blade):
             (default: dark grey)
         color_SW : str or RGB tuple, line color of shear webs
             (default: light green)
+        stn_nums : boolean, plot/don't plot station numbers
 
         """
         self.create_plot()
@@ -1261,5 +1295,7 @@ class BiplaneBlade(_Blade):
                 twist_flag=twist)
             self.plot_all_SW_spanwise_lines(lw=line_width, color=color_SW,
                 twist_flag=twist, lower=True, upper=True, sw_list=[1,2,3])
+        if stn_nums:
+            self.plot_station_nums()
         self.show_plot()
             
