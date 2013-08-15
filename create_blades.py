@@ -43,7 +43,7 @@ reload(bl)
 import scripts.compare_blades as cb
 
 
-sandia_flag = True
+sandia_flag = False
 biplane_flap_sym_no_stagger_flag = True
 biplane_flap_sym_stagger_flag = False
 biplane_flap_asym_no_stagger_flag = False
@@ -78,8 +78,6 @@ if sandia_flag:
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     m.plot_blade()
-    # m.plot_blade(airfoils=False, pitch_axis=False,
-        # LE=False, TE=False, twist=True, SW=True)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
@@ -113,8 +111,6 @@ if biplane_flap_sym_no_stagger_flag:
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     b1.plot_blade()
-    # b1.plot_blade(airfoils=False, pitch_axis=False,
-        # LE=False, TE=False, twist=True, SW=True)
 
 
 # --- biplane blade, flapwise symmetric, stagger-------------------------------
