@@ -16,6 +16,7 @@ reload(stn)
 import transformation as tf
 reload(tf)
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 from mayavi import mlab
 
 
@@ -222,11 +223,24 @@ class _Blade:
             print mlab.view()
         mlab.show()
 
-    def plot_pitch_axis(self, lw):
-        """Plots the pitch axis from root to tip."""
+
+    def plot_pitch_axis(self, lw, color='r'):
+        """Plots the pitch axis from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'r')
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         root = self.list_of_stations[0].coords.x1
         tip = self.list_of_stations[-1].coords.x1
-        mlab.plot3d([root,tip],[0,0],[0,0], color=(1,0,0), tube_radius=lw)
+        mlab.plot3d([root,tip],[0,0],[0,0], color=c, tube_radius=lw)
 
     def plot_selected_cross_sections(self, figsize=(22,12), nrows=4, ncols=3,
         selected_stations=[1,7,11,13,16,20,21,23,26,28,30,33], save_flag=True):
@@ -278,10 +292,16 @@ class MonoplaneBlade(_Blade):
             self.logf.flush()
             self.logf.close()
 
-    def plot_all_airfoils(self, lw, twist_flag=True):
+    def plot_all_airfoils(self, lw, color='k', twist_flag=True):
         """Plot all the airfoils in the blade with Mayavi's mlab.
 
         You must import the blade and its airfoil coordinates first.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'k')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
 
         Usage
         -----
@@ -292,6 +312,11 @@ class MonoplaneBlade(_Blade):
         b.plot_all_airfoils()
 
         """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         for station in self.list_of_stations:
             if twist_flag:
                 station.airfoil.rotate_coords()  # apply twist angle to airfoil
@@ -304,7 +329,7 @@ class MonoplaneBlade(_Blade):
             l = len(y)
             x = np.ones((l,))*station.coords.x1  # spanwise coordinate
             # plot the airfoil on the screen
-            mlab.plot3d(x,y,z, tube_radius=lw)
+            mlab.plot3d(x,y,z, color=c, tube_radius=lw)
 
     def get_LE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade leading edge."""
@@ -328,10 +353,23 @@ class MonoplaneBlade(_Blade):
             z.append(z_new)
         return (x,y,z)
 
-    def plot_LE(self, lw, twist_flag=True):
-        """Plots the leading edge from root to tip."""
+    def plot_LE(self, lw, color='k', twist_flag=True):
+        """Plots the leading edge from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'k')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         (x,y,z) = self.get_LE_coords(twist_flag=twist_flag)
-        mlab.plot3d(x,y,z, tube_radius=lw)
+        mlab.plot3d(x,y,z, color=c, tube_radius=lw)
 
     def get_TE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade trailing edge."""
@@ -355,10 +393,23 @@ class MonoplaneBlade(_Blade):
             z.append(z_new)
         return (x,y,z)
 
-    def plot_TE(self, lw, twist_flag=True):
-        """Plots the trailing edge from root to tip."""
+    def plot_TE(self, lw, color='k', twist_flag=True):
+        """Plots the trailing edge from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'k')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         (x,y,z) = self.get_TE_coords(twist_flag=twist_flag)
-        mlab.plot3d(x,y,z, tube_radius=lw)
+        mlab.plot3d(x,y,z, color=c, tube_radius=lw)
 
     def get_SW_cross_section_coords(self, sw_num, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for shear web #1, #2, or #3.
@@ -406,8 +457,21 @@ class MonoplaneBlade(_Blade):
                 z.append(z_new)
         return (x,y,z)
 
-    def plot_all_SW_cross_sections(self, lw, twist_flag=True):
-        """Plots all shear web cross-sections from root to tip."""
+    def plot_all_SW_cross_sections(self, lw, color='g', twist_flag=True):
+        """Plots all shear web cross-sections from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'g')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+        
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         for sw in [1,2,3]:
             (x,y,z) = self.get_SW_cross_section_coords(sw_num=sw,
                                                        twist_flag=twist_flag)
@@ -417,10 +481,23 @@ class MonoplaneBlade(_Blade):
                 X.append(x[i])
                 Y.append(y[i])
                 Z.append(z[i])
-                mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(X,Y,Z, color=c, tube_radius=lw)
 
-    def plot_all_SW_spanwise_lines(self, lw, twist_flag=True):
-        """Plots spanwise lines for all shear webs from root to tip."""
+    def plot_all_SW_spanwise_lines(self, lw, color='g', twist_flag=True):
+        """Plots spanwise lines for all shear webs from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'g')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         for sw in [1,2,3]:
             (x,y,z) = self.get_SW_cross_section_coords(sw_num=sw, 
                                                        twist_flag=twist_flag)
@@ -441,10 +518,10 @@ class MonoplaneBlade(_Blade):
                 x4.append(x[i+3])
                 y4.append(y[i+3])
                 z4.append(z[i+3])
-            mlab.plot3d(x1,y1,z1, color=(0,0,1), tube_radius=lw)
-            mlab.plot3d(x2,y2,z2, color=(0,0,1), tube_radius=lw)
-            mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
-            mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
+            mlab.plot3d(x1,y1,z1, color=c, tube_radius=lw)
+            mlab.plot3d(x2,y2,z2, color=c, tube_radius=lw)
+            mlab.plot3d(x3,y3,z3, color=c, tube_radius=lw)
+            mlab.plot3d(x4,y4,z4, color=c, tube_radius=lw)
 
     def get_SW_cross_section_coords(self, sw_num, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for shear web #1, #2, or #3.
@@ -493,7 +570,9 @@ class MonoplaneBlade(_Blade):
         return (x,y,z)
 
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
-        LE=True, TE=True, twist=True, SW=True):
+        LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
+        color_pitch_axis='r', color_LE='0.1', color_TE='0.1',
+        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0)):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -505,20 +584,33 @@ class MonoplaneBlade(_Blade):
         TE : bool, plot/don't plot the trailing edge from root to tip
         twist : bool, plot/don't plot the blade with twist from root to tip
         SW : bool, plot/don't plot all shear webs along the span
+        color_airfoils : str or RGB tuple, line color of airfoils
+            (default: dark grey)
+        color_pitch_axis : str or RGB tuple, line color of pitch axis
+            (default: red)
+        color_LE : str or RGB tuple, line color of leading edge
+            (default: dark grey)
+        color_TE : str or RGB tuple, line color of trailing edge
+            (default: dark grey)
+        color_SW : str or RGB tuple, line color of shear webs
+            (default: light green)
 
         """
         self.create_plot()
         if airfoils:
-            self.plot_all_airfoils(lw=line_width, twist_flag=twist)
+            self.plot_all_airfoils(lw=line_width, color=color_airfoils,
+                twist_flag=twist)
         if pitch_axis:
-            self.plot_pitch_axis(lw=line_width)
+            self.plot_pitch_axis(lw=line_width, color=color_pitch_axis)
         if LE:
-            self.plot_LE(lw=line_width, twist_flag=twist)
+            self.plot_LE(lw=line_width, color=color_LE, twist_flag=twist)
         if TE:
-            self.plot_TE(lw=line_width, twist_flag=twist)
+            self.plot_TE(lw=line_width, color=color_TE, twist_flag=twist)
         if SW:
-            self.plot_all_SW_cross_sections(lw=line_width, twist_flag=twist)
-            self.plot_all_SW_spanwise_lines(lw=line_width, twist_flag=twist)
+            self.plot_all_SW_cross_sections(lw=line_width, color=color_SW,
+                twist_flag=twist)
+            self.plot_all_SW_spanwise_lines(lw=line_width, color=color_SW,
+                twist_flag=twist)
         self.show_plot()
 
 
@@ -621,10 +713,16 @@ class BiplaneBlade(_Blade):
                 self.logf.flush()
                 self.logf.close()
 
-    def plot_all_airfoils(self, lw, twist_flag=True):
+    def plot_all_airfoils(self, lw, color='k', twist_flag=True):
         """Plot all the airfoils in the biplane blade with Mayavi's mlab.
 
         You must import the blade and its airfoil coordinates first.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'k')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
 
         Usage
         -----
@@ -635,6 +733,11 @@ class BiplaneBlade(_Blade):
         a.plot_all_airfoils()
 
         """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         for station in self.list_of_stations:
             if station.type == 'monoplane':
                 if twist_flag:
@@ -648,7 +751,7 @@ class BiplaneBlade(_Blade):
                 l = len(y)
                 x = np.ones((l,))*station.coords.x1  # spanwise coordinate
                 # plot the airfoil on the screen
-                mlab.plot3d(x,y,z, tube_radius=lw)
+                mlab.plot3d(x,y,z, color=c, tube_radius=lw)
             elif station.type == 'biplane':
                 if twist_flag:
                     station.airfoil.rotate_coords()
@@ -661,7 +764,7 @@ class BiplaneBlade(_Blade):
                 l = len(y)
                 x = np.ones((l,))*station.coords.x1  # spanwise coordinate
                 # plot the lower airfoil on the screen
-                mlab.plot3d(x,y,z, tube_radius=lw)
+                mlab.plot3d(x,y,z, color=c, tube_radius=lw)
                 # assemble upper airfoil coordinates for mlab -----------------
                 try:
                     y = station.airfoil.upper_coords['x']  # chordwise coordinate
@@ -671,7 +774,7 @@ class BiplaneBlade(_Blade):
                 l = len(y)
                 # (reuse same spanwise coordinates): x
                 # plot the lower airfoil on the screen
-                mlab.plot3d(x,y,z, tube_radius=lw)
+                mlab.plot3d(x,y,z, color=c, tube_radius=lw)
 
     def get_LE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade leading edge."""
@@ -727,11 +830,24 @@ class BiplaneBlade(_Blade):
                 zU.append(zU_new)
         return ((xL,yL,zL),(xU,yU,zU))
 
-    def plot_LE(self, lw, twist_flag=True):
-        """Plots the leading edge from root to tip."""
+    def plot_LE(self, lw, color='k', twist_flag=True):
+        """Plots the leading edge from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'k')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         ((xL,yL,zL),(xU,yU,zU)) = self.get_LE_coords(twist_flag=twist_flag)
-        mlab.plot3d(xL,yL,zL, tube_radius=lw)
-        mlab.plot3d(xU,yU,zU, tube_radius=lw)
+        mlab.plot3d(xL,yL,zL, color=c, tube_radius=lw)
+        mlab.plot3d(xU,yU,zU, color=c, tube_radius=lw)
 
     def get_TE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade trailing edge."""
@@ -787,11 +903,24 @@ class BiplaneBlade(_Blade):
                 zU.append(zU_new)
         return ((xL,yL,zL),(xU,yU,zU))
 
-    def plot_TE(self, lw, twist_flag=True):
-        """Plots the trailing edge from root to tip."""
+    def plot_TE(self, lw, color='k', twist_flag=True):
+        """Plots the trailing edge from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'k')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         ((xL,yL,zL),(xU,yU,zU)) = self.get_TE_coords(twist_flag=twist_flag)
-        mlab.plot3d(xL,yL,zL, tube_radius=lw)
-        mlab.plot3d(xU,yU,zU, tube_radius=lw)
+        mlab.plot3d(xL,yL,zL, color=c, tube_radius=lw)
+        mlab.plot3d(xU,yU,zU, color=c, tube_radius=lw)
 
     def get_SW_cross_section_coords(self, sw_num, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for shear web #1, #2, or #3.
@@ -950,9 +1079,22 @@ class BiplaneBlade(_Blade):
             z.append(z_new)
         return (x,y,z)
 
-    def plot_all_SW_cross_sections(self, lw, twist_flag=True, lower=True,
-        upper=True):
-        """Plots all shear web cross-sections from root to tip."""
+    def plot_all_SW_cross_sections(self, lw, color='g', twist_flag=True,
+        lower=True, upper=True):
+        """Plots all shear web cross-sections from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'g')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         for sw in [1,2,3]:
             ((xL,yL,zL),(xU,yU,zU)) = self.get_SW_cross_section_coords(
                 sw_num=sw, twist_flag=twist_flag)
@@ -964,7 +1106,7 @@ class BiplaneBlade(_Blade):
                     X.append(xL[i])
                     Y.append(yL[i])
                     Z.append(zL[i])
-                    mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
+                    mlab.plot3d(X,Y,Z, color=c, tube_radius=lw)
             if upper:
                 # plot the upper shear web
                 for i in range(0,len(xU),4):
@@ -973,11 +1115,24 @@ class BiplaneBlade(_Blade):
                     X.append(xU[i])
                     Y.append(yU[i])
                     Z.append(zU[i])
-                    mlab.plot3d(X,Y,Z, color=(0,0,1), tube_radius=lw)
+                    mlab.plot3d(X,Y,Z, color=c, tube_radius=lw)
 
-    def plot_all_SW_spanwise_lines(self, lw, twist_flag=True, lower=True,
-        upper=True, sw_list=[1,2,3]):
-        """Plots spanwise lines for all shear webs from root to tip."""
+    def plot_all_SW_spanwise_lines(self, lw, color='g', twist_flag=True,
+        lower=True, upper=True, sw_list=[1,2,3]):
+        """Plots spanwise lines for all shear webs from root to tip.
+
+        Parameters
+        ----------
+        lw : float, line width
+        color : str or RGB tuple, line color (default: 'g')
+        twist_flag : bool, do/don't twist the airfoils about the pitch axis
+
+        """
+        # convert the color to a RGB tuple
+        if type(color) == str:
+            c = colors.ColorConverter().to_rgb(color)
+        else:
+            c = color
         for sw in sw_list:
             ((xL,yL,zL),(xU,yU,zU)) = self.get_SW_cross_section_coords(
                 sw_num=sw, twist_flag=twist_flag)
@@ -1000,10 +1155,10 @@ class BiplaneBlade(_Blade):
                     x4.append(xL[i+3])
                     y4.append(yL[i+3])
                     z4.append(zL[i+3])
-                mlab.plot3d(x1,y1,z1, color=(0,0,1), tube_radius=lw)
-                mlab.plot3d(x2,y2,z2, color=(0,0,1), tube_radius=lw)
-                mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
-                mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x1,y1,z1, color=c, tube_radius=lw)
+                mlab.plot3d(x2,y2,z2, color=c, tube_radius=lw)
+                mlab.plot3d(x3,y3,z3, color=c, tube_radius=lw)
+                mlab.plot3d(x4,y4,z4, color=c, tube_radius=lw)
             if upper:
                 # plot the upper shear web
                 (x1, y1, z1) = ([], [], [])
@@ -1055,13 +1210,15 @@ class BiplaneBlade(_Blade):
                     x4.append(xm[3])
                     y4.append(ym[3])
                     z4.append(zm[3])
-                mlab.plot3d(x1,y1,z1, color=(0,0,1), tube_radius=lw)
-                mlab.plot3d(x2,y2,z2, color=(0,0,1), tube_radius=lw)
-                mlab.plot3d(x3,y3,z3, color=(0,0,1), tube_radius=lw)
-                mlab.plot3d(x4,y4,z4, color=(0,0,1), tube_radius=lw)
+                mlab.plot3d(x1,y1,z1, color=c, tube_radius=lw)
+                mlab.plot3d(x2,y2,z2, color=c, tube_radius=lw)
+                mlab.plot3d(x3,y3,z3, color=c, tube_radius=lw)
+                mlab.plot3d(x4,y4,z4, color=c, tube_radius=lw)
 
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
-        LE=True, TE=True, twist=True, SW=True):
+        LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
+        color_pitch_axis='r', color_LE='0.1', color_TE='0.1',
+        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0)):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -1073,20 +1230,32 @@ class BiplaneBlade(_Blade):
         TE : bool, plot/don't plot the trailing edge from root to tip
         twist : bool, plot/don't plot the blade with twist from root to tip
         SW : bool, plot/don't plot all shear webs along the span
+        color_airfoils : str or RGB tuple, line color of airfoils
+            (default: dark grey)
+        color_pitch_axis : str or RGB tuple, line color of pitch axis
+            (default: red)
+        color_LE : str or RGB tuple, line color of leading edge
+            (default: dark grey)
+        color_TE : str or RGB tuple, line color of trailing edge
+            (default: dark grey)
+        color_SW : str or RGB tuple, line color of shear webs
+            (default: light green)
 
         """
         self.create_plot()
         if airfoils:
-            self.plot_all_airfoils(lw=line_width, twist_flag=twist)
+            self.plot_all_airfoils(lw=line_width, color=color_airfoils,
+                twist_flag=twist)
         if pitch_axis:
-            self.plot_pitch_axis(lw=line_width)
+            self.plot_pitch_axis(lw=line_width, color=color_pitch_axis)
         if LE:
-            self.plot_LE(lw=line_width, twist_flag=twist)
+            self.plot_LE(lw=line_width, color=color_LE, twist_flag=twist)
         if TE:
-            self.plot_TE(lw=line_width, twist_flag=twist)
+            self.plot_TE(lw=line_width, color=color_TE, twist_flag=twist)
         if SW:
-            self.plot_all_SW_cross_sections(lw=line_width, twist_flag=twist)
-            self.plot_all_SW_spanwise_lines(lw=line_width, twist_flag=twist,
-                lower=True, upper=True, sw_list=[1,2,3])
+            self.plot_all_SW_cross_sections(lw=line_width, color=color_SW, 
+                twist_flag=twist)
+            self.plot_all_SW_spanwise_lines(lw=line_width, color=color_SW,
+                twist_flag=twist, lower=True, upper=True, sw_list=[1,2,3])
         self.show_plot()
             

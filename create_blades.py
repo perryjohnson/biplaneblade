@@ -45,9 +45,9 @@ import scripts.compare_blades as cb
 
 sandia_flag = True
 biplane_flap_sym_no_stagger_flag = True
-biplane_flap_sym_stagger_flag = True
-biplane_flap_asym_no_stagger_flag = True
-biplane_flap_asym_stagger_flag = True
+biplane_flap_sym_stagger_flag = False
+biplane_flap_asym_no_stagger_flag = False
+biplane_flap_asym_stagger_flag = False
 
 # --- sandia blade ------------------------------------------------------------
 if sandia_flag:
@@ -74,10 +74,10 @@ if sandia_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
-    m.plot_selected_cross_sections()
+    # m.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    # m.plot_blade()
+    m.plot_blade()
     # m.plot_blade(airfoils=False, pitch_axis=False,
         # LE=False, TE=False, twist=True, SW=True)
 
@@ -109,10 +109,10 @@ if biplane_flap_sym_no_stagger_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
-    b1.plot_selected_cross_sections()
+    # b1.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    # b1.plot_blade()
+    b1.plot_blade()
     # b1.plot_blade(airfoils=False, pitch_axis=False,
         # LE=False, TE=False, twist=True, SW=True)
 
@@ -219,9 +219,9 @@ if biplane_flap_asym_stagger_flag:
 # b1.mec='b'
 # b1.mew=2
 # b1.ms=8
-# cb.plot_chord_schedule(list_of_blades=[m,b1])
-# cb.plot_twist_schedule(list_of_blades=[m,b1])
+# # cb.plot_chord_schedule(list_of_blades=[m,b1])
+# # cb.plot_twist_schedule(list_of_blades=[m,b1])
 # cb.plot_thickness_schedule(list_of_blades=[m,b1])
-# cb.plot_gap_schedule(list_of_blades=[b1])
+# # cb.plot_gap_schedule(list_of_blades=[b1])
 # cb.plot_thickness_to_chord_schedule(list_of_blades=[m,b1])
-# cb.plot_gap_to_chord_schedule(list_of_blades=[b1])
+# # cb.plot_gap_to_chord_schedule(list_of_blades=[b1])
