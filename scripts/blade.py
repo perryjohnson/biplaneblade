@@ -196,7 +196,8 @@ class _Blade:
         mlab.figure(figure=self.name, size=(fig_width,fig_height))
 
     def show_plot(self, azimuth=-45.0, elevation=54.74, distance=110.0,
-                  focalpoint=[60.0,0.85,0.0], print_view=False):
+                  focalpoint=[60.0,0.85,0.0], print_view=False,
+                  axes_triad=True):
         """Pick a nice view and show the plot.
 
         Parameters
@@ -215,12 +216,15 @@ class _Blade:
             Mayavi 3.4.0: if 'auto' is passed, the focal point is positioned at
             the center of all objects in the scene.
         print_view : boolean, print/don't print the view parameters
+        axes_triad : boolean, show/don't show a triad of orientation axes
 
         """
         mlab.view(azimuth, elevation, distance, focalpoint)
         if print_view:
             print "[**Mayavi mlab view parameters**]"
             print mlab.view()
+        if axes_triad:
+            mlab.orientation_axes(xlabel='x1', ylabel='x2', zlabel='x3')
         mlab.show()
 
 
