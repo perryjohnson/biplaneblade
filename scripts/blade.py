@@ -1185,7 +1185,7 @@ class BiplaneBlade(_Blade):
                 (x4, y4, z4) = ([], [], [])
                 # append coords for shear web (if it exists) at the root joint
                 (xr,yr,zr) = self.get_SW_cross_section_coords_at_joint(
-                    joint='root', sw_num=sw)
+                    joint='root', sw_num=sw, twist_flag=twist_flag)
                 if len(xr) > 0:
                     x1.append(xr[0])
                     y1.append(yr[0])
@@ -1214,7 +1214,7 @@ class BiplaneBlade(_Blade):
                     z4.append(zU[i+3])
                 # append coords for shear web (if it exists) at the midblade joint
                 (xm,ym,zm) = self.get_SW_cross_section_coords_at_joint(
-                    joint='midblade', sw_num=sw)
+                    joint='midblade', sw_num=sw, twist_flag=twist_flag)
                 if len(xm) > 0:
                     x1.append(xm[0])
                     y1.append(ym[0])

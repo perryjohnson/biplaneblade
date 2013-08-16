@@ -5,7 +5,9 @@ Inputs
 A blade definition
 Inboard endpoint (existing station 1 in blade definition)
 Outboard endpoint (existing station 2 in blade definition)
-An airfoil profile (and its thickness-to-chord ratio) (new station)
+x1-fraction distance to move between the endpoint stations (for example, a
+    fraction distance of 0.5 selects a new station halfway between the selected
+    endpoints)
 
 Outputs (for new station)
 -------
@@ -14,8 +16,16 @@ twist
 chord length
 selected laminate thicknesses
 
+Usage
+-----
+update the parameters in the 'SET THESE PARAMETERS' section below
+run this script in an IPython terminal:
+    |> %run insert_station
+figure out the required thickness-to-chord ratio(s) at the new station
+use scale_airfoils.py to create new airfoil profile(s) for the new station
+
 Author: Perry Roth-Johnson
-Last updated: August 15, 2013
+Last updated: August 16, 2013
 
 """
 
@@ -30,13 +40,10 @@ b1 = bl.BiplaneBlade(
     'biplane blade, flapwise symmetric, no stagger, rj/R=0.452, g/c=1.25',
     'biplane_flap-sym_no-stagger')
 # select the inboard and outboard endpoints
-i_endpt = 21
-o_endpt = 23
+i_endpt = 22
+o_endpt = 24
 # select a fraction distance to move between the endpoint stations
 x_new_frac = 2.0/3.0
-# # select airfoil, with given t/c
-# af_name = 'DU91-W2-250'
-# af_t_to_c = 0.25
 ### ---------------------------------------------------------------------------
 
 ### CRUNCH THE NUMBERS
@@ -52,42 +59,13 @@ c_o_stn = o_stn['chord']
 t_o_stn = o_stn['thickness-to-chord ratio']*o_stn['chord']
 # calculate the new x1-location
 x_new_stn = x_new_frac*(x_o_stn-x_i_stn) + x_i_stn
-# define eqns for blade chord, blade thickness, and airfoil thickness
-# blade chord
-chord = ipl.interp1d(x=[x_i_stn, x_o_stn], y=[c_i_stn, c_o_stn])
-# blade thickness
-thickness = ipl.interp1d(x=[x_i_stn, x_o_stn], y=[t_i_stn, t_o_stn])
+# define eqn for airfoil thickness
 def t_airfoil(t_to_c, c):
     """Airfoil thickness."""
     return t_to_c*c
-# # set thickness = t_airfoil, solve for x
-# def x_new(t_to_c, c_i, t_i, x_i, c_o, t_o, x_o):
-#     """Find the x1-location for a new station by setting thickness = t_airfoil.
-
-#     Parameters (all floats)
-#     ----------
-#     t_to_c : thickness-to-chord ratio of the given airfoil
-#     c_i : chord of the inboard endpoint station
-#     t_i : thickness of the inboard endpoint station
-#     x_i : x1-location of the inboard endpoint station
-#     c_o : chord of the outboard endpoint station
-#     t_o : thickness of the outboard endpoint station
-#     x_o : x1-location of the outboard endpoint station
-
-#     """
-#     numer = t_to_c*c_i - t_i
-#     denom = ((t_o-t_i)/(x_o-x_i) - t_to_c*(c_o-c_i)/(x_o-x_i))
-#     return numer/denom + x_i
-# x_new_stn = x_new(
-#     t_to_c=af_t_to_c,
-#     c_i=c_i_stn,
-#     t_i=t_i_stn,
-#     x_i=x_i_stn,
-#     c_o=c_o_stn,
-#     t_o=t_o_stn,
-#     x_o=x_o_stn)
-# now, given x_new_stn, calculate all the other parameters with lin interp
-# (twist, laminate thicknesses, etc)
+# define interpolation equations for other blade quantities
+chord = ipl.interp1d(x=[x_i_stn, x_o_stn], y=[c_i_stn, c_o_stn])
+thickness = ipl.interp1d(x=[x_i_stn, x_o_stn], y=[t_i_stn, t_o_stn])
 twist = ipl.interp1d(
     x=[i_stn['x1'], o_stn['x1']],
     y=[i_stn['twist'], o_stn['twist']])

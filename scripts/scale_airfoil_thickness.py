@@ -75,6 +75,7 @@ def write_scaled_airfoil_coordinates(original_path, original_tc_ratio,
     for point in a:
         f.write("{0:8.6f}\t{1:9.6f}\n".format(point['x'],point['y']))
     f.close()
+    print ' New airfoil written to {0}'.format(new_path)
 
 
 def plot_scaled_airfoil_coordinates(original_path, original_tc_ratio, new_path, new_tc_ratio):
