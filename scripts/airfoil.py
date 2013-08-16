@@ -215,10 +215,12 @@ class BiplaneAirfoil(_Airfoil):
         .lower_filename
         .lower_path
         .lower_chord
+        .lower_SW_ref_pt_fraction
         .upper_name
         .upper_filename
         .upper_path
         .upper_chord
+        .upper_SW_ref_pt_fraction
         .gap_to_chord_ratio
         .gap_fraction
         .stagger_to_chord_ratio
@@ -227,18 +229,20 @@ class BiplaneAirfoil(_Airfoil):
         .total_chord
 
     """
-    def __init__(self, name, name_L, filename_L, chord_L, name_U, filename_U,
-        chord_U, pitch_axis, twist, gap_to_chord_ratio, gap_fraction,
-        stagger_to_chord_ratio):
+    def __init__(self, name, name_L, filename_L, chord_L, SW_ref_pt_L, name_U,
+        filename_U, chord_U, SW_ref_pt_U, pitch_axis, twist,
+        gap_to_chord_ratio, gap_fraction, stagger_to_chord_ratio):
         _Airfoil.__init__(self, name, pitch_axis, twist)
         self.lower_name = name_L
         self.lower_filename = filename_L
         self.lower_path = ''
         self.lower_chord = chord_L
+        self.lower_SW_ref_pt_fraction = SW_ref_pt_L
         self.upper_name = name_U
         self.upper_filename = filename_U
         self.upper_path = ''
         self.upper_chord = chord_U
+        self.upper_SW_ref_pt_fraction = SW_ref_pt_U
         self.gap_to_chord_ratio = gap_to_chord_ratio
         self.gap_fraction = gap_fraction
         self.stagger_to_chord_ratio = stagger_to_chord_ratio

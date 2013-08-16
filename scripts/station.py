@@ -427,9 +427,11 @@ class BiplaneStation(_Station):
             name_L=stn_series['airfoil'],
             filename_L=stn_series['airfoil']+'.txt',
             chord_L=stn_series['chord'],
+            SW_ref_pt_L=stn_series['lower SW ref pt fraction'],
             name_U=stn_series['airfoil upper'],
             filename_U=stn_series['airfoil upper']+'.txt',
             chord_U=stn_series['chord'],
+            SW_ref_pt_U=stn_series['upper SW ref pt fraction'],
             pitch_axis=stn_series['pitch axis'],
             twist=stn_series['twist'],
             gap_to_chord_ratio=stn_series['gap-to-chord ratio'],
@@ -486,30 +488,23 @@ class BiplaneStation(_Station):
         self.logf.flush()
         self.logf.close()
 
-    def find_part_edges(self, upper_lower_pitch_axis=0.375):
+    def find_part_edges(self):
         """Find the edges of each structural part in this biplane station.
 
         Saves coordinates (in meters) as '.left' and '.right' attributes
         (floats) within each Part instance (OOP style).
 
-        Parameters
-        ----------
-        upper_lower_pitch_axis : float, (default: 0.375) the "steady state"
-            pitch axis fraction in the outboard region of the Sandia blade,
-            used to provide a reference point for building internal structural
-            parts in STAGGERED biplane sections.
-
         """
         st = self.structure
         af = self.airfoil
         # upper airfoil
-        upper_refpt = -(af.pitch_axis*af.total_chord)+(upper_lower_pitch_axis*af.upper_chord)
+        upper_refpt = -(af.pitch_axis*af.total_chord)+(af.upper_SW_ref_pt_fraction*af.upper_chord)
         if st.upper_spar_cap.exists():
             st.upper_spar_cap.left = upper_refpt - st.upper_spar_cap.base/2.0
             st.upper_spar_cap.right = upper_refpt + st.upper_spar_cap.base/2.0
         if st.upper_TE_reinforcement.exists():
-            st.upper_TE_reinforcement.left = upper_refpt - upper_lower_pitch_axis*af.upper_chord+af.upper_chord-st.upper_TE_reinforcement.base
-            st.upper_TE_reinforcement.right = upper_refpt - upper_lower_pitch_axis*af.upper_chord+af.upper_chord
+            st.upper_TE_reinforcement.left = upper_refpt - af.upper_SW_ref_pt_fraction*af.upper_chord+af.upper_chord-st.upper_TE_reinforcement.base
+            st.upper_TE_reinforcement.right = upper_refpt - af.upper_SW_ref_pt_fraction*af.upper_chord+af.upper_chord
         if st.upper_shear_web_1.exists():
             st.upper_shear_web_1.right = upper_refpt + st.upper_shear_web_1.x2
             st.upper_shear_web_1.left = upper_refpt + st.upper_shear_web_1.x2-st.upper_shear_web_1.base
@@ -520,7 +515,7 @@ class BiplaneStation(_Station):
             st.upper_shear_web_3.left = upper_refpt + st.upper_shear_web_3.x2
             st.upper_shear_web_3.right = upper_refpt + st.upper_shear_web_3.x2+st.upper_shear_web_3.base
         if st.upper_LE_panel.exists():
-            st.upper_LE_panel.left = upper_refpt - upper_lower_pitch_axis*af.upper_chord
+            st.upper_LE_panel.left = upper_refpt - af.upper_SW_ref_pt_fraction*af.upper_chord
             if st.upper_shear_web_1.exists():
                 st.upper_LE_panel.right = st.upper_shear_web_1.left
             elif st.upper_spar_cap.exists():
@@ -542,13 +537,13 @@ class BiplaneStation(_Station):
                 st.upper_aft_panel.right = np.nan
                 raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
         # lower airfoil
-        lower_refpt = -(af.pitch_axis*af.total_chord)+(af.stagger)+(upper_lower_pitch_axis*af.lower_chord)
+        lower_refpt = -(af.pitch_axis*af.total_chord)+(af.stagger)+(af.lower_SW_ref_pt_fraction*af.lower_chord)
         if st.lower_spar_cap.exists():
             st.lower_spar_cap.left = lower_refpt - st.lower_spar_cap.base/2.0
             st.lower_spar_cap.right = lower_refpt + st.lower_spar_cap.base/2.0
         if st.lower_TE_reinforcement.exists():
-            st.lower_TE_reinforcement.left = lower_refpt - upper_lower_pitch_axis*af.lower_chord+af.lower_chord-st.lower_TE_reinforcement.base
-            st.lower_TE_reinforcement.right = lower_refpt - upper_lower_pitch_axis*af.lower_chord+af.lower_chord
+            st.lower_TE_reinforcement.left = lower_refpt - af.lower_SW_ref_pt_fraction*af.lower_chord+af.lower_chord-st.lower_TE_reinforcement.base
+            st.lower_TE_reinforcement.right = lower_refpt - af.lower_SW_ref_pt_fraction*af.lower_chord+af.lower_chord
         if st.lower_shear_web_1.exists():
             st.lower_shear_web_1.right = lower_refpt + st.lower_shear_web_1.x2
             st.lower_shear_web_1.left = lower_refpt + st.lower_shear_web_1.x2-st.lower_shear_web_1.base
@@ -559,7 +554,7 @@ class BiplaneStation(_Station):
             st.lower_shear_web_3.left = lower_refpt + st.lower_shear_web_3.x2
             st.lower_shear_web_3.right = lower_refpt + st.lower_shear_web_3.x2+st.lower_shear_web_3.base
         if st.lower_LE_panel.exists():
-            st.lower_LE_panel.left = lower_refpt - upper_lower_pitch_axis*af.lower_chord
+            st.lower_LE_panel.left = lower_refpt - af.lower_SW_ref_pt_fraction*af.lower_chord
             if st.lower_shear_web_1.exists():
                 st.lower_LE_panel.right = st.lower_shear_web_1.left
             elif st.lower_spar_cap.exists():
