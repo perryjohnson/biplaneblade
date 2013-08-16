@@ -581,7 +581,8 @@ class MonoplaneBlade(_Blade):
                    station.airfoil.chord*station.airfoil.pitch_axis - 4.0),
                 z=station.coords.x3,
                 text='{0}'.format(station.station_num),
-                scale=0.5)
+                scale=0.5,
+                color=(120.0/256.0,0.0,146.0/256.0))
 
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
@@ -1236,21 +1237,18 @@ class BiplaneBlade(_Blade):
         """Plots station numbers next to each cross-section."""
         for station in self.list_of_stations:
             if station.type == 'monoplane':
-                mlab.text3d(
-                    x=station.coords.x1,
-                    y=(station.coords.x2 - 
-                       station.airfoil.chord*station.airfoil.pitch_axis - 4.0),
-                    z=station.coords.x3,
-                    text='{0}'.format(station.station_num),
-                    scale=0.5)
+                y_coord = (station.coords.x2 - 
+                       station.airfoil.chord*station.airfoil.pitch_axis - 4.0)
             elif station.type == 'biplane':
-                mlab.text3d(
-                    x=station.coords.x1,
-                    y=(station.coords.x2 - 4.0 -
-                       station.airfoil.total_chord*station.airfoil.pitch_axis),
-                    z=station.coords.x3,
-                    text='{0}'.format(station.station_num),
-                    scale=0.5)
+                y_coord = (station.coords.x2 - 4.0 -
+                   station.airfoil.total_chord*station.airfoil.pitch_axis)
+            mlab.text3d(
+                x=station.coords.x1,
+                y=y_coord,
+                z=station.coords.x3,
+                text='{0}'.format(station.station_num),
+                scale=0.5,
+                color=(120.0/256.0,0.0,146.0/256.0))
 
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
