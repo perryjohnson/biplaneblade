@@ -295,7 +295,8 @@ class MonoplaneBlade(_Blade):
             self.logf.flush()
             self.logf.close()
 
-    def plot_all_airfoils(self, lw, color='k', twist_flag=True):
+    def plot_all_airfoils(self, lw, color='k', twist_flag=True,
+        export_flag=True):
         """Plot all the airfoils in the blade with Mayavi's mlab.
 
         You must import the blade and its airfoil coordinates first.
@@ -305,6 +306,8 @@ class MonoplaneBlade(_Blade):
         lw : float, line width
         color : str or RGB tuple, line color (default: 'k')
         twist_flag : bool, do/don't twist the airfoils about the pitch axis
+        export_flag : bool, do/don't write airfoil coords to a text file in the
+            station path, which can be imported into SolidWorks as an XYZ curve
 
         Usage
         -----
@@ -333,6 +336,18 @@ class MonoplaneBlade(_Blade):
             x = np.ones((l,))*station.coords.x1  # spanwise coordinate
             # plot the airfoil on the screen
             mlab.plot3d(x,y,z, color=c, tube_radius=lw)
+            if export_flag:
+                filename = os.path.join(station.station_path,
+                    'stn{0:02d}_coords.txt'.format(station.station_num))
+                f = open(filename, 'w')
+                for i in range(l):
+                    f.write('{0:12.9f}\t{1:12.9f}\t{2:12.9f}\n'.format(x[i],y[i],z[i]))
+                f.close()
+                print ' Wrote airfoil coordinates to {0}'.format(filename)
+                self.logf = open(_Blade.logfile_name, "a")
+                self.logf.write("[{0}] Wrote airfoil coordinates to: {1}\n".format(datetime.datetime.now(), filename))
+                self.logf.flush()
+                self.logf.close()
 
     def get_LE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade leading edge."""
@@ -587,7 +602,8 @@ class MonoplaneBlade(_Blade):
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
         color_pitch_axis='r', color_LE='0.1', color_TE='0.1',
-        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0), stn_nums=False):
+        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0), stn_nums=False,
+        export=True):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -610,12 +626,14 @@ class MonoplaneBlade(_Blade):
         color_SW : str or RGB tuple, line color of shear webs
             (default: light green)
         stn_nums : boolean, plot/don't plot station numbers
+        export : bool, do/don't write airfoil coords to a text file in the
+            station path, which can be imported into SolidWorks as an XYZ curve
 
         """
         self.create_plot()
         if airfoils:
             self.plot_all_airfoils(lw=line_width, color=color_airfoils,
-                twist_flag=twist)
+                twist_flag=twist, export_flag=export)
         if pitch_axis:
             self.plot_pitch_axis(lw=line_width, color=color_pitch_axis)
         if LE:
@@ -731,7 +749,8 @@ class BiplaneBlade(_Blade):
                 self.logf.flush()
                 self.logf.close()
 
-    def plot_all_airfoils(self, lw, color='k', twist_flag=True):
+    def plot_all_airfoils(self, lw, color='k', twist_flag=True,
+        export_flag=True):
         """Plot all the airfoils in the biplane blade with Mayavi's mlab.
 
         You must import the blade and its airfoil coordinates first.
@@ -741,6 +760,8 @@ class BiplaneBlade(_Blade):
         lw : float, line width
         color : str or RGB tuple, line color (default: 'k')
         twist_flag : bool, do/don't twist the airfoils about the pitch axis
+        export_flag : bool, do/don't write airfoil coords to a text file in the
+            station path, which can be imported into SolidWorks as an XYZ curve
 
         Usage
         -----
@@ -770,6 +791,18 @@ class BiplaneBlade(_Blade):
                 x = np.ones((l,))*station.coords.x1  # spanwise coordinate
                 # plot the airfoil on the screen
                 mlab.plot3d(x,y,z, color=c, tube_radius=lw)
+                if export_flag:
+                    filename = os.path.join(station.station_path,
+                        'stn{0:02d}_coords.txt'.format(station.station_num))
+                    f = open(filename, 'w')
+                    for i in range(l):
+                        f.write('{0:12.9f}\t{1:12.9f}\t{2:12.9f}\n'.format(x[i],y[i],z[i]))
+                    f.close()
+                    print ' Wrote airfoil coordinates to {0}'.format(filename)
+                    self.logf = open(_Blade.logfile_name, "a")
+                    self.logf.write("[{0}] Wrote airfoil coordinates to: {1}\n".format(datetime.datetime.now(), filename))
+                    self.logf.flush()
+                    self.logf.close()
             elif station.type == 'biplane':
                 if twist_flag:
                     station.airfoil.rotate_coords()
@@ -783,6 +816,18 @@ class BiplaneBlade(_Blade):
                 x = np.ones((l,))*station.coords.x1  # spanwise coordinate
                 # plot the lower airfoil on the screen
                 mlab.plot3d(x,y,z, color=c, tube_radius=lw)
+                if export_flag:
+                    filename = os.path.join(station.station_path,
+                        'stn{0:02d}_lower_coords.txt'.format(station.station_num))
+                    f = open(filename, 'w')
+                    for i in range(l):
+                        f.write('{0}\t{1}\t{2}\n'.format(x[i],y[i],z[i]))
+                    f.close()
+                    print ' Wrote lower airfoil coordinates to {0}'.format(filename)
+                    self.logf = open(_Blade.logfile_name, "a")
+                    self.logf.write("[{0}] Wrote lower airfoil coordinates to: {1}\n".format(datetime.datetime.now(), filename))
+                    self.logf.flush()
+                    self.logf.close()
                 # assemble upper airfoil coordinates for mlab -----------------
                 try:
                     y = station.airfoil.upper_coords['x']  # chordwise coordinate
@@ -793,6 +838,18 @@ class BiplaneBlade(_Blade):
                 # (reuse same spanwise coordinates): x
                 # plot the lower airfoil on the screen
                 mlab.plot3d(x,y,z, color=c, tube_radius=lw)
+                if export_flag:
+                    filename = os.path.join(station.station_path,
+                        'stn{0:02d}_upper_coords.txt'.format(station.station_num))
+                    f = open(filename, 'w')
+                    for i in range(l):
+                        f.write('{0:12.9f}\t{1:12.9f}\t{2:12.9f}\n'.format(x[i],y[i],z[i]))
+                    f.close()
+                    print ' Wrote upper airfoil coordinates to {0}'.format(filename)
+                    self.logf = open(_Blade.logfile_name, "a")
+                    self.logf.write("[{0}] Wrote upper airfoil coordinates to: {1}\n".format(datetime.datetime.now(), filename))
+                    self.logf.flush()
+                    self.logf.close()
 
     def get_LE_coords(self, twist_flag=True):
         """Returns a list of (x,y,z) coordinates for the blade leading edge."""
@@ -1253,7 +1310,8 @@ class BiplaneBlade(_Blade):
     def plot_blade(self, line_width=0.08, airfoils=True, pitch_axis=False,
         LE=True, TE=True, twist=True, SW=True, color_airfoils='0.1',
         color_pitch_axis='r', color_LE='0.1', color_TE='0.1',
-        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0), stn_nums=False):
+        color_SW=(37.0/256.0,197.0/256.0,85.0/256.0), stn_nums=False,
+        export=True):
         """Plots a wireframe representation of the blade, with Mayavi mlab.
 
         Parameters
@@ -1276,12 +1334,14 @@ class BiplaneBlade(_Blade):
         color_SW : str or RGB tuple, line color of shear webs
             (default: light green)
         stn_nums : boolean, plot/don't plot station numbers
+        export : bool, do/don't write airfoil coords to a text file in the
+            station path, which can be imported into SolidWorks as an XYZ curve
 
         """
         self.create_plot()
         if airfoils:
             self.plot_all_airfoils(lw=line_width, color=color_airfoils,
-                twist_flag=twist)
+                twist_flag=twist, export_flag=export)
         if pitch_axis:
             self.plot_pitch_axis(lw=line_width, color=color_pitch_axis)
         if LE:
