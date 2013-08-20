@@ -110,7 +110,7 @@ if biplane_flap_sym_no_stagger_flag:
     # b1.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b1.plot_blade(stn_nums=True, twist=False)
+    b1.plot_blade(stn_nums=False, twist=True)
 
 
 # --- biplane blade, flapwise symmetric, stagger-------------------------------

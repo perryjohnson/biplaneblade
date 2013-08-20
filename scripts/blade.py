@@ -821,7 +821,7 @@ class BiplaneBlade(_Blade):
                         'stn{0:02d}_lower_coords.txt'.format(station.station_num))
                     f = open(filename, 'w')
                     for i in range(l):
-                        f.write('{0}\t{1}\t{2}\n'.format(x[i],y[i],z[i]))
+                        f.write('{0:12.9f}\t{1:12.9f}\t{2:12.9f}\n'.format(x[i],y[i],z[i]))
                     f.close()
                     print ' Wrote lower airfoil coordinates to {0}'.format(filename)
                     self.logf = open(_Blade.logfile_name, "a")
