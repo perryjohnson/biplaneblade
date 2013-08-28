@@ -43,8 +43,8 @@ reload(bl)
 import scripts.compare_blades as cb
 
 
-sandia_flag = False
-biplane_flap_sym_no_stagger_flag = True
+sandia_flag = True
+biplane_flap_sym_no_stagger_flag = False
 biplane_flap_sym_stagger_flag = False
 biplane_flap_asym_no_stagger_flag = False
 biplane_flap_asym_stagger_flag = False
@@ -74,10 +74,12 @@ if sandia_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
+    m.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
+        selected_stations=range(26,35))
     # m.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    m.plot_blade(stn_nums=True, twist=False)
+    m.plot_blade(stn_nums=True, twist=True)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
@@ -107,8 +109,9 @@ if biplane_flap_sym_no_stagger_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
-    # b1.plot_selected_cross_sections(figsize=(22,12), nrows=2, ncols=4,
-        # selected_stations=range(12,20))
+    b1.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
+        selected_stations=range(32,41))
+    # b1.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     b1.plot_blade(stn_nums=True, twist=True)

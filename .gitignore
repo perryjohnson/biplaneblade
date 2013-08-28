@@ -4,4 +4,9 @@ biplane_flap-asym_no-stagger/stn*
 biplane_flap-asym_stagger/stn*
 biplane_flap-sym_no-stagger/stn*
 biplane_flap-sym_stagger/stn*
+sandia_blade/*.png
+biplane_flap-asym_no-stagger/*.png
+biplane_flap-asym_stagger/*.png
+biplane_flap-sym_no-stagger/*.png
+biplane_flap-sym_stagger/*.png
 *.log
