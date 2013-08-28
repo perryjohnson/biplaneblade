@@ -264,7 +264,8 @@ class MonoplaneStation(_Station):
             h_TE_reinf_uniax=stn_series['TE reinf height uniax'],
             h_TE_reinf_foam=stn_series['TE reinf height foam'],
             h_LE_panel=stn_series['LE panel height'],
-            h_aft_panel=stn_series['aft panel height'],
+            h_aft_panel_1=stn_series['aft panel 1 height'],
+            h_aft_panel_2=stn_series['aft panel 2 height'],
             h_int_surf_triax=stn_series['internal surface height triax'],
             h_int_surf_resin=stn_series['internal surface height resin'],
             h_ext_surf_triax=stn_series['external surface height triax'],
@@ -368,19 +369,32 @@ class MonoplaneStation(_Station):
             else:
                 st.LE_panel.right = np.nan
                 raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
-        if st.aft_panel.exists():
+        if st.aft_panel_1.exists():
             if st.shear_web_2.exists():
-                st.aft_panel.left = st.shear_web_2.right
+                st.aft_panel_1.left = st.shear_web_2.right
             elif st.spar_cap.exists():
-                st.aft_panel.left = st.spar_cap.right
+                st.aft_panel_1.left = st.spar_cap.right
             else:
-                st.aft_panel.left = np.nan
-                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+                st.aft_panel_1.left = np.nan
+                raise Warning("'aft panel 1, left' is undefined for station #{0}".format(self.station_num))
+            if st.shear_web_3.exists():
+                st.aft_panel_1.right = st.shear_web_3.left
+            elif st.TE_reinforcement.exists():
+                st.aft_panel_1.right = st.TE_reinforcement.left
+            else:
+                st.aft_panel_1.right = np.nan
+                raise Warning("'aft panel 1, right' is undefined for station #{0}".format(self.station_num))
+        if st.aft_panel_2.exists():
+            if st.shear_web_3.exists():
+                st.aft_panel_2.left = st.shear_web_3.right
+            else:
+                st.aft_panel_2.left = np.nan
+                raise Warning("'aft panel 2, left' is undefined for station #{0}".format(self.station_num))
             if st.TE_reinforcement.exists():
-                st.aft_panel.right = st.TE_reinforcement.left
+                st.aft_panel_2.right = st.TE_reinforcement.left
             else:
-                st.aft_panel.right = np.nan
-                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+                st.aft_panel_2.right = np.nan
+                raise Warning("'aft panel 2, right' is undefined for station #{0}".format(self.station_num))
 
     def plot_part_edges(self, axes):
         """Plot color block for each structural part region.
@@ -404,8 +418,10 @@ class MonoplaneStation(_Station):
                 axes.axvspan(st.TE_reinforcement.left, st.TE_reinforcement.right, facecolor='pink', edgecolor='pink', alpha=0.7)
             if st.LE_panel.exists():
                 axes.axvspan(st.LE_panel.left, st.LE_panel.right, facecolor='magenta', edgecolor='magenta', alpha=0.7)
-            if st.aft_panel.exists():
-                axes.axvspan(st.aft_panel.left, st.aft_panel.right, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.aft_panel_1.exists():
+                axes.axvspan(st.aft_panel_1.left, st.aft_panel_1.right, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.aft_panel_2.exists():
+                axes.axvspan(st.aft_panel_2.left, st.aft_panel_2.right, facecolor='orange', edgecolor='orange', alpha=0.7)
             if st.shear_web_1.exists():
                 axes.axvspan(st.shear_web_1.left, st.shear_web_1.right, facecolor='green', edgecolor='green')
             if st.shear_web_2.exists():
@@ -457,7 +473,8 @@ class BiplaneStation(_Station):
             h_TE_reinf_uniax=stn_series['TE reinf height uniax'],
             h_TE_reinf_foam=stn_series['TE reinf height foam'],
             h_LE_panel=stn_series['LE panel height'],
-            h_aft_panel=stn_series['aft panel height'],
+            h_aft_panel_1=stn_series['aft panel 1 height'],
+            h_aft_panel_2=stn_series['aft panel 2 height'],
             h_int_surf_triax=stn_series['internal surface height triax'],
             h_int_surf_resin=stn_series['internal surface height resin'],
             h_ext_surf_triax=stn_series['external surface height triax'],
@@ -478,7 +495,8 @@ class BiplaneStation(_Station):
             h_TE_reinf_uniax_u=stn_series['TE reinf height uniax upper'],
             h_TE_reinf_foam_u=stn_series['TE reinf height foam upper'],
             h_LE_panel_u=stn_series['LE panel height upper'],
-            h_aft_panel_u=stn_series['aft panel height upper'],
+            h_aft_panel_1_u=stn_series['aft panel 1 height upper'],
+            h_aft_panel_2_u=stn_series['aft panel 2 height upper'],
             h_int_surf_triax_u=stn_series['internal surface height triax upper'],
             h_int_surf_resin_u=stn_series['internal surface height resin upper'],
             h_ext_surf_triax_u=stn_series['external surface height triax upper'],
@@ -523,19 +541,32 @@ class BiplaneStation(_Station):
             else:
                 st.upper_LE_panel.right = np.nan
                 raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
-        if st.upper_aft_panel.exists():
+        if st.upper_aft_panel_1.exists():
             if st.upper_shear_web_2.exists():
-                st.upper_aft_panel.left = st.upper_shear_web_2.right
+                st.upper_aft_panel_1.left = st.upper_shear_web_2.right
             elif st.upper_spar_cap.exists():
-                st.upper_aft_panel.left = st.upper_spar_cap.right
+                st.upper_aft_panel_1.left = st.upper_spar_cap.right
             else:
-                st.upper_aft_panel.left = np.nan
-                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+                st.upper_aft_panel_1.left = np.nan
+                raise Warning("'aft panel 1, left' is undefined for station #{0}".format(self.station_num))
+            if st.upper_shear_web_3.exists():
+                st.upper_aft_panel_1.right = st.upper_shear_web_3.left
+            elif st.upper_TE_reinforcement.exists():
+                st.upper_aft_panel_1.right = st.upper_TE_reinforcement.left
+            else:
+                st.upper_aft_panel_1.right = np.nan
+                raise Warning("'aft panel 1, right' is undefined for station #{0}".format(self.station_num))
+        if st.upper_aft_panel_2.exists():
+            if st.upper_shear_web_3.exists():
+                st.upper_aft_panel_2.left = st.upper_shear_web_3.right
+            else:
+                st.upper_aft_panel_2.left = np.nan
+                raise Warning("'aft panel 2, left' is undefined for station #{0}".format(self.station_num))
             if st.upper_TE_reinforcement.exists():
-                st.upper_aft_panel.right = st.upper_TE_reinforcement.left
+                st.upper_aft_panel_2.right = st.upper_TE_reinforcement.left
             else:
-                st.upper_aft_panel.right = np.nan
-                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+                st.upper_aft_panel_2.right = np.nan
+                raise Warning("'aft panel 2, right' is undefined for station #{0}".format(self.station_num))
         # lower airfoil
         lower_refpt = -(af.pitch_axis*af.total_chord)+(af.stagger)+(af.lower_SW_ref_pt_fraction*af.lower_chord)
         if st.lower_spar_cap.exists():
@@ -562,19 +593,32 @@ class BiplaneStation(_Station):
             else:
                 st.lower_LE_panel.right = np.nan
                 raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
-        if st.lower_aft_panel.exists():
+        if st.lower_aft_panel_1.exists():
             if st.lower_shear_web_2.exists():
-                st.lower_aft_panel.left = st.lower_shear_web_2.right
+                st.lower_aft_panel_1.left = st.lower_shear_web_2.right
             elif st.lower_spar_cap.exists():
-                st.lower_aft_panel.left = st.lower_spar_cap.right
+                st.lower_aft_panel_1.left = st.lower_spar_cap.right
             else:
-                st.lower_aft_panel.left = np.nan
-                raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
+                st.lower_aft_panel_1.left = np.nan
+                raise Warning("'aft panel 1, left' is undefined for station #{0}".format(self.station_num))
+            if st.lower_shear_web_3.exists():
+                st.lower_aft_panel_1.right = st.lower_shear_web_3.left
+            elif st.lower_TE_reinforcement.exists():
+                st.lower_aft_panel_1.right = st.lower_TE_reinforcement.left
+            else:
+                st.lower_aft_panel_1.right = np.nan
+                raise Warning("'aft panel 1, right' is undefined for station #{0}".format(self.station_num))
+        if st.lower_aft_panel_2.exists():
+            if st.lower_shear_web_3.exists():
+                st.lower_aft_panel_2.left = st.lower_shear_web_3.right
+            else:
+                st.lower_aft_panel_2.left = np.nan
+                raise Warning("'aft panel 2, left' is undefined for station #{0}".format(self.station_num))
             if st.lower_TE_reinforcement.exists():
-                st.lower_aft_panel.right = st.lower_TE_reinforcement.left
+                st.lower_aft_panel_2.right = st.lower_TE_reinforcement.left
             else:
-                st.lower_aft_panel.right = np.nan
-                raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
+                st.lower_aft_panel_2.right = np.nan
+                raise Warning("'aft panel 2, right' is undefined for station #{0}".format(self.station_num))
 
     def plot_part_edges(self, axes):
         """Plot color block for each structural part region.
@@ -599,8 +643,10 @@ class BiplaneStation(_Station):
                 axes.axvspan(st.upper_TE_reinforcement.left, st.upper_TE_reinforcement.right, ymin=0.5, facecolor='pink', edgecolor='pink', alpha=0.7)
             if st.upper_LE_panel.exists():
                 axes.axvspan(st.upper_LE_panel.left, st.upper_LE_panel.right, ymin=0.5, facecolor='magenta', edgecolor='magenta', alpha=0.7)
-            if st.upper_aft_panel.exists():
-                axes.axvspan(st.upper_aft_panel.left, st.upper_aft_panel.right, ymin=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.upper_aft_panel_1.exists():
+                axes.axvspan(st.upper_aft_panel_1.left, st.upper_aft_panel_1.right, ymin=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.upper_aft_panel_2.exists():
+                axes.axvspan(st.upper_aft_panel_2.left, st.upper_aft_panel_2.right, ymin=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
             if st.upper_shear_web_1.exists():
                 axes.axvspan(st.upper_shear_web_1.left, st.upper_shear_web_1.right, ymin=0.5, facecolor='green', edgecolor='green')
             if st.upper_shear_web_2.exists():
@@ -617,8 +663,10 @@ class BiplaneStation(_Station):
                 axes.axvspan(st.lower_TE_reinforcement.left, st.lower_TE_reinforcement.right, ymax=0.5, facecolor='pink', edgecolor='pink', alpha=0.7)
             if st.lower_LE_panel.exists():
                 axes.axvspan(st.lower_LE_panel.left, st.lower_LE_panel.right, ymax=0.5, facecolor='magenta', edgecolor='magenta', alpha=0.7)
-            if st.lower_aft_panel.exists():
-                axes.axvspan(st.lower_aft_panel.left, st.lower_aft_panel.right, ymax=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.lower_aft_panel_1.exists():
+                axes.axvspan(st.lower_aft_panel_1.left, st.lower_aft_panel_1.right, ymax=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
+            if st.lower_aft_panel_2.exists():
+                axes.axvspan(st.lower_aft_panel_2.left, st.lower_aft_panel_2.right, ymax=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
             if st.lower_shear_web_1.exists():
                 axes.axvspan(st.lower_shear_web_1.left, st.lower_shear_web_1.right, ymax=0.5, facecolor='green', edgecolor='green')
             if st.lower_shear_web_2.exists():

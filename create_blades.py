@@ -74,12 +74,12 @@ if sandia_flag:
     #     station.plot_part_edges(axes)
     #     station.show_plot()
     #     # station.save_plot(fig)
-    m.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
-        selected_stations=range(26,35))
-    # m.plot_selected_cross_sections()
+    # m.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
+    #     selected_stations=range(26,35))
+    m.plot_selected_cross_sections()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    m.plot_blade(stn_nums=True, twist=True)
+    # m.plot_blade(stn_nums=True, twist=True)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
@@ -101,20 +101,20 @@ if biplane_flap_sym_no_stagger_flag:
         station.find_part_edges()
         station.find_all_part_cs_coords()
 
-    # # create some airfoil plots in Matplotlib
-    # # station = b1.list_of_stations[10]
+    # create some airfoil plots in Matplotlib
+    # station = b1.list_of_stations[10]
     # for station in b1.list_of_stations:
     #     (fig, axes) = station.create_plot()
     #     station.airfoil.plot_coords(fig, axes, split_flag=True)
     #     station.plot_part_edges(axes)
-    #     station.show_plot()
-    #     # station.save_plot(fig)
-    b1.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
-        selected_stations=range(32,41))
-    # b1.plot_selected_cross_sections()
+    #     # station.show_plot()
+    #     station.save_plot(fig)
+    # b1.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
+    #     selected_stations=range(32,41))
+    b1.plot_selected_cross_sections(selected_stations=[1,7,11,13,16,22,25,29,32,34,36,39])
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    b1.plot_blade(stn_nums=True, twist=True)
+    # b1.plot_blade(stn_nums=True, twist=True)
 
 
 # --- biplane blade, flapwise symmetric, stagger-------------------------------
