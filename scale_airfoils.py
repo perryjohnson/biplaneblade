@@ -13,7 +13,7 @@ Last updated: August 16, 2013
 """
 
 
-import scripts.scale_airfoil_thickness as sat
+import lib.scale_airfoil_thickness as sat
 
 
 airfoil_list = []

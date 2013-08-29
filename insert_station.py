@@ -31,7 +31,7 @@ Last updated: August 16, 2013
 
 
 import scipy.interpolate as ipl
-import scripts.blade as bl
+import lib.blade as bl
 
 
 ### SET THESE PARAMETERS ------------------------------------------------------

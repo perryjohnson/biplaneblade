@@ -38,9 +38,9 @@ Last updated: August 8, 2013
 """
 
 
-import scripts.blade as bl
+import lib.blade as bl
 reload(bl)
-import scripts.compare_blades as cb
+import lib.compare_blades as cb
 
 
 sandia_flag = True
