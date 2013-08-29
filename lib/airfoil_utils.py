@@ -1,6 +1,11 @@
 """A module that splits an airfoil curve into separate segments for each
 structural component: spar caps, shear webs, aft panels, etc.
 
+*****
+Note: the `airfoil_utils` module will be deprecated. All methods from 
+`airfoil_utils` will be moved into the `Station` class in `station.py`
+*****
+
 Author: Perry Roth-Johnson
 Last updated: July 24, 2013
 
