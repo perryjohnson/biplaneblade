@@ -250,8 +250,8 @@ class _Blade:
         """Plots selected cross-sections of the blade."""
         if len(selected_stations) != nrows*ncols:
             raise ValueError("The number of items in 'selected_stations' must equal nrows*ncols.")
-        fig, axes = plt.subplots(figsize=figsize, nrows=nrows, ncols=ncols)
-        # fig.set_title('Selected cross-sections for {0}'.format(self.name))
+        fig, axes = plt.subplots(figsize=figsize, nrows=nrows, ncols=ncols,
+            num='Selected cross-sections for {0}'.format(self.name))
         # format each subplot
         i = 0
         for row_of_axes in axes:

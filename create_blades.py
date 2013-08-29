@@ -44,7 +44,7 @@ import lib.compare_blades as cb
 
 
 sandia_flag = True
-biplane_flap_sym_no_stagger_flag = False
+biplane_flap_sym_no_stagger_flag = True
 biplane_flap_sym_stagger_flag = False
 biplane_flap_asym_no_stagger_flag = False
 biplane_flap_asym_stagger_flag = False
