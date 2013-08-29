@@ -52,8 +52,6 @@ p1_patch = PolygonPatch(p1, fc=GRAY, ec=GRAY, alpha=0.5, zorder=1)
 # ax.add_patch(p1_patch)
 
 # erode the airfoil polygon by the desired laminate thickness
-# eroded = p1.buffer(-0.01)
-# p2 = eroded.__geo_interface__  # you can use __geo_interface__ to get the points back out, I think, if you call object.__geo_interface__ from the IPython command line, you get a dictionary of coordinates
 p2 = p1.buffer(-0.01)
 p2_patch = PolygonPatch(p2, fc=BLUE, ec=BLUE, alpha=0.5, zorder=2)
 # ax.add_patch(p2_patch)
@@ -64,14 +62,12 @@ p3 = p1.difference(p2)
 p3_patch = PolygonPatch(p3, fc=(1,0,0), ec=(1,0,0), alpha=0.7, zorder=3)
 ax.add_patch(p3_patch)
 
-# use clipping to cut out a structural part (e.g. spar cap) from `eroded`
-left_box = Polygon([(-0.1,-0.2),(0.2,-0.2),(0.2,0.2),(-0.1,0.2)])
-right_box = Polygon([(0.6,-0.2),(1.1,-0.2),(1.1,0.2),(0.6,0.2)])
-left_box_patch = PolygonPatch(left_box, fc=(0,1,0), ec=(0,1,0), alpha=0.3, zorder=4)
-right_box_patch = PolygonPatch(right_box, fc=(0,0,1), ec=(0,0,1), alpha=0.3, zorder=4)
-ax.add_patch(left_box_patch)
-ax.add_patch(right_box_patch)
-p4 = p3.difference(left_box).difference(right_box)
+# use clipping to cut out a structural part (e.g. spar cap)
+# ref: http://toblerity.org/shapely/manual.html#object.intersection
+bounding_box = Polygon([(0.2,-0.2),(0.6,-0.2),(0.6,0.2),(0.2,0.2)])
+bounding_box_patch = PolygonPatch(bounding_box, fc=(0,1,0), ec=(0,1,0), alpha=0.3, zorder=4)
+ax.add_patch(bounding_box_patch)
+p4 = p3.intersection(bounding_box)
 
 # p4 is a `MultiPolygon`: it contains two polygons (upper and lower spar caps)
 # extract each polygon and convert them to separate patches
