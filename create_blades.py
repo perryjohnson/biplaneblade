@@ -40,11 +40,11 @@ Last updated: August 8, 2013
 
 import lib.blade as bl
 reload(bl)
-import lib.compare_blades as cb
+# import lib.compare_blades as cb
 
 
 sandia_flag = True
-biplane_flap_sym_no_stagger_flag = True
+biplane_flap_sym_no_stagger_flag = False
 biplane_flap_sym_stagger_flag = False
 biplane_flap_asym_no_stagger_flag = False
 biplane_flap_asym_stagger_flag = False
@@ -63,6 +63,8 @@ if sandia_flag:
         station.airfoil.read_coords()
         station.airfoil.scale_and_translate_coords()
         station.airfoil.split_at_LE_and_TE()
+        # station.airfoil.rotate_coords()
+        station.airfoil.make_polygon()
         station.find_part_edges()
         station.find_all_part_cs_coords()
 
@@ -76,7 +78,7 @@ if sandia_flag:
     #     # station.save_plot(fig)
     # m.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
     #     selected_stations=range(26,35))
-    m.plot_selected_cross_sections()
+    m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     # m.plot_blade(stn_nums=True, twist=True)

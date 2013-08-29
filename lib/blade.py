@@ -246,7 +246,8 @@ class _Blade:
         mlab.plot3d([root,tip],[0,0],[0,0], color=c, tube_radius=lw)
 
     def plot_selected_cross_sections(self, figsize=(22,12), nrows=4, ncols=3,
-        selected_stations=[1,7,11,13,16,20,21,23,26,28,30,33], save_flag=True):
+        selected_stations=[1,7,11,13,16,20,21,23,26,28,30,33], save_flag=True,
+        plot_edges=False, plot_parts=True):
         """Plots selected cross-sections of the blade."""
         if len(selected_stations) != nrows*ncols:
             raise ValueError("The number of items in 'selected_stations' must equal nrows*ncols.")
@@ -262,8 +263,16 @@ class _Blade:
                 ax.grid('on')
                 ax.set_xlabel('x2 [meters]')
                 ax.set_ylabel('x3 [meters]')
-                station.airfoil.plot_coords(fig, ax, split_flag=True)
-                station.plot_part_edges(ax)
+                if plot_edges:
+                    station.airfoil.plot_coords(ax, split_flag=True)
+                    station.plot_part_edges(ax)
+                if plot_parts:
+                    station.airfoil.plot_polygon(ax)
+                    (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
+                    ax.set_xlim([minx*1.2,maxx*1.2])
+                    ax.set_ylim([miny*1.2,maxy*1.2])
+                    if station.structure.spar_cap.exists():
+                        (lower_spar_cap, upper_spar_cap) = station.extract_spar_caps(ax)
                 i += 1
         fig.tight_layout()  # don't allow figure axes and labels to overlap
         plt.show()

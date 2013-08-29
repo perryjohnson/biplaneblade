@@ -9,6 +9,9 @@ Last updated: August 7, 2013
 import numpy as np
 import transformation as tf
 import scipy.interpolate as ipl
+from shapely.geometry import Polygon
+from descartes import PolygonPatch
+# the descartes module translates shapely objects into matplotlib objects
 
 
 class _Airfoil:
@@ -150,7 +153,26 @@ Twist:       {4:6.4f} (degrees)""".format(self.name, self.filename,
             self.suction = self.coords[self.LE_index:]
             self.pressure = self.coords[:self.LE_index+1]
 
-    def plot_coords(self, fig, axes, split_flag=False):
+    def make_polygon(self):
+        """Convert the numpy array of coordinates into a polygon object.
+
+        This allows us to use offset and clipping methods in the Shapely module
+
+        """
+        l = []
+        for point in self.coords:
+            x = float(point['x'])
+            y = float(point['y'])
+            l.append((x,y))
+        self.polygon = Polygon(l)
+
+    def plot_polygon(self, axes):
+        """Plot the polygon representation of this airfoil."""
+        GREY = '#999999'
+        patch = PolygonPatch(self.polygon, fc='None', ec=GREY, alpha=0.8, zorder=1)
+        axes.add_patch(patch)
+
+    def plot_coords(self, axes, split_flag=False):
         """Plot the monoplane airfoil coordinates of this station."""
         if split_flag:
             try:
@@ -507,7 +529,7 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
             self.upper_suction = self.upper_coords[self.upper_LE_index:]
             self.upper_pressure = self.upper_coords[:self.upper_LE_index+1]
 
-    def plot_coords(self, fig, axes, split_flag=False):
+    def plot_coords(self, axes, split_flag=False):
         """Plot the biplane airfoil coordinates of this station."""
         if split_flag:
             # lower airfoil
