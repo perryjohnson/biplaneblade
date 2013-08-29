@@ -61,10 +61,27 @@ p2_patch = PolygonPatch(p2, fc=BLUE, ec=BLUE, alpha=0.5, zorder=2)
 # cut a hole out of the middle of the airfoil polygon
 # ref: http://toblerity.org/shapely/manual.html#object.difference
 p3 = p1.difference(p2)
-p3_patch = PolygonPatch(p3, fc=(1,0,0), ec=(1,0,0), alpha=0.3, zorder=3)
+p3_patch = PolygonPatch(p3, fc=(1,0,0), ec=(1,0,0), alpha=0.7, zorder=3)
 ax.add_patch(p3_patch)
 
 # use clipping to cut out a structural part (e.g. spar cap) from `eroded`
-# ...
+left_box = Polygon([(-0.1,-0.2),(0.2,-0.2),(0.2,0.2),(-0.1,0.2)])
+right_box = Polygon([(0.6,-0.2),(1.1,-0.2),(1.1,0.2),(0.6,0.2)])
+left_box_patch = PolygonPatch(left_box, fc=(0,1,0), ec=(0,1,0), alpha=0.3, zorder=4)
+right_box_patch = PolygonPatch(right_box, fc=(0,0,1), ec=(0,0,1), alpha=0.3, zorder=4)
+ax.add_patch(left_box_patch)
+ax.add_patch(right_box_patch)
+p4 = p3.difference(left_box).difference(right_box)
+
+# p4 is a `MultiPolygon`: it contains two polygons (upper and lower spar caps)
+# extract each polygon and convert them to separate patches
+# (otherwise, PolygonPatch will throw an error)
+sc1 = p4.geoms[0]
+sc2 = p4.geoms[1]
+sc1_patch = PolygonPatch(sc1, fc=(1,1,0), ec=(1,1,0), alpha=0.5, zorder=5)
+sc2_patch = PolygonPatch(sc2, fc=(0,1,1), ec=(0,1,1), alpha=0.5, zorder=5)
+# now we can plot each polygon in matplotlib
+ax.add_patch(sc1_patch)  # lower spar cap
+ax.add_patch(sc2_patch)  # upper spar cap
 
 pyplot.show()
