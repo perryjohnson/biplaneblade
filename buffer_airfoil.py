@@ -84,4 +84,13 @@ sc2_patch = PolygonPatch(sc2, fc=(0,1,1), ec=(0,1,1), alpha=0.5, zorder=5)
 ax.add_patch(sc1_patch)  # lower spar cap
 ax.add_patch(sc2_patch)  # upper spar cap
 
+# print the coordinates of the spar caps
+print "lower spar cap coordinates"
+print "--------------------------"
+print sc1.__geo_interface__
+print ""
+print "upper spar cap coordinates"
+print "--------------------------"
+print sc2.__geo_interface__
+
 pyplot.show()
