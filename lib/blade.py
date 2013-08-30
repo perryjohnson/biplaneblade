@@ -273,7 +273,9 @@ class _Blade:
                     ax.set_xlim([minx*1.2,maxx*1.2])
                     ax.set_ylim([miny*1.2,maxy*1.2])
                     if station.structure.spar_cap.exists():
-                        station.extract_and_plot_spar_caps(ax)
+                        station.extract_and_plot_part('spar cap', ax)
+                    if station.structure.aft_panel_1.exists():
+                        station.extract_and_plot_part('aft panel 1', ax)
                 i += 1
         fig.tight_layout()  # don't allow figure axes and labels to overlap
         plt.show()
