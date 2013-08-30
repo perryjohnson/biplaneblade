@@ -10,8 +10,6 @@ import numpy as np
 import transformation as tf
 import scipy.interpolate as ipl
 from shapely.geometry import Polygon
-from descartes import PolygonPatch
-# the descartes module translates shapely objects into matplotlib objects
 
 
 class _Airfoil:
@@ -165,12 +163,6 @@ Twist:       {4:6.4f} (degrees)""".format(self.name, self.filename,
             y = float(point['y'])
             l.append((x,y))
         self.polygon = Polygon(l)
-
-    def plot_polygon(self, axes):
-        """Plot the polygon representation of this airfoil."""
-        GREY = '#999999'
-        patch = PolygonPatch(self.polygon, fc='None', ec=GREY, alpha=0.8, zorder=1)
-        axes.add_patch(patch)
 
     def plot_coords(self, axes, split_flag=False):
         """Plot the monoplane airfoil coordinates of this station."""

@@ -267,12 +267,13 @@ class _Blade:
                     station.airfoil.plot_coords(ax, split_flag=True)
                     station.plot_part_edges(ax)
                 if plot_parts:
-                    station.airfoil.plot_polygon(ax)
+                    station.plot_polygon(station.airfoil.polygon, ax,
+                        face_color='None', edge_color='#999999', alpha=0.8)
                     (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
                     ax.set_xlim([minx*1.2,maxx*1.2])
                     ax.set_ylim([miny*1.2,maxy*1.2])
                     if station.structure.spar_cap.exists():
-                        (lower_spar_cap, upper_spar_cap) = station.extract_spar_caps(ax)
+                        station.extract_and_plot_spar_caps(ax)
                 i += 1
         fig.tight_layout()  # don't allow figure axes and labels to overlap
         plt.show()

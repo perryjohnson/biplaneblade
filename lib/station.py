@@ -14,6 +14,9 @@ reload(tf)
 from coordinates import *
 from airfoil import *
 from structure import *
+from shapely.geometry import Polygon
+from descartes import PolygonPatch
+# the descartes module translates shapely objects into matplotlib objects
 
 
 class _Station:
@@ -69,6 +72,8 @@ class _Station:
                 suction surface
             .pressure : numpy array, the (scaled) airfoil coordinates of the
                 pressure surface
+            .polygon : shapely.Polygon, a closed polygon representation of the
+                entire airfoil surface
         .structure
             .root_buildup
                 .base=np.nan
@@ -78,6 +83,8 @@ class _Station:
                 .height : float, the spar cap height (meters)
                 .left : float, the left edge -- chordwise coord (meters)
                 .right : float, the right edge -- chordwise coord (meters)
+                .lower_coords : numpy array, coordinates for the lower spar cap
+                .upper_coords : numpy array, coordinates for the upper spar cap
             .shear_web_1
                 .base : float, the shear web #1 total base (meters)
                 .base_biax : float, the shear web #1 base for biax (meters)
@@ -431,26 +438,24 @@ class MonoplaneStation(_Station):
         except AttributeError:
             raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
 
-    def erode_spar_cap_thickness(self, axes, plot_flag=False):
-        """Plot the spar cap thickness for this station as polygons."""
-        BLUE = '#6699cc'
+    def plot_polygon(self, polygon, axes, face_color=(1,0,0),
+        edge_color=(1,0,0), alpha=0.5):
+        """Plot a polygon in a matplotlib figure."""
+        patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
+        axes.add_patch(patch)
+
+    def erode_spar_cap_thickness(self):
+        """Returns a polygon of the airfoil profile, eroded by the spar cap height"""
         t = self.structure.spar_cap.height
         p2 = self.airfoil.polygon.buffer(-t)
-        p2_patch = PolygonPatch(p2, fc=BLUE, ec=BLUE, alpha=0.5, zorder=2)
-        if plot_flag:
-            axes.add_patch(p2_patch)
         return p2
 
-    def cut_out_spar_cap_interior(self, axes, interior_polygon, plot_flag=False):
-        """Cut out the interior boundary of the spar cap."""
-        p3 = self.airfoil.polygon.difference(interior_polygon)
-        p3_patch = PolygonPatch(p3, fc=(1,0,0), ec=(1,0,0), alpha=0.7, zorder=3)
-        if plot_flag:
-            axes.add_patch(p3_patch)
-        return p3
+    def cut_out_spar_cap_interior(self, interior_polygon):
+        """Returns a polygon of the airfoil profile with the interior boundary of the spar cap cut out"""
+        return self.airfoil.polygon.difference(interior_polygon)
 
-    def spar_cap_bounding_box(self, axes, plot_flag=False):
-        """Make a bounding box that contains the spar caps.
+    def spar_cap_bounding_box(self, y_boundary_buffer=1.2):
+        """Returns a polygon of the bounding box that contains the spar caps.
 
         The points of the bounding box are labeled from 1 to 4 as:
 
@@ -460,19 +465,15 @@ class MonoplaneStation(_Station):
 
         """
         (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-        pt1 = (self.structure.spar_cap.left, miny*1.2)
-        pt2 = (self.structure.spar_cap.right, miny*1.2)
-        pt3 = (self.structure.spar_cap.right, maxy*1.2)
-        pt4 = (self.structure.spar_cap.left, maxy*1.2)
+        pt1 = (self.structure.spar_cap.left, miny*y_boundary_buffer)
+        pt2 = (self.structure.spar_cap.right, miny*y_boundary_buffer)
+        pt3 = (self.structure.spar_cap.right, maxy*y_boundary_buffer)
+        pt4 = (self.structure.spar_cap.left, maxy*y_boundary_buffer)
         bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bounding_box_patch = PolygonPatch(bounding_box, fc=(0,1,0), ec=(0,1,0), alpha=0.3, zorder=4)
-        if plot_flag:
-            axes.add_patch(bounding_box_patch)
         return bounding_box
 
-    def cut_out_spar_caps(self, axes, airfoil_cutout, bounding_box,
-        plot_flag=True, print_coords=False):
-        """Cut out the spar caps.
+    def cut_out_spar_caps(self, airfoil_cutout, bounding_box):
+        """Returns two polygons: the upper and lower spar caps.
 
         Spar caps are obtained by finding the intersection of two polygons:
         `airfoil_cutout` and `bounding_box`.
@@ -485,37 +486,32 @@ class MonoplaneStation(_Station):
         # (otherwise, PolygonPatch will throw an error)
         scL = p4.geoms[0]  # lower spar cap
         scU = p4.geoms[1]  # upper spar cap
-        scL_patch = PolygonPatch(scL, fc=(1,1,0), ec=(1,1,0), alpha=0.7, zorder=5)
-        scU_patch = PolygonPatch(scU, fc=(0,1,1), ec=(0,1,1), alpha=0.7, zorder=5)
-        if plot_flag:
-            # now we can plot each polygon in matplotlib
-            axes.add_patch(scL_patch)  # lower spar cap
-            axes.add_patch(scU_patch)  # upper spar cap
-        if print_coords:
-            # print the coordinates of the spar caps
-            print "lower spar cap coordinates"
-            print "--------------------------"
-            print scL.__geo_interface__
-            print ""
-            print "upper spar cap coordinates"
-            print "--------------------------"
-            print scU.__geo_interface__
         return scL, scU
 
-    def extract_spar_caps(self, axes, plot_flag=True):
+    def extract_and_plot_spar_caps(self, axes):
         """Extract the spar caps from the blade definition.
 
-        Returns two polygon objects:
-        scL : shapely.Polygon, lower spar cap
-        scU : shapely.Polygon, upper spar cap
+        Saves the spar cap polygon coordinates as attributes:
+        <station>.structure.spar_cap
+            .lower_coords : numpy array, lower spar cap coordinates
+            .upper_coords : numpy array, upper spar cap coordinates
 
         """
-        ip = self.erode_spar_cap_thickness(axes, plot_flag=False)
-        ac = self.cut_out_spar_cap_interior(axes, ip, plot_flag=False)
-        bb = self.spar_cap_bounding_box(axes, plot_flag=False)
-        (scL,scU) = self.cut_out_spar_caps(axes, ac, bb,
-            plot_flag=True, print_coords=False)
-        return (scL,scU)
+        ip = self.erode_spar_cap_thickness()
+        # self.plot_polygon(ip, axes, face_color='#6699cc', edge_color='#6699cc')
+        ac = self.cut_out_spar_cap_interior(ip)
+        # self.plot_polygon(ac, axes, alpha=0.7)
+        bb = self.spar_cap_bounding_box()
+        # self.plot_polygon(bb, axes, face_color=(0,1,0), edge_color=(0,1,0), alpha=0.3)
+        (scL,scU) = self.cut_out_spar_caps(ac, bb)
+        self.plot_polygon(scL, axes, face_color=(1,1,0), edge_color=(1,1,0),
+            alpha=0.7)
+        self.plot_polygon(scU, axes, face_color=(0,1,1), edge_color=(0,1,1),
+            alpha=0.7)
+        self.structure.spar_cap.lower_coords = np.array(
+            scL.__geo_interface__['coordinates'][0])
+        self.structure.spar_cap.upper_coords = np.array(
+            scU.__geo_interface__['coordinates'][0])
 
 
 class BiplaneStation(_Station):
