@@ -445,35 +445,32 @@ class MonoplaneStation(_Station):
         patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
         axes.add_patch(patch)
 
+    def get_outer_profile(self, outer_profile_name):
+        """Returns a polygon for the desired outer profile."""
+        if outer_profile_name == 'airfoil':
+            p = self.airfoil.polygon
+        elif outer_profile_name == 'root buildup':
+            p = self.airfoil.polygon.buffer(-self.structure.root_buildup.height)
+        else:
+            raise NotImplementedError("That outer profile is not supported yet.")
+        return p
+
     def erode_part_thickness(self, part, outer_profile):
-        """Returns a polygon of the airfoil profile, eroded by the part height
+        """Returns a polygon of the outer profile, eroded by the part height
 
         Parameters
         ----------
         part : <station>.structure.<part>, the object that represents a
             structural part at this station
-        outer_profile : str, the name of the outer profile you want to erode
+        outer_profile : shapely.Polygon, the polygon that represents the
+            desired outer profile
 
         """
-        if outer_profile == 'airfoil':
-            p = self.airfoil.polygon.buffer(-part.height)
-        elif outer_profile == 'root buildup':
-            temp = self.airfoil.polygon.buffer(-self.structure.root_buildup.height)
-            p = temp.buffer(-part.height)
-        else:
-            raise NotImplementedError("That outer profile is not supported yet.")
-        return p
+        return outer_profile.buffer(-part.height)
 
-    def cut_out_part_interior(self, interior_profile, outer_profile):
-        """Returns a polygon of the airfoil profile with the interior boundary of the part cut out"""
-        if outer_profile == 'airfoil':
-            p = self.airfoil.polygon.difference(interior_profile)
-        elif outer_profile == 'root buildup':
-            temp = self.airfoil.polygon.buffer(-self.structure.root_buildup.height)
-            p = temp.difference(interior_profile)
-        else:
-            raise NotImplementedError("That outer profile is not supported yet.")
-        return p
+    def cut_out_part_interior(self, inner_profile, outer_profile):
+        """Returns a polygon of `inner_profile` cut out of `outer_profile`."""
+        return outer_profile.difference(inner_profile)
 
     def part_bounding_box(self, part, x_boundary_buffer=1.2, 
         y_boundary_buffer=1.2):
@@ -580,14 +577,14 @@ class MonoplaneStation(_Station):
 
         """
         st = self.structure
-        # 0. determine the outer profile (op)
+        # 1. determine the name of the outer profile (op_name)
         # does root buildup exist?
         if st.root_buildup.exists():
             # yes, root buildup exists
             # are we plotting root buildup?
             if part_name == 'root buildup':
                 # yes, we're plotting root buildup
-                op = 'airfoil'
+                op_name = 'airfoil'
             else:
                 # no, we're not plotting root buildup
                 # are we plotting TE reinforcement?
@@ -597,17 +594,17 @@ class MonoplaneStation(_Station):
                     # uniax or foam?
                     if part_name == 'TE reinforcement, uniax':
                         # uniax
-                        op = 'root buildup'
+                        op_name = 'root buildup'
                     else:
                         # foam
-                        op = 'TE reinforcement, uniax'
+                        op_name = 'TE reinforcement, uniax'
                 else:
                     # no, we're not plotting TE reinforcement
-                    op = 'root buildup'
+                    op_name = 'root buildup'
         else:
             # no, root buildup doesn't exist
-            op = 'airfoil'
-        # 1. access the desired structural part
+            op_name = 'airfoil'
+        # 2. access the desired structural part
         if part_name == 'root buildup':
             p = st.root_buildup
             color = '#BE925A'  # brown
@@ -623,6 +620,15 @@ class MonoplaneStation(_Station):
         elif part_name == 'LE panel':
             p = st.LE_panel
             color = '#00A64F'  # green
+        elif part_name == 'shear web 1':
+            p = st.shear_web_1
+            color = '#FFF100'  # yellow
+        elif part_name == 'shear web 2':
+            p = st.shear_web_2
+            color = '#FFF100'  # yellow
+        elif part_name == 'shear web 3':
+            p = st.shear_web_3
+            color = '#FFF100'  # yellow
         else:
             raise ValueError("""The value for `part_name` was not recognized. Options include:
     'spar cap'
@@ -635,11 +641,16 @@ class MonoplaneStation(_Station):
     'root buildup',
     'internal surface, triax', 'internal surface, resin',
     'external surface, triax', 'external surface, gelcoat'""")
-        # 2. erode the outer profile by the part thickness
-        ip = self.erode_part_thickness(part=p, outer_profile=op)
-        # 3. cut out the part interior from the outer profile
-        ac = self.cut_out_part_interior(ip, op)
-        # 4. draw a bounding box at the part edges
+        # 3. get outer profile
+        op = self.get_outer_profile(outer_profile_name=op_name)
+        # if we are extracting a shear web, we can skip steps 4 and 5
+        if (part_name != 'shear web 1' and part_name != 'shear web 2' and
+            part_name != 'shear web 3'):
+            # 4. erode the outer profile by the part thickness
+            ip = self.erode_part_thickness(part=p, outer_profile=op)
+            # 5. cut out the part interior from the outer profile
+            ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
+        # 6. draw a bounding box at the part edges
         bb = self.part_bounding_box(part=p)
         if debug_plots:
             # plot the boundary of the internal part thickness
@@ -650,13 +661,19 @@ class MonoplaneStation(_Station):
             # plot the bounding box for the structural part
             self.plot_polygon(bb, axes, face_color=(0,1,0), edge_color=(0,1,0),
                 alpha=0.3)
-        # 5. cut out the structural part
-        list_of_parts = self.cut_out_part(ac, bb)
-        # 6. plot the structural part(s)
+        # 7. cut out the structural part
+        if (part_name != 'shear web 1' and part_name != 'shear web 2' and
+            part_name != 'shear web 3'):
+            list_of_parts = self.cut_out_part(ac, bb)
+        else:
+            # if we are extracting a shear web, just cut out the intersection
+            # of the outer profile and the bounding box
+            list_of_parts = self.cut_out_part(op, bb)
+        # 8. plot the structural part(s)
         for part in list_of_parts:
-            self.plot_polygon(part, axes, face_color=color, edge_color=color,
-                alpha=0.8)
-        # 7. save the coordinates for the structural part
+            self.plot_polygon(part, axes, face_color=color,
+                edge_color='#000000', alpha=0.8)
+        # 9. save the coordinates for the structural part
         if len(list_of_parts) == 2:
             # lower part
             p.lower_coords = np.array(
