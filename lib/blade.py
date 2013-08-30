@@ -276,6 +276,10 @@ class _Blade:
                         station.extract_and_plot_part('spar cap', ax)
                     if station.structure.aft_panel_1.exists():
                         station.extract_and_plot_part('aft panel 1', ax)
+                    if station.structure.aft_panel_2.exists():
+                        station.extract_and_plot_part('aft panel 2', ax)
+                    if station.structure.LE_panel.exists():
+                        station.extract_and_plot_part('LE panel', ax)
                 i += 1
         fig.tight_layout()  # don't allow figure axes and labels to overlap
         plt.show()

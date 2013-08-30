@@ -449,22 +449,11 @@ class MonoplaneStation(_Station):
 
         Parameters
         ----------
-        part : str, the name of the desired structural part. Options include:
-            'spar cap', 'shear web 1, foam', 'shear web 1, biax',
-            'shear web 2, foam', 'shear web 2, biax', 'shear web 3, foam',
-            'shear web 3, biax', 'aft panel 1', 'aft panel 2',
-            'TE reinforcement, uniax', 'TE reinforcement, foam', 'LE panel',
-            'root buildup', 'internal surface, triax',
-            'internal surface, resin', 'external surface, triax', or
-            'external surface, gelcoat'
+        part : <station>.structure.<part>, the object that represents a
+            structural part at this station
 
         """
-        if part == 'spar cap':
-            t = self.structure.spar_cap.height
-        elif part == 'aft panel 1':
-            t = self.structure.aft_panel_1.height
-        p2 = self.airfoil.polygon.buffer(-t)
-        return p2
+        return self.airfoil.polygon.buffer(-part.height)
 
     def cut_out_part_interior(self, interior_polygon):
         """Returns a polygon of the airfoil profile with the interior boundary of the part cut out"""
@@ -481,59 +470,73 @@ class MonoplaneStation(_Station):
 
         Parameters
         ----------
-        part : str, the name of the desired structural part. Options include:
-            'spar cap', 'shear web 1, foam', 'shear web 1, biax',
-            'shear web 2, foam', 'shear web 2, biax', 'shear web 3, foam',
-            'shear web 3, biax', 'aft panel 1', 'aft panel 2',
-            'TE reinforcement, uniax', 'TE reinforcement, foam', 'LE panel',
-            'root buildup', 'internal surface, triax',
-            'internal surface, resin', 'external surface, triax', or
-            'external surface, gelcoat'
+        part : <station>.structure.<part>, the object that represents a
+            structural part at this station
         y_boundary_buffer : float (default: 1.2), factor to multiply with the
             miny and maxy bound of the airfoil polygon, to stretch the bounding
             box above and below the top and bottom edges of the airfoil polygon
 
         """
         (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-        if part == 'spar cap':
-            p = self.structure.spar_cap
-        elif part == 'aft panel 1':
-            p = self.structure.aft_panel_1
-        pt1 = (p.left, miny*y_boundary_buffer)
-        pt2 = (p.right, miny*y_boundary_buffer)
-        pt3 = (p.right, maxy*y_boundary_buffer)
-        pt4 = (p.left, maxy*y_boundary_buffer)
+        pt1 = (part.left, miny*y_boundary_buffer)
+        pt2 = (part.right, miny*y_boundary_buffer)
+        pt3 = (part.right, maxy*y_boundary_buffer)
+        pt4 = (part.left, maxy*y_boundary_buffer)
         bounding_box = Polygon([pt1, pt2, pt3, pt4])
         return bounding_box
 
     def cut_out_part(self, airfoil_cutout, bounding_box):
-        """Returns two polygons: the upper and lower parts.
+        """Returns a list of polygons after cutting out the desired part.
 
-        Note: will need to fix this for LE panel and TE reinf, which aren't split into upper and lower parts (maybe shear webs, too)
+        The list of polygons may contain either two items (e.g. an upper spar
+        cap and a lower spar cap) or one item (e.g. a leading edge panel).
 
-        Spar caps are obtained by finding the intersection of two polygons:
+        Parts are obtained by finding the intersection of two polygons:
         `airfoil_cutout` and `bounding_box`.
+
+        Parameters
+        ----------
+        airfoil_cutout : shapely.Polygon, the airfoil profile with the inner
+            boundary of the structural part cut out
+        bounding_box : shapely.Polygon, a bounding box that stretches from the
+            left to right edge of the desired structural part
 
         """
         p4 = airfoil_cutout.intersection(bounding_box)
-        # p4 is a `MultiPolygon` that contains two polygons
-        # (p4 contains the upper and lower spar caps)
-        # extract each polygon and convert them to separate patches
+        # p4 may be a `MultiPolygon` that contains more than one polygon
+        # (e.g. p4 contains the upper and lower spar caps)
+        # if so, extract each polygon and convert them to separate patches
         # (otherwise, PolygonPatch will throw an error)
-        lower_part = p4.geoms[0]  # lower part
-        upper_part = p4.geoms[1]  # upper part
-        return (lower_part, upper_part)
+        list_of_parts = []
+        try:
+            if len(p4.geoms) == 2:
+                lower_part = p4.geoms[0]  # lower part
+                upper_part = p4.geoms[1]  # upper part
+                list_of_parts.append(lower_part)
+                list_of_parts.append(upper_part)
+            else:
+                raise NotImplementedError("After cutting out parts, more than 2 polygons were found.")
+        except AttributeError:
+            # p4 is just a `Polygon`, not a `MultiPolygon`, and p4 does not
+            # have the attribute `geoms`.
+            # (e.g. p4 is the LE panel)
+            list_of_parts.append(p4)
+        return list_of_parts
 
-    def extract_and_plot_part(self, part_name, axes):
+    def extract_and_plot_part(self, part_name, axes, debug_plots=False):
         """Extract the structural part from the blade definition.
 
-        Saves the part polygon coordinates as attributes:
+        Saves the part polygon coordinates as attributes. If there are upper
+        and lower parts (e.g. upper and lower spar caps), the attributes are:
         <station>.structure.<part>
             .lower_coords : numpy array, lower part coordinates
             .upper_coords : numpy array, upper part coordinates
+        If there is only one part (e.g. LE panel), the attribute is:
+        <station>.structure.<part>
+            .coords : numpy array, part coordinates
 
-        Note: will need to fix this for LE panel and TE reinf, which aren't split into upper and lower parts (maybe shear webs, too)
-
+        Parameters
+        ----------
         part_name : str, the name of the structural part. Options include:
             'spar cap', 'shear web 1, foam', 'shear web 1, biax',
             'shear web 2, foam', 'shear web 2, biax', 'shear web 3, foam',
@@ -542,29 +545,69 @@ class MonoplaneStation(_Station):
             'root buildup', 'internal surface, triax',
             'internal surface, resin', 'external surface, triax', or
             'external surface, gelcoat'
+        axes : matplotlib.figure.axes, the axes on which to draw the plot
+        debug_plots : bool (default=False), plot/don't plot the intermediate
+            polygons used to extract this part
 
         """
+        st = self.structure
+        # 1. access the desired structural part
         if part_name == 'spar cap':
-            p = self.structure.spar_cap
+            p = st.spar_cap
             color = '#00ACEF'  # blue
         elif part_name == 'aft panel 1':
-            p = self.structure.aft_panel_1
+            p = st.aft_panel_1
             color = '#F58612'  # orange
-        ip = self.erode_part_thickness(part=part_name)
-        # self.plot_polygon(ip, axes, face_color='#6699cc', edge_color='#6699cc')
+        elif part_name == 'aft panel 2':
+            p = st.aft_panel_2
+            color = '#F58612'  # orange
+        elif part_name == 'LE panel':
+            p = st.LE_panel
+            color = '#00A64F'  # green
+        else:
+            raise ValueError("""The value for `part_name` was not recognized. Options include:
+    'spar cap'
+    'shear web 1, foam', 'shear web 1, biax',
+    'shear web 2, foam', 'shear web 2, biax',
+    'shear web 3, foam', 'shear web 3, biax',
+    'aft panel 1', 'aft panel 2',
+    'TE reinforcement, uniax', 'TE reinforcement, foam',
+    'LE panel',
+    'root buildup',
+    'internal surface, triax', 'internal surface, resin',
+    'external surface, triax', 'external surface, gelcoat'""")
+        # 2. erode the airfoil by the part thickness
+        ip = self.erode_part_thickness(part=p)
+        # 3. cut out the part interior from the airfoil profile
         ac = self.cut_out_part_interior(ip)
-        # self.plot_polygon(ac, axes, alpha=0.7)
-        bb = self.part_bounding_box(part=part_name)
-        # self.plot_polygon(bb, axes, face_color=(0,1,0), edge_color=(0,1,0), alpha=0.3)
-        (lower_part,upper_part) = self.cut_out_part(ac, bb)
-        self.plot_polygon(lower_part, axes, face_color=color, edge_color=color,
-            alpha=0.8)
-        self.plot_polygon(upper_part, axes, face_color=color, edge_color=color,
-            alpha=0.8)
-        p.lower_coords = np.array(
-            lower_part.__geo_interface__['coordinates'][0])
-        p.upper_coords = np.array(
-            upper_part.__geo_interface__['coordinates'][0])
+        # 4. draw a bounding box at the part edges
+        bb = self.part_bounding_box(part=p)
+        if debug_plots:
+            # plot the boundary of the internal part thickness
+            self.plot_polygon(ip, axes, face_color='#6699cc',
+                edge_color='#6699cc')
+            # plot the airfoil profile, with the internal boundary cut out
+            self.plot_polygon(ac, axes, alpha=0.7)
+            # plot the bounding box for the structural part
+            self.plot_polygon(bb, axes, face_color=(0,1,0), edge_color=(0,1,0),
+                alpha=0.3)
+        # 5. cut out the structural part
+        list_of_parts = self.cut_out_part(ac, bb)
+        # 6. plot the structural part(s)
+        for part in list_of_parts:
+            self.plot_polygon(part, axes, face_color=color, edge_color=color,
+                alpha=0.8)
+        # 7. save the coordinates for the structural part
+        if len(list_of_parts) == 2:
+            # lower part
+            p.lower_coords = np.array(
+                list_of_parts[0].__geo_interface__['coordinates'][0])
+            # upper part
+            p.upper_coords = np.array(
+                list_of_parts[1].__geo_interface__['coordinates'][0])
+        elif len(list_of_parts) == 1:
+            p.coords = np.array(
+                list_of_parts[0].__geo_interface__['coordinates'][0])
 
 
 class BiplaneStation(_Station):
