@@ -130,6 +130,7 @@ class _Station:
                 .height : the leading edge panel height (meters)
                 .left : float, the left edge -- chordwise coord (meters)
                 .right : float, the right edge -- chordwise coord (meters)
+                .coords : numpy array, coordinates for the LE panel
             .aft_panel
                 .base=np.nan
                 .height : the aft panel height (meters)
@@ -444,22 +445,38 @@ class MonoplaneStation(_Station):
         patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
         axes.add_patch(patch)
 
-    def erode_part_thickness(self, part):
+    def erode_part_thickness(self, part, outer_profile):
         """Returns a polygon of the airfoil profile, eroded by the part height
 
         Parameters
         ----------
         part : <station>.structure.<part>, the object that represents a
             structural part at this station
+        outer_profile : str, the name of the outer profile you want to erode
 
         """
-        return self.airfoil.polygon.buffer(-part.height)
+        if outer_profile == 'airfoil':
+            p = self.airfoil.polygon.buffer(-part.height)
+        elif outer_profile == 'root buildup':
+            temp = self.airfoil.polygon.buffer(-self.structure.root_buildup.height)
+            p = temp.buffer(-part.height)
+        else:
+            raise NotImplementedError("That outer profile is not supported yet.")
+        return p
 
-    def cut_out_part_interior(self, interior_polygon):
+    def cut_out_part_interior(self, interior_profile, outer_profile):
         """Returns a polygon of the airfoil profile with the interior boundary of the part cut out"""
-        return self.airfoil.polygon.difference(interior_polygon)
+        if outer_profile == 'airfoil':
+            p = self.airfoil.polygon.difference(interior_profile)
+        elif outer_profile == 'root buildup':
+            temp = self.airfoil.polygon.buffer(-self.structure.root_buildup.height)
+            p = temp.difference(interior_profile)
+        else:
+            raise NotImplementedError("That outer profile is not supported yet.")
+        return p
 
-    def part_bounding_box(self, part, y_boundary_buffer=1.2):
+    def part_bounding_box(self, part, x_boundary_buffer=1.2, 
+        y_boundary_buffer=1.2):
         """Returns a polygon of the bounding box that contains the spar caps.
 
         The points of the bounding box are labeled from 1 to 4 as:
@@ -472,16 +489,28 @@ class MonoplaneStation(_Station):
         ----------
         part : <station>.structure.<part>, the object that represents a
             structural part at this station
+        x_boundary_buffer : float (default: 1.2), factor to multiply with the
+            minx and maxx bound of the airfoil polygon, to stretch the bounding
+            box past the left and right edges of the airfoil polygon
         y_boundary_buffer : float (default: 1.2), factor to multiply with the
             miny and maxy bound of the airfoil polygon, to stretch the bounding
             box above and below the top and bottom edges of the airfoil polygon
 
         """
         (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-        pt1 = (part.left, miny*y_boundary_buffer)
-        pt2 = (part.right, miny*y_boundary_buffer)
-        pt3 = (part.right, maxy*y_boundary_buffer)
-        pt4 = (part.left, maxy*y_boundary_buffer)
+        try:
+            pt1 = (part.left, miny*y_boundary_buffer)
+            pt2 = (part.right, miny*y_boundary_buffer)
+            pt3 = (part.right, maxy*y_boundary_buffer)
+            pt4 = (part.left, maxy*y_boundary_buffer)
+        except AttributeError:
+            # if the part doesn't have attributes `left` or `right`, just use
+            # the airfoil bounds to form the bounding box
+            # (e.g. the root buildup doesnt have left and right edges)
+            pt1 = (minx*x_boundary_buffer, miny*y_boundary_buffer)
+            pt2 = (maxx*x_boundary_buffer, miny*y_boundary_buffer)
+            pt3 = (maxx*x_boundary_buffer, maxy*y_boundary_buffer)
+            pt4 = (minx*x_boundary_buffer, maxy*y_boundary_buffer)
         bounding_box = Polygon([pt1, pt2, pt3, pt4])
         return bounding_box
 
@@ -551,8 +580,38 @@ class MonoplaneStation(_Station):
 
         """
         st = self.structure
+        # 0. determine the outer profile (op)
+        # does root buildup exist?
+        if st.root_buildup.exists():
+            # yes, root buildup exists
+            # are we plotting root buildup?
+            if part_name == 'root buildup':
+                # yes, we're plotting root buildup
+                op = 'airfoil'
+            else:
+                # no, we're not plotting root buildup
+                # are we plotting TE reinforcement?
+                if (part_name == 'TE reinforcement, uniax' or 
+                    part_name == 'TE reinforcement, foam'):
+                    # yes, we're plotting TE reinforcement
+                    # uniax or foam?
+                    if part_name == 'TE reinforcement, uniax':
+                        # uniax
+                        op = 'root buildup'
+                    else:
+                        # foam
+                        op = 'TE reinforcement, uniax'
+                else:
+                    # no, we're not plotting TE reinforcement
+                    op = 'root buildup'
+        else:
+            # no, root buildup doesn't exist
+            op = 'airfoil'
         # 1. access the desired structural part
-        if part_name == 'spar cap':
+        if part_name == 'root buildup':
+            p = st.root_buildup
+            color = '#BE925A'  # brown
+        elif part_name == 'spar cap':
             p = st.spar_cap
             color = '#00ACEF'  # blue
         elif part_name == 'aft panel 1':
@@ -576,10 +635,10 @@ class MonoplaneStation(_Station):
     'root buildup',
     'internal surface, triax', 'internal surface, resin',
     'external surface, triax', 'external surface, gelcoat'""")
-        # 2. erode the airfoil by the part thickness
-        ip = self.erode_part_thickness(part=p)
-        # 3. cut out the part interior from the airfoil profile
-        ac = self.cut_out_part_interior(ip)
+        # 2. erode the outer profile by the part thickness
+        ip = self.erode_part_thickness(part=p, outer_profile=op)
+        # 3. cut out the part interior from the outer profile
+        ac = self.cut_out_part_interior(ip, op)
         # 4. draw a bounding box at the part edges
         bb = self.part_bounding_box(part=p)
         if debug_plots:

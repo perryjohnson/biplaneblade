@@ -258,6 +258,7 @@ class _Blade:
         for row_of_axes in axes:
             for ax in row_of_axes:
                 station = self.list_of_stations[selected_stations[i]-1]
+                st = station.structure
                 ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
                 ax.set_aspect('equal')
                 ax.grid('on')
@@ -272,13 +273,15 @@ class _Blade:
                     (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
                     ax.set_xlim([minx*1.2,maxx*1.2])
                     ax.set_ylim([miny*1.2,maxy*1.2])
-                    if station.structure.spar_cap.exists():
+                    if st.root_buildup.exists():
+                        station.extract_and_plot_part('root buildup', ax)
+                    if st.spar_cap.exists():
                         station.extract_and_plot_part('spar cap', ax)
-                    if station.structure.aft_panel_1.exists():
+                    if st.aft_panel_1.exists():
                         station.extract_and_plot_part('aft panel 1', ax)
-                    if station.structure.aft_panel_2.exists():
+                    if st.aft_panel_2.exists():
                         station.extract_and_plot_part('aft panel 2', ax)
-                    if station.structure.LE_panel.exists():
+                    if st.LE_panel.exists():
                         station.extract_and_plot_part('LE panel', ax)
                 i += 1
         fig.tight_layout()  # don't allow figure axes and labels to overlap
