@@ -78,6 +78,7 @@ class _Station:
             .root_buildup
                 .base=np.nan
                 .height : float, the root buildup height (meters)
+                .coords : numpy array, coordinates for the root buildup
             .spar_cap
                 .base : float, the spar cap base (meters)
                 .height : float, the spar cap height (meters)
@@ -96,6 +97,12 @@ class _Station:
                 .cs_coords : numpy array, the 4 coordinates for the corners of
                     the cross-section of the shear web at this station, ordered
                     as [lower left, lower right, upper right, upper left]
+                .left_biax_coords : numpy array, coordinates for the left biax
+                    region of the shear web
+                .foam_coords : numpy array, coordinates for the foam region of
+                    the shear web
+                .right_biax_coords : numpy array, coordinates for the right
+                    biax region of the shear web
             .shear_web_2
                 .base : float, the shear web #2 total base (meters)
                 .base_biax : float, the shear web #2 base for biax (meters)
@@ -107,6 +114,10 @@ class _Station:
                 .cs_coords : numpy array, the 4 coordinates for the corners of
                     the cross-section of the shear web at this station, ordered
                     as [lower left, lower right, upper right, upper left]
+                .biax_coords : numpy array, coordinates for the biax region of
+                    the shear web
+                .foam_coords : numpy array, coordinates for the foam region of
+                    the shear web
             .shear_web_3
                 .base : float, the shear web #3 total base (meters)
                 .base_biax : float, the shear web #3 base for biax (meters)
@@ -118,6 +129,10 @@ class _Station:
                 .cs_coords : numpy array, the 4 coordinates for the corners of
                     the cross-section of the shear web at this station, ordered
                     as [lower left, lower right, upper right, upper left]
+                .biax_coords : numpy array, coordinates for the biax region of
+                    the shear web
+                .foam_coords : numpy array, coordinates for the foam region of
+                    the shear web
             .TE_reinforcement
                 .base : float, the trailing edge reinforcement base (meters)
                 .height_uniax : float, the TE reinf height for uniax (meters)
@@ -474,7 +489,7 @@ class MonoplaneStation(_Station):
 
     def part_bounding_box(self, part, x_boundary_buffer=1.2, 
         y_boundary_buffer=1.2):
-        """Returns a polygon of the bounding box that contains the spar caps.
+        """Returns a polygon of the bounding box that contains the part.
 
         The points of the bounding box are labeled from 1 to 4 as:
 
@@ -510,6 +525,37 @@ class MonoplaneStation(_Station):
             pt4 = (minx*x_boundary_buffer, maxy*y_boundary_buffer)
         bounding_box = Polygon([pt1, pt2, pt3, pt4])
         return bounding_box
+
+    def SW_bounding_boxes(self, SW_part, y_boundary_buffer=1.2):
+        """Returns three polygons of bounding boxes that contain the biax and foam regions of the shear web.
+
+        The points of each bounding box are labeled from 1 to 4 as:
+
+        4---3
+        |   |
+        1---2
+
+        """
+        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+        # left biax bounding box
+        pt1 = (SW_part.left, miny*y_boundary_buffer)
+        pt2 = (SW_part.left+SW_part.base_biax, miny*y_boundary_buffer)
+        pt3 = (SW_part.left+SW_part.base_biax, maxy*y_boundary_buffer)
+        pt4 = (SW_part.left, maxy*y_boundary_buffer)
+        left_biax_bb = Polygon([pt1, pt2, pt3, pt4])
+        # foam bounding box
+        pt1 = (SW_part.left+SW_part.base_biax, miny*y_boundary_buffer)
+        pt2 = (SW_part.right-SW_part.base_biax, miny*y_boundary_buffer)
+        pt3 = (SW_part.right-SW_part.base_biax, maxy*y_boundary_buffer)
+        pt4 = (SW_part.left+SW_part.base_biax, maxy*y_boundary_buffer)
+        foam_bb = Polygon([pt1, pt2, pt3, pt4])
+        # right biax bounding box
+        pt1 = (SW_part.right-SW_part.base_biax, miny*y_boundary_buffer)
+        pt2 = (SW_part.right, miny*y_boundary_buffer)
+        pt3 = (SW_part.right, maxy*y_boundary_buffer)
+        pt4 = (SW_part.right-SW_part.base_biax, maxy*y_boundary_buffer)
+        right_biax_bb = Polygon([pt1, pt2, pt3, pt4])
+        return (left_biax_bb, foam_bb, right_biax_bb)
 
     def cut_out_part(self, airfoil_cutout, bounding_box):
         """Returns a list of polygons after cutting out the desired part.
@@ -564,13 +610,9 @@ class MonoplaneStation(_Station):
         Parameters
         ----------
         part_name : str, the name of the structural part. Options include:
-            'spar cap', 'shear web 1, foam', 'shear web 1, biax',
-            'shear web 2, foam', 'shear web 2, biax', 'shear web 3, foam',
-            'shear web 3, biax', 'aft panel 1', 'aft panel 2',
-            'TE reinforcement, uniax', 'TE reinforcement, foam', 'LE panel',
-            'root buildup', 'internal surface, triax',
-            'internal surface, resin', 'external surface, triax', or
-            'external surface, gelcoat'
+            'spar cap', 'shear web 1', 'shear web 2', 'shear web 3',
+            'aft panel 1', 'aft panel 2', 'TE reinforcement', 'LE panel',
+            'root buildup', 'internal surface', or 'external surface'
         axes : matplotlib.figure.axes, the axes on which to draw the plot
         debug_plots : bool (default=False), plot/don't plot the intermediate
             polygons used to extract this part
@@ -632,15 +674,13 @@ class MonoplaneStation(_Station):
         else:
             raise ValueError("""The value for `part_name` was not recognized. Options include:
     'spar cap'
-    'shear web 1, foam', 'shear web 1, biax',
-    'shear web 2, foam', 'shear web 2, biax',
-    'shear web 3, foam', 'shear web 3, biax',
+    'shear web 1', 'shear web 2', 'shear web 3',
     'aft panel 1', 'aft panel 2',
-    'TE reinforcement, uniax', 'TE reinforcement, foam',
+    'TE reinforcement',
     'LE panel',
     'root buildup',
-    'internal surface, triax', 'internal surface, resin',
-    'external surface, triax', 'external surface, gelcoat'""")
+    'internal surface',
+    'external surface'""")
         # 3. get outer profile
         op = self.get_outer_profile(outer_profile_name=op_name)
         # if we are extracting a shear web, we can skip steps 4 and 5
@@ -651,7 +691,11 @@ class MonoplaneStation(_Station):
             # 5. cut out the part interior from the outer profile
             ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
         # 6. draw a bounding box at the part edges
-        bb = self.part_bounding_box(part=p)
+        if (part_name != 'shear web 1' and part_name != 'shear web 2' and
+            part_name != 'shear web 3'):
+            bb = self.part_bounding_box(part=p)
+        else:
+            (L_biax_bb, foam_bb, R_biax_bb) = self.SW_bounding_boxes(SW_part=p)
         if debug_plots:
             # plot the boundary of the internal part thickness
             self.plot_polygon(ip, axes, face_color='#6699cc',
@@ -667,14 +711,18 @@ class MonoplaneStation(_Station):
             list_of_parts = self.cut_out_part(ac, bb)
         else:
             # if we are extracting a shear web, just cut out the intersection
-            # of the outer profile and the bounding box
-            list_of_parts = self.cut_out_part(op, bb)
+            # of the outer profile and the three bounding boxes
+            left_biax = self.cut_out_part(op, L_biax_bb)[0]
+            foam = self.cut_out_part(op, foam_bb)[0]
+            right_biax = self.cut_out_part(op, R_biax_bb)[0]
+            list_of_parts = [left_biax, foam, right_biax]
         # 8. plot the structural part(s)
         for part in list_of_parts:
             self.plot_polygon(part, axes, face_color=color,
                 edge_color='#000000', alpha=0.8)
         # 9. save the coordinates for the structural part
         if len(list_of_parts) == 2:
+            # we have a spar cap or aft panel
             # lower part
             p.lower_coords = np.array(
                 list_of_parts[0].__geo_interface__['coordinates'][0])
@@ -682,8 +730,20 @@ class MonoplaneStation(_Station):
             p.upper_coords = np.array(
                 list_of_parts[1].__geo_interface__['coordinates'][0])
         elif len(list_of_parts) == 1:
+            # we have a LE panel or root buildup
             p.coords = np.array(
                 list_of_parts[0].__geo_interface__['coordinates'][0])
+        elif len(list_of_parts) == 3:
+            # we have a shear web
+            # left biax
+            p.left_biax_coords = np.array(
+                list_of_parts[0].__geo_interface__['coordinates'][0])
+            # foam
+            p.foam_coords = np.array(
+                list_of_parts[1].__geo_interface__['coordinates'][0])
+            # right biax
+            p.right_biax_coords = np.array(
+                list_of_parts[2].__geo_interface__['coordinates'][0])
 
 
 class BiplaneStation(_Station):
