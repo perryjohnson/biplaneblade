@@ -54,7 +54,28 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
 class TE_Reinforcement(Part):
     """Define uniax and foam dimensions of a trailing edge reinforcement."""
     def __init__(self, base, height_uniax, height_foam):
-        Part.__init__(self, base, height=(height_uniax+height_foam))
+        # check for nans in height dimensions, if they exist, replace with zero
+        # this prevents `float + nan = nan` from occuring
+        # for example:
+        #   height_uniax = 0.018, height_foam = nan
+        #   height = height_uniax + height_foam
+        #   height = nan
+        # but, we'd rather get the result:
+        #   height = height_uniax + height_foam = 0.018
+        if isnan(height_foam) and isnan(height_uniax):
+            # unless both are nan, let's replace the single nan with a zero
+            hu = np.nan
+            hf = np.nan
+        else:
+            if isnan(height_foam):
+                hf = 0.0
+            else:
+                hf = height_foam
+            if isnan(height_uniax):
+                hu = 0.0
+            else:
+                hu = height_uniax
+        Part.__init__(self, base, height=(hu+hf))
         self.height_uniax = height_uniax
         self.height_foam = height_foam
     def __str__(self):

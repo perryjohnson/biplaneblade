@@ -629,20 +629,7 @@ class MonoplaneStation(_Station):
                 op_name = 'airfoil'
             else:
                 # no, we're not plotting root buildup
-                # are we plotting TE reinforcement?
-                if (part_name == 'TE reinforcement, uniax' or 
-                    part_name == 'TE reinforcement, foam'):
-                    # yes, we're plotting TE reinforcement
-                    # uniax or foam?
-                    if part_name == 'TE reinforcement, uniax':
-                        # uniax
-                        op_name = 'root buildup'
-                    else:
-                        # foam
-                        op_name = 'TE reinforcement, uniax'
-                else:
-                    # no, we're not plotting TE reinforcement
-                    op_name = 'root buildup'
+                op_name = 'root buildup'
         else:
             # no, root buildup doesn't exist
             op_name = 'airfoil'
@@ -671,6 +658,9 @@ class MonoplaneStation(_Station):
         elif part_name == 'shear web 3':
             p = st.shear_web_3
             color = '#FFF100'  # yellow
+        elif part_name == 'TE reinforcement':
+            p = st.TE_reinforcement
+            color = '#F366BA'  # pink
         else:
             raise ValueError("""The value for `part_name` was not recognized. Options include:
     'spar cap'

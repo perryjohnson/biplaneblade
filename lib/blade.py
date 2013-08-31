@@ -289,6 +289,8 @@ class _Blade:
                         station.extract_and_plot_part('shear web 2', ax)
                     if st.shear_web_3.exists():
                         station.extract_and_plot_part('shear web 3', ax)
+                    if st.TE_reinforcement.exists():
+                        station.extract_and_plot_part('TE reinforcement', ax)
                 i += 1
         fig.tight_layout()  # don't allow figure axes and labels to overlap
         plt.show()
