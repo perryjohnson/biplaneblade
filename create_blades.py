@@ -99,9 +99,23 @@ if biplane_flap_sym_no_stagger_flag:
     for station in b1.list_of_stations:
         station.airfoil.read_coords()
         station.airfoil.scale_and_translate_coords()
-        station.airfoil.split_at_LE_and_TE()
-        station.find_part_edges()
-        station.find_all_part_cs_coords()
+        # station.airfoil.split_at_LE_and_TE()
+        # station.find_part_edges()
+        # station.find_all_part_cs_coords()
+
+    # # plot the newly created airfoils
+    # new_airfoils = b1.list_of_stations[12:18]
+    # for station in new_airfoils:
+    #     (fig, axes) = station.create_plot()
+    #     station.airfoil.plot_coords(axes, split_flag=False)
+    #     station.show_plot()
+    #     station.save_plot(fig)
+    # new_airfoils = b1.list_of_stations[25:27]
+    # for station in new_airfoils:
+    #     (fig, axes) = station.create_plot()
+    #     station.airfoil.plot_coords(axes, split_flag=False)
+    #     station.show_plot()
+    #     station.save_plot(fig)
 
     # create some airfoil plots in Matplotlib
     # station = b1.list_of_stations[10]
