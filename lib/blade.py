@@ -273,24 +273,78 @@ class _Blade:
                     (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
                     ax.set_xlim([minx*1.2,maxx*1.2])
                     ax.set_ylim([miny*1.2,maxy*1.2])
-                    if st.root_buildup.exists():
-                        station.extract_and_plot_part('root buildup', ax)
-                    if st.spar_cap.exists():
-                        station.extract_and_plot_part('spar cap', ax)
-                    if st.aft_panel_1.exists():
-                        station.extract_and_plot_part('aft panel 1', ax)
-                    if st.aft_panel_2.exists():
-                        station.extract_and_plot_part('aft panel 2', ax)
-                    if st.LE_panel.exists():
-                        station.extract_and_plot_part('LE panel', ax)
-                    if st.shear_web_1.exists():
-                        station.extract_and_plot_part('shear web 1', ax)
-                    if st.shear_web_2.exists():
-                        station.extract_and_plot_part('shear web 2', ax)
-                    if st.shear_web_3.exists():
-                        station.extract_and_plot_part('shear web 3', ax)
-                    if st.TE_reinforcement.exists():
-                        station.extract_and_plot_part('TE reinforcement', ax)
+                    try:
+                        if st.root_buildup.exists():
+                            station.plot_polygon(st.root_buildup.polygon, ax,
+                                face_color='#BE925A', edge_color='#000000',
+                                alpha=0.8)  # face color is brown
+                        if st.spar_cap.exists():
+                            station.plot_polygon(st.spar_cap.polygon_lower, ax,
+                                face_color='#00ACEF', edge_color='#000000',
+                                alpha=0.8)  # face color is blue
+                            station.plot_polygon(st.spar_cap.polygon_upper, ax,
+                                face_color='#00ACEF', edge_color='#000000',
+                                alpha=0.8)  # face color is blue
+                        if st.aft_panel_1.exists():
+                            station.plot_polygon(st.aft_panel_1.polygon_lower, ax,
+                                face_color='#F58612', edge_color='#000000',
+                                alpha=0.8)  # face color is orange
+                            station.plot_polygon(st.aft_panel_1.polygon_upper, ax,
+                                face_color='#F58612', edge_color='#000000',
+                                alpha=0.8)  # face color is orange
+                        if st.aft_panel_2.exists():
+                            station.plot_polygon(st.aft_panel_2.polygon_lower, ax,
+                                face_color='#F58612', edge_color='#000000',
+                                alpha=0.8)  # face color is orange
+                            station.plot_polygon(st.aft_panel_2.polygon_upper, ax,
+                                face_color='#F58612', edge_color='#000000',
+                                alpha=0.8)  # face color is orange
+                        if st.LE_panel.exists():
+                            station.plot_polygon(st.LE_panel.polygon, ax,
+                                face_color='#00A64F', edge_color='#000000',
+                                alpha=0.8)  # face color is green
+                        if st.shear_web_1.exists():
+                            station.plot_polygon(st.shear_web_1.polygon_left_biax, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                            station.plot_polygon(st.shear_web_1.polygon_foam, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                            station.plot_polygon(st.shear_web_1.polygon_right_biax, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                        if st.shear_web_2.exists():
+                            station.plot_polygon(st.shear_web_2.polygon_left_biax, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                            station.plot_polygon(st.shear_web_2.polygon_foam, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                            station.plot_polygon(st.shear_web_2.polygon_right_biax, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                        if st.shear_web_3.exists():
+                            station.plot_polygon(st.shear_web_3.polygon_left_biax, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                            station.plot_polygon(st.shear_web_3.polygon_foam, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                            station.plot_polygon(st.shear_web_3.polygon_right_biax, ax,
+                                face_color='#FFF100', edge_color='#000000',
+                                alpha=0.8)  # face color is yellow
+                        if st.TE_reinforcement.exists():
+                            station.plot_polygon(st.TE_reinforcement.polygon_uniax, ax,
+                                face_color='#F366BA', edge_color='#000000',
+                                alpha=0.8)  # face color is pink
+                            try:
+                                station.plot_polygon(st.TE_reinforcement.polygon_foam, ax,
+                                    face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                            except TypeError:  # foam region doesn't exist
+                                pass
+                    except AttributeError:
+                        raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
                 i += 1
         fig.tight_layout()  # don't allow figure axes and labels to overlap
         plt.show()
