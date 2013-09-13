@@ -274,6 +274,13 @@ class _Blade:
                     ax.set_xlim([minx*1.2,maxx*1.2])
                     ax.set_ylim([miny*1.2,maxy*1.2])
                     try:
+                        if st.external_surface.exists():
+                            station.plot_polygon(st.external_surface.polygon_gelcoat,
+                                ax, face_color='#4000FF', edge_color='#000000',
+                                alpha=0.8)  # face color is purple
+                            station.plot_polygon(st.external_surface.polygon_triax,
+                                ax, face_color='#4000FF', edge_color='#000000',
+                                alpha=0.8)  # face color is purple
                         if st.root_buildup.exists():
                             station.plot_polygon(st.root_buildup.polygon, ax,
                                 face_color='#BE925A', edge_color='#000000',
