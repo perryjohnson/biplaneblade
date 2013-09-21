@@ -68,6 +68,7 @@ if sandia_flag:
         station.find_part_edges()
         station.find_all_part_cs_coords()
         station.find_all_part_polygons()
+        station.write_all_part_polygons()
 
     # # create some airfoil plots in Matplotlib
     # # station = m.list_of_stations[10]

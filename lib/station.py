@@ -196,11 +196,11 @@ class _Station:
                 .height : the aft panel (fwd of SW#3) height (meters)
                 .left : float, the left edge -- chordwise coord (meters)
                 .right : float, the right edge -- chordwise coord (meters)
-                .polygon_lower : Shapely Polygon obj, lower spar cap
+                .polygon_lower : Shapely Polygon obj, lower aft panel #1
                     .exterior.coords : Shapely coords obj, exterior coords
                     .__geo_interface__ : dict of coordinates and type
                         ['coordinates'][0] : tuple of tuples, exterior coords
-                .polygon_upper : Shapely Polygon obj, upper spar cap
+                .polygon_upper : Shapely Polygon obj, upper aft panel #1
                     .exterior.coords : Shapely coords obj, exterior coords
                     .__geo_interface__ : dict of coordinates and type
                         ['coordinates'][0] : tuple of tuples, exterior coords
@@ -209,11 +209,11 @@ class _Station:
                 .height : the aft panel (aft of SW#3) height (meters)
                 .left : float, the left edge -- chordwise coord (meters)
                 .right : float, the right edge -- chordwise coord (meters)
-                .polygon_lower : Shapely Polygon obj, lower spar cap
+                .polygon_lower : Shapely Polygon obj, lower aft panel #2
                     .exterior.coords : Shapely coords obj, exterior coords
                     .__geo_interface__ : dict of coordinates and type
                         ['coordinates'][0] : tuple of tuples, exterior coords
-                .polygon_upper : Shapely Polygon obj, upper spar cap
+                .polygon_upper : Shapely Polygon obj, upper aft panel #2
                     .exterior.coords : Shapely coords obj, exterior coords
                     .__geo_interface__ : dict of coordinates and type
                         ['coordinates'][0] : tuple of tuples, exterior coords
@@ -227,6 +227,16 @@ class _Station:
                 .height_triax : float, the external surface height for triax (meters)
                 .height_gelcoat : float, the external surface height for gelcoat (meters)
                 .height : float, the external surface total height (meters)
+                .polygon_triax : Shapely Polygon obj, triax region
+                    .exterior.coords : Shapely coords obj, exterior coords
+                    .__geo_interface__ : dict of coordinates and type
+                        ['coordinates'][0] : tuple of tuples, exterior coords
+                        ['coordinates'][1] : tuple of tuples, interior coords
+                .polygon_gelcoat : Shapely Polygon obj, gelcoat region
+                    .exterior.coords : Shapely coords obj, exterior coords
+                    .__geo_interface__ : dict of coordinates and type
+                        ['coordinates'][0] : tuple of tuples, exterior coords
+                        ['coordinates'][1] : tuple of tuples, interior coords
 
         Methods
         -------
@@ -408,6 +418,113 @@ class MonoplaneStation(_Station):
             d = self.extract_part('TE reinforcement')
             st.TE_reinforcement.polygon_uniax = d['uniax region']
             st.TE_reinforcement.polygon_foam = d['foam region']
+
+    def write_all_part_polygons(self):
+        """Write the coordinates of all structural parts to `station_path`s."""
+        st = self.structure
+        if st.external_surface.exists():
+            f = open(os.path.join(self.station_path,'external_surface.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("# ------------\n")
+            f.write(str(st.external_surface.polygon_triax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# gelcoat region\n")
+            f.write("# --------------\n")
+            f.write(str(st.external_surface.polygon_gelcoat.__geo_interface__))
+            f.close()
+        if st.root_buildup.exists():
+            f = open(os.path.join(self.station_path,'root_buildup.txt'), 'w')
+            f.write(str(st.root_buildup.polygon.__geo_interface__))
+            f.close()
+        if st.spar_cap.exists():
+            f = open(os.path.join(self.station_path,'spar_cap.txt'), 'w')
+            f.write("# lower spar cap\n")
+            f.write("# --------------\n")
+            f.write(str(st.spar_cap.polygon_lower.__geo_interface__))
+            f.write("\n\n")
+            f.write("# upper spar cap\n")
+            f.write("# --------------\n")
+            f.write(str(st.spar_cap.polygon_upper.__geo_interface__))
+            f.close()
+        if st.aft_panel_1.exists():
+            f = open(os.path.join(self.station_path,'aft_panel_1.txt'), 'w')
+            f.write("# lower aft panel #1\n")
+            f.write("# ------------------\n")
+            f.write(str(st.aft_panel_1.polygon_lower.__geo_interface__))
+            f.write("\n\n")
+            f.write("# upper aft panel #1\n")
+            f.write("# ------------------\n")
+            f.write(str(st.aft_panel_1.polygon_upper.__geo_interface__))
+            f.close()
+        if st.aft_panel_2.exists():
+            f = open(os.path.join(self.station_path,'aft_panel_2.txt'), 'w')
+            f.write("# lower aft panel #2\n")
+            f.write("# ------------------\n")
+            f.write(str(st.aft_panel_2.polygon_lower.__geo_interface__))
+            f.write("\n\n")
+            f.write("# upper aft panel #2\n")
+            f.write("# ------------------\n")
+            f.write(str(st.aft_panel_2.polygon_upper.__geo_interface__))
+            f.close()
+        if st.LE_panel.exists():
+            f = open(os.path.join(self.station_path,'LE_panel.txt'), 'w')
+            f.write(str(st.LE_panel.polygon.__geo_interface__))
+            f.close()
+        if st.shear_web_1.exists():
+            f = open(os.path.join(self.station_path,'shear_web_1.txt'), 'w')
+            f.write("# left biax region\n")
+            f.write("# ----------------\n")
+            f.write(str(st.shear_web_1.polygon_left_biax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            f.write(str(st.shear_web_1.polygon_foam.__geo_interface__))
+            f.write("\n\n")
+            f.write("# right biax region\n")
+            f.write("# -----------------\n")
+            f.write(str(st.shear_web_1.polygon_right_biax.__geo_interface__))
+            f.close()
+        if st.shear_web_2.exists():
+            f = open(os.path.join(self.station_path,'shear_web_2.txt'), 'w')
+            f.write("# left biax region\n")
+            f.write("# ----------------\n")
+            f.write(str(st.shear_web_2.polygon_left_biax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            f.write(str(st.shear_web_2.polygon_foam.__geo_interface__))
+            f.write("\n\n")
+            f.write("# right biax region\n")
+            f.write("# -----------------\n")
+            f.write(str(st.shear_web_2.polygon_right_biax.__geo_interface__))
+            f.close()
+        if st.shear_web_3.exists():
+            f = open(os.path.join(self.station_path,'shear_web_3.txt'), 'w')
+            f.write("# left biax region\n")
+            f.write("# ----------------\n")
+            f.write(str(st.shear_web_3.polygon_left_biax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            f.write(str(st.shear_web_3.polygon_foam.__geo_interface__))
+            f.write("\n\n")
+            f.write("# right biax region\n")
+            f.write("# -----------------\n")
+            f.write(str(st.shear_web_3.polygon_right_biax.__geo_interface__))
+            f.close()
+        if st.TE_reinforcement.exists():
+            f = open(os.path.join(self.station_path,'TE_reinforcement.txt'), 'w')
+            f.write("# uniax region\n")
+            f.write("# ------------\n")
+            f.write(str(st.TE_reinforcement.polygon_uniax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            try:
+                f.write(str(st.TE_reinforcement.polygon_foam.__geo_interface__))
+            except:
+                f.write("# ...the foam region doesn't exist!")
+            f.close()
 
     def find_all_part_cs_coords(self):
         """Find the corners of the cross-sections for each structural part.
