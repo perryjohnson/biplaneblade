@@ -365,8 +365,14 @@ class MonoplaneStation(_Station):
             h_LE_panel=stn_series['LE panel height'],
             h_aft_panel_1=stn_series['aft panel 1 height'],
             h_aft_panel_2=stn_series['aft panel 2 height'],
-            h_int_surf_triax=stn_series['internal surface height triax'],
-            h_int_surf_resin=stn_series['internal surface height resin'],
+            h_int_surf_1_triax=stn_series['internal surface 1 height triax'],
+            h_int_surf_1_resin=stn_series['internal surface 1 height resin'],
+            h_int_surf_2_triax=stn_series['internal surface 2 height triax'],
+            h_int_surf_2_resin=stn_series['internal surface 2 height resin'],
+            h_int_surf_3_triax=stn_series['internal surface 3 height triax'],
+            h_int_surf_3_resin=stn_series['internal surface 3 height resin'],
+            h_int_surf_4_triax=stn_series['internal surface 4 height triax'],
+            h_int_surf_4_resin=stn_series['internal surface 4 height resin'],
             h_ext_surf_triax=stn_series['external surface height triax'],
             h_ext_surf_gelcoat=stn_series['external surface height gelcoat'])
         self.logf.write("****** LAMINATE SCHEDULE ******\n")
@@ -418,6 +424,8 @@ class MonoplaneStation(_Station):
             d = self.extract_part('TE reinforcement')
             st.TE_reinforcement.polygon_uniax = d['uniax region']
             st.TE_reinforcement.polygon_foam = d['foam region']
+        # if st.internal_surface_1.exists():
+        #     d = self.extract_part('internal surface 1')
 
     def write_all_part_polygons(self):
         """Write the coordinates of all structural parts to `station_path`s."""

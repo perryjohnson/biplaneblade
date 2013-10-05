@@ -119,8 +119,10 @@ class MonoplaneStructure:
     def __init__(self, h_RB, b_SC, h_SC, b_SW1_biax, b_SW1_foam, x2_SW1,
                  b_SW2_biax, b_SW2_foam, x2_SW2, b_SW3_biax, b_SW3_foam,
                  x2_SW3, b_TE_reinf, h_TE_reinf_uniax, h_TE_reinf_foam,
-                 h_LE_panel, h_aft_panel_1, h_aft_panel_2, h_int_surf_triax,
-                 h_int_surf_resin, h_ext_surf_triax, h_ext_surf_gelcoat):
+                 h_LE_panel, h_aft_panel_1, h_aft_panel_2, h_int_surf_1_triax,
+                 h_int_surf_1_resin, h_int_surf_2_triax, h_int_surf_2_resin,
+                 h_int_surf_3_triax, h_int_surf_3_resin, h_int_surf_4_triax,
+                 h_int_surf_4_resin, h_ext_surf_triax, h_ext_surf_gelcoat):
         self.root_buildup = Part(np.nan, h_RB)
         self.spar_cap = Part(b_SC, h_SC)
         self.shear_web_1 = ShearWeb(b_SW1_biax, b_SW1_foam, x2_SW1)
@@ -131,7 +133,10 @@ class MonoplaneStructure:
         self.LE_panel = Part(np.nan, h_LE_panel)
         self.aft_panel_1 = Part(np.nan, h_aft_panel_1)
         self.aft_panel_2 = Part(np.nan, h_aft_panel_2)
-        self.internal_surface = InternalSurface(np.nan, h_int_surf_triax, h_int_surf_resin)
+        self.internal_surface_1 = InternalSurface(np.nan, h_int_surf_1_triax, h_int_surf_1_resin)
+        self.internal_surface_2 = InternalSurface(np.nan, h_int_surf_2_triax, h_int_surf_2_resin)
+        self.internal_surface_3 = InternalSurface(np.nan, h_int_surf_3_triax, h_int_surf_3_resin)
+        self.internal_surface_4 = InternalSurface(np.nan, h_int_surf_4_triax, h_int_surf_4_resin)
         self.external_surface = ExternalSurface(np.nan, h_ext_surf_triax, h_ext_surf_gelcoat)
 
     def __str__(self):
@@ -155,8 +160,14 @@ class MonoplaneStructure:
         s += str(self.aft_panel_1) + '\n'
         s += "--- AFT PANEL 2 ---\n"
         s += str(self.aft_panel_2) + '\n'
-        s += "--- INTERNAL SURFACE ---\n"
-        s += str(self.internal_surface) + '\n'
+        s += "--- INTERNAL SURFACE 1 ---\n"
+        s += str(self.internal_surface_1) + '\n'
+        s += "--- INTERNAL SURFACE 2 ---\n"
+        s += str(self.internal_surface_2) + '\n'
+        s += "--- INTERNAL SURFACE 3 ---\n"
+        s += str(self.internal_surface_3) + '\n'
+        s += "--- INTERNAL SURFACE 4 ---\n"
+        s += str(self.internal_surface_4) + '\n'
         s += "--- EXTERNAL SURFACE ---\n"
         s += str(self.external_surface) + '\n'
         return s

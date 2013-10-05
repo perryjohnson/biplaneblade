@@ -70,17 +70,10 @@ if sandia_flag:
         station.find_all_part_polygons()
         station.write_all_part_polygons()
 
-    # # create some airfoil plots in Matplotlib
-    # # station = m.list_of_stations[10]
-    # for station in m.list_of_stations:
-    #     (fig, axes) = station.create_plot()
-    #     station.airfoil.plot_coords(fig, axes, split_flag=True)
-    #     station.plot_part_edges(axes)
-    #     station.show_plot()
-    #     # station.save_plot(fig)
-    # m.plot_selected_cross_sections(figsize=(22,12), nrows=3, ncols=3,
-    #     selected_stations=range(26,35))
-    m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
+    # create some airfoil plots in Matplotlib
+    # m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
+    m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
+        selected_stations=[1,4,5,6], nrows=2, ncols=2)
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     # m.plot_blade(stn_nums=True, twist=True)
