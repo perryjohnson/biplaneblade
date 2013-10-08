@@ -368,6 +368,173 @@ class _Blade:
             fig.savefig(fname)
         return (fig, axes)
 
+    def plot_parts(self, station):
+        """Plots the structural parts in this blade station."""
+        fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
+        st = station.structure
+        ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
+        ax.set_aspect('equal')
+        ax.grid('on')
+        ax.set_xlabel('x2 [meters]')
+        ax.set_ylabel('x3 [meters]')
+        station.plot_polygon(station.airfoil.polygon, ax,
+            face_color='None', edge_color='#999999', alpha=0.8)
+        (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
+        ax.set_xlim([minx*1.2,maxx*1.2])
+        ax.set_ylim([miny*1.2,maxy*1.2])
+        try:
+            if st.external_surface.exists():
+                station.plot_polygon(st.external_surface.polygon_gelcoat,
+                    ax, face_color='#4000FF', edge_color='#000000',
+                    alpha=0.8)  # face color is purple
+                station.plot_polygon(st.external_surface.polygon_triax,
+                    ax, face_color='#4000FF', edge_color='#000000',
+                    alpha=0.8)  # face color is purple
+            if st.root_buildup.exists():
+                station.plot_polygon(st.root_buildup.polygon, ax,
+                    face_color='#BE925A', edge_color='#000000',
+                    alpha=0.8)  # face color is brown
+            if st.spar_cap.exists():
+                station.plot_polygon(st.spar_cap.polygon_lower, ax,
+                    face_color='#00ACEF', edge_color='#000000',
+                    alpha=0.8)  # face color is blue
+                station.plot_polygon(st.spar_cap.polygon_upper, ax,
+                    face_color='#00ACEF', edge_color='#000000',
+                    alpha=0.8)  # face color is blue
+            if st.aft_panel_1.exists():
+                station.plot_polygon(st.aft_panel_1.polygon_lower, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+                station.plot_polygon(st.aft_panel_1.polygon_upper, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+            if st.aft_panel_2.exists():
+                station.plot_polygon(st.aft_panel_2.polygon_lower, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+                station.plot_polygon(st.aft_panel_2.polygon_upper, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+            if st.LE_panel.exists():
+                station.plot_polygon(st.LE_panel.polygon, ax,
+                    face_color='#00A64F', edge_color='#000000',
+                    alpha=0.8)  # face color is green
+            if st.shear_web_1.exists():
+                station.plot_polygon(st.shear_web_1.polygon_left_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                station.plot_polygon(st.shear_web_1.polygon_foam, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                station.plot_polygon(st.shear_web_1.polygon_right_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+            if st.shear_web_2.exists():
+                station.plot_polygon(st.shear_web_2.polygon_left_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                station.plot_polygon(st.shear_web_2.polygon_foam, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                station.plot_polygon(st.shear_web_2.polygon_right_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+            if st.shear_web_3.exists():
+                station.plot_polygon(st.shear_web_3.polygon_left_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                station.plot_polygon(st.shear_web_3.polygon_foam, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                station.plot_polygon(st.shear_web_3.polygon_right_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+            if st.TE_reinforcement.exists():
+                station.plot_polygon(st.TE_reinforcement.polygon_uniax, ax,
+                    face_color='#F366BA', edge_color='#000000',
+                    alpha=0.8)  # face color is pink
+                try:
+                    station.plot_polygon(st.TE_reinforcement.polygon_foam, ax,
+                        face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                except TypeError:  # foam region doesn't exist
+                    pass
+            if st.internal_surface_1.exists():
+                station.plot_polygon(st.internal_surface_1.polygon, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+            #     station.plot_polygon(st.internal_surface_1.polygon_triax, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            #     station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
+            #         face_color='#6699cc', edge_color='#000000',
+            #         alpha=0.8)  # face color is light blue
+            if st.internal_surface_2.exists():
+                station.plot_polygon(st.internal_surface_2.polygon, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+            if st.internal_surface_3.exists():
+                station.plot_polygon(st.internal_surface_3.polygon, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+            if st.internal_surface_4.exists():
+                station.plot_polygon(st.internal_surface_4.polygon, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+        except AttributeError:
+            raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
+        plt.show()
+        return (fig, ax)
+
+    def plot_merged_parts(self, station):
+        """Plots the structural parts in this blade station as one polygon."""
+        fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
+        st = station.structure
+        ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
+        ax.set_aspect('equal')
+        ax.grid('on')
+        ax.set_xlabel('x2 [meters]')
+        ax.set_ylabel('x3 [meters]')
+        station.plot_polygon(station.airfoil.polygon, ax,
+            face_color='None', edge_color='#999999', alpha=0.8)
+        (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
+        ax.set_xlim([minx*1.2,maxx*1.2])
+        ax.set_ylim([miny*1.2,maxy*1.2])
+        # merge the shear webs
+        sw1 = st.shear_web_1.polygon_left_biax.union(st.shear_web_1.polygon_foam)
+        sw1 = sw1.union(st.shear_web_1.polygon_right_biax)
+        sw2 = st.shear_web_2.polygon_left_biax.union(st.shear_web_2.polygon_foam)
+        sw2 = sw2.union(st.shear_web_2.polygon_right_biax)
+        sw3 = st.shear_web_3.polygon_left_biax.union(st.shear_web_3.polygon_foam)
+        sw3 = sw3.union(st.shear_web_3.polygon_right_biax)
+        # gather other structural parts
+        LE = st.LE_panel.polygon
+        sc_u = st.spar_cap.polygon_upper
+        sc_l = st.spar_cap.polygon_lower
+        aft1_u = st.aft_panel_1.polygon_upper
+        aft1_l = st.aft_panel_1.polygon_lower
+        aft2_u = st.aft_panel_2.polygon_upper
+        aft2_l = st.aft_panel_2.polygon_lower
+        TE_uniax = st.TE_reinforcement.polygon_uniax
+        TE_foam = st.TE_reinforcement.polygon_foam
+        TE = TE_uniax.union(TE_foam)
+        # merge everything
+        p = LE.union(sw1)
+        p = p.union(sc_u)
+        p = p.union(sc_l)
+        p = p.union(sw2)
+        p = p.union(aft1_u)
+        p = p.union(aft1_l)
+        p = p.union(sw3)
+        p = p.union(aft2_u)
+        p = p.union(aft2_l)
+        p = p.union(TE)
+        # plot the merged polygon
+        # station.plot_polygon(p, ax, face_color='#4000FF', edge_color='#000000',
+        #     alpha=0.8)  # face color is purple
+        # plt.show()
+        return p
+
 
 class MonoplaneBlade(_Blade):
     """Define a monoplane (conventional) wind turbine blade."""

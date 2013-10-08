@@ -424,10 +424,10 @@ class MonoplaneStation(_Station):
             d = self.extract_part('TE reinforcement')
             st.TE_reinforcement.polygon_uniax = d['uniax region']
             st.TE_reinforcement.polygon_foam = d['foam region']
-        if st.internal_surface_1.exists():
-            d = self.extract_internal_surface('internal surface 1')
-            st.internal_surface_1.polygon_triax = d['triax region']
-            st.internal_surface_1.polygon_resin = d['resin region']
+        # if st.internal_surface_1.exists():
+        #     d = self.extract_internal_surface('internal surface 1')
+        #     st.internal_surface_1.polygon_triax = d['triax region']
+        #     st.internal_surface_1.polygon_resin = d['resin region']
 
     def write_all_part_polygons(self):
         """Write the coordinates of all structural parts to `station_path`s."""
