@@ -15,6 +15,7 @@ from coordinates import *
 from airfoil import *
 from structure import *
 from shapely.geometry import Polygon
+from shapely.ops import cascaded_union
 from descartes import PolygonPatch
 # the descartes module translates shapely objects into matplotlib objects
 
@@ -424,10 +425,44 @@ class MonoplaneStation(_Station):
             d = self.extract_part('TE reinforcement')
             st.TE_reinforcement.polygon_uniax = d['uniax region']
             st.TE_reinforcement.polygon_foam = d['foam region']
-        # if st.internal_surface_1.exists():
-        #     d = self.extract_internal_surface('internal surface 1')
-        #     st.internal_surface_1.polygon_triax = d['triax region']
-        #     st.internal_surface_1.polygon_resin = d['resin region']
+        if st.internal_surface_1.exists():
+            p = self.merge_all_parts()
+            interior = p.interiors[0]
+            # triax region
+            op_triax = Polygon(interior)
+            ip_triax = op_triax.buffer(-st.internal_surface_1.height_triax)
+            st.internal_surface_1.polygon_triax = op_triax.difference(ip_triax)
+            assert st.internal_surface_1.polygon_triax.geom_type == 'Polygon'
+            # # resin region
+            # op_resin = ip_triax
+            # ip_resin = op_resin.buffer(-st.internal_surface_1.height_resin)
+            # st.internal_surface_1.polygon_resin = op_resin.difference(ip_resin)
+            # print "Making internal surface resin region for station #{0}".format(self.station_num)
+            # assert st.internal_surface_1.polygon_resin.geom_type == 'Polygon'
+        if st.internal_surface_2.exists():
+            p = self.merge_all_parts()
+            interior = p.interiors[1]
+            op_triax = Polygon(interior)
+            ip_triax = op_triax.buffer(-st.internal_surface_2.height_triax)
+            st.internal_surface_2.polygon_triax = op_triax.difference(ip_triax)
+            assert st.internal_surface_2.polygon_triax.geom_type == 'Polygon'
+            # st.internal_surface_2.polygon_resin = d['resin region']
+        if st.internal_surface_3.exists():
+            p = self.merge_all_parts()
+            interior = p.interiors[2]
+            op_triax = Polygon(interior)
+            ip_triax = op_triax.buffer(-st.internal_surface_3.height_triax)
+            st.internal_surface_3.polygon_triax = op_triax.difference(ip_triax)
+            assert st.internal_surface_3.polygon_triax.geom_type == 'Polygon'
+            # st.internal_surface_3.polygon_resin = d['resin region']
+        if st.internal_surface_4.exists():
+            p = self.merge_all_parts()
+            interior = p.interiors[3]
+            op_triax = Polygon(interior)
+            ip_triax = op_triax.buffer(-st.internal_surface_4.height_triax)
+            st.internal_surface_4.polygon_triax = op_triax.difference(ip_triax)
+            assert st.internal_surface_4.polygon_triax.geom_type == 'Polygon'
+            # st.internal_surface_4.polygon_resin = d['resin region']
 
     def write_all_part_polygons(self):
         """Write the coordinates of all structural parts to `station_path`s."""
@@ -1181,49 +1216,120 @@ class MonoplaneStation(_Station):
             dict_of_parts = self.cut_out_part(ac, bb)
         return dict_of_parts
 
-    def extract_internal_surface(self, part_name):
-        """Extract the polygon for an internal surface from the blade definition.
+    # def extract_internal_surface(self, part_name):
+    #     """Extract the polygon for an internal surface from the blade definition.
 
-        Parameters
-        ----------
-        part_name : str, the name of the internal surface. Options include:
-            'internal surface 1', 'internal surface 2', 'internal surface 3',
-            or 'internal surface 4'.
+    #     Parameters
+    #     ----------
+    #     part_name : str, the name of the internal surface. Options include:
+    #         'internal surface 1', 'internal surface 2', 'internal surface 3',
+    #         or 'internal surface 4'.
 
-        """
+    #     """
+    #     st = self.structure
+    #     # 1. access the desired structural part
+    #     if part_name == 'internal surface 1':
+    #         p = st.internal_surface_1
+    #     elif part_name == 'internal surface 2':
+    #         p = st.internal_surface_2
+    #     elif part_name == 'internal surface 3':
+    #         p = st.internal_surface_3
+    #     elif part_name == 'internal surface 4':
+    #         p = st.internal_surface_4
+    #     else:
+    #         raise ValueError("""The value for `part_name` was not recognized. Options include:
+    # 'internal surface 1', 'internal surface 2', 'internal surface 3', or
+    # 'internal surface 4'""")
+    #     # 2. determine the outer profile name for the triax
+    #     op_name = self.get_outer_profile_name_for_internal_surface()
+    #     op_triax = self.get_profile(profile_name=op_name)
+    #     # 3. erode the outer profile by the triax thickness
+    #     ip_triax = op_triax.buffer(-p.height_triax)
+    #     # 4. cut out the triax interior from the outer profile for the triax
+    #     int_surf_triax = self.cut_out_part_interior(inner_profile=ip_triax,
+    #         outer_profile=op_triax)
+    #     dict_of_parts = {}
+    #     dict_of_parts['triax region'] = int_surf_triax
+    #     # 5. assign the outer profile for the resin
+    #     op_resin = ip_triax
+    #     # 6. erode the outer profile by the resin thickness
+    #     ip_resin = op_resin.buffer(-p.height_resin)
+    #     # 7. cut out the resin interior from the outer profile for the resin
+    #     int_surf_resin = self.cut_out_part_interior(inner_profile=ip_resin,
+    #         outer_profile=op_resin)
+    #     dict_of_parts['resin region'] = int_surf_resin
+    #     return dict_of_parts
+
+    def merge_all_parts(self, plot_flag=False):
+        """Merges all the structural parts in this station into one polygon."""
         st = self.structure
-        # 1. access the desired structural part
-        if part_name == 'internal surface 1':
-            p = st.internal_surface_1
-        elif part_name == 'internal surface 2':
-            p = st.internal_surface_2
-        elif part_name == 'internal surface 3':
-            p = st.internal_surface_3
-        elif part_name == 'internal surface 4':
-            p = st.internal_surface_4
-        else:
-            raise ValueError("""The value for `part_name` was not recognized. Options include:
-    'internal surface 1', 'internal surface 2', 'internal surface 3', or
-    'internal surface 4'""")
-        # 2. determine the outer profile name for the triax
-        op_name = self.get_outer_profile_name_for_internal_surface()
-        op_triax = self.get_profile(profile_name=op_name)
-        # 3. erode the outer profile by the triax thickness
-        ip_triax = op_triax.buffer(-p.height_triax)
-        # 4. cut out the triax interior from the outer profile for the triax
-        int_surf_triax = self.cut_out_part_interior(inner_profile=ip_triax,
-            outer_profile=op_triax)
-        dict_of_parts = {}
-        dict_of_parts['triax region'] = int_surf_triax
-        # 5. assign the outer profile for the resin
-        op_resin = ip_triax
-        # 6. erode the outer profile by the resin thickness
-        ip_resin = op_resin.buffer(-p.height_resin)
-        # 7. cut out the resin interior from the outer profile for the resin
-        int_surf_resin = self.cut_out_part_interior(inner_profile=ip_resin,
-            outer_profile=op_resin)
-        dict_of_parts['resin region'] = int_surf_resin
-        return dict_of_parts
+        if plot_flag:
+            fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
+            ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
+            ax.set_aspect('equal')
+            ax.grid('on')
+            ax.set_xlabel('x2 [meters]')
+            ax.set_ylabel('x3 [meters]')
+            self.plot_polygon(self.airfoil.polygon, ax,
+                face_color='None', edge_color='#999999', alpha=0.8)
+            (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+            ax.set_xlim([minx*1.2,maxx*1.2])
+            ax.set_ylim([miny*1.2,maxy*1.2])
+        # gather all the parts
+        list_of_parts = []
+        if st.external_surface.exists():
+            ES = st.external_surface.polygon_triax
+            ES = ES.union(st.external_surface.polygon_gelcoat)
+            list_of_parts.append(ES)
+        if st.root_buildup.exists():
+            RB = st.root_buildup.polygon
+            list_of_parts.append(RB)
+        if st.LE_panel.exists():
+            LE = st.LE_panel.polygon
+            list_of_parts.append(LE)
+        if st.spar_cap.exists():
+            sc_u = st.spar_cap.polygon_upper
+            sc_l = st.spar_cap.polygon_lower
+            list_of_parts.append(sc_u)
+            list_of_parts.append(sc_l)
+        if st.aft_panel_1.exists():
+            aft1_u = st.aft_panel_1.polygon_upper
+            aft1_l = st.aft_panel_1.polygon_lower
+            list_of_parts.append(aft1_u)
+            list_of_parts.append(aft1_l)
+        if st.aft_panel_2.exists():
+            aft2_u = st.aft_panel_2.polygon_upper
+            aft2_l = st.aft_panel_2.polygon_lower
+            list_of_parts.append(aft2_u)
+            list_of_parts.append(aft2_l)
+        if st.TE_reinforcement.exists():
+            TE_uniax = st.TE_reinforcement.polygon_uniax
+            try:
+                TE_foam = st.TE_reinforcement.polygon_foam
+                TE = TE_uniax.union(TE_foam)
+            except ValueError:
+                TE = TE_uniax
+            list_of_parts.append(TE)
+        if st.shear_web_1.exists():
+            sw1 = st.shear_web_1.polygon_left_biax.union(st.shear_web_1.polygon_foam)
+            sw1 = sw1.union(st.shear_web_1.polygon_right_biax)
+            list_of_parts.append(sw1)
+        if st.shear_web_2.exists():
+            sw2 = st.shear_web_2.polygon_left_biax.union(st.shear_web_2.polygon_foam)
+            sw2 = sw2.union(st.shear_web_2.polygon_right_biax)
+            list_of_parts.append(sw2)
+        if st.shear_web_3.exists():
+            sw3 = st.shear_web_3.polygon_left_biax.union(st.shear_web_3.polygon_foam)
+            sw3 = sw3.union(st.shear_web_3.polygon_right_biax)
+            list_of_parts.append(sw3)
+        # merge everything
+        p = cascaded_union(list_of_parts)
+        if plot_flag:
+            # plot the merged polygon
+            self.plot_polygon(p, ax, face_color='#4000FF', edge_color='#000000',
+                alpha=0.8)  # face color is purple
+            plt.show()
+        return p
 
 
 class BiplaneStation(_Station):

@@ -258,6 +258,7 @@ class _Blade:
         for row_of_axes in axes:
             for ax in row_of_axes:
                 station = self.list_of_stations[selected_stations[i]-1]
+                print " Printing station #{0}".format(station.station_num)
                 st = station.structure
                 ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
                 ax.set_aspect('equal')
@@ -354,9 +355,30 @@ class _Blade:
                             station.plot_polygon(st.internal_surface_1.polygon_triax, ax,
                                 face_color='#999999', edge_color='#000000',
                                 alpha=0.8)  # face color is gray
-                            station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
-                                face_color='#6699cc', edge_color='#000000',
-                                alpha=0.8)  # face color is light blue
+                            # station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
+                            #     face_color='#6699cc', edge_color='#000000',
+                            #     alpha=0.8)  # face color is light blue
+                        if st.internal_surface_2.exists():
+                            station.plot_polygon(st.internal_surface_2.polygon_triax, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                            # station.plot_polygon(st.internal_surface_2.polygon_resin, ax,
+                            #     face_color='#6699cc', edge_color='#000000',
+                            #     alpha=0.8)  # face color is light blue
+                        if st.internal_surface_3.exists():
+                            station.plot_polygon(st.internal_surface_3.polygon_triax, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                            # station.plot_polygon(st.internal_surface_3.polygon_resin, ax,
+                            #     face_color='#6699cc', edge_color='#000000',
+                            #     alpha=0.8)  # face color is light blue
+                        if st.internal_surface_4.exists():
+                            station.plot_polygon(st.internal_surface_4.polygon_triax, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                            # station.plot_polygon(st.internal_surface_4.polygon_resin, ax,
+                            #     face_color='#6699cc', edge_color='#000000',
+                            #     alpha=0.8)  # face color is light blue
                     except AttributeError:
                         raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
                 i += 1
@@ -460,46 +482,53 @@ class _Blade:
                 except TypeError:  # foam region doesn't exist
                     pass
             if st.internal_surface_1.exists():
-                station.plot_polygon(st.internal_surface_1.polygon, ax,
+                station.plot_polygon(st.internal_surface_1.polygon_triax, ax,
                     face_color='#999999', edge_color='#000000',
                     alpha=0.8)  # face color is gray
-            #     station.plot_polygon(st.internal_surface_1.polygon_triax, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            #     station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
-            #         face_color='#6699cc', edge_color='#000000',
-            #         alpha=0.8)  # face color is light blue
+                # station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
             if st.internal_surface_2.exists():
-                station.plot_polygon(st.internal_surface_2.polygon, ax,
+                station.plot_polygon(st.internal_surface_2.polygon_triax, ax,
                     face_color='#999999', edge_color='#000000',
                     alpha=0.8)  # face color is gray
+                # station.plot_polygon(st.internal_surface_2.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
             if st.internal_surface_3.exists():
-                station.plot_polygon(st.internal_surface_3.polygon, ax,
+                station.plot_polygon(st.internal_surface_3.polygon_triax, ax,
                     face_color='#999999', edge_color='#000000',
                     alpha=0.8)  # face color is gray
+                # station.plot_polygon(st.internal_surface_3.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
             if st.internal_surface_4.exists():
-                station.plot_polygon(st.internal_surface_4.polygon, ax,
+                station.plot_polygon(st.internal_surface_4.polygon_triax, ax,
                     face_color='#999999', edge_color='#000000',
                     alpha=0.8)  # face color is gray
+                # station.plot_polygon(st.internal_surface_4.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
         except AttributeError:
             raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
         plt.show()
         return (fig, ax)
 
-    def plot_merged_parts(self, station):
-        """Plots the structural parts in this blade station as one polygon."""
-        fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
+    def merge_all_parts(self, station, plot_flag=False):
+        """Merges all the structural parts in this station into one polygon."""
         st = station.structure
-        ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
-        ax.set_aspect('equal')
-        ax.grid('on')
-        ax.set_xlabel('x2 [meters]')
-        ax.set_ylabel('x3 [meters]')
-        station.plot_polygon(station.airfoil.polygon, ax,
-            face_color='None', edge_color='#999999', alpha=0.8)
-        (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
-        ax.set_xlim([minx*1.2,maxx*1.2])
-        ax.set_ylim([miny*1.2,maxy*1.2])
+        if plot_flag:
+            fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
+            ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
+            ax.set_aspect('equal')
+            ax.grid('on')
+            ax.set_xlabel('x2 [meters]')
+            ax.set_ylabel('x3 [meters]')
+            station.plot_polygon(station.airfoil.polygon, ax,
+                face_color='None', edge_color='#999999', alpha=0.8)
+            (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
+            ax.set_xlim([minx*1.2,maxx*1.2])
+            ax.set_ylim([miny*1.2,maxy*1.2])
         # merge the shear webs
         sw1 = st.shear_web_1.polygon_left_biax.union(st.shear_web_1.polygon_foam)
         sw1 = sw1.union(st.shear_web_1.polygon_right_biax)
@@ -529,10 +558,11 @@ class _Blade:
         p = p.union(aft2_u)
         p = p.union(aft2_l)
         p = p.union(TE)
-        # plot the merged polygon
-        # station.plot_polygon(p, ax, face_color='#4000FF', edge_color='#000000',
-        #     alpha=0.8)  # face color is purple
-        # plt.show()
+        if plot_flag:
+            # plot the merged polygon
+            station.plot_polygon(p, ax, face_color='#4000FF', edge_color='#000000',
+                alpha=0.8)  # face color is purple
+            plt.show()
         return p
 
 
