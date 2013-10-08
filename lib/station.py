@@ -424,8 +424,10 @@ class MonoplaneStation(_Station):
             d = self.extract_part('TE reinforcement')
             st.TE_reinforcement.polygon_uniax = d['uniax region']
             st.TE_reinforcement.polygon_foam = d['foam region']
-        # if st.internal_surface_1.exists():
-        #     d = self.extract_part('internal surface 1')
+        if st.internal_surface_1.exists():
+            d = self.extract_internal_surface('internal surface 1')
+            st.internal_surface_1.polygon_triax = d['triax region']
+            st.internal_surface_1.polygon_resin = d['resin region']
 
     def write_all_part_polygons(self):
         """Write the coordinates of all structural parts to `station_path`s."""
@@ -722,6 +724,21 @@ class MonoplaneStation(_Station):
         elif profile_name == '(airfoil) - (external surface) - (root buildup)':
             p = self.airfoil.polygon.buffer(-(st.external_surface.height + 
                 st.root_buildup.height))
+        elif profile_name == 'internal surface at root':
+            p = self.airfoil.polygon.buffer(-(st.external_surface.height + 
+                st.root_buildup.height))
+        elif profile_name == 'internal surface near root':
+            p = self.airfoil.polygon.buffer(-(st.external_surface.height + 
+                st.root_buildup.height))
+            p = p.difference(st.spar_cap.polygon_lower).difference(
+                st.spar_cap.polygon_upper).difference(
+                st.TE_reinforcement.polygon_uniax)
+        elif profile_name == 'internal surface near tip':
+            p = self.airfoil.polygon.buffer(-(st.external_surface.height))
+            p = p.difference(st.spar_cap.polygon_lower).difference(
+                st.spar_cap.polygon_upper).difference(
+                st.TE_reinforcement.polygon_uniax).difference(
+                st.LE_panel.polygon)
         else:
             raise NotImplementedError("That `profile_name` is not supported.")
         return p
@@ -1010,19 +1027,9 @@ class MonoplaneStation(_Station):
             dict_of_parts['single part'] = p4
         return dict_of_parts
 
-    def extract_part(self, part_name):
-        """Extract the polygon for a part from the blade definition.
-
-        Parameters
-        ----------
-        part_name : str, the name of the structural part. Options include:
-            'spar cap', 'shear web 1', 'shear web 2', 'shear web 3',
-            'aft panel 1', 'aft panel 2', 'TE reinforcement', 'LE panel',
-            'root buildup', 'internal surface', or 'external surface'
-
-        """
+    def get_outer_profile_name(self, part_name):
+        """Determine the name of the outer profile."""
         st = self.structure
-        # 1. determine the name of the outer profile (op_name)
         # does external surface exist?
         if st.external_surface.exists():
             # yes, external surface exists
@@ -1060,6 +1067,56 @@ class MonoplaneStation(_Station):
             else:
                 # no, root buildup doesn't exist
                 op_name = 'airfoil'
+        return op_name
+
+    def get_outer_profile_name_for_internal_surface(self):
+        """Determine the name of the outer profile for an internal surface."""
+        st = self.structure
+        # 1. determine how many internal surfaces exist
+        is_num = 0
+        if (st.internal_surface_1.exists() and 
+            st.internal_surface_2.exists() and
+            st.internal_surface_3.exists() and
+            st.internal_surface_4.exists()):
+            is_num = 4
+        elif (st.internal_surface_1.exists() and 
+            st.internal_surface_2.exists() and
+            st.internal_surface_3.exists()):
+            is_num = 3
+        elif (st.internal_surface_1.exists()):
+            is_num = 1
+        if is_num == 0:
+            raise Warning("Internal surfaces were not counted properly!")
+        # 2. get outer profile
+        if is_num == 1:
+            if (st.external_surface.exists() and st.root_buildup.exists() and
+                st.spar_cap.exists() and st.TE_reinforcement.exists()):
+                op_name = 'internal surface near root'
+            elif (st.external_surface.exists() and st.spar_cap.exists() and
+                st.TE_reinforcement.exists() and st.LE_panel.exists()):
+                op_name = 'internal surface near tip'
+            elif (st.external_surface.exists() and st.root_buildup.exists()):
+                op_name = 'internal surface at root'
+            else:
+                raise NotImplementedError("At station #{0}, that type of internal surface has not been implemented yet.".format(self.station_num))
+        else:
+            raise NotImplementedError("That number of internal surfaces has not been implemented yet.")
+        return op_name
+
+    def extract_part(self, part_name):
+        """Extract the polygon for a part from the blade definition.
+
+        Parameters
+        ----------
+        part_name : str, the name of the structural part. Options include:
+            'spar cap', 'shear web 1', 'shear web 2', 'shear web 3',
+            'aft panel 1', 'aft panel 2', 'TE reinforcement', 'LE panel',
+            'root buildup', or 'external surface'
+
+        """
+        st = self.structure
+        # 1. determine the name of the outer profile (op_name)
+        op_name = self.get_outer_profile_name(part_name)
         # 2. access the desired structural part
         SW_flag = False  # shear web flag
         TE_flag = False  # trailing edge reinforcement flag
@@ -1087,7 +1144,7 @@ class MonoplaneStation(_Station):
             p = st.TE_reinforcement
             TE_flag = True
         elif part_name == 'internal surface':
-            raise NotImplementedError
+            raise NotImplementedError("Use the function `extract_internal_surface` instead.")
         elif part_name == 'external surface':
             p = st.external_surface
             ES_flag = True
@@ -1122,6 +1179,50 @@ class MonoplaneStation(_Station):
             bb = self.part_bounding_box(part=p)
             # 7. cut out the structural part
             dict_of_parts = self.cut_out_part(ac, bb)
+        return dict_of_parts
+
+    def extract_internal_surface(self, part_name):
+        """Extract the polygon for an internal surface from the blade definition.
+
+        Parameters
+        ----------
+        part_name : str, the name of the internal surface. Options include:
+            'internal surface 1', 'internal surface 2', 'internal surface 3',
+            or 'internal surface 4'.
+
+        """
+        st = self.structure
+        # 1. access the desired structural part
+        if part_name == 'internal surface 1':
+            p = st.internal_surface_1
+        elif part_name == 'internal surface 2':
+            p = st.internal_surface_2
+        elif part_name == 'internal surface 3':
+            p = st.internal_surface_3
+        elif part_name == 'internal surface 4':
+            p = st.internal_surface_4
+        else:
+            raise ValueError("""The value for `part_name` was not recognized. Options include:
+    'internal surface 1', 'internal surface 2', 'internal surface 3', or
+    'internal surface 4'""")
+        # 2. determine the outer profile name for the triax
+        op_name = self.get_outer_profile_name_for_internal_surface()
+        op_triax = self.get_profile(profile_name=op_name)
+        # 3. erode the outer profile by the triax thickness
+        ip_triax = op_triax.buffer(-p.height_triax)
+        # 4. cut out the triax interior from the outer profile for the triax
+        int_surf_triax = self.cut_out_part_interior(inner_profile=ip_triax,
+            outer_profile=op_triax)
+        dict_of_parts = {}
+        dict_of_parts['triax region'] = int_surf_triax
+        # 5. assign the outer profile for the resin
+        op_resin = ip_triax
+        # 6. erode the outer profile by the resin thickness
+        ip_resin = op_resin.buffer(-p.height_resin)
+        # 7. cut out the resin interior from the outer profile for the resin
+        int_surf_resin = self.cut_out_part_interior(inner_profile=ip_resin,
+            outer_profile=op_resin)
+        dict_of_parts['resin region'] = int_surf_resin
         return dict_of_parts
 
 

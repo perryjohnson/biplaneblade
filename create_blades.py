@@ -59,7 +59,7 @@ if sandia_flag:
     # m.plot_twist_schedule()
 
     # pre-process the airfoil coordinates
-    for station in m.list_of_stations:
+    for station in m.list_of_stations[:6]:
         station.airfoil.read_coords()
         station.airfoil.scale_and_translate_coords()
         station.airfoil.split_at_LE_and_TE()
