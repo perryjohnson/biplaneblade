@@ -609,6 +609,46 @@ class MonoplaneStation(_Station):
             except:
                 f.write("# ...the foam region doesn't exist!")
             f.close()
+        if st.internal_surface_1.exists():
+            f = open(os.path.join(self.station_path,'internal_surface_1.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_1.polygon_triax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_1.polygon_resin.__geo_interface__))
+            f.close()
+        if st.internal_surface_2.exists():
+            f = open(os.path.join(self.station_path,'internal_surface_2.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_2.polygon_triax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_2.polygon_resin.__geo_interface__))
+            f.close()
+        if st.internal_surface_3.exists():
+            f = open(os.path.join(self.station_path,'internal_surface_3.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_3.polygon_triax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_3.polygon_resin.__geo_interface__))
+            f.close()
+        if st.internal_surface_4.exists():
+            f = open(os.path.join(self.station_path,'internal_surface_4.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_4.polygon_triax.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(st.internal_surface_4.polygon_resin.__geo_interface__))
+            f.close()
 
     def find_all_part_cs_coords(self):
         """Find the corners of the cross-sections for each structural part.

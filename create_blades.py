@@ -72,13 +72,13 @@ if sandia_flag:
 
     # create some airfoil plots in Matplotlib
     m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
-    # m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
-        # selected_stations=[1,4,5,6], nrows=2, ncols=2)
-    stn34 = m.list_of_stations[-1]
-    stn34.plot_parts()
+    # m.plot_selected_cross_sections(selected_stations=range(1,13))
+    # m.plot_selected_cross_sections(selected_stations=range(13,25))
+    # for station in m.list_of_stations[24:]:
+        # station.plot_parts()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    # m.plot_blade(stn_nums=True, twist=True)
+    m.plot_blade(stn_nums=True, twist=True)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
