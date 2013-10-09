@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: August 6, 2013
+Last updated: October 9, 2013
 
 """
 
@@ -18,6 +18,9 @@ from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
 from descartes import PolygonPatch
 # the descartes module translates shapely objects into matplotlib objects
+from operator import attrgetter
+# helps to sort lists of objects by their attributes
+# ref: https://wiki.python.org/moin/HowTo/Sorting#Operator_Module_Functions
 
 
 class _Station:
@@ -426,10 +429,8 @@ class MonoplaneStation(_Station):
             st.TE_reinforcement.polygon_uniax = d['uniax region']
             st.TE_reinforcement.polygon_foam = d['foam region']
         if st.internal_surface_1.exists():
-            p = self.merge_all_parts()
-            interior = p.interiors[0]
             # triax region
-            op_triax = Polygon(interior)
+            op_triax = self.get_interior_loop(1)
             ip_triax = op_triax.buffer(-st.internal_surface_1.height_triax)
             st.internal_surface_1.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_1.polygon_triax.geom_type == 'Polygon'
@@ -440,29 +441,57 @@ class MonoplaneStation(_Station):
             # print "Making internal surface resin region for station #{0}".format(self.station_num)
             # assert st.internal_surface_1.polygon_resin.geom_type == 'Polygon'
         if st.internal_surface_2.exists():
-            p = self.merge_all_parts()
-            interior = p.interiors[1]
-            op_triax = Polygon(interior)
+            op_triax = self.get_interior_loop(2)
             ip_triax = op_triax.buffer(-st.internal_surface_2.height_triax)
             st.internal_surface_2.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_2.polygon_triax.geom_type == 'Polygon'
             # st.internal_surface_2.polygon_resin = d['resin region']
         if st.internal_surface_3.exists():
-            p = self.merge_all_parts()
-            interior = p.interiors[2]
-            op_triax = Polygon(interior)
+            op_triax = self.get_interior_loop(3)
             ip_triax = op_triax.buffer(-st.internal_surface_3.height_triax)
             st.internal_surface_3.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_3.polygon_triax.geom_type == 'Polygon'
             # st.internal_surface_3.polygon_resin = d['resin region']
         if st.internal_surface_4.exists():
-            p = self.merge_all_parts()
-            interior = p.interiors[3]
-            op_triax = Polygon(interior)
+            op_triax = self.get_interior_loop(4)
             ip_triax = op_triax.buffer(-st.internal_surface_4.height_triax)
             st.internal_surface_4.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_4.polygon_triax.geom_type == 'Polygon'
             # st.internal_surface_4.polygon_resin = d['resin region']
+
+    def get_interior_loop(self, internal_surface_num, area_threshold=10e-06,
+        debug_flag=False):
+        """Get the interior loop for the desired internal surface.
+
+        Returns a polygon object of the requested interior loop.
+
+        Parameters
+        ----------
+        internal_surface_num : int, desired internal surface (1, 2, 3, or 4)
+        area_threshold : float (default: 10e-06), threshold value to decide if
+            an interior loop is valid (when the loop area > area_threshold)
+
+        """
+        p = self.merge_all_parts()
+        # find interior loops that have a 'big' area (> area_threshold)
+        good_loops = []
+        for interior in p.interiors:
+            a = Polygon(interior).area
+            if a > area_threshold:
+                good_loops.append(interior)
+        if debug_flag:
+            print "Station #{0} has {1} good interior loops.".format(
+                self.station_num, len(good_loops))
+        # sort loops by x-coordinate of their centroids, smallest to largest
+        if len(good_loops) > 1:
+            good_loops.sort(key=attrgetter('centroid.x'))
+        # get the interior loop for the desired internal surface
+        #   internal_surface_1 ==> internal_surface_num=1 ==> good_loops[0]
+        #   internal_surface_2 ==> internal_surface_num=2 ==> good_loops[1]
+        #   internal_surface_3 ==> internal_surface_num=3 ==> good_loops[2]
+        #   internal_surface_4 ==> internal_surface_num=4 ==> good_loops[3]
+        loop = Polygon(good_loops[internal_surface_num-1])
+        return loop
 
     def write_all_part_polygons(self):
         """Write the coordinates of all structural parts to `station_path`s."""

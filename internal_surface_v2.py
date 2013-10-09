@@ -1,7 +1,7 @@
 """A script to merge all the structural parts into one polygon.
 
 Author: Perry Roth-Johnson
-Last updated: October 7, 2013
+Last updated: October 9, 2013
 
 """
 
@@ -27,25 +27,27 @@ for station in m.list_of_stations:
     # station.find_all_part_cs_coords()
     station.find_all_part_polygons()
 
-# check that parts are getting merged properly in stations that are plotting weird
-for station in m.list_of_stations:
-    p = station.merge_all_parts()
-    good_loops = []
-    for n, interior in enumerate(p.interiors):
-        a = Polygon(interior).area
-        if a > 10e-06:
-            good_loops.append(interior)
-            # c = interior.centroid.wkt
-    print "Station #{0} has {1} good interior loops.".format(station.station_num, len(good_loops))
-    # list_of_cx = []
-    for loop in good_loops:
-        cx = loop.centroid.x
-        # list_of_cx.append(cx)
-        print "  unsorted x-coord of centroid is {0}".format(cx)
-    # sort the loops by the x-coordinate of their centroids, smallest to largest
-    good_loops.sort(key=attrgetter('centroid.x'))
-    for loop in good_loops:
-        cx = loop.centroid.x
-        print "  SORTED x-coord of centroid is {0}".format(cx)
+# # check that parts are getting merged properly in stations that are plotting weird
+# for station in m.list_of_stations:
+#     p = station.merge_all_parts()
+#     good_loops = []
+#     for n, interior in enumerate(p.interiors):
+#         a = Polygon(interior).area
+#         if a > 10e-06:
+#             good_loops.append(interior)
+#             # c = interior.centroid.wkt
+#     print "Station #{0} has {1} good interior loops.".format(station.station_num, len(good_loops))
+#     # list_of_cx = []
+#     for loop in good_loops:
+#         cx = loop.centroid.x
+#         # list_of_cx.append(cx)
+#         print "  unsorted x-coord of centroid is {0}".format(cx)
+#     # sort the loops by the x-coordinate of their centroids, smallest to largest
+#     if len(good_loops) > 1:
+#         good_loops.sort(key=attrgetter('centroid.x'))
+#         print "  ...sorting!"
+#     for loop in good_loops:
+#         cx = loop.centroid.x
+#         print "  SORTED x-coord of centroid is {0}".format(cx)
 
-# m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
+m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
