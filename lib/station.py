@@ -733,7 +733,7 @@ class MonoplaneStation(_Station):
         patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
         axes.add_patch(patch)
 
-    def get_profile(self, profile_name):
+    def get_profile(self, profile_name, res=16):
         """Returns a polygon for the desired profile.
 
         Parameters:
@@ -747,38 +747,27 @@ class MonoplaneStation(_Station):
               --> airfoil profile - external surface thickness
             '(airfoil) - (external surface) - (root buildup)'
               --> airfoil profile - (external surface + root buildup) thickness
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
 
         """
         st = self.structure
         if profile_name == 'airfoil':
             p = self.airfoil.polygon
         elif profile_name == '(airfoil) - (root buildup)':
-            p = self.airfoil.polygon.buffer(-st.root_buildup.height)
+            p = self.airfoil.polygon.buffer(-st.root_buildup.height,
+                resolution=res)
         elif profile_name == '(airfoil) - (external surface)':
-            p = self.airfoil.polygon.buffer(-st.external_surface.height)
+            p = self.airfoil.polygon.buffer(-st.external_surface.height,
+                resolution=res)
         elif profile_name == '(airfoil) - (external surface) - (root buildup)':
             p = self.airfoil.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
-        elif profile_name == 'internal surface at root':
-            p = self.airfoil.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
-        elif profile_name == 'internal surface near root':
-            p = self.airfoil.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
-            p = p.difference(st.spar_cap.polygon_lower).difference(
-                st.spar_cap.polygon_upper).difference(
-                st.TE_reinforcement.polygon_uniax)
-        elif profile_name == 'internal surface near tip':
-            p = self.airfoil.polygon.buffer(-(st.external_surface.height))
-            p = p.difference(st.spar_cap.polygon_lower).difference(
-                st.spar_cap.polygon_upper).difference(
-                st.TE_reinforcement.polygon_uniax).difference(
-                st.LE_panel.polygon)
+                st.root_buildup.height), resolution=res)
         else:
             raise NotImplementedError("That `profile_name` is not supported.")
         return p
 
-    def erode_part_thickness(self, part, outer_profile):
+    def erode_part_thickness(self, part, outer_profile, res=16):
         """Returns a polygon of the outer profile, eroded by the part height
 
         Parameters
@@ -787,9 +776,11 @@ class MonoplaneStation(_Station):
             structural part at this station
         outer_profile : shapely.Polygon, the polygon that represents the
             desired outer profile
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
 
         """
-        return outer_profile.buffer(-part.height)
+        return outer_profile.buffer(-part.height, resolution=res)
 
     def cut_out_part_interior(self, inner_profile, outer_profile):
         """Returns a polygon of `inner_profile` cut out of `outer_profile`."""
@@ -886,8 +877,16 @@ class MonoplaneStation(_Station):
         dict_of_parts = self.get_gelcoat_and_triax_regions_of_ext_surf(e)
         return dict_of_parts
 
-    def get_gelcoat_and_triax_regions_of_ext_surf(self, entire_region):
-        """Returns dict of gelcoat and triax regions of external surface."""
+    def get_gelcoat_and_triax_regions_of_ext_surf(self, entire_region, res=16):
+        """Returns dict of gelcoat and triax regions of external surface.
+
+        Parameters
+        ----------
+        entire_region : object, polygon for the entire external surface?
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
+
+        """
         ES = self.structure.external_surface
         if isnan(ES.height_gelcoat) and isnan(ES.height_triax):
             triax_region = None
@@ -905,7 +904,7 @@ class MonoplaneStation(_Station):
                 #    profile (airfoil, minus the gelcoat thickness)
                 op = entire_region
                 ip = self.get_profile('airfoil')
-                ip = ip.buffer(-ES.height_gelcoat)
+                ip = ip.buffer(-ES.height_gelcoat, resolution=res)
                 # 2. intersection of op and ip is the triax region
                 triax_region = op.intersection(ip)
                 # 3. difference of ip from op is the gelcoat region
@@ -979,8 +978,18 @@ class MonoplaneStation(_Station):
         return dict_of_parts
 
     def get_foam_and_uniax_regions_of_TE_reinf(self, entire_region, axes=None,
-        debug_plots=False):
-        """Returns dict of foam and uniax regions of the TE reinforcement."""
+        debug_plots=False, res=16):
+        """Returns dict of foam and uniax regions of the TE reinforcement.
+
+        Parameters
+        ----------
+        entire_region : ?
+        axes : ?
+        debug_plots : ?
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
+
+        """
         TE = self.structure.TE_reinforcement
         if isnan(TE.height_foam) and isnan(TE.height_uniax):
             uniax_region = None
@@ -1001,17 +1010,17 @@ class MonoplaneStation(_Station):
                 if self.structure.external_surface.exists():
                     if self.structure.root_buildup.exists():
                         ip = self.get_profile('(airfoil) - (external surface) - (root buildup)')
-                        ip = ip.buffer(-TE.height_uniax)
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
                     else:
                         ip = self.get_profile('(airfoil) - (external surface)')
-                        ip = ip.buffer(-TE.height_uniax)
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
                 else:
                     if self.structure.root_buildup.exists():
                         ip = self.get_profile('(airfoil) - (root buildup)')
-                        ip = ip.buffer(-TE.height_uniax)
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
                     else:
                         ip = self.get_profile('airfoil')
-                        ip = ip.buffer(-TE.height_uniax)
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
                 if debug_plots:
                     # plot the boundary of the outer_profile (entire TE)
                     self.plot_polygon(op, axes, face_color='#6699cc',
@@ -1104,39 +1113,7 @@ class MonoplaneStation(_Station):
                 op_name = 'airfoil'
         return op_name
 
-    def get_outer_profile_name_for_internal_surface(self):
-        """Determine the name of the outer profile for an internal surface."""
-        st = self.structure
-        # 1. determine how many internal surfaces exist
-        is_num = 0
-        if (st.internal_surface_1.exists() and 
-            st.internal_surface_2.exists() and
-            st.internal_surface_3.exists() and
-            st.internal_surface_4.exists()):
-            is_num = 4
-        elif (st.internal_surface_1.exists() and 
-            st.internal_surface_2.exists() and
-            st.internal_surface_3.exists()):
-            is_num = 3
-        elif (st.internal_surface_1.exists()):
-            is_num = 1
-        if is_num == 0:
-            raise Warning("Internal surfaces were not counted properly!")
-        # 2. get outer profile
-        if is_num == 1:
-            if (st.external_surface.exists() and st.root_buildup.exists() and
-                st.spar_cap.exists() and st.TE_reinforcement.exists()):
-                op_name = 'internal surface near root'
-            elif (st.external_surface.exists() and st.spar_cap.exists() and
-                st.TE_reinforcement.exists() and st.LE_panel.exists()):
-                op_name = 'internal surface near tip'
-            elif (st.external_surface.exists() and st.root_buildup.exists()):
-                op_name = 'internal surface at root'
-            else:
-                raise NotImplementedError("At station #{0}, that type of internal surface has not been implemented yet.".format(self.station_num))
-        else:
-            raise NotImplementedError("That number of internal surfaces has not been implemented yet.")
-        return op_name
+    
 
     def extract_part(self, part_name):
         """Extract the polygon for a part from the blade definition.
@@ -1216,55 +1193,11 @@ class MonoplaneStation(_Station):
             dict_of_parts = self.cut_out_part(ac, bb)
         return dict_of_parts
 
-    # def extract_internal_surface(self, part_name):
-    #     """Extract the polygon for an internal surface from the blade definition.
-
-    #     Parameters
-    #     ----------
-    #     part_name : str, the name of the internal surface. Options include:
-    #         'internal surface 1', 'internal surface 2', 'internal surface 3',
-    #         or 'internal surface 4'.
-
-    #     """
-    #     st = self.structure
-    #     # 1. access the desired structural part
-    #     if part_name == 'internal surface 1':
-    #         p = st.internal_surface_1
-    #     elif part_name == 'internal surface 2':
-    #         p = st.internal_surface_2
-    #     elif part_name == 'internal surface 3':
-    #         p = st.internal_surface_3
-    #     elif part_name == 'internal surface 4':
-    #         p = st.internal_surface_4
-    #     else:
-    #         raise ValueError("""The value for `part_name` was not recognized. Options include:
-    # 'internal surface 1', 'internal surface 2', 'internal surface 3', or
-    # 'internal surface 4'""")
-    #     # 2. determine the outer profile name for the triax
-    #     op_name = self.get_outer_profile_name_for_internal_surface()
-    #     op_triax = self.get_profile(profile_name=op_name)
-    #     # 3. erode the outer profile by the triax thickness
-    #     ip_triax = op_triax.buffer(-p.height_triax)
-    #     # 4. cut out the triax interior from the outer profile for the triax
-    #     int_surf_triax = self.cut_out_part_interior(inner_profile=ip_triax,
-    #         outer_profile=op_triax)
-    #     dict_of_parts = {}
-    #     dict_of_parts['triax region'] = int_surf_triax
-    #     # 5. assign the outer profile for the resin
-    #     op_resin = ip_triax
-    #     # 6. erode the outer profile by the resin thickness
-    #     ip_resin = op_resin.buffer(-p.height_resin)
-    #     # 7. cut out the resin interior from the outer profile for the resin
-    #     int_surf_resin = self.cut_out_part_interior(inner_profile=ip_resin,
-    #         outer_profile=op_resin)
-    #     dict_of_parts['resin region'] = int_surf_resin
-    #     return dict_of_parts
-
     def merge_all_parts(self, plot_flag=False):
         """Merges all the structural parts in this station into one polygon."""
         st = self.structure
         if plot_flag:
-            fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
+            fig, ax = plt.subplots()
             ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
             ax.set_aspect('equal')
             ax.grid('on')
@@ -1330,6 +1263,130 @@ class MonoplaneStation(_Station):
                 alpha=0.8)  # face color is purple
             plt.show()
         return p
+
+    def plot_parts(self):
+        """Plots the structural parts in this blade station."""
+        fig, ax = plt.subplots()
+        st = self.structure
+        ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
+        ax.set_aspect('equal')
+        ax.grid('on')
+        ax.set_xlabel('x2 [meters]')
+        ax.set_ylabel('x3 [meters]')
+        self.plot_polygon(self.airfoil.polygon, ax,
+            face_color='None', edge_color='#999999', alpha=0.8)
+        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+        ax.set_xlim([minx*1.2,maxx*1.2])
+        ax.set_ylim([miny*1.2,maxy*1.2])
+        try:
+            if st.external_surface.exists():
+                self.plot_polygon(st.external_surface.polygon_gelcoat,
+                    ax, face_color='#4000FF', edge_color='#000000',
+                    alpha=0.8)  # face color is purple
+                self.plot_polygon(st.external_surface.polygon_triax,
+                    ax, face_color='#4000FF', edge_color='#000000',
+                    alpha=0.8)  # face color is purple
+            if st.root_buildup.exists():
+                self.plot_polygon(st.root_buildup.polygon, ax,
+                    face_color='#BE925A', edge_color='#000000',
+                    alpha=0.8)  # face color is brown
+            if st.spar_cap.exists():
+                self.plot_polygon(st.spar_cap.polygon_lower, ax,
+                    face_color='#00ACEF', edge_color='#000000',
+                    alpha=0.8)  # face color is blue
+                self.plot_polygon(st.spar_cap.polygon_upper, ax,
+                    face_color='#00ACEF', edge_color='#000000',
+                    alpha=0.8)  # face color is blue
+            if st.aft_panel_1.exists():
+                self.plot_polygon(st.aft_panel_1.polygon_lower, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+                self.plot_polygon(st.aft_panel_1.polygon_upper, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+            if st.aft_panel_2.exists():
+                self.plot_polygon(st.aft_panel_2.polygon_lower, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+                self.plot_polygon(st.aft_panel_2.polygon_upper, ax,
+                    face_color='#F58612', edge_color='#000000',
+                    alpha=0.8)  # face color is orange
+            if st.LE_panel.exists():
+                self.plot_polygon(st.LE_panel.polygon, ax,
+                    face_color='#00A64F', edge_color='#000000',
+                    alpha=0.8)  # face color is green
+            if st.shear_web_1.exists():
+                self.plot_polygon(st.shear_web_1.polygon_left_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                self.plot_polygon(st.shear_web_1.polygon_foam, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                self.plot_polygon(st.shear_web_1.polygon_right_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+            if st.shear_web_2.exists():
+                self.plot_polygon(st.shear_web_2.polygon_left_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                self.plot_polygon(st.shear_web_2.polygon_foam, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                self.plot_polygon(st.shear_web_2.polygon_right_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+            if st.shear_web_3.exists():
+                self.plot_polygon(st.shear_web_3.polygon_left_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                self.plot_polygon(st.shear_web_3.polygon_foam, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+                self.plot_polygon(st.shear_web_3.polygon_right_biax, ax,
+                    face_color='#FFF100', edge_color='#000000',
+                    alpha=0.8)  # face color is yellow
+            if st.TE_reinforcement.exists():
+                self.plot_polygon(st.TE_reinforcement.polygon_uniax, ax,
+                    face_color='#F366BA', edge_color='#000000',
+                    alpha=0.8)  # face color is pink
+                try:
+                    self.plot_polygon(st.TE_reinforcement.polygon_foam, ax,
+                        face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                except TypeError:  # foam region doesn't exist
+                    pass
+            if st.internal_surface_1.exists():
+                self.plot_polygon(st.internal_surface_1.polygon_triax, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+                # self.plot_polygon(st.internal_surface_1.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
+            if st.internal_surface_2.exists():
+                self.plot_polygon(st.internal_surface_2.polygon_triax, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+                # self.plot_polygon(st.internal_surface_2.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
+            if st.internal_surface_3.exists():
+                self.plot_polygon(st.internal_surface_3.polygon_triax, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+                # self.plot_polygon(st.internal_surface_3.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
+            if st.internal_surface_4.exists():
+                self.plot_polygon(st.internal_surface_4.polygon_triax, ax,
+                    face_color='#999999', edge_color='#000000',
+                    alpha=0.8)  # face color is gray
+                # self.plot_polygon(st.internal_surface_4.polygon_resin, ax,
+                #     face_color='#6699cc', edge_color='#000000',
+                #     alpha=0.8)  # face color is light blue
+        except AttributeError:
+            raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
+        plt.show()
+        return (fig, ax)
 
 
 class BiplaneStation(_Station):

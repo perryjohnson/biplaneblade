@@ -258,7 +258,7 @@ class _Blade:
         for row_of_axes in axes:
             for ax in row_of_axes:
                 station = self.list_of_stations[selected_stations[i]-1]
-                print " Printing station #{0}".format(station.station_num)
+                print " Plotting station #{0}".format(station.station_num)
                 st = station.structure
                 ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
                 ax.set_aspect('equal')
@@ -513,57 +513,6 @@ class _Blade:
             raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
         plt.show()
         return (fig, ax)
-
-    def merge_all_parts(self, station, plot_flag=False):
-        """Merges all the structural parts in this station into one polygon."""
-        st = station.structure
-        if plot_flag:
-            fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
-            ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
-            ax.set_aspect('equal')
-            ax.grid('on')
-            ax.set_xlabel('x2 [meters]')
-            ax.set_ylabel('x3 [meters]')
-            station.plot_polygon(station.airfoil.polygon, ax,
-                face_color='None', edge_color='#999999', alpha=0.8)
-            (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
-            ax.set_xlim([minx*1.2,maxx*1.2])
-            ax.set_ylim([miny*1.2,maxy*1.2])
-        # merge the shear webs
-        sw1 = st.shear_web_1.polygon_left_biax.union(st.shear_web_1.polygon_foam)
-        sw1 = sw1.union(st.shear_web_1.polygon_right_biax)
-        sw2 = st.shear_web_2.polygon_left_biax.union(st.shear_web_2.polygon_foam)
-        sw2 = sw2.union(st.shear_web_2.polygon_right_biax)
-        sw3 = st.shear_web_3.polygon_left_biax.union(st.shear_web_3.polygon_foam)
-        sw3 = sw3.union(st.shear_web_3.polygon_right_biax)
-        # gather other structural parts
-        LE = st.LE_panel.polygon
-        sc_u = st.spar_cap.polygon_upper
-        sc_l = st.spar_cap.polygon_lower
-        aft1_u = st.aft_panel_1.polygon_upper
-        aft1_l = st.aft_panel_1.polygon_lower
-        aft2_u = st.aft_panel_2.polygon_upper
-        aft2_l = st.aft_panel_2.polygon_lower
-        TE_uniax = st.TE_reinforcement.polygon_uniax
-        TE_foam = st.TE_reinforcement.polygon_foam
-        TE = TE_uniax.union(TE_foam)
-        # merge everything
-        p = LE.union(sw1)
-        p = p.union(sc_u)
-        p = p.union(sc_l)
-        p = p.union(sw2)
-        p = p.union(aft1_u)
-        p = p.union(aft1_l)
-        p = p.union(sw3)
-        p = p.union(aft2_u)
-        p = p.union(aft2_l)
-        p = p.union(TE)
-        if plot_flag:
-            # plot the merged polygon
-            station.plot_polygon(p, ax, face_color='#4000FF', edge_color='#000000',
-                alpha=0.8)  # face color is purple
-            plt.show()
-        return p
 
 
 class MonoplaneBlade(_Blade):
