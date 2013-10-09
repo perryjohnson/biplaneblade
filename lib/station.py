@@ -434,30 +434,40 @@ class MonoplaneStation(_Station):
             ip_triax = op_triax.buffer(-st.internal_surface_1.height_triax)
             st.internal_surface_1.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_1.polygon_triax.geom_type == 'Polygon'
-            # # resin region
-            # op_resin = ip_triax
-            # ip_resin = op_resin.buffer(-st.internal_surface_1.height_resin)
-            # st.internal_surface_1.polygon_resin = op_resin.difference(ip_resin)
-            # print "Making internal surface resin region for station #{0}".format(self.station_num)
-            # assert st.internal_surface_1.polygon_resin.geom_type == 'Polygon'
+            # resin region
+            op_resin = ip_triax
+            ip_resin = op_resin.buffer(-st.internal_surface_1.height_resin)
+            st.internal_surface_1.polygon_resin = op_resin.difference(ip_resin)
+            assert st.internal_surface_1.polygon_resin.geom_type == 'Polygon'
         if st.internal_surface_2.exists():
             op_triax = self.get_interior_loop(2)
             ip_triax = op_triax.buffer(-st.internal_surface_2.height_triax)
             st.internal_surface_2.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_2.polygon_triax.geom_type == 'Polygon'
-            # st.internal_surface_2.polygon_resin = d['resin region']
+            # resin region
+            op_resin = ip_triax
+            ip_resin = op_resin.buffer(-st.internal_surface_2.height_resin)
+            st.internal_surface_2.polygon_resin = op_resin.difference(ip_resin)
+            assert st.internal_surface_2.polygon_resin.geom_type == 'Polygon'
         if st.internal_surface_3.exists():
             op_triax = self.get_interior_loop(3)
             ip_triax = op_triax.buffer(-st.internal_surface_3.height_triax)
             st.internal_surface_3.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_3.polygon_triax.geom_type == 'Polygon'
-            # st.internal_surface_3.polygon_resin = d['resin region']
+            # resin region
+            op_resin = ip_triax
+            ip_resin = op_resin.buffer(-st.internal_surface_3.height_resin)
+            st.internal_surface_3.polygon_resin = op_resin.difference(ip_resin)
+            assert st.internal_surface_3.polygon_resin.geom_type == 'Polygon'
         if st.internal_surface_4.exists():
             op_triax = self.get_interior_loop(4)
             ip_triax = op_triax.buffer(-st.internal_surface_4.height_triax)
             st.internal_surface_4.polygon_triax = op_triax.difference(ip_triax)
             assert st.internal_surface_4.polygon_triax.geom_type == 'Polygon'
-            # st.internal_surface_4.polygon_resin = d['resin region']
+            op_resin = ip_triax
+            ip_resin = op_resin.buffer(-st.internal_surface_4.height_resin)
+            st.internal_surface_4.polygon_resin = op_resin.difference(ip_resin)
+            assert st.internal_surface_4.polygon_resin.geom_type == 'Polygon'
 
     def get_interior_loop(self, internal_surface_num, area_threshold=10e-06,
         debug_flag=False):

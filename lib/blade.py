@@ -355,30 +355,30 @@ class _Blade:
                             station.plot_polygon(st.internal_surface_1.polygon_triax, ax,
                                 face_color='#999999', edge_color='#000000',
                                 alpha=0.8)  # face color is gray
-                            # station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
-                            #     face_color='#6699cc', edge_color='#000000',
-                            #     alpha=0.8)  # face color is light blue
+                            station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
                         if st.internal_surface_2.exists():
                             station.plot_polygon(st.internal_surface_2.polygon_triax, ax,
                                 face_color='#999999', edge_color='#000000',
                                 alpha=0.8)  # face color is gray
-                            # station.plot_polygon(st.internal_surface_2.polygon_resin, ax,
-                            #     face_color='#6699cc', edge_color='#000000',
-                            #     alpha=0.8)  # face color is light blue
+                            station.plot_polygon(st.internal_surface_2.polygon_resin, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
                         if st.internal_surface_3.exists():
                             station.plot_polygon(st.internal_surface_3.polygon_triax, ax,
                                 face_color='#999999', edge_color='#000000',
                                 alpha=0.8)  # face color is gray
-                            # station.plot_polygon(st.internal_surface_3.polygon_resin, ax,
-                            #     face_color='#6699cc', edge_color='#000000',
-                            #     alpha=0.8)  # face color is light blue
+                            station.plot_polygon(st.internal_surface_3.polygon_resin, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
                         if st.internal_surface_4.exists():
                             station.plot_polygon(st.internal_surface_4.polygon_triax, ax,
                                 face_color='#999999', edge_color='#000000',
                                 alpha=0.8)  # face color is gray
-                            # station.plot_polygon(st.internal_surface_4.polygon_resin, ax,
-                            #     face_color='#6699cc', edge_color='#000000',
-                            #     alpha=0.8)  # face color is light blue
+                            station.plot_polygon(st.internal_surface_4.polygon_resin, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
                     except AttributeError:
                         raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
                 i += 1
