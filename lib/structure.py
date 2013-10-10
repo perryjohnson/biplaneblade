@@ -187,7 +187,10 @@ class MonoplaneStructure:
              'LE panel': self.LE_panel.exists(),
              'aft panel 1': self.aft_panel_1.exists(),
              'aft panel 2': self.aft_panel_2.exists(),
-             'internal surface': self.internal_surface.exists(),
+             'internal surface 1': self.internal_surface_1.exists(),
+             'internal surface 2': self.internal_surface_2.exists(),
+             'internal surface 3': self.internal_surface_3.exists(),
+             'internal surface 4': self.internal_surface_4.exists(),
              'external surface': self.external_surface.exists()}
         return d
 

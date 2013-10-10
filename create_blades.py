@@ -33,7 +33,7 @@ Once you are finished looking at the blades, you can clean up extra files:
 (See the 'clean.py' script in this directory for details.)
 
 Author: Perry Roth-Johnson
-Last updated: October 9, 2013
+Last updated: October 10, 2013
 
 """
 
@@ -78,7 +78,7 @@ if sandia_flag:
         # station.plot_parts()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    m.plot_blade(stn_nums=True, twist=True)
+    # m.plot_blade(stn_nums=True, twist=True)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------

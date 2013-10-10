@@ -1,17 +1,13 @@
-"""A script to merge all the structural parts into one polygon.
+"""A script to merge all the structural parts into one polygon at each station.
 
 Author: Perry Roth-Johnson
-Last updated: October 9, 2013
+Last updated: October 10, 2013
 
 """
 
 
 import lib.blade as bl
 reload(bl)
-from shapely.geometry import Polygon
-# from shapely.validation import explain_validity
-import matplotlib.pyplot as plt
-from operator import attrgetter
 
 # --- sandia blade ------------------------------------------------------------
 m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
@@ -26,28 +22,16 @@ for station in m.list_of_stations:
     station.find_part_edges()
     # station.find_all_part_cs_coords()
     station.find_all_part_polygons()
+    # station.write_all_part_polygons()
 
-# # check that parts are getting merged properly in stations that are plotting weird
-# for station in m.list_of_stations:
-#     p = station.merge_all_parts()
-#     good_loops = []
-#     for n, interior in enumerate(p.interiors):
-#         a = Polygon(interior).area
-#         if a > 10e-06:
-#             good_loops.append(interior)
-#             # c = interior.centroid.wkt
-#     print "Station #{0} has {1} good interior loops.".format(station.station_num, len(good_loops))
-#     # list_of_cx = []
-#     for loop in good_loops:
-#         cx = loop.centroid.x
-#         # list_of_cx.append(cx)
-#         print "  unsorted x-coord of centroid is {0}".format(cx)
-#     # sort the loops by the x-coordinate of their centroids, smallest to largest
-#     if len(good_loops) > 1:
-#         good_loops.sort(key=attrgetter('centroid.x'))
-#         print "  ...sorting!"
-#     for loop in good_loops:
-#         cx = loop.centroid.x
-#         print "  SORTED x-coord of centroid is {0}".format(cx)
+for station in m.list_of_stations:
+    a = station.cross_section_area()
+    print "Station #{0}, area = {1} m^2".format(station.station_num, a)
+    d = station.structure.which_parts_exist()
+    for keys, values in sorted(d.items()):
+        print "  {0} : {1}".format(keys, values)
 
-m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
+# m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
+# stn33 = m.list_of_stations[32]
+# stn33.merge_all_parts(plot_flag=True, merge_internal_surface=False)
+# stn33.merge_all_parts(plot_flag=True, merge_internal_surface=True)

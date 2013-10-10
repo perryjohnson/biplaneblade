@@ -244,6 +244,50 @@ class _Station:
 
         Methods
         -------
+        .__del__() : delete this station
+        .create_plot() : create a plot for this station
+        .show_plot() : show the plot
+        .save_plot() : save the plot in the station path as a PNG file
+        .find_all_part_polygons() : find the polygon representations of each
+            structural part
+        .get_interior_loop() : get the interior loop for the desired internal
+            surface
+        .write_all_part_polygons() : write the coordinates of all structural
+            parts to `station_path`
+        .find_all_part_cs_coords() : find the corners of the cross-sections for
+            each structural part (NOTE: only shear webs implemented so far)
+        .find_part_edges() : find the edges of each structural part
+        .plot_part_edges() : plot color block for each structural part region
+        .plot_polygon() : plot a polygon in a matplotlib figure
+        .get_profile() : returns a polygon for the desired profile
+        .erode_part_thickness() : returns a polygon of the outer profile,
+            eroded by the part height
+        .cut_out_part_interior() : returns a polygon of `inner_profile` cut out
+            of `outer_profile`
+        .part_bounding_box() : returns a polygon of the bounding box that
+            contains the part
+        .SW_bounding_boxes() : returns three polygons of bounding boxes that
+            contain the biax and foam regions of the shear web
+        .extract_external_surface() : extract the external surface from the
+            blade definition
+        .get_gelcoat_and_triax_regions_of_ext_surf() : returns dict of gelcoat
+            and triax regions of external surface
+        .extract_SW() : extract the shear web from the blade definition
+        .extract_TE_reinforcement() : extract the TE reinforcement from the
+            blade definition
+        .get_foam_and_uniax_regions_of_TE_reinf() : returns dict of foam and
+            uniax regions of the TE reinforcement
+        .cut_out_part() : returns a dict of polygons after cutting out the
+            desired part. (NOTE: this is different from the other method,
+            `.cut_out_part_interior()`.)
+        .get_outer_profile_name() : determine the name of the outer profile
+        .extract_part() : extract the polygon for a part from the blade
+            definition
+        .merge_all_parts() : merges all the structural parts in this station
+            into one polygon
+        .plot_parts() : plots the structural parts in this blade station
+        .cross_section_area() : calculate the total cross-section area for this
+            station
         .structure
             .<Part>
                 .exists() : bool, check if a Part exists at this station
@@ -323,16 +367,6 @@ class _Station:
         """Save the plot in the station path as a PNG file: stnXX.png"""
         fname = os.path.join(self.station_path, 'stn{0:02d}.png'.format(self.station_num))
         fig.savefig(fname)
-
-    # note: use <Part>.exists() method to decide whether or not to split the airfoil curve for a particular Part
-    # check these parts:
-    # leading edge panel
-    # shear webs (1,2,3)
-    # spar caps
-    # aft panels
-    # TE reinforcement
-
-    # note: keep implementing methods from airfoil_utils.py into this Station class!!!!
 
 
 class MonoplaneStation(_Station):
@@ -1270,7 +1304,7 @@ class MonoplaneStation(_Station):
             dict_of_parts = self.cut_out_part(ac, bb)
         return dict_of_parts
 
-    def merge_all_parts(self, plot_flag=False):
+    def merge_all_parts(self, plot_flag=False, merge_internal_surface=False):
         """Merges all the structural parts in this station into one polygon."""
         st = self.structure
         if plot_flag:
@@ -1332,6 +1366,24 @@ class MonoplaneStation(_Station):
             sw3 = st.shear_web_3.polygon_left_biax.union(st.shear_web_3.polygon_foam)
             sw3 = sw3.union(st.shear_web_3.polygon_right_biax)
             list_of_parts.append(sw3)
+        if merge_internal_surface:
+            # also merge the internal surface with the other structural parts
+            if st.internal_surface_1.exists():
+                IS1 = st.internal_surface_1.polygon_triax
+                IS1 = IS1.union(st.internal_surface_1.polygon_resin)
+                list_of_parts.append(IS1)
+            if st.internal_surface_2.exists():
+                IS2 = st.internal_surface_2.polygon_triax
+                IS2 = IS2.union(st.internal_surface_2.polygon_resin)
+                list_of_parts.append(IS2)
+            if st.internal_surface_3.exists():
+                IS3 = st.internal_surface_3.polygon_triax
+                IS3 = IS3.union(st.internal_surface_3.polygon_resin)
+                list_of_parts.append(IS3)
+            if st.internal_surface_4.exists():
+                IS4 = st.internal_surface_4.polygon_triax
+                IS4 = IS4.union(st.internal_surface_4.polygon_resin)
+                list_of_parts.append(IS4)
         # merge everything
         p = cascaded_union(list_of_parts)
         if plot_flag:
@@ -1464,6 +1516,11 @@ class MonoplaneStation(_Station):
             raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
         plt.show()
         return (fig, ax)
+
+    def cross_section_area(self):
+        """Calculate the total cross-section area for this station."""
+        p = self.merge_all_parts(merge_internal_surface=False)
+        return p.area
 
 
 class BiplaneStation(_Station):
