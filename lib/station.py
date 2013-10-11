@@ -10,10 +10,13 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import transformation as tf
-reload(tf)
-from coordinates import *
-from airfoil import *
-from structure import *
+# reload(tf)
+import coordinates as cd
+# reload(cd)
+import airfoil as airf
+reload(airf)
+import structure as struc
+reload(struc)
 from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
 from descartes import PolygonPatch
@@ -21,6 +24,7 @@ from descartes import PolygonPatch
 from operator import attrgetter
 # helps to sort lists of objects by their attributes
 # ref: https://wiki.python.org/moin/HowTo/Sorting#Operator_Module_Functions
+from math import isnan
 
 
 class _Station:
@@ -323,7 +327,7 @@ class _Station:
         self.logf = open(_Station.logfile_name, "a")
         self.logf.write("............(Created blade station #{0})............\n".format(self.station_num))
         print " Created blade station #{0}".format(self.station_num)
-        self.coords = Coordinates(stn_series['x1'], 
+        self.coords = cd.Coordinates(stn_series['x1'], 
                                   stn_series['x2'], 
                                   stn_series['x3'])
         self.logf.write("****** COORDINATES ******\n")
@@ -375,7 +379,7 @@ class MonoplaneStation(_Station):
         """Create a new biplane station for a biplane blade."""
         _Station.__init__(self, stn_series, blade_path)
         self.type = 'monoplane'
-        self.airfoil = MonoplaneAirfoil(
+        self.airfoil = airf.MonoplaneAirfoil(
             name=stn_series['airfoil'],
             filename=stn_series['airfoil']+'.txt',
             chord=stn_series['chord'],
@@ -384,7 +388,7 @@ class MonoplaneStation(_Station):
         self.logf = open(_Station.logfile_name, "a")
         self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
         self.logf.write(str(self.airfoil) + '\n')
-        self.structure = MonoplaneStructure(
+        self.structure = struc.MonoplaneStructure(
             h_RB=stn_series['root buildup height'],
             b_SC=stn_series['spar cap base'],
             h_SC=stn_series['spar cap height'],
@@ -1529,7 +1533,7 @@ class BiplaneStation(_Station):
         """Create a new biplane station for a biplane blade."""
         _Station.__init__(self, stn_series, blade_path)
         self.type = 'biplane'
-        self.airfoil = BiplaneAirfoil(
+        self.airfoil = airf.BiplaneAirfoil(
             name=stn_series['airfoil']+'_biplane',
             name_L=stn_series['airfoil'],
             filename_L=stn_series['airfoil']+'.txt',
@@ -1547,7 +1551,7 @@ class BiplaneStation(_Station):
         self.logf = open(_Station.logfile_name, "a")
         self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
         self.logf.write(str(self.airfoil) + '\n')
-        self.structure = BiplaneStructure(
+        self.structure = struc.BiplaneStructure(
             h_RB=stn_series['root buildup height'],
             b_SC=stn_series['spar cap base'],
             h_SC=stn_series['spar cap height'],
