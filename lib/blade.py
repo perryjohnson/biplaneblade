@@ -106,6 +106,12 @@ class _Blade:
                 self.logf.write("[{0}] Created all blade stations\n".format(datetime.datetime.now()))
                 self.airfoils_path = os.path.join(self.blade_path, airfoils_path)
                 self.logf.write("[{0}] Found airfoils path: {1}\n".format(datetime.datetime.now(), self.airfoils_path))
+                self.copy_all_airfoil_coords()
+                # pre-process the airfoil coordinates
+                for station in self.list_of_stations:
+                    station.airfoil.read_coords()
+                    station.airfoil.scale_and_translate_coords()
+                    station.airfoil.split_at_LE_and_TE()
         self.logf.flush()
         self.logf.close()
 
@@ -128,10 +134,10 @@ class _Blade:
     def import_blade_definition(self):
         """Import the blade definition from a CSV file.
 
-        Returns 1 if the import was successful, 0 otherwise.
+        Returns True if the import was successful, False otherwise.
 
         """
-        import_result = 0
+        import_result = False
         defn_fileext = os.path.splitext(self.defn_filename)[-1]
         if defn_fileext != '.csv' and defn_fileext != '.CSV':
             # check that the blade definition file is a CSV file
@@ -140,7 +146,7 @@ class _Blade:
             # import the blade definition file into a pandas DataFrame
             self._df = pd.read_csv(self.defn_filename, index_col=0)
             self.number_of_stations = len(self._df)
-            import_result = 1
+            import_result = True
         return import_result
 
     def create_all_stations(self):
@@ -533,8 +539,8 @@ class MonoplaneBlade(_Blade):
             print " ... Assigned station.airfoil.path!"
             self.logf = open(_Blade.logfile_name, 'a')
             self.logf.write("[{0}] Assigned station.airfoil.path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.path))
-            self.logf.flush()
-            self.logf.close()
+            # self.logf.flush()
+            # self.logf.close()
 
     def plot_all_airfoils(self, lw, color='k', twist_flag=True,
         export_flag=True):
@@ -960,8 +966,8 @@ class BiplaneBlade(_Blade):
                 print " ... Assigned station.airfoil.path!"
                 self.logf = open(_Blade.logfile_name, 'a')
                 self.logf.write("[{0}] Assigned station.airfoil.path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.path))
-                self.logf.flush()
-                self.logf.close()
+                # self.logf.flush()
+                # self.logf.close()
         elif station.type == 'biplane':
             # lower airfoil
             try:
@@ -974,8 +980,8 @@ class BiplaneBlade(_Blade):
                 print " ... Assigned station.airfoil.lower_path!"
                 self.logf = open(_Blade.logfile_name, 'a')
                 self.logf.write("[{0}] Assigned station.airfoil.lower_path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.lower_path))
-                self.logf.flush()
-                self.logf.close()
+                # self.logf.flush()
+                # self.logf.close()
             # upper airfoil
             try:
                 shutil.copy(os.path.join(self.airfoils_path, station.airfoil.upper_filename), station.station_path)
@@ -987,8 +993,8 @@ class BiplaneBlade(_Blade):
                 print " ... Assigned station.airfoil.upper_path!"
                 self.logf = open(_Blade.logfile_name, 'a')
                 self.logf.write("[{0}] Assigned station.airfoil.upper_path to station #{1}: {2}\n".format(datetime.datetime.now(), station.station_num, station.airfoil.upper_path))
-                self.logf.flush()
-                self.logf.close()
+                # self.logf.flush()
+                # self.logf.close()
 
     def plot_all_airfoils(self, lw, color='k', twist_flag=True,
         export_flag=True):

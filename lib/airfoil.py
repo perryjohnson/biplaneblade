@@ -30,9 +30,13 @@ class MonoplaneAirfoil(_Airfoil):
     def __init__(self, name, filename, chord, pitch_axis, twist):
         _Airfoil.__init__(self, name, pitch_axis, twist)
         self.filename = filename
-        self.path = ''  # initialize empty string
-                        # will be assigned later by Blade.copy_airfoil_coords()
-        self.chord = chord            # units [m]
+        self.path = None        # assigned later by Blade.copy_airfoil_coords()
+        self.chord = chord      # units [m]
+        self.coords = None      # assigned later by read_coords()
+        self.LE_index = None    # assigned later by split_at_LE_and_TE()
+        self.suction = None     # assigned later by split_at_LE_and_TE()
+        self.pressure = None    # assigned later by split_at_LE_and_TE()
+        self.polygon = None     # assigned later by create_polygon()
 
     def __str__(self):
         return """Monoplane Airfoil ---
@@ -151,7 +155,7 @@ Twist:       {4:6.4f} (degrees)""".format(self.name, self.filename,
             self.suction = self.coords[self.LE_index:]
             self.pressure = self.coords[:self.LE_index+1]
 
-    def make_polygon(self):
+    def create_polygon(self):
         """Convert the numpy array of coordinates into a polygon object.
 
         This allows us to use offset and clipping methods in the Shapely module
@@ -249,12 +253,12 @@ class BiplaneAirfoil(_Airfoil):
         _Airfoil.__init__(self, name, pitch_axis, twist)
         self.lower_name = name_L
         self.lower_filename = filename_L
-        self.lower_path = ''
+        self.lower_path = None
         self.lower_chord = chord_L
         self.lower_SW_ref_pt_fraction = SW_ref_pt_L
         self.upper_name = name_U
         self.upper_filename = filename_U
-        self.upper_path = ''
+        self.upper_path = None
         self.upper_chord = chord_U
         self.upper_SW_ref_pt_fraction = SW_ref_pt_U
         self.gap_to_chord_ratio = gap_to_chord_ratio

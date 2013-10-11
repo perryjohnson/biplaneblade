@@ -422,7 +422,7 @@ class MonoplaneStation(_Station):
         self.logf.flush()
         self.logf.close()
 
-    def find_all_part_polygons(self):
+    def create_polygons(self):
         """Find the polygon representations of each structural part."""
         st = self.structure
         if st.external_surface.exists():

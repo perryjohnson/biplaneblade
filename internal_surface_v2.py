@@ -11,17 +11,13 @@ reload(bl)
 
 # --- sandia blade ------------------------------------------------------------
 m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
-m.copy_all_airfoil_coords()
 
 # pre-process the airfoil coordinates
 for station in m.list_of_stations:
-    station.airfoil.read_coords()
-    station.airfoil.scale_and_translate_coords()
-    station.airfoil.split_at_LE_and_TE()
-    station.airfoil.make_polygon()
+    station.airfoil.create_polygon()
     station.find_part_edges()
     # station.find_all_part_cs_coords()
-    station.find_all_part_polygons()
+    station.create_polygons()
     # station.write_all_part_polygons()
 
 # for station in m.list_of_stations:

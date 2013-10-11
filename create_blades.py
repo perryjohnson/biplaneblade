@@ -52,7 +52,6 @@ biplane_flap_asym_stagger_flag = False
 # --- sandia blade ------------------------------------------------------------
 if sandia_flag:
     m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
-    m.copy_all_airfoil_coords()
 
     # # plot the chord and twist schedules
     # m.plot_chord_schedule()
@@ -60,14 +59,11 @@ if sandia_flag:
 
     # pre-process the airfoil coordinates
     for station in m.list_of_stations:
-        station.airfoil.read_coords()
-        station.airfoil.scale_and_translate_coords()
-        station.airfoil.split_at_LE_and_TE()
         # station.airfoil.rotate_coords()
-        station.airfoil.make_polygon()
+        station.airfoil.create_polygon()
         station.find_part_edges()
         station.find_all_part_cs_coords()
-        station.find_all_part_polygons()
+        station.create_polygons()
         station.write_all_part_polygons()
 
     # create some airfoil plots in Matplotlib
@@ -78,7 +74,7 @@ if sandia_flag:
         # station.plot_parts()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    # m.plot_blade(stn_nums=True, twist=True)
+    m.plot_blade(stn_nums=True, twist=True)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
