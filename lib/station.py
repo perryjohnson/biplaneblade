@@ -507,6 +507,465 @@ class MonoplaneStation(_Station):
             st.internal_surface_4.polygon_resin = op_resin.difference(ip_resin)
             assert st.internal_surface_4.polygon_resin.geom_type == 'Polygon'
 
+    def extract_part(self, part_name):
+        """Extract the polygon for a part from the blade definition.
+
+        Parameters
+        ----------
+        part_name : str, the name of the structural part. Options include:
+            'spar cap', 'shear web 1', 'shear web 2', 'shear web 3',
+            'aft panel 1', 'aft panel 2', 'TE reinforcement', 'LE panel',
+            'root buildup', or 'external surface'
+
+        """
+        st = self.structure
+        # 1. determine the name of the outer profile (op_name)
+        op_name = self.get_outer_profile_name(part_name)
+        # 2. access the desired structural part
+        SW_flag = False  # shear web flag
+        TE_flag = False  # trailing edge reinforcement flag
+        ES_flag = False  # external surface flag
+        if part_name == 'root buildup':
+            p = st.root_buildup
+        elif part_name == 'spar cap':
+            p = st.spar_cap
+        elif part_name == 'aft panel 1':
+            p = st.aft_panel_1
+        elif part_name == 'aft panel 2':
+            p = st.aft_panel_2
+        elif part_name == 'LE panel':
+            p = st.LE_panel
+        elif part_name == 'shear web 1':
+            p = st.shear_web_1
+            SW_flag = True
+        elif part_name == 'shear web 2':
+            p = st.shear_web_2
+            SW_flag = True
+        elif part_name == 'shear web 3':
+            p = st.shear_web_3
+            SW_flag = True
+        elif part_name == 'TE reinforcement':
+            p = st.TE_reinforcement
+            TE_flag = True
+        elif part_name == 'internal surface':
+            raise NotImplementedError("Use the function `extract_internal_surface` instead.")
+        elif part_name == 'external surface':
+            p = st.external_surface
+            ES_flag = True
+        else:
+            raise ValueError("""The value for `part_name` was not recognized. Options include:
+    'spar cap'
+    'shear web 1', 'shear web 2', 'shear web 3',
+    'aft panel 1', 'aft panel 2',
+    'TE reinforcement',
+    'LE panel',
+    'root buildup',
+    'internal surface',
+    'external surface'""")
+        # 3. get outer profile
+        op = self.get_profile(profile_name=op_name)
+        if SW_flag:
+            # use a special extraction algorithm for shear webs
+            dict_of_parts = self.extract_SW(op, p)
+        elif TE_flag:
+            # use a special extraction algorithm for the TE reinforcement
+            dict_of_parts = self.extract_TE_reinforcement(op, p)
+        elif ES_flag:
+            # use a special extraction algorithm for the external surface
+            dict_of_parts = self.extract_external_surface(op, p)
+        else:
+            # use the normal extraction algorithm for all other parts
+            # 4. erode the outer profile by the part thickness
+            ip = self.erode_part_thickness(part=p, outer_profile=op)
+            # 5. cut out the part interior from the outer profile
+            ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
+            # 6. draw a bounding box at the part edges
+            bb = self.part_bounding_box(part=p)
+            # 7. cut out the structural part
+            dict_of_parts = self.cut_out_part(ac, bb)
+        return dict_of_parts
+
+    def get_outer_profile_name(self, part_name):
+        """Determine the name of the outer profile."""
+        st = self.structure
+        # does external surface exist?
+        if st.external_surface.exists():
+            # yes, external surface exists
+            # are we plotting external surface?
+            if part_name == 'external surface':
+                # yes, we're plotting external surface
+                op_name = 'airfoil'
+            else:
+                # no, we're not plotting external surface
+                # does root buildup exist?
+                if st.root_buildup.exists():
+                    # yes, root buildup exists
+                    # are we plotting root buildup?
+                    if part_name == 'root buildup':
+                        # yes, we're plotting root buildup
+                        op_name = '(airfoil) - (external surface)'
+                    else:
+                        # no, we're not plotting root buildup
+                        op_name = '(airfoil) - (external surface) - (root buildup)'
+                else:
+                    # no, root buildup doesn't exist
+                    op_name = '(airfoil) - (external surface)'
+        else:
+            # no, external surface doesn't exist
+            # does root buildup exist?
+            if st.root_buildup.exists():
+                # yes, root buildup exists
+                # are we plotting root buildup?
+                if part_name == 'root buildup':
+                    # yes, we're plotting root buildup
+                    op_name = 'airfoil'
+                else:
+                    # no, we're not plotting root buildup
+                    op_name = '(airfoil) - (root buildup)'
+            else:
+                # no, root buildup doesn't exist
+                op_name = 'airfoil'
+        return op_name
+
+    def get_profile(self, profile_name, res=16):
+        """Returns a polygon for the desired profile.
+
+        Parameters:
+        -----------
+        profile_name : str, the name of the desired profile. Choose between:
+            'airfoil'
+              --> airfoil profile
+            '(airfoil) - (root buildup)'
+              --> airfoil profile - root buildup thickness
+            '(airfoil) - (external surface)'
+              --> airfoil profile - external surface thickness
+            '(airfoil) - (external surface) - (root buildup)'
+              --> airfoil profile - (external surface + root buildup) thickness
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
+
+        """
+        st = self.structure
+        af = self.airfoil
+        if profile_name == 'airfoil':
+            p = af.polygon
+        elif profile_name == '(airfoil) - (root buildup)':
+            p = af.polygon.buffer(-st.root_buildup.height,
+                resolution=res)
+        elif profile_name == '(airfoil) - (external surface)':
+            p = af.polygon.buffer(-st.external_surface.height,
+                resolution=res)
+        elif profile_name == '(airfoil) - (external surface) - (root buildup)':
+            p = af.polygon.buffer(-(st.external_surface.height + 
+                st.root_buildup.height), resolution=res)
+        else:
+            raise NotImplementedError("That `profile_name` is not supported.")
+        return p
+
+    def extract_SW(self, op, p):
+        """Extract the shear web from the blade definition.
+
+        ***
+        NOTE: this function should NOT be used directly, it should only be 
+        called by <station>.extract_part(...)
+        ***
+
+        The shear web is split into three regions:
+        (1) left biax region
+        (2) foam region
+        (3) right biax region
+
+        Parameters
+        ----------
+        op : shapely.Polygon, the polygon representation of the desired outer
+            profile
+        p : <station>.structure.<part>, the structural part, where <part> = 
+            'shear web 1', 'shear web 2', or 'shear web 3'
+        
+        """
+        # 6. get bounding boxes for the biax and foam regions of the shear web
+        (L_biax_bb, foam_bb, R_biax_bb) = self.SW_bounding_boxes(SW_part=p)
+        # 7. cut out the structural part
+        # we are extracting a shear web; just cut out the intersection
+        # of the outer profile and the three bounding boxes
+        left_biax = self.cut_out_part(op, L_biax_bb)['single part']
+        foam = self.cut_out_part(op, foam_bb)['single part']
+        right_biax = self.cut_out_part(op, R_biax_bb)['single part']
+        dict_of_parts = {'left biax region' : left_biax,
+            'foam region' : foam, 'right biax region' : right_biax}
+        return dict_of_parts
+
+    def SW_bounding_boxes(self, SW_part, y_boundary_buffer=1.2):
+        """Returns three polygons of bounding boxes that contain the biax and foam regions of the shear web.
+
+        The points of each bounding box are labeled from 1 to 4 as:
+
+        4---3
+        |   |
+        1---2
+
+        """
+        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+        # left biax bounding box
+        pt1 = (SW_part.left, miny*y_boundary_buffer)
+        pt2 = (SW_part.left+SW_part.base_biax, miny*y_boundary_buffer)
+        pt3 = (SW_part.left+SW_part.base_biax, maxy*y_boundary_buffer)
+        pt4 = (SW_part.left, maxy*y_boundary_buffer)
+        left_biax_bb = Polygon([pt1, pt2, pt3, pt4])
+        # foam bounding box
+        pt1 = (SW_part.left+SW_part.base_biax, miny*y_boundary_buffer)
+        pt2 = (SW_part.right-SW_part.base_biax, miny*y_boundary_buffer)
+        pt3 = (SW_part.right-SW_part.base_biax, maxy*y_boundary_buffer)
+        pt4 = (SW_part.left+SW_part.base_biax, maxy*y_boundary_buffer)
+        foam_bb = Polygon([pt1, pt2, pt3, pt4])
+        # right biax bounding box
+        pt1 = (SW_part.right-SW_part.base_biax, miny*y_boundary_buffer)
+        pt2 = (SW_part.right, miny*y_boundary_buffer)
+        pt3 = (SW_part.right, maxy*y_boundary_buffer)
+        pt4 = (SW_part.right-SW_part.base_biax, maxy*y_boundary_buffer)
+        right_biax_bb = Polygon([pt1, pt2, pt3, pt4])
+        return (left_biax_bb, foam_bb, right_biax_bb)
+
+    def cut_out_part(self, airfoil_cutout, bounding_box):
+        """Returns a dict of polygons after cutting out the desired part.
+
+        The dict of polygons may contain either two items (e.g. an upper spar
+        cap and a lower spar cap) or one item (e.g. a leading edge panel).
+
+        Parts are obtained by finding the intersection of two polygons:
+        `airfoil_cutout` and `bounding_box`.
+
+        Parameters
+        ----------
+        airfoil_cutout : shapely.Polygon, the airfoil profile with the inner
+            boundary of the structural part cut out
+        bounding_box : shapely.Polygon, a bounding box that stretches from the
+            left to right edge of the desired structural part
+
+        """
+        p4 = airfoil_cutout.intersection(bounding_box)
+        # p4 may be a `MultiPolygon` that contains more than one polygon
+        # (e.g. p4 contains the upper and lower spar caps)
+        # if so, extract each polygon and convert them to separate patches
+        # (otherwise, PolygonPatch will throw an error)
+        dict_of_parts = {}
+        try:
+            if len(p4.geoms) == 2:
+                dict_of_parts['lower part'] = p4.geoms[0]
+                dict_of_parts['upper part'] = p4.geoms[1]
+            else:
+                raise NotImplementedError("After cutting out parts, more than 2 polygons were found.")
+        except AttributeError:
+            # p4 is just a `Polygon`, not a `MultiPolygon`, and p4 does not
+            # have the attribute `geoms`.
+            # (e.g. p4 is the LE panel)
+            dict_of_parts['single part'] = p4
+        return dict_of_parts
+
+    def extract_TE_reinforcement(self, op, p):
+        """Extract the TE reinforcement from the blade definition.
+
+        ***
+        NOTE: this function should NOT be used directly, it should only be 
+        called by <station>.extract_part(...)
+        ***
+
+        The TE reinforcement is split into one or two regions:
+        (1) uniax region
+        (2) foam region (optional)
+
+        Parameters
+        ----------
+        op : shapely.Polygon, the polygon representation of the desired outer
+            profile
+        p : <station>.structure.TE_reinforcement, the structural part for the
+            TE reinforcement
+        
+        """
+        # 4. erode the outer profile by the part thickness
+        ip = self.erode_part_thickness(part=p, outer_profile=op)
+        # 5. cut out the part interior from the outer profile
+        ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
+        # 6. draw a bounding box at the TE reinforcement edges
+        bb = self.part_bounding_box(part=p)
+        # 7. cut out the entire TE reinforcement
+        e = self.cut_out_part(ac, bb)['single part']  # entire TE reinforcement
+        # 8. extract the foam and uniax regions from the TE reinforcement
+        dict_of_parts = self.get_foam_and_uniax_regions_of_TE_reinf(e)
+        return dict_of_parts
+
+    def erode_part_thickness(self, part, outer_profile, res=16):
+        """Returns a polygon of the outer profile, eroded by the part height
+
+        Parameters
+        ----------
+        part : <station>.structure.<part>, the object that represents a
+            structural part at this station
+        outer_profile : shapely.Polygon, the polygon that represents the
+            desired outer profile
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
+
+        """
+        return outer_profile.buffer(-part.height, resolution=res)
+
+    def cut_out_part_interior(self, inner_profile, outer_profile):
+        """Returns a polygon of `inner_profile` cut out of `outer_profile`."""
+        return outer_profile.difference(inner_profile)
+
+    def part_bounding_box(self, part, x_boundary_buffer=1.2, 
+        y_boundary_buffer=1.2):
+        """Returns a polygon of the bounding box that contains the part.
+
+        The points of the bounding box are labeled from 1 to 4 as:
+
+        4---3
+        |   |
+        1---2
+
+        Parameters
+        ----------
+        part : <station>.structure.<part>, the object that represents a
+            structural part at this station
+        x_boundary_buffer : float (default: 1.2), factor to multiply with the
+            minx and maxx bound of the airfoil polygon, to stretch the bounding
+            box past the left and right edges of the airfoil polygon
+        y_boundary_buffer : float (default: 1.2), factor to multiply with the
+            miny and maxy bound of the airfoil polygon, to stretch the bounding
+            box above and below the top and bottom edges of the airfoil polygon
+
+        """
+        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+        try:
+            pt1 = (part.left, miny*y_boundary_buffer)
+            pt2 = (part.right, miny*y_boundary_buffer)
+            pt3 = (part.right, maxy*y_boundary_buffer)
+            pt4 = (part.left, maxy*y_boundary_buffer)
+        except AttributeError:
+            # if the part doesn't have attributes `left` or `right`, just use
+            # the airfoil bounds to form the bounding box
+            # (e.g. the root buildup doesnt have left and right edges)
+            pt1 = (minx*x_boundary_buffer, miny*y_boundary_buffer)
+            pt2 = (maxx*x_boundary_buffer, miny*y_boundary_buffer)
+            pt3 = (maxx*x_boundary_buffer, maxy*y_boundary_buffer)
+            pt4 = (minx*x_boundary_buffer, maxy*y_boundary_buffer)
+        bounding_box = Polygon([pt1, pt2, pt3, pt4])
+        return bounding_box
+
+    def get_foam_and_uniax_regions_of_TE_reinf(self, entire_region, axes=None,
+        debug_plots=False, res=16):
+        """Returns dict of foam and uniax regions of the TE reinforcement.
+
+        Parameters
+        ----------
+        entire_region : ?
+        axes : ?
+        debug_plots : ?
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
+
+        """
+        TE = self.structure.TE_reinforcement
+        if isnan(TE.height_foam) and isnan(TE.height_uniax):
+            uniax_region = None
+            foam_region = None
+        else:
+            if isnan(TE.height_foam):
+                uniax_region = entire_region
+                foam_region = None
+            elif isnan(TE.height_uniax):
+                foam_region = entire_region
+                uniax_region = None
+            else:
+                # split entire_region up into foam_region and uniax_region
+                # 1. get polygons for outer profile (entire_region) and inner
+                #    profile (external surface or root buildup, minus the uniax
+                #    thickness)
+                op = entire_region
+                if self.structure.external_surface.exists():
+                    if self.structure.root_buildup.exists():
+                        ip = self.get_profile('(airfoil) - (external surface) - (root buildup)')
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
+                    else:
+                        ip = self.get_profile('(airfoil) - (external surface)')
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
+                else:
+                    if self.structure.root_buildup.exists():
+                        ip = self.get_profile('(airfoil) - (root buildup)')
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
+                    else:
+                        ip = self.get_profile('airfoil')
+                        ip = ip.buffer(-TE.height_uniax, resolution=res)
+                if debug_plots:
+                    # plot the boundary of the outer_profile (entire TE)
+                    self.plot_polygon(op, axes, face_color='#6699cc',
+                        edge_color='#6699cc')
+                    # plot the boundary of the inner profile (~foam region)
+                    self.plot_polygon(ip, axes, face_color=(0,1,0),
+                        edge_color=(0,1,0))
+                # 2. intersection of op and ip is the foam region
+                foam_region = op.intersection(ip)
+                # 3. difference of ip from op is the uniax region
+                uniax_region = op.difference(ip)
+        d = {'uniax region': uniax_region, 'foam region': foam_region}
+        return d
+
+    def extract_external_surface(self, op, p):
+        """Extract the external surface from the blade definition.
+
+        ***
+        NOTE: this function should NOT be used directly, it should only be
+        called by <station>.extract_part(...)
+        ***
+
+        """
+        # 4. erode the outer profile by the part thickness
+        ip = self.erode_part_thickness(part=p, outer_profile=op)
+        # 5. cut out the part interior from the outer profile
+        ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
+        # 6. draw a bounding box at the part edges
+        bb = self.part_bounding_box(part=p)
+        # 7. cut out the structural part
+        e = self.cut_out_part(ac, bb)['single part']  # entire external surface
+        # 8. extract the gelcoat and triax regions from the external surface
+        dict_of_parts = self.get_gelcoat_and_triax_regions_of_ext_surf(e)
+        return dict_of_parts
+
+    def get_gelcoat_and_triax_regions_of_ext_surf(self, entire_region, res=16):
+        """Returns dict of gelcoat and triax regions of external surface.
+
+        Parameters
+        ----------
+        entire_region : object, polygon for the entire external surface?
+        res : int (default: 16), a resolution that determines the number of
+            segments used to approximate a quarter circle around a point
+
+        """
+        ES = self.structure.external_surface
+        if isnan(ES.height_gelcoat) and isnan(ES.height_triax):
+            triax_region = None
+            gelcoat_region = None
+        else:
+            if isnan(ES.height_gelcoat):
+                triax_region = entire_region
+                gelcoat_region = None
+            elif isnan(ES.height_triax):
+                gelcoat_region = entire_region
+                triax_region = None
+            else:
+                # split entire_region up into gelcoat_region and triax_region
+                # 1. get polygons for outer profile (entire_region) and inner
+                #    profile (airfoil, minus the gelcoat thickness)
+                op = entire_region
+                ip = self.get_profile('airfoil')
+                ip = ip.buffer(-ES.height_gelcoat, resolution=res)
+                # 2. intersection of op and ip is the triax region
+                triax_region = op.intersection(ip)
+                # 3. difference of ip from op is the gelcoat region
+                gelcoat_region = op.difference(ip)
+        d = {'triax region': triax_region, 'gelcoat region': gelcoat_region}
+        return d
+
     def get_interior_loop(self, internal_surface_num, area_threshold=10e-06,
         debug_flag=False):
         """Get the interior loop for the desired internal surface.
@@ -540,6 +999,101 @@ class MonoplaneStation(_Station):
         #   internal_surface_4 ==> internal_surface_num=4 ==> good_loops[3]
         loop = Polygon(good_loops[internal_surface_num-1])
         return loop
+
+    def merge_all_parts(self, plot_flag=False, merge_internal_surface=False):
+        """Merges all the structural parts in this station into one polygon."""
+        st = self.structure
+        if plot_flag:
+            fig, ax = plt.subplots()
+            ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
+            ax.set_aspect('equal')
+            ax.grid('on')
+            ax.set_xlabel('x2 [meters]')
+            ax.set_ylabel('x3 [meters]')
+            self.plot_polygon(self.airfoil.polygon, ax,
+                face_color='None', edge_color='#999999', alpha=0.8)
+            (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+            ax.set_xlim([minx*1.2,maxx*1.2])
+            ax.set_ylim([miny*1.2,maxy*1.2])
+        # gather all the parts
+        list_of_parts = []
+        if st.external_surface.exists():
+            ES = st.external_surface.polygon_triax
+            ES = ES.union(st.external_surface.polygon_gelcoat)
+            list_of_parts.append(ES)
+        if st.root_buildup.exists():
+            RB = st.root_buildup.polygon
+            list_of_parts.append(RB)
+        if st.LE_panel.exists():
+            LE = st.LE_panel.polygon
+            list_of_parts.append(LE)
+        if st.spar_cap.exists():
+            sc_u = st.spar_cap.polygon_upper
+            sc_l = st.spar_cap.polygon_lower
+            list_of_parts.append(sc_u)
+            list_of_parts.append(sc_l)
+        if st.aft_panel_1.exists():
+            aft1_u = st.aft_panel_1.polygon_upper
+            aft1_l = st.aft_panel_1.polygon_lower
+            list_of_parts.append(aft1_u)
+            list_of_parts.append(aft1_l)
+        if st.aft_panel_2.exists():
+            aft2_u = st.aft_panel_2.polygon_upper
+            aft2_l = st.aft_panel_2.polygon_lower
+            list_of_parts.append(aft2_u)
+            list_of_parts.append(aft2_l)
+        if st.TE_reinforcement.exists():
+            TE_uniax = st.TE_reinforcement.polygon_uniax
+            try:
+                TE_foam = st.TE_reinforcement.polygon_foam
+                TE = TE_uniax.union(TE_foam)
+            except ValueError:
+                TE = TE_uniax
+            list_of_parts.append(TE)
+        if st.shear_web_1.exists():
+            sw1 = st.shear_web_1.polygon_left_biax.union(st.shear_web_1.polygon_foam)
+            sw1 = sw1.union(st.shear_web_1.polygon_right_biax)
+            list_of_parts.append(sw1)
+        if st.shear_web_2.exists():
+            sw2 = st.shear_web_2.polygon_left_biax.union(st.shear_web_2.polygon_foam)
+            sw2 = sw2.union(st.shear_web_2.polygon_right_biax)
+            list_of_parts.append(sw2)
+        if st.shear_web_3.exists():
+            sw3 = st.shear_web_3.polygon_left_biax.union(st.shear_web_3.polygon_foam)
+            sw3 = sw3.union(st.shear_web_3.polygon_right_biax)
+            list_of_parts.append(sw3)
+        if merge_internal_surface:
+            # also merge the internal surface with the other structural parts
+            if st.internal_surface_1.exists():
+                IS1 = st.internal_surface_1.polygon_triax
+                IS1 = IS1.union(st.internal_surface_1.polygon_resin)
+                list_of_parts.append(IS1)
+            if st.internal_surface_2.exists():
+                IS2 = st.internal_surface_2.polygon_triax
+                IS2 = IS2.union(st.internal_surface_2.polygon_resin)
+                list_of_parts.append(IS2)
+            if st.internal_surface_3.exists():
+                IS3 = st.internal_surface_3.polygon_triax
+                IS3 = IS3.union(st.internal_surface_3.polygon_resin)
+                list_of_parts.append(IS3)
+            if st.internal_surface_4.exists():
+                IS4 = st.internal_surface_4.polygon_triax
+                IS4 = IS4.union(st.internal_surface_4.polygon_resin)
+                list_of_parts.append(IS4)
+        # merge everything
+        p = cascaded_union(list_of_parts)
+        if plot_flag:
+            # plot the merged polygon
+            self.plot_polygon(p, ax, face_color='#4000FF', edge_color='#000000',
+                alpha=0.8)  # face color is purple
+            plt.show()
+        return p
+
+    def plot_polygon(self, polygon, axes, face_color=(1,0,0),
+        edge_color=(1,0,0), alpha=0.5):
+        """Plot a polygon in a matplotlib figure."""
+        patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
+        axes.add_patch(patch)
 
     def write_all_part_polygons(self):
         """Write the coordinates of all structural parts to `station_path`s."""
@@ -844,559 +1398,6 @@ class MonoplaneStation(_Station):
         except AttributeError:
             raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
 
-    def plot_polygon(self, polygon, axes, face_color=(1,0,0),
-        edge_color=(1,0,0), alpha=0.5):
-        """Plot a polygon in a matplotlib figure."""
-        patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
-        axes.add_patch(patch)
-
-    def get_profile(self, profile_name, res=16):
-        """Returns a polygon for the desired profile.
-
-        Parameters:
-        -----------
-        profile_name : str, the name of the desired profile. Choose between:
-            'airfoil'
-              --> airfoil profile
-            '(airfoil) - (root buildup)'
-              --> airfoil profile - root buildup thickness
-            '(airfoil) - (external surface)'
-              --> airfoil profile - external surface thickness
-            '(airfoil) - (external surface) - (root buildup)'
-              --> airfoil profile - (external surface + root buildup) thickness
-        res : int (default: 16), a resolution that determines the number of
-            segments used to approximate a quarter circle around a point
-
-        """
-        st = self.structure
-        if profile_name == 'airfoil':
-            p = self.airfoil.polygon
-        elif profile_name == '(airfoil) - (root buildup)':
-            p = self.airfoil.polygon.buffer(-st.root_buildup.height,
-                resolution=res)
-        elif profile_name == '(airfoil) - (external surface)':
-            p = self.airfoil.polygon.buffer(-st.external_surface.height,
-                resolution=res)
-        elif profile_name == '(airfoil) - (external surface) - (root buildup)':
-            p = self.airfoil.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height), resolution=res)
-        else:
-            raise NotImplementedError("That `profile_name` is not supported.")
-        return p
-
-    def erode_part_thickness(self, part, outer_profile, res=16):
-        """Returns a polygon of the outer profile, eroded by the part height
-
-        Parameters
-        ----------
-        part : <station>.structure.<part>, the object that represents a
-            structural part at this station
-        outer_profile : shapely.Polygon, the polygon that represents the
-            desired outer profile
-        res : int (default: 16), a resolution that determines the number of
-            segments used to approximate a quarter circle around a point
-
-        """
-        return outer_profile.buffer(-part.height, resolution=res)
-
-    def cut_out_part_interior(self, inner_profile, outer_profile):
-        """Returns a polygon of `inner_profile` cut out of `outer_profile`."""
-        return outer_profile.difference(inner_profile)
-
-    def part_bounding_box(self, part, x_boundary_buffer=1.2, 
-        y_boundary_buffer=1.2):
-        """Returns a polygon of the bounding box that contains the part.
-
-        The points of the bounding box are labeled from 1 to 4 as:
-
-        4---3
-        |   |
-        1---2
-
-        Parameters
-        ----------
-        part : <station>.structure.<part>, the object that represents a
-            structural part at this station
-        x_boundary_buffer : float (default: 1.2), factor to multiply with the
-            minx and maxx bound of the airfoil polygon, to stretch the bounding
-            box past the left and right edges of the airfoil polygon
-        y_boundary_buffer : float (default: 1.2), factor to multiply with the
-            miny and maxy bound of the airfoil polygon, to stretch the bounding
-            box above and below the top and bottom edges of the airfoil polygon
-
-        """
-        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-        try:
-            pt1 = (part.left, miny*y_boundary_buffer)
-            pt2 = (part.right, miny*y_boundary_buffer)
-            pt3 = (part.right, maxy*y_boundary_buffer)
-            pt4 = (part.left, maxy*y_boundary_buffer)
-        except AttributeError:
-            # if the part doesn't have attributes `left` or `right`, just use
-            # the airfoil bounds to form the bounding box
-            # (e.g. the root buildup doesnt have left and right edges)
-            pt1 = (minx*x_boundary_buffer, miny*y_boundary_buffer)
-            pt2 = (maxx*x_boundary_buffer, miny*y_boundary_buffer)
-            pt3 = (maxx*x_boundary_buffer, maxy*y_boundary_buffer)
-            pt4 = (minx*x_boundary_buffer, maxy*y_boundary_buffer)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        return bounding_box
-
-    def SW_bounding_boxes(self, SW_part, y_boundary_buffer=1.2):
-        """Returns three polygons of bounding boxes that contain the biax and foam regions of the shear web.
-
-        The points of each bounding box are labeled from 1 to 4 as:
-
-        4---3
-        |   |
-        1---2
-
-        """
-        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-        # left biax bounding box
-        pt1 = (SW_part.left, miny*y_boundary_buffer)
-        pt2 = (SW_part.left+SW_part.base_biax, miny*y_boundary_buffer)
-        pt3 = (SW_part.left+SW_part.base_biax, maxy*y_boundary_buffer)
-        pt4 = (SW_part.left, maxy*y_boundary_buffer)
-        left_biax_bb = Polygon([pt1, pt2, pt3, pt4])
-        # foam bounding box
-        pt1 = (SW_part.left+SW_part.base_biax, miny*y_boundary_buffer)
-        pt2 = (SW_part.right-SW_part.base_biax, miny*y_boundary_buffer)
-        pt3 = (SW_part.right-SW_part.base_biax, maxy*y_boundary_buffer)
-        pt4 = (SW_part.left+SW_part.base_biax, maxy*y_boundary_buffer)
-        foam_bb = Polygon([pt1, pt2, pt3, pt4])
-        # right biax bounding box
-        pt1 = (SW_part.right-SW_part.base_biax, miny*y_boundary_buffer)
-        pt2 = (SW_part.right, miny*y_boundary_buffer)
-        pt3 = (SW_part.right, maxy*y_boundary_buffer)
-        pt4 = (SW_part.right-SW_part.base_biax, maxy*y_boundary_buffer)
-        right_biax_bb = Polygon([pt1, pt2, pt3, pt4])
-        return (left_biax_bb, foam_bb, right_biax_bb)
-
-    def extract_external_surface(self, op, p):
-        """Extract the external surface from the blade definition.
-
-        ***
-        NOTE: this function should NOT be used directly, it should only be
-        called by <station>.extract_part(...)
-        ***
-
-        """
-        # 4. erode the outer profile by the part thickness
-        ip = self.erode_part_thickness(part=p, outer_profile=op)
-        # 5. cut out the part interior from the outer profile
-        ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
-        # 6. draw a bounding box at the part edges
-        bb = self.part_bounding_box(part=p)
-        # 7. cut out the structural part
-        e = self.cut_out_part(ac, bb)['single part']  # entire external surface
-        # 8. extract the gelcoat and triax regions from the external surface
-        dict_of_parts = self.get_gelcoat_and_triax_regions_of_ext_surf(e)
-        return dict_of_parts
-
-    def get_gelcoat_and_triax_regions_of_ext_surf(self, entire_region, res=16):
-        """Returns dict of gelcoat and triax regions of external surface.
-
-        Parameters
-        ----------
-        entire_region : object, polygon for the entire external surface?
-        res : int (default: 16), a resolution that determines the number of
-            segments used to approximate a quarter circle around a point
-
-        """
-        ES = self.structure.external_surface
-        if isnan(ES.height_gelcoat) and isnan(ES.height_triax):
-            triax_region = None
-            gelcoat_region = None
-        else:
-            if isnan(ES.height_gelcoat):
-                triax_region = entire_region
-                gelcoat_region = None
-            elif isnan(ES.height_triax):
-                gelcoat_region = entire_region
-                triax_region = None
-            else:
-                # split entire_region up into gelcoat_region and triax_region
-                # 1. get polygons for outer profile (entire_region) and inner
-                #    profile (airfoil, minus the gelcoat thickness)
-                op = entire_region
-                ip = self.get_profile('airfoil')
-                ip = ip.buffer(-ES.height_gelcoat, resolution=res)
-                # 2. intersection of op and ip is the triax region
-                triax_region = op.intersection(ip)
-                # 3. difference of ip from op is the gelcoat region
-                gelcoat_region = op.difference(ip)
-        d = {'triax region': triax_region, 'gelcoat region': gelcoat_region}
-        return d
-
-    def extract_SW(self, op, p):
-        """Extract the shear web from the blade definition.
-
-        ***
-        NOTE: this function should NOT be used directly, it should only be 
-        called by <station>.extract_part(...)
-        ***
-
-        The shear web is split into three regions:
-        (1) left biax region
-        (2) foam region
-        (3) right biax region
-
-        Parameters
-        ----------
-        op : shapely.Polygon, the polygon representation of the desired outer
-            profile
-        p : <station>.structure.<part>, the structural part, where <part> = 
-            'shear web 1', 'shear web 2', or 'shear web 3'
-        
-        """
-        # 6. get bounding boxes for the biax and foam regions of the shear web
-        (L_biax_bb, foam_bb, R_biax_bb) = self.SW_bounding_boxes(SW_part=p)
-        # 7. cut out the structural part
-        # we are extracting a shear web; just cut out the intersection
-        # of the outer profile and the three bounding boxes
-        left_biax = self.cut_out_part(op, L_biax_bb)['single part']
-        foam = self.cut_out_part(op, foam_bb)['single part']
-        right_biax = self.cut_out_part(op, R_biax_bb)['single part']
-        dict_of_parts = {'left biax region' : left_biax,
-            'foam region' : foam, 'right biax region' : right_biax}
-        return dict_of_parts
-
-    def extract_TE_reinforcement(self, op, p):
-        """Extract the TE reinforcement from the blade definition.
-
-        ***
-        NOTE: this function should NOT be used directly, it should only be 
-        called by <station>.extract_part(...)
-        ***
-
-        The TE reinforcement is split into one or two regions:
-        (1) uniax region
-        (2) foam region (optional)
-
-        Parameters
-        ----------
-        op : shapely.Polygon, the polygon representation of the desired outer
-            profile
-        p : <station>.structure.TE_reinforcement, the structural part for the
-            TE reinforcement
-        
-        """
-        # 4. erode the outer profile by the part thickness
-        ip = self.erode_part_thickness(part=p, outer_profile=op)
-        # 5. cut out the part interior from the outer profile
-        ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
-        # 6. draw a bounding box at the TE reinforcement edges
-        bb = self.part_bounding_box(part=p)
-        # 7. cut out the entire TE reinforcement
-        e = self.cut_out_part(ac, bb)['single part']  # entire TE reinforcement
-        # 8. extract the foam and uniax regions from the TE reinforcement
-        dict_of_parts = self.get_foam_and_uniax_regions_of_TE_reinf(e)
-        return dict_of_parts
-
-    def get_foam_and_uniax_regions_of_TE_reinf(self, entire_region, axes=None,
-        debug_plots=False, res=16):
-        """Returns dict of foam and uniax regions of the TE reinforcement.
-
-        Parameters
-        ----------
-        entire_region : ?
-        axes : ?
-        debug_plots : ?
-        res : int (default: 16), a resolution that determines the number of
-            segments used to approximate a quarter circle around a point
-
-        """
-        TE = self.structure.TE_reinforcement
-        if isnan(TE.height_foam) and isnan(TE.height_uniax):
-            uniax_region = None
-            foam_region = None
-        else:
-            if isnan(TE.height_foam):
-                uniax_region = entire_region
-                foam_region = None
-            elif isnan(TE.height_uniax):
-                foam_region = entire_region
-                uniax_region = None
-            else:
-                # split entire_region up into foam_region and uniax_region
-                # 1. get polygons for outer profile (entire_region) and inner
-                #    profile (external surface or root buildup, minus the uniax
-                #    thickness)
-                op = entire_region
-                if self.structure.external_surface.exists():
-                    if self.structure.root_buildup.exists():
-                        ip = self.get_profile('(airfoil) - (external surface) - (root buildup)')
-                        ip = ip.buffer(-TE.height_uniax, resolution=res)
-                    else:
-                        ip = self.get_profile('(airfoil) - (external surface)')
-                        ip = ip.buffer(-TE.height_uniax, resolution=res)
-                else:
-                    if self.structure.root_buildup.exists():
-                        ip = self.get_profile('(airfoil) - (root buildup)')
-                        ip = ip.buffer(-TE.height_uniax, resolution=res)
-                    else:
-                        ip = self.get_profile('airfoil')
-                        ip = ip.buffer(-TE.height_uniax, resolution=res)
-                if debug_plots:
-                    # plot the boundary of the outer_profile (entire TE)
-                    self.plot_polygon(op, axes, face_color='#6699cc',
-                        edge_color='#6699cc')
-                    # plot the boundary of the inner profile (~foam region)
-                    self.plot_polygon(ip, axes, face_color=(0,1,0),
-                        edge_color=(0,1,0))
-                # 2. intersection of op and ip is the foam region
-                foam_region = op.intersection(ip)
-                # 3. difference of ip from op is the uniax region
-                uniax_region = op.difference(ip)
-        d = {'uniax region': uniax_region, 'foam region': foam_region}
-        return d
-
-    def cut_out_part(self, airfoil_cutout, bounding_box):
-        """Returns a dict of polygons after cutting out the desired part.
-
-        The dict of polygons may contain either two items (e.g. an upper spar
-        cap and a lower spar cap) or one item (e.g. a leading edge panel).
-
-        Parts are obtained by finding the intersection of two polygons:
-        `airfoil_cutout` and `bounding_box`.
-
-        Parameters
-        ----------
-        airfoil_cutout : shapely.Polygon, the airfoil profile with the inner
-            boundary of the structural part cut out
-        bounding_box : shapely.Polygon, a bounding box that stretches from the
-            left to right edge of the desired structural part
-
-        """
-        p4 = airfoil_cutout.intersection(bounding_box)
-        # p4 may be a `MultiPolygon` that contains more than one polygon
-        # (e.g. p4 contains the upper and lower spar caps)
-        # if so, extract each polygon and convert them to separate patches
-        # (otherwise, PolygonPatch will throw an error)
-        dict_of_parts = {}
-        try:
-            if len(p4.geoms) == 2:
-                dict_of_parts['lower part'] = p4.geoms[0]
-                dict_of_parts['upper part'] = p4.geoms[1]
-            else:
-                raise NotImplementedError("After cutting out parts, more than 2 polygons were found.")
-        except AttributeError:
-            # p4 is just a `Polygon`, not a `MultiPolygon`, and p4 does not
-            # have the attribute `geoms`.
-            # (e.g. p4 is the LE panel)
-            dict_of_parts['single part'] = p4
-        return dict_of_parts
-
-    def get_outer_profile_name(self, part_name):
-        """Determine the name of the outer profile."""
-        st = self.structure
-        # does external surface exist?
-        if st.external_surface.exists():
-            # yes, external surface exists
-            # are we plotting external surface?
-            if part_name == 'external surface':
-                # yes, we're plotting external surface
-                op_name = 'airfoil'
-            else:
-                # no, we're not plotting external surface
-                # does root buildup exist?
-                if st.root_buildup.exists():
-                    # yes, root buildup exists
-                    # are we plotting root buildup?
-                    if part_name == 'root buildup':
-                        # yes, we're plotting root buildup
-                        op_name = '(airfoil) - (external surface)'
-                    else:
-                        # no, we're not plotting root buildup
-                        op_name = '(airfoil) - (external surface) - (root buildup)'
-                else:
-                    # no, root buildup doesn't exist
-                    op_name = '(airfoil) - (external surface)'
-        else:
-            # no, external surface doesn't exist
-            # does root buildup exist?
-            if st.root_buildup.exists():
-                # yes, root buildup exists
-                # are we plotting root buildup?
-                if part_name == 'root buildup':
-                    # yes, we're plotting root buildup
-                    op_name = 'airfoil'
-                else:
-                    # no, we're not plotting root buildup
-                    op_name = '(airfoil) - (root buildup)'
-            else:
-                # no, root buildup doesn't exist
-                op_name = 'airfoil'
-        return op_name
-
-    def extract_part(self, part_name):
-        """Extract the polygon for a part from the blade definition.
-
-        Parameters
-        ----------
-        part_name : str, the name of the structural part. Options include:
-            'spar cap', 'shear web 1', 'shear web 2', 'shear web 3',
-            'aft panel 1', 'aft panel 2', 'TE reinforcement', 'LE panel',
-            'root buildup', or 'external surface'
-
-        """
-        st = self.structure
-        # 1. determine the name of the outer profile (op_name)
-        op_name = self.get_outer_profile_name(part_name)
-        # 2. access the desired structural part
-        SW_flag = False  # shear web flag
-        TE_flag = False  # trailing edge reinforcement flag
-        ES_flag = False  # external surface flag
-        if part_name == 'root buildup':
-            p = st.root_buildup
-        elif part_name == 'spar cap':
-            p = st.spar_cap
-        elif part_name == 'aft panel 1':
-            p = st.aft_panel_1
-        elif part_name == 'aft panel 2':
-            p = st.aft_panel_2
-        elif part_name == 'LE panel':
-            p = st.LE_panel
-        elif part_name == 'shear web 1':
-            p = st.shear_web_1
-            SW_flag = True
-        elif part_name == 'shear web 2':
-            p = st.shear_web_2
-            SW_flag = True
-        elif part_name == 'shear web 3':
-            p = st.shear_web_3
-            SW_flag = True
-        elif part_name == 'TE reinforcement':
-            p = st.TE_reinforcement
-            TE_flag = True
-        elif part_name == 'internal surface':
-            raise NotImplementedError("Use the function `extract_internal_surface` instead.")
-        elif part_name == 'external surface':
-            p = st.external_surface
-            ES_flag = True
-        else:
-            raise ValueError("""The value for `part_name` was not recognized. Options include:
-    'spar cap'
-    'shear web 1', 'shear web 2', 'shear web 3',
-    'aft panel 1', 'aft panel 2',
-    'TE reinforcement',
-    'LE panel',
-    'root buildup',
-    'internal surface',
-    'external surface'""")
-        # 3. get outer profile
-        op = self.get_profile(profile_name=op_name)
-        if SW_flag:
-            # use a special extraction algorithm for shear webs
-            dict_of_parts = self.extract_SW(op, p)
-        elif TE_flag:
-            # use a special extraction algorithm for the TE reinforcement
-            dict_of_parts = self.extract_TE_reinforcement(op, p)
-        elif ES_flag:
-            # use a special extraction algorithm for the external surface
-            dict_of_parts = self.extract_external_surface(op, p)
-        else:
-            # use the normal extraction algorithm for all other parts
-            # 4. erode the outer profile by the part thickness
-            ip = self.erode_part_thickness(part=p, outer_profile=op)
-            # 5. cut out the part interior from the outer profile
-            ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
-            # 6. draw a bounding box at the part edges
-            bb = self.part_bounding_box(part=p)
-            # 7. cut out the structural part
-            dict_of_parts = self.cut_out_part(ac, bb)
-        return dict_of_parts
-
-    def merge_all_parts(self, plot_flag=False, merge_internal_surface=False):
-        """Merges all the structural parts in this station into one polygon."""
-        st = self.structure
-        if plot_flag:
-            fig, ax = plt.subplots()
-            ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
-            ax.set_aspect('equal')
-            ax.grid('on')
-            ax.set_xlabel('x2 [meters]')
-            ax.set_ylabel('x3 [meters]')
-            self.plot_polygon(self.airfoil.polygon, ax,
-                face_color='None', edge_color='#999999', alpha=0.8)
-            (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-            ax.set_xlim([minx*1.2,maxx*1.2])
-            ax.set_ylim([miny*1.2,maxy*1.2])
-        # gather all the parts
-        list_of_parts = []
-        if st.external_surface.exists():
-            ES = st.external_surface.polygon_triax
-            ES = ES.union(st.external_surface.polygon_gelcoat)
-            list_of_parts.append(ES)
-        if st.root_buildup.exists():
-            RB = st.root_buildup.polygon
-            list_of_parts.append(RB)
-        if st.LE_panel.exists():
-            LE = st.LE_panel.polygon
-            list_of_parts.append(LE)
-        if st.spar_cap.exists():
-            sc_u = st.spar_cap.polygon_upper
-            sc_l = st.spar_cap.polygon_lower
-            list_of_parts.append(sc_u)
-            list_of_parts.append(sc_l)
-        if st.aft_panel_1.exists():
-            aft1_u = st.aft_panel_1.polygon_upper
-            aft1_l = st.aft_panel_1.polygon_lower
-            list_of_parts.append(aft1_u)
-            list_of_parts.append(aft1_l)
-        if st.aft_panel_2.exists():
-            aft2_u = st.aft_panel_2.polygon_upper
-            aft2_l = st.aft_panel_2.polygon_lower
-            list_of_parts.append(aft2_u)
-            list_of_parts.append(aft2_l)
-        if st.TE_reinforcement.exists():
-            TE_uniax = st.TE_reinforcement.polygon_uniax
-            try:
-                TE_foam = st.TE_reinforcement.polygon_foam
-                TE = TE_uniax.union(TE_foam)
-            except ValueError:
-                TE = TE_uniax
-            list_of_parts.append(TE)
-        if st.shear_web_1.exists():
-            sw1 = st.shear_web_1.polygon_left_biax.union(st.shear_web_1.polygon_foam)
-            sw1 = sw1.union(st.shear_web_1.polygon_right_biax)
-            list_of_parts.append(sw1)
-        if st.shear_web_2.exists():
-            sw2 = st.shear_web_2.polygon_left_biax.union(st.shear_web_2.polygon_foam)
-            sw2 = sw2.union(st.shear_web_2.polygon_right_biax)
-            list_of_parts.append(sw2)
-        if st.shear_web_3.exists():
-            sw3 = st.shear_web_3.polygon_left_biax.union(st.shear_web_3.polygon_foam)
-            sw3 = sw3.union(st.shear_web_3.polygon_right_biax)
-            list_of_parts.append(sw3)
-        if merge_internal_surface:
-            # also merge the internal surface with the other structural parts
-            if st.internal_surface_1.exists():
-                IS1 = st.internal_surface_1.polygon_triax
-                IS1 = IS1.union(st.internal_surface_1.polygon_resin)
-                list_of_parts.append(IS1)
-            if st.internal_surface_2.exists():
-                IS2 = st.internal_surface_2.polygon_triax
-                IS2 = IS2.union(st.internal_surface_2.polygon_resin)
-                list_of_parts.append(IS2)
-            if st.internal_surface_3.exists():
-                IS3 = st.internal_surface_3.polygon_triax
-                IS3 = IS3.union(st.internal_surface_3.polygon_resin)
-                list_of_parts.append(IS3)
-            if st.internal_surface_4.exists():
-                IS4 = st.internal_surface_4.polygon_triax
-                IS4 = IS4.union(st.internal_surface_4.polygon_resin)
-                list_of_parts.append(IS4)
-        # merge everything
-        p = cascaded_union(list_of_parts)
-        if plot_flag:
-            # plot the merged polygon
-            self.plot_polygon(p, ax, face_color='#4000FF', edge_color='#000000',
-                alpha=0.8)  # face color is purple
-            plt.show()
-        return p
-
     def plot_parts(self):
         """Plots the structural parts in this blade station."""
         fig, ax = plt.subplots()
@@ -1521,10 +1522,10 @@ class MonoplaneStation(_Station):
         plt.show()
         return (fig, ax)
 
-    def cross_section_area(self):
-        """Calculate the total cross-section area for this station."""
-        p = self.merge_all_parts(merge_internal_surface=False)
-        return p.area
+    # def cross_section_area(self):
+    #     """Calculate the total cross-section area for this station."""
+    #     p = self.merge_all_parts(merge_internal_surface=False)
+    #     return p.area
 
 
 class BiplaneStation(_Station):

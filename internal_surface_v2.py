@@ -24,12 +24,12 @@ for station in m.list_of_stations:
     station.find_all_part_polygons()
     # station.write_all_part_polygons()
 
-for station in m.list_of_stations:
-    a = station.cross_section_area()
-    print "Station #{0}, area = {1} m^2".format(station.station_num, a)
-    d = station.structure.which_parts_exist()
-    for keys, values in sorted(d.items()):
-        print "  {0} : {1}".format(keys, values)
+# for station in m.list_of_stations:
+#     a = station.cross_section_area()
+#     print "Station #{0}, area = {1} m^2".format(station.station_num, a)
+#     d = station.structure.which_parts_exist()
+#     for keys, values in sorted(d.items()):
+#         print "  {0} : {1}".format(keys, values)
 
 # m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
 # stn33 = m.list_of_stations[32]
