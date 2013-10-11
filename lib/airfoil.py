@@ -1,7 +1,7 @@
 """A module for organizing airfoil data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: August 7, 2013
+Last updated: October 11, 2013
 
 """
 

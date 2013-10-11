@@ -10,3 +10,5 @@ clear_log('blade.log')
 print " Cleared 'blade.log'"
 clear_log('station.log')
 print " Cleared 'station.log'"
+clear_log('material.log')
+print " Cleared 'material.log'"

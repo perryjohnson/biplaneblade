@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade definition.
 
 Author: Perry Roth-Johnson
-Last updated: August 6, 2013
+Last updated: October 11, 2013
 
 """
 
@@ -15,6 +15,8 @@ import station as stn
 reload(stn)
 import transformation as tf
 reload(tf)
+import material as mt
+reload(mt)
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from mayavi import mlab
@@ -37,7 +39,8 @@ class _Blade:
     """
     logfile_name = 'blade.log'
     def __init__(self, name, blade_path, defn_filename='blade_definition.csv',
-        airfoils_path='airfoils'):
+        airfoils_path='airfoils', matl_filename='materials.csv',
+        rotate_airfoil_coords=True):
         """Create a new wind turbine blade.
 
         Parameters
@@ -99,6 +102,7 @@ class _Blade:
             self.blade_path = os.path.join(os.getcwd(), blade_path)
             self.logf.write("[{0}] Found blade path: {1}\n".format(datetime.datetime.now(), self.blade_path))
             self.defn_filename = os.path.join(self.blade_path, defn_filename)
+            self.matl_filename = os.path.join(self.blade_path, matl_filename)
             self.logf.write("[{0}] Found blade definition file: {1}\n".format(datetime.datetime.now(), self.defn_filename))
             import_success = self.import_blade_definition()
             if import_success:
@@ -107,11 +111,17 @@ class _Blade:
                 self.airfoils_path = os.path.join(self.blade_path, airfoils_path)
                 self.logf.write("[{0}] Found airfoils path: {1}\n".format(datetime.datetime.now(), self.airfoils_path))
                 self.copy_all_airfoil_coords()
-                # pre-process the airfoil coordinates
+                # pre-process the airfoil coordinates and laminate schedule
                 for station in self.list_of_stations:
                     station.airfoil.read_coords()
                     station.airfoil.scale_and_translate_coords()
                     station.airfoil.split_at_LE_and_TE()
+                    if rotate_airfoil_coords:
+                        station.airfoil.rotate_coords()
+                    station.find_part_edges()
+            material_import_success = self.import_material_properties()
+            if material_import_success:
+                self.create_all_materials()
         self.logf.flush()
         self.logf.close()
 
@@ -148,6 +158,65 @@ class _Blade:
             self.number_of_stations = len(self._df)
             import_result = True
         return import_result
+
+    def import_material_properties(self):
+        """Import the material properties from a CSV file.
+
+        Returns True if the import was successful, False otherwise.
+
+        """
+        import_result = False
+        matl_fileext = os.path.splitext(self.matl_filename)[-1]
+        if matl_fileext != '.csv' and matl_fileext != '.CSV':
+            # check that the blade definition file is a CSV file
+            raise ValueError("material properties file '{0}' must be of type *.csv".format(os.path.split(self.matl_filename)[-1]))
+        else:
+            # import the blade definition file into a pandas DataFrame
+            self._mp = pd.read_csv(self.matl_filename, index_col=0)
+            self.number_of_materials = len(self._mp)
+            import_result = True
+        return import_result
+
+    def create_all_materials(self):
+        """Create all materials for this blade."""
+        if mt._Material.number_of_materials != 0:
+            mt._Material.number_of_materials = 0  # initialize to zero
+            print " [Warning] The number of materials has been reset to zero."
+            self.logf = open(_Material.logfile_name, 'a')
+            self.logf.write("[{0}] [Warning] The number of materials (_Material.number_of_materials) was reset to zero.\n".format(datetime.datetime.now()))
+        self.dict_of_materials = {}
+        for m in range(1, self.number_of_materials+1):
+            if self._mp.ix[m]['type'] == 'isotropic':
+                self.dict_of_materials[self._mp.ix[m]['name']] = self.create_isotropic_material(m)
+            elif self._mp.ix[m]['type'] == 'orthotropic':
+                self.dict_of_materials[self._mp.ix[m]['name']] = self.create_orthotropic_material(m)
+            else:
+                raise NotImplementedError("That material type is not implemented yet.\n  Try using either `isotropic` or `orthotropic` materials.")
+
+    def create_isotropic_material(self, material_num):
+        """Create a new isotropic material for this blade."""
+        mt_series = self._mp.ix[material_num]
+        return mt.IsotropicMaterial(
+            name=mt_series['name'],
+            E=mt_series['E1'],
+            nu=mt_series['nu12'],
+            rho=mt_series['rho'])
+
+    def create_orthotropic_material(self, material_num):
+        """Create a new orthotropic material for this blade."""
+        mt_series = self._mp.ix[material_num]
+        return mt.OrthotropicMaterial(
+            name=mt_series['name'],
+            E1=mt_series['E1'],
+            E2=mt_series['E2'],
+            E3=mt_series['E3'],
+            G12=mt_series['G12'],
+            G13=mt_series['G13'],
+            G23=mt_series['G23'],
+            nu12=mt_series['nu12'],
+            nu13=mt_series['nu13'],
+            nu23=mt_series['nu23'],
+            rho=mt_series['rho'])
 
     def create_all_stations(self):
         """Create all stations for this blade."""

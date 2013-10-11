@@ -51,7 +51,8 @@ biplane_flap_asym_stagger_flag = False
 
 # --- sandia blade ------------------------------------------------------------
 if sandia_flag:
-    m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
+    m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
+        rotate_airfoil_coords=False)
 
     # # plot the chord and twist schedules
     # m.plot_chord_schedule()
@@ -59,12 +60,9 @@ if sandia_flag:
 
     # pre-process the airfoil coordinates
     for station in m.list_of_stations:
-        # station.airfoil.rotate_coords()
-        station.airfoil.create_polygon()
-        station.find_part_edges()
-        station.find_all_part_cs_coords()
+        # station.find_SW_cs_coords()
         station.create_polygons()
-        station.write_all_part_polygons()
+        # station.write_all_part_polygons()
 
     # create some airfoil plots in Matplotlib
     m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
@@ -74,7 +72,7 @@ if sandia_flag:
         # station.plot_parts()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    m.plot_blade(stn_nums=True, twist=True)
+    # m.plot_blade(stn_nums=True, twist=True, export=False)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
@@ -94,7 +92,7 @@ if biplane_flap_sym_no_stagger_flag:
         station.airfoil.scale_and_translate_coords()
         # station.airfoil.split_at_LE_and_TE()
         # station.find_part_edges()
-        # station.find_all_part_cs_coords()
+        # station.find_SW_cs_coords()
 
     # # plot the newly created airfoils
     # new_airfoils = b1.list_of_stations[12:18]
@@ -139,7 +137,7 @@ if biplane_flap_sym_stagger_flag:
         station.airfoil.scale_and_translate_coords()
         station.airfoil.split_at_LE_and_TE()
         station.find_part_edges()
-        station.find_all_part_cs_coords()
+        station.find_SW_cs_coords()
 
     # # create some airfoil plots in Matplotlib
     # # station = b2.list_of_stations[10]
@@ -168,7 +166,7 @@ if biplane_flap_asym_no_stagger_flag:
         station.airfoil.scale_and_translate_coords()
         station.airfoil.split_at_LE_and_TE()
         station.find_part_edges()
-        station.find_all_part_cs_coords()
+        station.find_SW_cs_coords()
 
     # # # create some airfoil plots in Matplotlib
     # # # station = b3.list_of_stations[10]
@@ -197,7 +195,7 @@ if biplane_flap_asym_stagger_flag:
         station.airfoil.scale_and_translate_coords()
         station.airfoil.split_at_LE_and_TE()
         station.find_part_edges()
-        station.find_all_part_cs_coords()
+        station.find_SW_cs_coords()
 
     # # # create some airfoil plots in Matplotlib
     # # # station = b4.list_of_stations[10]

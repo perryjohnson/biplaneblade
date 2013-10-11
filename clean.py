@@ -9,6 +9,10 @@ def clean_blade_path(blade_path):
     """Removes all files except blade defintion and airfoil path."""
     clean_list = os.listdir(blade_path)
     clean_list.remove('blade_definition.csv')
+    try:
+        clean_list.remove('materials.csv')
+    except ValueError:
+        pass
     clean_list.remove('airfoils')
     for item in clean_list:
         item = os.path.join(blade_path,item)

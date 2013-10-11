@@ -1,7 +1,7 @@
 """A module for organizing structural part data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: August 7, 2013
+Last updated: October 11, 2013
 
 """
 
@@ -15,6 +15,8 @@ class Part:
     def __init__(self, base, height):
         self.base = base
         self.height = height
+        self.left = None    # assigned later by <station>.find_part_edges()
+        self.right = None   # assigned later by <station>.find_part_edges()
     def __str__(self):
         return """base:    {0} (meters)
 height:  {1} (meters)""".format(self.base, self.height)
@@ -42,6 +44,7 @@ class ShearWeb(Part):
         self.base_biax = base_biax
         self.base_foam = base_foam
         self.x2 = x2
+        self.cs_coords = None   # assigned later by <station>.find_SW_cs_coords()
     def __str__(self):
         return """base:    {0:6.4f} (meters)
 |-> base_biax:  {1:6.4f} (meters)

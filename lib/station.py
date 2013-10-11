@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: October 9, 2013
+Last updated: October 11, 2013
 
 """
 
@@ -252,13 +252,13 @@ class _Station:
         .create_plot() : create a plot for this station
         .show_plot() : show the plot
         .save_plot() : save the plot in the station path as a PNG file
-        .find_all_part_polygons() : find the polygon representations of each
+        .create_polygons() : find the polygon representations of each
             structural part
         .get_interior_loop() : get the interior loop for the desired internal
             surface
         .write_all_part_polygons() : write the coordinates of all structural
             parts to `station_path`
-        .find_all_part_cs_coords() : find the corners of the cross-sections for
+        .find_SW_cs_coords() : find the corners of the cross-sections for
             each structural part (NOTE: only shear webs implemented so far)
         .find_part_edges() : find the edges of each structural part
         .plot_part_edges() : plot color block for each structural part region
@@ -425,7 +425,19 @@ class MonoplaneStation(_Station):
     def create_polygons(self):
         """Find the polygon representations of each structural part."""
         st = self.structure
+        af = self.airfoil
+        af.create_polygon()
         if st.external_surface.exists():
+            # # gelcoat region
+            # op_gelcoat = af.polygon  # outer profile is the airfoil profile
+            # ip_gelcoat = op_gelcoat.buffer(-st.external_surface.height_gelcoat)
+            # st.external_surface.polygon_gelcoat = op_gelcoat.difference(ip_gelcoat)
+            # assert st.external_surface.polygon_gelcoat.geom_type == 'Polygon'
+            # # triax region
+            # op_triax = ip_gelcoat
+            # ip_triax = op_triax.buffer(-st.external_surface.height_triax)
+            # st.external_surface.polygon_triax = op_triax.difference(ip_triax)
+            # assert st.external_surface.polygon_triax.geom_type == 'Polygon'
             d = self.extract_part('external surface')
             st.external_surface.polygon_gelcoat = d['gelcoat region']
             st.external_surface.polygon_triax = d['triax region']
@@ -836,13 +848,14 @@ class MonoplaneStation(_Station):
 
         """
         (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-        try:
+        if part.left is not None and part.right is not None:
+            # if the part has values for the attributes `left` and `right`
             pt1 = (part.left, miny*y_boundary_buffer)
             pt2 = (part.right, miny*y_boundary_buffer)
             pt3 = (part.right, maxy*y_boundary_buffer)
             pt4 = (part.left, maxy*y_boundary_buffer)
-        except AttributeError:
-            # if the part doesn't have attributes `left` or `right`, just use
+        else:
+            # if part.left=None and part.right=None, then just use
             # the airfoil bounds to form the bounding box
             # (e.g. the root buildup doesnt have left and right edges)
             pt1 = (minx*x_boundary_buffer, miny*y_boundary_buffer)
@@ -922,12 +935,7 @@ class MonoplaneStation(_Station):
         # 4. erode the outer profile by the part thickness
         ip = self.erode_part_thickness(part=p, outer_profile=op)
         # 5. cut out the part interior from the outer profile
-        ac = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)
-        # 6. draw a bounding box at the part edges
-        bb = self.part_bounding_box(part=p)
-        # 7. cut out the structural part
-        e = self.cut_out_part(ac, bb)['single part']  # entire external surface
-        # 8. extract the gelcoat and triax regions from the external surface
+        e = self.cut_out_part_interior(inner_profile=ip, outer_profile=op)  # entire external surface
         dict_of_parts = self.get_gelcoat_and_triax_regions_of_ext_surf(e)
         return dict_of_parts
 
@@ -1242,23 +1250,15 @@ class MonoplaneStation(_Station):
             f.write(str(st.internal_surface_4.polygon_resin.__geo_interface__))
             f.close()
 
-    def find_all_part_cs_coords(self):
-        """Find the corners of the cross-sections for each structural part.
+    def find_SW_cs_coords(self):
+        """Find the corners of the cross-sections for each shear web.
 
         Saves cross-section coordinates (in meters) as the '.cs_coords' 
-        attribute (a numpy array) within each Part instance (OOP style).
-
-        NOTE: only shear webs have been implemented so far!
+        attribute (a numpy array) within each ShearWeb instance.
 
         """
         st = self.structure
         af = self.airfoil
-        # if st.spar_cap.exists():
-        #     st.spar_cap.left = -st.spar_cap.base/2.0
-        #     st.spar_cap.right = st.spar_cap.base/2.0
-        # if st.TE_reinforcement.exists():
-        #     st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
-        #     st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
         if st.shear_web_1.exists():
             ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.shear_web_1.left)
             ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.shear_web_1.right)
@@ -1280,28 +1280,6 @@ class MonoplaneStation(_Station):
                                                  [x2,y2],  # 2 (lower right)
                                                  [x3,y3],  # 3 (upper right)
                                                  [x4,y4]]) # 4 (upper left)
-        # if st.LE_panel.exists():
-        #     st.LE_panel.left = -af.pitch_axis*af.chord
-        #     if st.shear_web_1.exists():
-        #         st.LE_panel.right = st.shear_web_1.left
-        #     elif st.spar_cap.exists():
-        #         st.LE_panel.right = st.spar_cap.left
-        #     else:
-        #         st.LE_panel.right = np.nan
-        #         raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
-        # if st.aft_panel.exists():
-        #     if st.shear_web_2.exists():
-        #         st.aft_panel.left = st.shear_web_2.right
-        #     elif st.spar_cap.exists():
-        #         st.aft_panel.left = st.spar_cap.right
-        #     else:
-        #         st.aft_panel.left = np.nan
-        #         raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
-        #     if st.TE_reinforcement.exists():
-        #         st.aft_panel.right = st.TE_reinforcement.left
-        #     else:
-        #         st.aft_panel.right = np.nan
-        #         raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
 
     def find_part_edges(self):
         """Find the edges of each structural part in this monoplane station.
@@ -1772,24 +1750,15 @@ class BiplaneStation(_Station):
         except AttributeError:
             raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
 
-    def find_all_part_cs_coords(self):
-        """Find the corners of the cross-sections for each structural part.
+    def find_SW_cs_coords(self):
+        """Find the corners of the cross-sections for each shear web.
 
         Saves cross-section coordinates (in meters) as the '.cs_coords' 
-        attribute (a numpy array) within each Part instance (OOP style).
-
-        NOTE: only shear webs have been implemented so far!
+        attribute (a numpy array) within each ShearWeb instance.
 
         """
         st = self.structure
         af = self.airfoil
-        # if st.spar_cap.exists():
-        #     st.spar_cap.left = -st.spar_cap.base/2.0
-        #     st.spar_cap.right = st.spar_cap.base/2.0
-        # if st.TE_reinforcement.exists():
-        #     st.TE_reinforcement.left = -af.pitch_axis*af.chord+af.chord-st.TE_reinforcement.base
-        #     st.TE_reinforcement.right = -af.pitch_axis*af.chord+af.chord
-        # lower airfoil
         if st.lower_shear_web_1.exists():
             ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.lower_shear_web_1.left, airfoil='lower')
             ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.lower_shear_web_1.right, airfoil='lower')
@@ -1833,25 +1802,3 @@ class BiplaneStation(_Station):
                                                  [x2,y2],  # 2 (lower right)
                                                  [x3,y3],  # 3 (upper right)
                                                  [x4,y4]]) # 4 (upper left)
-        # if st.LE_panel.exists():
-        #     st.LE_panel.left = -af.pitch_axis*af.chord
-        #     if st.shear_web_1.exists():
-        #         st.LE_panel.right = st.shear_web_1.left
-        #     elif st.spar_cap.exists():
-        #         st.LE_panel.right = st.spar_cap.left
-        #     else:
-        #         st.LE_panel.right = np.nan
-        #         raise Warning("'LE panel, right' is undefined for station #{0}".format(self.station_num))
-        # if st.aft_panel.exists():
-        #     if st.shear_web_2.exists():
-        #         st.aft_panel.left = st.shear_web_2.right
-        #     elif st.spar_cap.exists():
-        #         st.aft_panel.left = st.spar_cap.right
-        #     else:
-        #         st.aft_panel.left = np.nan
-        #         raise Warning("'aft panel, left' is undefined for station #{0}".format(self.station_num))
-        #     if st.TE_reinforcement.exists():
-        #         st.aft_panel.right = st.TE_reinforcement.left
-        #     else:
-        #         st.aft_panel.right = np.nan
-        #         raise Warning("'aft panel, right' is undefined for station #{0}".format(self.station_num))
