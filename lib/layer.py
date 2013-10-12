@@ -15,6 +15,12 @@ class Layer:
     material : Material object, represents the material properties of this layer
 
     """
-    def __init__(self, polygon, material):
+    def __init__(self, polygon, material, parent_part):
         self.polygon = polygon
         self.material = material
+        self.parent_part = parent_part
+
+    def area_fraction(self):
+        """Calculate the percent area of this part to the cross-section."""
+        total_area = self.parent_part.parent_structure.area
+        return self.polygon.area/total_area

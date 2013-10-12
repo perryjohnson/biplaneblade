@@ -123,7 +123,7 @@ height:  {1:6.4f} (meters)
             ip_gelcoat = op_gelcoat.buffer(-self.height_gelcoat)
             polygon_gelcoat = op_gelcoat.difference(ip_gelcoat)
             self.layer.append(l.Layer(polygon_gelcoat,
-                b.dict_of_materials['gelcoat']))
+                b.dict_of_materials['gelcoat'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
             # create the triax layer
@@ -131,7 +131,7 @@ height:  {1:6.4f} (meters)
             ip_triax = op_triax.buffer(-self.height_triax)
             polygon_triax = op_triax.difference(ip_triax)
             self.layer.append(l.Layer(polygon_triax,
-                b.dict_of_materials['triaxial GFRP']))
+                b.dict_of_materials['triaxial GFRP'], parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[1].polygon)
         else:
@@ -151,7 +151,8 @@ class RootBuildup(Part):
             op = af.polygon.buffer(-st.external_surface.height)
             ip = op.buffer(-self.height)
             p = op.difference(ip)
-            self.layer.append(l.Layer(p, b.dict_of_materials['triaxial GFRP']))
+            self.layer.append(l.Layer(p, b.dict_of_materials['triaxial GFRP'],
+                parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
         else:
@@ -182,7 +183,8 @@ class LE_Panel(Part):
             bb = self.bounding_box()
             # 5. cut out the structural part
             p = ac.intersection(bb)
-            self.layer.append(l.Layer(p, b.dict_of_materials['foam']))
+            self.layer.append(l.Layer(p, b.dict_of_materials['foam'],
+                parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
         else:
@@ -226,11 +228,13 @@ class SparCap(Part):
                 pl = p.geoms[1]
                 pu = p.geoms[0]
             # 7. add the lower spar cap
-            self.layer.append(l.Layer(pl, b.dict_of_materials['uniaxial GFRP']))
+            self.layer.append(l.Layer(pl, b.dict_of_materials['uniaxial GFRP'],
+                parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
             # 8. add the upper spar cap
-            self.layer.append(l.Layer(pu, b.dict_of_materials['uniaxial GFRP']))
+            self.layer.append(l.Layer(pu, b.dict_of_materials['uniaxial GFRP'],
+                parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[1].polygon)
         else:
@@ -274,11 +278,13 @@ class AftPanel(Part):
                 pl = p.geoms[1]
                 pu = p.geoms[0]
             # 7. add the lower aft panel
-            self.layer.append(l.Layer(pl, b.dict_of_materials['foam']))
+            self.layer.append(l.Layer(pl, b.dict_of_materials['foam'],
+                parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
             # 8. add the upper aft panel
-            self.layer.append(l.Layer(pu, b.dict_of_materials['foam']))
+            self.layer.append(l.Layer(pu, b.dict_of_materials['foam'],
+                parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[1].polygon)
         else:
@@ -350,7 +356,7 @@ height:  {1:6.4f} (meters)
             polygon_uniax = ac_uniax.intersection(bb)
             # 6. add the uniax layer
             self.layer.append(l.Layer(polygon_uniax,
-                b.dict_of_materials['uniaxial GFRP']))
+                b.dict_of_materials['uniaxial GFRP'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
             if not isnan(self.height_foam):
@@ -365,7 +371,7 @@ height:  {1:6.4f} (meters)
                 polygon_foam = ac_foam.intersection(bb)
                 # 5. add the foam layer
                 self.layer.append(l.Layer(polygon_foam,
-                    b.dict_of_materials['foam']))
+                    b.dict_of_materials['foam'], parent_part=self))
                 assert self.layer[1].polygon.geom_type == 'Polygon'
                 st.list_of_polygons.append(self.layer[1].polygon)
         else:
@@ -461,16 +467,17 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
             p_right_biax = op.intersection(bb_right_biax)
             # 4. add the left biax layer
             self.layer.append(l.Layer(p_left_biax,
-                b.dict_of_materials['biaxial GFRP']))
+                b.dict_of_materials['biaxial GFRP'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
             # 5. add the foam layer
-            self.layer.append(l.Layer(p_foam, b.dict_of_materials['foam']))
+            self.layer.append(l.Layer(p_foam, b.dict_of_materials['foam'],
+                parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[1].polygon)
             # 6. add the right biax layer
             self.layer.append(l.Layer(p_right_biax,
-                b.dict_of_materials['biaxial GFRP']))
+                b.dict_of_materials['biaxial GFRP'], parent_part=self))
             assert self.layer[2].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[2].polygon)
         else:
@@ -539,7 +546,7 @@ height:  {1:6.4f} (meters)
             ip_triax = op_triax.buffer(-self.height_triax)
             polygon_triax = op_triax.difference(ip_triax)
             self.layer.append(l.Layer(polygon_triax,
-                b.dict_of_materials['triaxial GFRP']))
+                b.dict_of_materials['triaxial GFRP'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[0].polygon)
             # resin region
@@ -547,7 +554,7 @@ height:  {1:6.4f} (meters)
             ip_resin = op_resin.buffer(-self.height_resin)
             polygon_resin = op_resin.difference(ip_resin)
             self.layer.append(l.Layer(polygon_resin,
-                b.dict_of_materials['resin']))
+                b.dict_of_materials['resin'], parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
             st.list_of_polygons.append(self.layer[1].polygon)
         else:
@@ -636,6 +643,7 @@ class MonoplaneStructure:
             height_triax = h_ext_surf_triax,
             height_gelcoat = h_ext_surf_gelcoat)
         self.list_of_polygons = []
+        self.area = None
 
     def __str__(self):
         """Returns a string of all the internal dimensions for this structure."""
@@ -711,7 +719,11 @@ class MonoplaneStructure:
         self.internal_surface_4.create_layers(mp)
 
     def merge_all_polygons(self, plot_flag=False):
-        """Merges all the layer polygons in this structure into one polygon."""
+        """Merges all the layer polygons in this structure into one polygon.
+
+        NOTE: internal surface polygons are NOT merged!
+
+        """
         stn = self.parent_station
         if plot_flag:
             fig, ax = plt.subplots()
@@ -830,6 +842,64 @@ class MonoplaneStructure:
             ax.add_patch(patch2)
             plt.show()
         return p
+
+    def calculate_area(self):
+        """Add the area of all polygons in this station, save it to self.area."""
+        a = 0
+        for p in self.list_of_polygons:
+            a += p.area
+        self.area = a
+        return a
+
+    def calculate_all_percent_areas(self):
+        """Calculate the percent areas of all parts in this station."""
+        print " ----- STATION #{0} -----".format(self.parent_station.station_num)
+        if self.external_surface.exists():
+            print "  {0:5.1%} area, external surface, gelcoat".format(self.external_surface.layer[0].area_fraction())
+            print "  {0:5.1%} area, external surface, triax".format(self.external_surface.layer[1].area_fraction())
+        if self.root_buildup.exists():
+            print "  {0:5.1%} area, root buildup".format(self.root_buildup.layer[0].area_fraction())
+        if self.spar_cap.exists():
+            print "  {0:5.1%} area, spar cap, lower".format(self.spar_cap.layer[0].area_fraction())
+            print "  {0:5.1%} area, spar cap, upper".format(self.spar_cap.layer[1].area_fraction())
+        if self.aft_panel_1.exists():
+            print "  {0:5.1%} area, aft panel 1, lower".format(self.aft_panel_1.layer[0].area_fraction())
+            print "  {0:5.1%} area, aft panel 1, upper".format(self.aft_panel_1.layer[1].area_fraction())
+        if self.aft_panel_2.exists():
+            print "  {0:5.1%} area, aft panel 2, lower".format(self.aft_panel_2.layer[0].area_fraction())
+            print "  {0:5.1%} area, aft panel 2, upper".format(self.aft_panel_2.layer[1].area_fraction())
+        if self.LE_panel.exists():
+            print "  {0:5.1%} area, LE panel".format(self.LE_panel.layer[0].area_fraction())
+        if self.shear_web_1.exists():
+            print "  {0:5.1%} area, shear web 1, left biax".format(self.shear_web_1.layer[0].area_fraction())
+            print "  {0:5.1%} area, shear web 1, foam".format(self.shear_web_1.layer[1].area_fraction())
+            print "  {0:5.1%} area, shear web 1, right biax".format(self.shear_web_1.layer[2].area_fraction())
+        if self.shear_web_2.exists():
+            print "  {0:5.1%} area, shear web 2, left biax".format(self.shear_web_2.layer[0].area_fraction())
+            print "  {0:5.1%} area, shear web 2, foam".format(self.shear_web_2.layer[1].area_fraction())
+            print "  {0:5.1%} area, shear web 2, right biax".format(self.shear_web_2.layer[2].area_fraction())
+        if self.shear_web_3.exists():
+            print "  {0:5.1%} area, shear web 3, left biax".format(self.shear_web_3.layer[0].area_fraction())
+            print "  {0:5.1%} area, shear web 3, foam".format(self.shear_web_3.layer[1].area_fraction())
+            print "  {0:5.1%} area, shear web 3, right biax".format(self.shear_web_3.layer[2].area_fraction())
+        if self.TE_reinforcement.exists():
+            print "  {0:5.1%} area, TE reinforcement, uniax".format(self.TE_reinforcement.layer[0].area_fraction())
+            try:
+                print "  {0:5.1%} area, TE reinforcement, foam".format(self.TE_reinforcement.layer[1].area_fraction())
+            except IndexError:
+                pass
+        if self.internal_surface_1.exists():
+            print "  {0:5.1%} area, internal surface 1, triax".format(self.internal_surface_1.layer[0].area_fraction())
+            print "  {0:5.1%} area, internal surface 1, resin".format(self.internal_surface_1.layer[1].area_fraction())
+        if self.internal_surface_2.exists():
+            print "  {0:5.1%} area, internal surface 2, triax".format(self.internal_surface_2.layer[0].area_fraction())
+            print "  {0:5.1%} area, internal surface 2, resin".format(self.internal_surface_2.layer[1].area_fraction())
+        if self.internal_surface_3.exists():
+            print "  {0:5.1%} area, internal surface 3, triax".format(self.internal_surface_3.layer[0].area_fraction())
+            print "  {0:5.1%} area, internal surface 3, resin".format(self.internal_surface_3.layer[1].area_fraction())
+        if self.internal_surface_4.exists():
+            print "  {0:5.1%} area, internal surface 4, triax".format(self.internal_surface_4.layer[0].area_fraction())
+            print "  {0:5.1%} area, internal surface 4, resin".format(self.internal_surface_4.layer[1].area_fraction())
 
 
 class BiplaneStructure:

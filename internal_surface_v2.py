@@ -24,9 +24,12 @@ for station in m.list_of_stations:
         print "length of list_of_polygons =", len(station.structure.list_of_polygons)
         pass
     # station.write_all_part_polygons()
+    station.structure.calculate_area()
+    # print "Station #{0}, area = {1:6.4f} m^2".format(station.station_num, station.structure.area)
+    station.structure.calculate_all_percent_areas()
 
-m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
-    selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
+# m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
+    # selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
 
 # stn31 = m.list_of_stations[30]
 # stn32 = m.list_of_stations[31]
