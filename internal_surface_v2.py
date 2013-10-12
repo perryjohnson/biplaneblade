@@ -25,8 +25,15 @@ for station in m.list_of_stations:
         pass
     # station.write_all_part_polygons()
 
-m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
-    selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
+# m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
+    # selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
 
 # just have to fix polygon merging with lower spar cap and TE reinforcement in stn #32
 # --PRJ, October 11, 2013
+
+stn31 = m.list_of_stations[30]
+stn32 = m.list_of_stations[31]
+stn33 = m.list_of_stations[32]
+stn31.plot_parts()
+stn32.plot_parts()
+stn33.plot_parts()

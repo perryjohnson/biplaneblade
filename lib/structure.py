@@ -28,6 +28,7 @@ import layer as l
 from math import isnan
 from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
+from shapely.topology import TopologicalError
 from descartes import PolygonPatch
 # the descartes module translates shapely objects into matplotlib objects
 from operator import attrgetter
@@ -740,14 +741,21 @@ class MonoplaneStructure:
                 LE = self.LE_panel.layer[0].polygon
                 p = p.union(LE)
             if self.spar_cap.exists():
-                sc_u = self.spar_cap.layer[0].polygon
-                sc_l = self.spar_cap.layer[1].polygon
-                p = p.union(sc_u)
+                sc_l = self.spar_cap.layer[0].polygon
                 try:
                     p = p.union(sc_l)
-                except:
-                    print "could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
-                    pass
+                except TopologicalError:
+                    print " [Warning] could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                sc_u = self.spar_cap.layer[1].polygon
+                try:
+                    p = p.union(sc_u)
+                except TopologicalError:
+                    print " [Warning] could not merge upper spar cap in Station #{0}".format(self.parent_station.station_num)
+                    try:
+                        p = sc_u.union(p)
+                        print " ... SUCCESSFULLY merged upper spar cap on the second try!"
+                    except TopologicalError:
+                        print " ... on second try, still COULD NOT merge upper spar cap!"
             if self.aft_panel_1.exists():
                 aft1_u = self.aft_panel_1.layer[0].polygon
                 aft1_l = self.aft_panel_1.layer[1].polygon
@@ -761,15 +769,26 @@ class MonoplaneStructure:
             if self.TE_reinforcement.exists():
                 TE_uniax = self.TE_reinforcement.layer[0].polygon
                 try:
-                    TE_foam = self.TE_reinforcement.layer[1].polygon
-                    TE = TE_uniax.union(TE_foam)
-                except ValueError:
-                    TE = TE_uniax
+                    p = p.union(TE_uniax)
+                except TopologicalError:
+                    print " [Warning] could not merge uniax layer of TE reinforcement in Station #{0}".format(self.parent_station.station_num)
+                    try:
+                        p = TE_uniax.union(p)
+                        print " ... SUCCESSFULLY merged uniax layer of TE reinforcement on the second try!"
+                    except TopologicalError:
+                        print " ... on second try, still COULD NOT merge uniax layer of TE reinforcement!"
+                        try:
+                            p = cascaded_union([p, TE_uniax])
+                        except ValueError:
+                            print " ... on third try, still COULD NOT merge uniax layer of TE reinforcement!"
                 try:
-                    p = p.union(TE)
-                except:
-                    print "could not merge TE reinforcement in Station #{0} ... skipping!".format(self.parent_station.station_num)
-                    pass
+                    TE_foam = self.TE_reinforcement.layer[1].polygon
+                    try:
+                        p = p.union(TE_foam)
+                    except TopologicalError:
+                        print " [Warning] could not merge foam layer of TE reinforcement in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                except ValueError:
+                    print " foam layer of TE reinforcement does not exist in Station #{0}".format(self.parent_station.station_num)
             if self.shear_web_1.exists():
                 sw1 = self.shear_web_1.layer[0].polygon.union(self.shear_web_1.layer[1].polygon)
                 sw1 = sw1.union(self.shear_web_1.layer[2].polygon)
