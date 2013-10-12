@@ -375,9 +375,10 @@ class _Station:
 
 class MonoplaneStation(_Station):
     """Define a monoplane station for a wind turbine blade."""
-    def __init__(self, stn_series, blade_path):
+    def __init__(self, stn_series, blade_path, parent_blade):
         """Create a new biplane station for a biplane blade."""
         _Station.__init__(self, stn_series, blade_path)
+        self.parent_blade = parent_blade
         self.type = 'monoplane'
         self.airfoil = airf.MonoplaneAirfoil(
             name=stn_series['airfoil'],
@@ -416,7 +417,8 @@ class MonoplaneStation(_Station):
             h_int_surf_4_triax=stn_series['internal surface 4 height triax'],
             h_int_surf_4_resin=stn_series['internal surface 4 height resin'],
             h_ext_surf_triax=stn_series['external surface height triax'],
-            h_ext_surf_gelcoat=stn_series['external surface height gelcoat'])
+            h_ext_surf_gelcoat=stn_series['external surface height gelcoat'],
+            parent_station=self)
         self.logf.write("****** LAMINATE SCHEDULE ******\n")
         self.logf.write(str(self.structure) + '\n')
         self.logf.flush()
@@ -428,16 +430,6 @@ class MonoplaneStation(_Station):
         af = self.airfoil
         af.create_polygon()
         if st.external_surface.exists():
-            # # gelcoat region
-            # op_gelcoat = af.polygon  # outer profile is the airfoil profile
-            # ip_gelcoat = op_gelcoat.buffer(-st.external_surface.height_gelcoat)
-            # st.external_surface.polygon_gelcoat = op_gelcoat.difference(ip_gelcoat)
-            # assert st.external_surface.polygon_gelcoat.geom_type == 'Polygon'
-            # # triax region
-            # op_triax = ip_gelcoat
-            # ip_triax = op_triax.buffer(-st.external_surface.height_triax)
-            # st.external_surface.polygon_triax = op_triax.difference(ip_triax)
-            # assert st.external_surface.polygon_triax.geom_type == 'Polygon'
             d = self.extract_part('external surface')
             st.external_surface.polygon_gelcoat = d['gelcoat region']
             st.external_surface.polygon_triax = d['triax region']
