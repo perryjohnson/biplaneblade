@@ -852,54 +852,90 @@ class MonoplaneStructure:
         return a
 
     def calculate_all_percent_areas(self):
-        """Calculate the percent areas of all parts in this station."""
+        """Calculate the percent areas of all parts in this station.
+
+        Returns a dictionary of area fractions for each structural part.
+
+        """
+        d = {}
         print " ----- STATION #{0} -----".format(self.parent_station.station_num)
+        # d['blade station'] = self.parent_station.station_num
         if self.external_surface.exists():
             print "  {0:5.1%} area, external surface, gelcoat".format(self.external_surface.layer[0].area_fraction())
+            d['external surface (gelcoat)'] = self.external_surface.layer[0].area_fraction()
             print "  {0:5.1%} area, external surface, triax".format(self.external_surface.layer[1].area_fraction())
+            d['external surface (triax)'] = self.external_surface.layer[1].area_fraction()
         if self.root_buildup.exists():
             print "  {0:5.1%} area, root buildup".format(self.root_buildup.layer[0].area_fraction())
+            d['root buildup'] = self.root_buildup.layer[0].area_fraction()
         if self.spar_cap.exists():
             print "  {0:5.1%} area, spar cap, lower".format(self.spar_cap.layer[0].area_fraction())
+            d['spar cap (lower)'] = self.spar_cap.layer[0].area_fraction()
             print "  {0:5.1%} area, spar cap, upper".format(self.spar_cap.layer[1].area_fraction())
+            d['spar cap (upper)'] = self.spar_cap.layer[1].area_fraction()
         if self.aft_panel_1.exists():
             print "  {0:5.1%} area, aft panel 1, lower".format(self.aft_panel_1.layer[0].area_fraction())
+            d['aft panel 1 (lower)'] = self.aft_panel_1.layer[0].area_fraction()
             print "  {0:5.1%} area, aft panel 1, upper".format(self.aft_panel_1.layer[1].area_fraction())
+            d['aft panel 1 (upper)'] = self.aft_panel_1.layer[1].area_fraction()
         if self.aft_panel_2.exists():
             print "  {0:5.1%} area, aft panel 2, lower".format(self.aft_panel_2.layer[0].area_fraction())
+            d['aft panel 2 (lower)'] = self.aft_panel_2.layer[0].area_fraction()
             print "  {0:5.1%} area, aft panel 2, upper".format(self.aft_panel_2.layer[1].area_fraction())
+            d['aft panel 2 (upper)'] = self.aft_panel_2.layer[1].area_fraction()
         if self.LE_panel.exists():
             print "  {0:5.1%} area, LE panel".format(self.LE_panel.layer[0].area_fraction())
+            d['LE panel'] = self.LE_panel.layer[0].area_fraction()
         if self.shear_web_1.exists():
             print "  {0:5.1%} area, shear web 1, left biax".format(self.shear_web_1.layer[0].area_fraction())
+            d['shear web 1 (left biax)'] = self.shear_web_1.layer[0].area_fraction()
             print "  {0:5.1%} area, shear web 1, foam".format(self.shear_web_1.layer[1].area_fraction())
+            d['shear web 1 (foam)'] = self.shear_web_1.layer[1].area_fraction()
             print "  {0:5.1%} area, shear web 1, right biax".format(self.shear_web_1.layer[2].area_fraction())
+            d['shear web 1 (right biax)'] = self.shear_web_1.layer[2].area_fraction()
         if self.shear_web_2.exists():
             print "  {0:5.1%} area, shear web 2, left biax".format(self.shear_web_2.layer[0].area_fraction())
+            d['shear web 2 (left biax)'] = self.shear_web_2.layer[0].area_fraction()
             print "  {0:5.1%} area, shear web 2, foam".format(self.shear_web_2.layer[1].area_fraction())
+            d['shear web 2 (foam)'] = self.shear_web_2.layer[1].area_fraction()
             print "  {0:5.1%} area, shear web 2, right biax".format(self.shear_web_2.layer[2].area_fraction())
+            d['shear web 2 (right biax)'] = self.shear_web_2.layer[2].area_fraction()
         if self.shear_web_3.exists():
             print "  {0:5.1%} area, shear web 3, left biax".format(self.shear_web_3.layer[0].area_fraction())
+            d['shear web 3 (left biax)'] = self.shear_web_3.layer[0].area_fraction()
             print "  {0:5.1%} area, shear web 3, foam".format(self.shear_web_3.layer[1].area_fraction())
+            d['shear web 3 (foam)'] = self.shear_web_3.layer[1].area_fraction()
             print "  {0:5.1%} area, shear web 3, right biax".format(self.shear_web_3.layer[2].area_fraction())
+            d['shear web 3 (right biax)'] = self.shear_web_3.layer[2].area_fraction()
         if self.TE_reinforcement.exists():
             print "  {0:5.1%} area, TE reinforcement, uniax".format(self.TE_reinforcement.layer[0].area_fraction())
+            d['TE reinforcement (uniax)'] = self.TE_reinforcement.layer[0].area_fraction()
             try:
                 print "  {0:5.1%} area, TE reinforcement, foam".format(self.TE_reinforcement.layer[1].area_fraction())
+                d['TE reinforcement (foam)'] = self.TE_reinforcement.layer[1].area_fraction()
             except IndexError:
                 pass
         if self.internal_surface_1.exists():
             print "  {0:5.1%} area, internal surface 1, triax".format(self.internal_surface_1.layer[0].area_fraction())
+            d['internal surface 1 (triax)'] = self.internal_surface_1.layer[0].area_fraction()
             print "  {0:5.1%} area, internal surface 1, resin".format(self.internal_surface_1.layer[1].area_fraction())
+            d['internal surface 1 (resin)'] = self.internal_surface_1.layer[1].area_fraction()
         if self.internal_surface_2.exists():
             print "  {0:5.1%} area, internal surface 2, triax".format(self.internal_surface_2.layer[0].area_fraction())
+            d['internal surface 2 (triax)'] = self.internal_surface_2.layer[0].area_fraction()
             print "  {0:5.1%} area, internal surface 2, resin".format(self.internal_surface_2.layer[1].area_fraction())
+            d['internal surface 2 (resin)'] = self.internal_surface_2.layer[1].area_fraction()
         if self.internal_surface_3.exists():
             print "  {0:5.1%} area, internal surface 3, triax".format(self.internal_surface_3.layer[0].area_fraction())
+            d['internal surface 3 (triax)'] = self.internal_surface_3.layer[0].area_fraction()
             print "  {0:5.1%} area, internal surface 3, resin".format(self.internal_surface_3.layer[1].area_fraction())
+            d['internal surface 3 (resin)'] = self.internal_surface_3.layer[1].area_fraction()
         if self.internal_surface_4.exists():
             print "  {0:5.1%} area, internal surface 4, triax".format(self.internal_surface_4.layer[0].area_fraction())
+            d['internal surface 4 (triax)'] = self.internal_surface_4.layer[0].area_fraction()
             print "  {0:5.1%} area, internal surface 4, resin".format(self.internal_surface_4.layer[1].area_fraction())
+            d['internal surface 4 (resin)'] = self.internal_surface_4.layer[1].area_fraction()
+        return d
 
 
 class BiplaneStructure:
