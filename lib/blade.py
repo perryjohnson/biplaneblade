@@ -491,129 +491,185 @@ class _Blade:
             fig.savefig(fname)
         return (fig, axes)
 
-    def plot_parts(self, station):
-        """Plots the structural parts in this blade station."""
-        fig, ax = plt.subplots(num='Cross-section for {0}'.format(self.name))
-        st = station.structure
-        ax.set_title("Station #{0}, {1}, {2}% span".format(station.station_num, station.airfoil.name, station.coords.x1))
-        ax.set_aspect('equal')
-        ax.grid('on')
-        ax.set_xlabel('x2 [meters]')
-        ax.set_ylabel('x3 [meters]')
-        station.plot_polygon(station.airfoil.polygon, ax,
-            face_color='None', edge_color='#999999', alpha=0.8)
-        (minx, miny, maxx, maxy) = station.airfoil.polygon.bounds
-        ax.set_xlim([minx*1.2,maxx*1.2])
-        ax.set_ylim([miny*1.2,maxy*1.2])
-        try:
-            if st.external_surface.exists():
-                station.plot_polygon(st.external_surface.polygon_gelcoat,
-                    ax, face_color='#4000FF', edge_color='#000000',
-                    alpha=0.8)  # face color is purple
-                station.plot_polygon(st.external_surface.polygon_triax,
-                    ax, face_color='#4000FF', edge_color='#000000',
-                    alpha=0.8)  # face color is purple
-            if st.root_buildup.exists():
-                station.plot_polygon(st.root_buildup.polygon, ax,
-                    face_color='#BE925A', edge_color='#000000',
-                    alpha=0.8)  # face color is brown
-            if st.spar_cap.exists():
-                station.plot_polygon(st.spar_cap.polygon_lower, ax,
-                    face_color='#00ACEF', edge_color='#000000',
-                    alpha=0.8)  # face color is blue
-                station.plot_polygon(st.spar_cap.polygon_upper, ax,
-                    face_color='#00ACEF', edge_color='#000000',
-                    alpha=0.8)  # face color is blue
-            if st.aft_panel_1.exists():
-                station.plot_polygon(st.aft_panel_1.polygon_lower, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
-                station.plot_polygon(st.aft_panel_1.polygon_upper, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
-            if st.aft_panel_2.exists():
-                station.plot_polygon(st.aft_panel_2.polygon_lower, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
-                station.plot_polygon(st.aft_panel_2.polygon_upper, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
-            if st.LE_panel.exists():
-                station.plot_polygon(st.LE_panel.polygon, ax,
-                    face_color='#00A64F', edge_color='#000000',
-                    alpha=0.8)  # face color is green
-            if st.shear_web_1.exists():
-                station.plot_polygon(st.shear_web_1.polygon_left_biax, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-                station.plot_polygon(st.shear_web_1.polygon_foam, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-                station.plot_polygon(st.shear_web_1.polygon_right_biax, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-            if st.shear_web_2.exists():
-                station.plot_polygon(st.shear_web_2.polygon_left_biax, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-                station.plot_polygon(st.shear_web_2.polygon_foam, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-                station.plot_polygon(st.shear_web_2.polygon_right_biax, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-            if st.shear_web_3.exists():
-                station.plot_polygon(st.shear_web_3.polygon_left_biax, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-                station.plot_polygon(st.shear_web_3.polygon_foam, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-                station.plot_polygon(st.shear_web_3.polygon_right_biax, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
-            if st.TE_reinforcement.exists():
-                station.plot_polygon(st.TE_reinforcement.polygon_uniax, ax,
-                    face_color='#F366BA', edge_color='#000000',
-                    alpha=0.8)  # face color is pink
-                try:
-                    station.plot_polygon(st.TE_reinforcement.polygon_foam, ax,
-                        face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                except TypeError:  # foam region doesn't exist
-                    pass
-            if st.internal_surface_1.exists():
-                station.plot_polygon(st.internal_surface_1.polygon_triax, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
-                # station.plot_polygon(st.internal_surface_1.polygon_resin, ax,
-                #     face_color='#6699cc', edge_color='#000000',
-                #     alpha=0.8)  # face color is light blue
-            if st.internal_surface_2.exists():
-                station.plot_polygon(st.internal_surface_2.polygon_triax, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
-                # station.plot_polygon(st.internal_surface_2.polygon_resin, ax,
-                #     face_color='#6699cc', edge_color='#000000',
-                #     alpha=0.8)  # face color is light blue
-            if st.internal_surface_3.exists():
-                station.plot_polygon(st.internal_surface_3.polygon_triax, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
-                # station.plot_polygon(st.internal_surface_3.polygon_resin, ax,
-                #     face_color='#6699cc', edge_color='#000000',
-                #     alpha=0.8)  # face color is light blue
-            if st.internal_surface_4.exists():
-                station.plot_polygon(st.internal_surface_4.polygon_triax, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
-                # station.plot_polygon(st.internal_surface_4.polygon_resin, ax,
-                #     face_color='#6699cc', edge_color='#000000',
-                #     alpha=0.8)  # face color is light blue
-        except AttributeError:
-            raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
+    def calculate_all_areas(self):
+        """Calculate the areas of all structural parts in each station of this blade."""
+        for station in self.list_of_stations:
+            station.structure.calculate_area()
+
+    def get_all_percent_areas(self, save_csv=True):
+        """Returns a pandas.DataFrame of percent areas for each part and station.
+
+        Parameters
+        ----------
+        save_csv : bool (default: True), save the DataFrame as a CSV file
+
+        """
+        self.calculate_all_areas()
+        list_of_dicts = []
+        for station in self.list_of_stations:
+            d = station.structure.calculate_all_percent_areas()
+            list_of_dicts.append(d)
+        pa = pd.DataFrame(list_of_dicts, index=range(1,self.number_of_stations+1))
+        pa = pa.fillna(0)  # set all NaNs to zeros
+        # condense the number of columns down
+        # -- spar caps --
+        pa['spar caps'] = pa['spar cap (lower)'] + pa['spar cap (upper)']
+        pa.pop('spar cap (lower)')
+        pa.pop('spar cap (upper)')
+        # -- aft panels --
+        pa['aft panels'] = (pa['aft panel 1 (lower)'] + pa['aft panel 1 (upper)'] +
+                            pa['aft panel 2 (lower)'] + pa['aft panel 2 (upper)'])
+        pa.pop('aft panel 1 (lower)')
+        pa.pop('aft panel 1 (upper)')
+        pa.pop('aft panel 2 (lower)')
+        pa.pop('aft panel 2 (upper)')
+        # -- shear webs (biax) --
+        pa['shear webs (biax)'] = (
+            pa['shear web 1 (left biax)'] + pa['shear web 1 (right biax)'] + 
+            pa['shear web 2 (left biax)'] + pa['shear web 2 (right biax)'] + 
+            pa['shear web 3 (left biax)'] + pa['shear web 3 (right biax)'])
+        pa.pop('shear web 1 (left biax)')
+        pa.pop('shear web 1 (right biax)')
+        pa.pop('shear web 2 (left biax)')
+        pa.pop('shear web 2 (right biax)')
+        pa.pop('shear web 3 (left biax)')
+        pa.pop('shear web 3 (right biax)')
+        # -- shear webs (foam) --
+        pa['shear webs (foam)'] = (pa['shear web 1 (foam)'] + 
+            pa['shear web 2 (foam)'] + pa['shear web 3 (foam)'])
+        pa.pop('shear web 1 (foam)')
+        pa.pop('shear web 2 (foam)')
+        pa.pop('shear web 3 (foam)')
+        # -- internal surface (triax) --
+        pa['internal surfaces (triax)'] = (pa['internal surface 1 (triax)'] + 
+            pa['internal surface 2 (triax)'] + pa['internal surface 3 (triax)'] +
+            pa['internal surface 4 (triax)'])
+        pa.pop('internal surface 1 (triax)')
+        pa.pop('internal surface 2 (triax)')
+        pa.pop('internal surface 3 (triax)')
+        pa.pop('internal surface 4 (triax)')
+        # -- internal surface (resin) --
+        pa['internal surfaces (resin)'] = (pa['internal surface 1 (resin)'] + 
+            pa['internal surface 2 (resin)'] + pa['internal surface 3 (resin)'] +
+            pa['internal surface 4 (resin)'])
+        pa.pop('internal surface 1 (resin)')
+        pa.pop('internal surface 2 (resin)')
+        pa.pop('internal surface 3 (resin)')
+        pa.pop('internal surface 4 (resin)')
+        if save_csv:
+            # save the data to a CSV file
+            pa_path = os.path.join(self.blade_path, 'percent_areas.csv')
+            pa.to_csv(pa_path, index_label='blade station', cols=[
+                'external surface (gelcoat)',
+                'external surface (triax)',
+                'root buildup',  # (triax)
+                'spar caps',  # (uniax)
+                'aft panels',  # (foam)
+                'LE panel',  # (foam)
+                'shear webs (biax)',
+                'shear webs (foam)',
+                'TE reinforcement (uniax)',
+                'TE reinforcement (foam)',
+                'internal surfaces (triax)',
+                'internal surfaces (resin)'])
+        return pa
+
+    def plot_percent_areas(self, pa):
+        """Plot the percent areas as a 100% stacked bar plot.
+
+        Parameters
+        ----------
+        pa : pandas.DataFrame, table of percent areas for each blade station
+
+        ref: http://matplotlib.org/examples/pylab_examples/bar_stacked.html
+
+        """
+        plt.figure(figsize=(22,12))
+        ind = np.arange(self.number_of_stations)  # the x locations for each blade station
+        width = 0.45                           # the width of the bars
+        p1 = plt.bar(ind, pa['external surface (gelcoat)'], width, color='#5EE54C')
+        p2 = plt.bar(ind, pa['external surface (triax)'], width, color='#5EE54C', hatch='.',
+            bottom=pa['external surface (gelcoat)'])
+        p3 = plt.bar(ind, pa['root buildup'], width, color='#BE925A', 
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)']))
+        p4 = plt.bar(ind, pa['spar caps'], width, color='#00ACEF', 
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup']))
+        p5 = plt.bar(ind, pa['aft panels'], width, color='#F58612', 
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps']))
+        p6 = plt.bar(ind, pa['LE panel'], width, color='#00A64F', 
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps'] + pa['aft panels']))
+        p7 = plt.bar(ind, pa['shear webs (biax)'], width, color='#FFF100', hatch='x',
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
+                pa['LE panel']))
+        p8 = plt.bar(ind, pa['shear webs (foam)'], width, color='#FFF100', 
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
+                pa['LE panel'] + pa['shear webs (biax)']))
+        p9 = plt.bar(ind, pa['TE reinforcement (uniax)'], width, color='#F366BA', hatch='/',
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
+                pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)']))
+        p10 = plt.bar(ind, pa['TE reinforcement (foam)'], width, color='#F366BA', 
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
+                pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)'] +
+                pa['TE reinforcement (uniax)']))
+        p11 = plt.bar(ind, pa['internal surfaces (triax)'], width, color='#999999', hatch='.',
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
+                pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)'] +
+                pa['TE reinforcement (uniax)'] + pa['TE reinforcement (foam)']))
+        p12 = plt.bar(ind, pa['internal surfaces (resin)'], width, color='#999999', 
+            bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
+                pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
+                pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)'] +
+                pa['TE reinforcement (uniax)'] + pa['TE reinforcement (foam)'] +
+                pa['internal surfaces (triax)']))
+        plt.ylabel('percent area')
+        plt.xlabel('blade station')
+        plt.xticks(ind+width/2.0, ('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34'))
+        plt.yticks( np.arange(0.0,1.1,0.1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
+        plt.ylim([0.0,1.0])
+        plt.xlim([-width/2.0, self.number_of_stations-0.5+width/2.0])
+        plt.legend( 
+            (
+            p12[0],
+            p11[0], 
+            p10[0], 
+            p9[0], 
+            p8[0], 
+            p7[0], 
+            p6[0], 
+            p5[0], 
+            p4[0], 
+            p3[0], 
+            p2[0], 
+            p1[0]
+            ), 
+            (
+            'internal surfaces (resin)',
+            'internal surfaces (triax)',
+            'TE reinforcement (foam)',
+            'TE reinforcement (uniax)',
+            'shear webs (foam)',
+            'shear webs (biax)',
+            'LE panel (foam)',
+            'aft panels (foam)',
+            'spar caps (uniax)',
+            'root buildup (triax)',
+            'external surface (triax)',
+            'external surface (gelcoat)'
+            ), 
+            bbox_to_anchor=(1.02, 0.5),
+            loc='center left',
+            borderaxespad=0.0)
+        plt.subplots_adjust(left=0.05, bottom=0.05, right=0.82, top=0.95)
+        plt.grid(axis='y')
         plt.show()
-        return (fig, ax)
 
 
 class MonoplaneBlade(_Blade):
