@@ -31,8 +31,8 @@ for station in m.list_of_stations:
     station.structure.calculate_area()
     # print "Station #{0}, area = {1:6.4f} m^2".format(station.station_num, station.structure.area)
 
-# m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
-    # selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
+m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
+    selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
 
 # assemble a pandas DataFrame of percent areas for each structural part
 list_of_dicts = []
@@ -107,9 +107,9 @@ pa.to_csv(pa_path, index_label='blade station', cols=[
 # ref: http://matplotlib.org/examples/pylab_examples/bar_stacked.html
 plt.figure(figsize=(22,12))
 ind = np.arange(m.number_of_stations)  # the x locations for each blade station
-width = 0.35                           # the width of the bars
-p1 = plt.bar(ind, pa['external surface (gelcoat)'], width, color='#4000FF')
-p2 = plt.bar(ind, pa['external surface (triax)'], width, color='#4000AA', 
+width = 0.45                           # the width of the bars
+p1 = plt.bar(ind, pa['external surface (gelcoat)'], width, color='#5EE54C')
+p2 = plt.bar(ind, pa['external surface (triax)'], width, color='#5EE54C', hatch='.',
     bottom=pa['external surface (gelcoat)'])
 p3 = plt.bar(ind, pa['root buildup'], width, color='#BE925A', 
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)']))
@@ -122,7 +122,7 @@ p5 = plt.bar(ind, pa['aft panels'], width, color='#F58612',
 p6 = plt.bar(ind, pa['LE panel'], width, color='#00A64F', 
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
         pa['root buildup'] + pa['spar caps'] + pa['aft panels']))
-p7 = plt.bar(ind, pa['shear webs (biax)'], width, color='#AAF100', 
+p7 = plt.bar(ind, pa['shear webs (biax)'], width, color='#FFF100', hatch='x',
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
         pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
         pa['LE panel']))
@@ -130,21 +130,21 @@ p8 = plt.bar(ind, pa['shear webs (foam)'], width, color='#FFF100',
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
         pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
         pa['LE panel'] + pa['shear webs (biax)']))
-p9 = plt.bar(ind, pa['TE reinforcement (uniax)'], width, color='#F366BA', 
+p9 = plt.bar(ind, pa['TE reinforcement (uniax)'], width, color='#F366BA', hatch='/',
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
         pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
         pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)']))
-p10 = plt.bar(ind, pa['TE reinforcement (foam)'], width, color='#F300BA', 
+p10 = plt.bar(ind, pa['TE reinforcement (foam)'], width, color='#F366BA', 
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
         pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
         pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)'] +
         pa['TE reinforcement (uniax)']))
-p11 = plt.bar(ind, pa['internal surfaces (triax)'], width, color='#999999', 
+p11 = plt.bar(ind, pa['internal surfaces (triax)'], width, color='#999999', hatch='.',
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
         pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
         pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)'] +
         pa['TE reinforcement (uniax)'] + pa['TE reinforcement (foam)']))
-p12 = plt.bar(ind, pa['internal surfaces (resin)'], width, color='#999944', 
+p12 = plt.bar(ind, pa['internal surfaces (resin)'], width, color='#999999', 
     bottom=(pa['external surface (gelcoat)'] + pa['external surface (triax)'] +
         pa['root buildup'] + pa['spar caps'] + pa['aft panels'] +
         pa['LE panel'] + pa['shear webs (biax)'] + pa['shear webs (foam)'] +
@@ -179,10 +179,10 @@ plt.legend(
     'TE reinforcement (uniax)',
     'shear webs (foam)',
     'shear webs (biax)',
-    'LE panel',
-    'aft panels',
-    'spar caps',
-    'root buildup',
+    'LE panel (foam)',
+    'aft panels (foam)',
+    'spar caps (uniax)',
+    'root buildup (triax)',
     'external surface (triax)',
     'external surface (gelcoat)'
     ), 

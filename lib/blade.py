@@ -353,11 +353,11 @@ class _Blade:
                         if st.external_surface.exists():
                             station.plot_polygon(
                                 st.external_surface.layer[0].polygon, ax,
-                                face_color='#4000FF', edge_color='#000000',
+                                face_color='#5EE54C', edge_color='#000000',
                                 alpha=0.8)  # face color is purple
                             station.plot_polygon(
                                 st.external_surface.layer[1].polygon, ax,
-                                face_color='#4000FF', edge_color='#000000',
+                                face_color='#5EE54C', edge_color='#000000',
                                 alpha=0.8)  # face color is purple
                         if st.root_buildup.exists():
                             station.plot_polygon(
