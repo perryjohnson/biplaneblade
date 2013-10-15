@@ -25,14 +25,15 @@ for station in m.list_of_stations:
         station.structure.create_all_layers()
     except Warning:
         print "  ...skipping Station #{0}************".format(station.station_num)
-        print "length of list_of_polygons =", len(station.structure.list_of_polygons)
+        print "length of _list_of_layers =", len(station.structure._list_of_layers)
         pass
     # station.write_all_part_polygons()
 
 # m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
     # selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
 
-# assemble a pandas DataFrame of percent areas for each structural part
-pa = m.get_all_percent_areas()
 # make a stacked bar plot of all the percent areas for each structural part
-m.plot_percent_areas(pa)
+m.plot_percent_areas()
+
+# make a stacked bar plot of all the percent masses for each structural part
+m.plot_percent_masses()

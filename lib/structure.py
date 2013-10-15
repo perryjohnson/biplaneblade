@@ -125,7 +125,7 @@ height:  {1:6.4f} (meters)
             self.layer.append(l.Layer(polygon_gelcoat,
                 b.dict_of_materials['gelcoat'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
             # create the triax layer
             op_triax = ip_gelcoat  # outer profile is the gelcoat inner profile
             ip_triax = op_triax.buffer(-self.height_triax)
@@ -133,7 +133,7 @@ height:  {1:6.4f} (meters)
             self.layer.append(l.Layer(polygon_triax,
                 b.dict_of_materials['triaxial GFRP'], parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[1].polygon)
+            st._list_of_layers.append(self.layer[1])
         else:
             if debug_flag:
                 print " The external surface for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -154,7 +154,7 @@ class RootBuildup(Part):
             self.layer.append(l.Layer(p, b.dict_of_materials['triaxial GFRP'],
                 parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
         else:
             if debug_flag:
                 print " The root buildup for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -186,7 +186,7 @@ class LE_Panel(Part):
             self.layer.append(l.Layer(p, b.dict_of_materials['foam'],
                 parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
         else:
             if debug_flag:
                 print " The LE panel for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -231,12 +231,12 @@ class SparCap(Part):
             self.layer.append(l.Layer(pl, b.dict_of_materials['uniaxial GFRP'],
                 parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
             # 8. add the upper spar cap
             self.layer.append(l.Layer(pu, b.dict_of_materials['uniaxial GFRP'],
                 parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[1].polygon)
+            st._list_of_layers.append(self.layer[1])
         else:
             if debug_flag:
                 print " The spar caps for Station #{0} do not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -281,12 +281,12 @@ class AftPanel(Part):
             self.layer.append(l.Layer(pl, b.dict_of_materials['foam'],
                 parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
             # 8. add the upper aft panel
             self.layer.append(l.Layer(pu, b.dict_of_materials['foam'],
                 parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[1].polygon)
+            st._list_of_layers.append(self.layer[1])
         else:
             if debug_flag:
                 print " The aft panels for Station #{0} do not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -358,7 +358,7 @@ height:  {1:6.4f} (meters)
             self.layer.append(l.Layer(polygon_uniax,
                 b.dict_of_materials['uniaxial GFRP'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
             if not isnan(self.height_foam):
                 # create the foam layer
                 # 1. get outer profile
@@ -373,7 +373,7 @@ height:  {1:6.4f} (meters)
                 self.layer.append(l.Layer(polygon_foam,
                     b.dict_of_materials['foam'], parent_part=self))
                 assert self.layer[1].polygon.geom_type == 'Polygon'
-                st.list_of_polygons.append(self.layer[1].polygon)
+                st._list_of_layers.append(self.layer[1])
         else:
             if debug_flag:
                 print " The TE reinforcement for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -469,17 +469,17 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
             self.layer.append(l.Layer(p_left_biax,
                 b.dict_of_materials['biaxial GFRP'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
             # 5. add the foam layer
             self.layer.append(l.Layer(p_foam, b.dict_of_materials['foam'],
                 parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[1].polygon)
+            st._list_of_layers.append(self.layer[1])
             # 6. add the right biax layer
             self.layer.append(l.Layer(p_right_biax,
                 b.dict_of_materials['biaxial GFRP'], parent_part=self))
             assert self.layer[2].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[2].polygon)
+            st._list_of_layers.append(self.layer[2])
         else:
             if debug_flag:
                 print " The shear web for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -548,7 +548,7 @@ height:  {1:6.4f} (meters)
             self.layer.append(l.Layer(polygon_triax,
                 b.dict_of_materials['triaxial GFRP'], parent_part=self))
             assert self.layer[0].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[0].polygon)
+            st._list_of_layers.append(self.layer[0])
             # resin region
             op_resin = ip_triax
             ip_resin = op_resin.buffer(-self.height_resin)
@@ -556,7 +556,7 @@ height:  {1:6.4f} (meters)
             self.layer.append(l.Layer(polygon_resin,
                 b.dict_of_materials['resin'], parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
-            st.list_of_polygons.append(self.layer[1].polygon)
+            st._list_of_layers.append(self.layer[1])
         else:
             if debug_flag:
                 print " The internal surface for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -573,6 +573,7 @@ class MonoplaneStructure:
                  h_int_surf_4_resin, h_ext_surf_triax, h_ext_surf_gelcoat,
                  parent_station):
         self.parent_station = parent_station
+        self._list_of_layers = []
         self.root_buildup = RootBuildup(
             parent_structure = self,
             base = np.nan,
@@ -642,8 +643,8 @@ class MonoplaneStructure:
             base = np.nan,
             height_triax = h_ext_surf_triax,
             height_gelcoat = h_ext_surf_gelcoat)
-        self.list_of_polygons = []
         self.area = None
+        self.mass = None
 
     def __str__(self):
         """Returns a string of all the internal dimensions for this structure."""
@@ -740,8 +741,11 @@ class MonoplaneStructure:
             ax.set_xlim([minx*1.2,maxx*1.2])
             ax.set_ylim([miny*1.2,maxy*1.2])
         # merge everything
+        list_of_polygons = []
+        for layer in self._list_of_layers:
+            list_of_polygons.append(layer.polygon)
         try:
-            p = cascaded_union(self.list_of_polygons)
+            p = cascaded_union(list_of_polygons)
         except ValueError:
             # gather all the parts
             p = self.external_surface.layer[0].polygon
@@ -813,29 +817,6 @@ class MonoplaneStructure:
                 sw3 = self.shear_web_3.layer[0].polygon.union(self.shear_web_3.layer[1].polygon)
                 sw3 = sw3.union(self.shear_web_3.layer[2].polygon)
                 p = p.union(sw3)
-            # if merge_internal_surface:
-            #     # also merge the internal surface with the other structural parts
-            #     if self.internal_surface_1.exists():
-            #         IS1 = self.internal_surface_1.polygon_triax
-            #         IS1 = IS1.union(self.internal_surface_1.polygon_resin)
-            #         list_of_parts.append(IS1)
-            #     if self.internal_surface_2.exists():
-            #         IS2 = self.internal_surface_2.polygon_triax
-            #         IS2 = IS2.union(self.internal_surface_2.polygon_resin)
-            #         list_of_parts.append(IS2)
-            #     if self.internal_surface_3.exists():
-            #         IS3 = self.internal_surface_3.polygon_triax
-            #         IS3 = IS3.union(self.internal_surface_3.polygon_resin)
-            #         list_of_parts.append(IS3)
-            #     if self.internal_surface_4.exists():
-            #         IS4 = self.internal_surface_4.polygon_triax
-            #         IS4 = IS4.union(self.internal_surface_4.polygon_resin)
-            #         list_of_parts.append(IS4)
-            # try merging everything again
-            # try:
-            #     p = cascaded_union(list_of_parts)
-            # except ValueError:
-            #     raise Warning("Could not merge all polygons in Station #{0}".format(stn.station_num))
         if plot_flag:
             # plot the merged polygon
             patch2 = PolygonPatch(p, fc='#4000FF', ec = '#000000', alpha=0.8)
@@ -844,97 +825,224 @@ class MonoplaneStructure:
         return p
 
     def calculate_area(self):
-        """Add the area of all polygons in this station, save it to self.area."""
+        """Add the area of all polygons in this station."""
         a = 0
-        for p in self.list_of_polygons:
-            a += p.area
+        for layer in self._list_of_layers:
+            a += layer.polygon.area
         self.area = a
         return a
 
-    def calculate_all_percent_areas(self):
+    def calculate_mass(self):
+        """Add the mass (per unit length) of all polygons in this station."""
+        m = 0
+        for layer in self._list_of_layers:
+            m += layer.mass
+        self.mass = m
+        return m
+
+    def calculate_all_percent_areas(self, print_flag=False):
         """Calculate the percent areas of all parts in this station.
 
         Returns a dictionary of area fractions for each structural part.
 
         """
         d = {}
-        print " ----- STATION #{0} -----".format(self.parent_station.station_num)
+        if print_flag:
+            print " ----- STATION #{0} -----".format(self.parent_station.station_num)
         # d['blade station'] = self.parent_station.station_num
         if self.external_surface.exists():
-            print "  {0:5.1%} area, external surface, gelcoat".format(self.external_surface.layer[0].area_fraction())
             d['external surface (gelcoat)'] = self.external_surface.layer[0].area_fraction()
-            print "  {0:5.1%} area, external surface, triax".format(self.external_surface.layer[1].area_fraction())
             d['external surface (triax)'] = self.external_surface.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, external surface, gelcoat".format(self.external_surface.layer[0].area_fraction())
+                print "  {0:5.1%} area, external surface, triax".format(self.external_surface.layer[1].area_fraction())
         if self.root_buildup.exists():
-            print "  {0:5.1%} area, root buildup".format(self.root_buildup.layer[0].area_fraction())
             d['root buildup'] = self.root_buildup.layer[0].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, root buildup".format(self.root_buildup.layer[0].area_fraction())
         if self.spar_cap.exists():
-            print "  {0:5.1%} area, spar cap, lower".format(self.spar_cap.layer[0].area_fraction())
             d['spar cap (lower)'] = self.spar_cap.layer[0].area_fraction()
-            print "  {0:5.1%} area, spar cap, upper".format(self.spar_cap.layer[1].area_fraction())
             d['spar cap (upper)'] = self.spar_cap.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, spar cap, lower".format(self.spar_cap.layer[0].area_fraction())
+                print "  {0:5.1%} area, spar cap, upper".format(self.spar_cap.layer[1].area_fraction())
         if self.aft_panel_1.exists():
-            print "  {0:5.1%} area, aft panel 1, lower".format(self.aft_panel_1.layer[0].area_fraction())
             d['aft panel 1 (lower)'] = self.aft_panel_1.layer[0].area_fraction()
-            print "  {0:5.1%} area, aft panel 1, upper".format(self.aft_panel_1.layer[1].area_fraction())
             d['aft panel 1 (upper)'] = self.aft_panel_1.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, aft panel 1, lower".format(self.aft_panel_1.layer[0].area_fraction())
+                print "  {0:5.1%} area, aft panel 1, upper".format(self.aft_panel_1.layer[1].area_fraction())
         if self.aft_panel_2.exists():
-            print "  {0:5.1%} area, aft panel 2, lower".format(self.aft_panel_2.layer[0].area_fraction())
             d['aft panel 2 (lower)'] = self.aft_panel_2.layer[0].area_fraction()
-            print "  {0:5.1%} area, aft panel 2, upper".format(self.aft_panel_2.layer[1].area_fraction())
             d['aft panel 2 (upper)'] = self.aft_panel_2.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, aft panel 2, lower".format(self.aft_panel_2.layer[0].area_fraction())
+                print "  {0:5.1%} area, aft panel 2, upper".format(self.aft_panel_2.layer[1].area_fraction())
         if self.LE_panel.exists():
-            print "  {0:5.1%} area, LE panel".format(self.LE_panel.layer[0].area_fraction())
             d['LE panel'] = self.LE_panel.layer[0].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, LE panel".format(self.LE_panel.layer[0].area_fraction())
         if self.shear_web_1.exists():
-            print "  {0:5.1%} area, shear web 1, left biax".format(self.shear_web_1.layer[0].area_fraction())
             d['shear web 1 (left biax)'] = self.shear_web_1.layer[0].area_fraction()
-            print "  {0:5.1%} area, shear web 1, foam".format(self.shear_web_1.layer[1].area_fraction())
             d['shear web 1 (foam)'] = self.shear_web_1.layer[1].area_fraction()
-            print "  {0:5.1%} area, shear web 1, right biax".format(self.shear_web_1.layer[2].area_fraction())
             d['shear web 1 (right biax)'] = self.shear_web_1.layer[2].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, shear web 1, left biax".format(self.shear_web_1.layer[0].area_fraction())
+                print "  {0:5.1%} area, shear web 1, foam".format(self.shear_web_1.layer[1].area_fraction())
+                print "  {0:5.1%} area, shear web 1, right biax".format(self.shear_web_1.layer[2].area_fraction())
         if self.shear_web_2.exists():
-            print "  {0:5.1%} area, shear web 2, left biax".format(self.shear_web_2.layer[0].area_fraction())
             d['shear web 2 (left biax)'] = self.shear_web_2.layer[0].area_fraction()
-            print "  {0:5.1%} area, shear web 2, foam".format(self.shear_web_2.layer[1].area_fraction())
             d['shear web 2 (foam)'] = self.shear_web_2.layer[1].area_fraction()
-            print "  {0:5.1%} area, shear web 2, right biax".format(self.shear_web_2.layer[2].area_fraction())
             d['shear web 2 (right biax)'] = self.shear_web_2.layer[2].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, shear web 2, left biax".format(self.shear_web_2.layer[0].area_fraction())
+                print "  {0:5.1%} area, shear web 2, foam".format(self.shear_web_2.layer[1].area_fraction())
+                print "  {0:5.1%} area, shear web 2, right biax".format(self.shear_web_2.layer[2].area_fraction())
         if self.shear_web_3.exists():
-            print "  {0:5.1%} area, shear web 3, left biax".format(self.shear_web_3.layer[0].area_fraction())
             d['shear web 3 (left biax)'] = self.shear_web_3.layer[0].area_fraction()
-            print "  {0:5.1%} area, shear web 3, foam".format(self.shear_web_3.layer[1].area_fraction())
             d['shear web 3 (foam)'] = self.shear_web_3.layer[1].area_fraction()
-            print "  {0:5.1%} area, shear web 3, right biax".format(self.shear_web_3.layer[2].area_fraction())
             d['shear web 3 (right biax)'] = self.shear_web_3.layer[2].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, shear web 3, left biax".format(self.shear_web_3.layer[0].area_fraction())
+                print "  {0:5.1%} area, shear web 3, foam".format(self.shear_web_3.layer[1].area_fraction())
+                print "  {0:5.1%} area, shear web 3, right biax".format(self.shear_web_3.layer[2].area_fraction())
         if self.TE_reinforcement.exists():
-            print "  {0:5.1%} area, TE reinforcement, uniax".format(self.TE_reinforcement.layer[0].area_fraction())
             d['TE reinforcement (uniax)'] = self.TE_reinforcement.layer[0].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, TE reinforcement, uniax".format(self.TE_reinforcement.layer[0].area_fraction())
             try:
-                print "  {0:5.1%} area, TE reinforcement, foam".format(self.TE_reinforcement.layer[1].area_fraction())
                 d['TE reinforcement (foam)'] = self.TE_reinforcement.layer[1].area_fraction()
+                if print_flag:
+                    print "  {0:5.1%} area, TE reinforcement, foam".format(self.TE_reinforcement.layer[1].area_fraction())
             except IndexError:
                 pass
         if self.internal_surface_1.exists():
-            print "  {0:5.1%} area, internal surface 1, triax".format(self.internal_surface_1.layer[0].area_fraction())
             d['internal surface 1 (triax)'] = self.internal_surface_1.layer[0].area_fraction()
-            print "  {0:5.1%} area, internal surface 1, resin".format(self.internal_surface_1.layer[1].area_fraction())
             d['internal surface 1 (resin)'] = self.internal_surface_1.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, internal surface 1, triax".format(self.internal_surface_1.layer[0].area_fraction())
+                print "  {0:5.1%} area, internal surface 1, resin".format(self.internal_surface_1.layer[1].area_fraction())
         if self.internal_surface_2.exists():
-            print "  {0:5.1%} area, internal surface 2, triax".format(self.internal_surface_2.layer[0].area_fraction())
             d['internal surface 2 (triax)'] = self.internal_surface_2.layer[0].area_fraction()
-            print "  {0:5.1%} area, internal surface 2, resin".format(self.internal_surface_2.layer[1].area_fraction())
             d['internal surface 2 (resin)'] = self.internal_surface_2.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, internal surface 2, triax".format(self.internal_surface_2.layer[0].area_fraction())
+                print "  {0:5.1%} area, internal surface 2, resin".format(self.internal_surface_2.layer[1].area_fraction())
         if self.internal_surface_3.exists():
-            print "  {0:5.1%} area, internal surface 3, triax".format(self.internal_surface_3.layer[0].area_fraction())
             d['internal surface 3 (triax)'] = self.internal_surface_3.layer[0].area_fraction()
-            print "  {0:5.1%} area, internal surface 3, resin".format(self.internal_surface_3.layer[1].area_fraction())
             d['internal surface 3 (resin)'] = self.internal_surface_3.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, internal surface 3, triax".format(self.internal_surface_3.layer[0].area_fraction())
+                print "  {0:5.1%} area, internal surface 3, resin".format(self.internal_surface_3.layer[1].area_fraction())
         if self.internal_surface_4.exists():
-            print "  {0:5.1%} area, internal surface 4, triax".format(self.internal_surface_4.layer[0].area_fraction())
             d['internal surface 4 (triax)'] = self.internal_surface_4.layer[0].area_fraction()
-            print "  {0:5.1%} area, internal surface 4, resin".format(self.internal_surface_4.layer[1].area_fraction())
             d['internal surface 4 (resin)'] = self.internal_surface_4.layer[1].area_fraction()
+            if print_flag:
+                print "  {0:5.1%} area, internal surface 4, triax".format(self.internal_surface_4.layer[0].area_fraction())
+                print "  {0:5.1%} area, internal surface 4, resin".format(self.internal_surface_4.layer[1].area_fraction())
+        return d
+
+    def calculate_all_percent_masses(self, print_flag=False):
+        """Calculate the mass fractions of all parts in this station.
+
+        Returns a dictionary of mass (per unit length) fractions for each
+        structural part.
+
+        """
+        d = {}
+        if print_flag:
+            print " ----- STATION #{0} -----".format(self.parent_station.station_num)
+        # d['blade station'] = self.parent_station.station_num
+        if self.external_surface.exists():
+            d['external surface (gelcoat)'] = self.external_surface.layer[0].mass_fraction()
+            d['external surface (triax)'] = self.external_surface.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, external surface, gelcoat".format(self.external_surface.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, external surface, triax".format(self.external_surface.layer[1].mass_fraction())
+        if self.root_buildup.exists():
+            d['root buildup'] = self.root_buildup.layer[0].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, root buildup".format(self.root_buildup.layer[0].mass_fraction())
+        if self.spar_cap.exists():
+            d['spar cap (lower)'] = self.spar_cap.layer[0].mass_fraction()
+            d['spar cap (upper)'] = self.spar_cap.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, spar cap, lower".format(self.spar_cap.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, spar cap, upper".format(self.spar_cap.layer[1].mass_fraction())
+        if self.aft_panel_1.exists():
+            d['aft panel 1 (lower)'] = self.aft_panel_1.layer[0].mass_fraction()
+            d['aft panel 1 (upper)'] = self.aft_panel_1.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, aft panel 1, lower".format(self.aft_panel_1.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, aft panel 1, upper".format(self.aft_panel_1.layer[1].mass_fraction())
+        if self.aft_panel_2.exists():
+            d['aft panel 2 (lower)'] = self.aft_panel_2.layer[0].mass_fraction()
+            d['aft panel 2 (upper)'] = self.aft_panel_2.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, aft panel 2, lower".format(self.aft_panel_2.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, aft panel 2, upper".format(self.aft_panel_2.layer[1].mass_fraction())
+        if self.LE_panel.exists():
+            d['LE panel'] = self.LE_panel.layer[0].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, LE panel".format(self.LE_panel.layer[0].mass_fraction())
+        if self.shear_web_1.exists():
+            d['shear web 1 (left biax)'] = self.shear_web_1.layer[0].mass_fraction()
+            d['shear web 1 (foam)'] = self.shear_web_1.layer[1].mass_fraction()
+            d['shear web 1 (right biax)'] = self.shear_web_1.layer[2].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, shear web 1, left biax".format(self.shear_web_1.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, shear web 1, foam".format(self.shear_web_1.layer[1].mass_fraction())
+                print "  {0:5.1%} mass/length, shear web 1, right biax".format(self.shear_web_1.layer[2].mass_fraction())
+        if self.shear_web_2.exists():
+            d['shear web 2 (left biax)'] = self.shear_web_2.layer[0].mass_fraction()
+            d['shear web 2 (foam)'] = self.shear_web_2.layer[1].mass_fraction()
+            d['shear web 2 (right biax)'] = self.shear_web_2.layer[2].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, shear web 2, left biax".format(self.shear_web_2.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, shear web 2, foam".format(self.shear_web_2.layer[1].mass_fraction())
+                print "  {0:5.1%} mass/length, shear web 2, right biax".format(self.shear_web_2.layer[2].mass_fraction())
+        if self.shear_web_3.exists():
+            d['shear web 3 (left biax)'] = self.shear_web_3.layer[0].mass_fraction()
+            d['shear web 3 (foam)'] = self.shear_web_3.layer[1].mass_fraction()
+            d['shear web 3 (right biax)'] = self.shear_web_3.layer[2].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, shear web 3, left biax".format(self.shear_web_3.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, shear web 3, foam".format(self.shear_web_3.layer[1].mass_fraction())
+                print "  {0:5.1%} mass/length, shear web 3, right biax".format(self.shear_web_3.layer[2].mass_fraction())
+        if self.TE_reinforcement.exists():
+            d['TE reinforcement (uniax)'] = self.TE_reinforcement.layer[0].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, TE reinforcement, uniax".format(self.TE_reinforcement.layer[0].mass_fraction())
+            try:
+                d['TE reinforcement (foam)'] = self.TE_reinforcement.layer[1].mass_fraction()
+                if print_flag:
+                    print "  {0:5.1%} mass/length, TE reinforcement, foam".format(self.TE_reinforcement.layer[1].mass_fraction())
+            except IndexError:
+                pass
+        if self.internal_surface_1.exists():
+            d['internal surface 1 (triax)'] = self.internal_surface_1.layer[0].mass_fraction()
+            d['internal surface 1 (resin)'] = self.internal_surface_1.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, internal surface 1, triax".format(self.internal_surface_1.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, internal surface 1, resin".format(self.internal_surface_1.layer[1].mass_fraction())
+        if self.internal_surface_2.exists():
+            d['internal surface 2 (triax)'] = self.internal_surface_2.layer[0].mass_fraction()
+            d['internal surface 2 (resin)'] = self.internal_surface_2.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, internal surface 2, triax".format(self.internal_surface_2.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, internal surface 2, resin".format(self.internal_surface_2.layer[1].mass_fraction())
+        if self.internal_surface_3.exists():
+            d['internal surface 3 (triax)'] = self.internal_surface_3.layer[0].mass_fraction()
+            d['internal surface 3 (resin)'] = self.internal_surface_3.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, internal surface 3, triax".format(self.internal_surface_3.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, internal surface 3, resin".format(self.internal_surface_3.layer[1].mass_fraction())
+        if self.internal_surface_4.exists():
+            d['internal surface 4 (triax)'] = self.internal_surface_4.layer[0].mass_fraction()
+            d['internal surface 4 (resin)'] = self.internal_surface_4.layer[1].mass_fraction()
+            if print_flag:
+                print "  {0:5.1%} mass/length, internal surface 4, triax".format(self.internal_surface_4.layer[0].mass_fraction())
+                print "  {0:5.1%} mass/length, internal surface 4, resin".format(self.internal_surface_4.layer[1].mass_fraction())
         return d
 
 
