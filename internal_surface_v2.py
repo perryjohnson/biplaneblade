@@ -33,7 +33,12 @@ for station in m.list_of_stations:
     # selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
 
 # make a stacked bar plot of all the percent areas for each structural part
-m.plot_percent_areas()
+# m.plot_percent_areas()
 
 # make a stacked bar plot of all the percent masses for each structural part
-m.plot_percent_masses()
+# m.plot_percent_masses()
+
+# plot the mass vs. length (mass schedule)
+m.plot_mass_schedule()
+m.calculate_blade_mass()
+print " Mass of {0}: {1} kg".format(m.name, int(round(m.mass)))

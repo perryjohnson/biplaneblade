@@ -10,6 +10,7 @@ import os
 import shutil
 import datetime
 import numpy as np
+import scipy.integrate as ig
 import pandas as pd
 import station as stn
 reload(stn)
@@ -124,6 +125,7 @@ class _Blade:
                 self.create_all_materials()
         self.logf.flush()
         self.logf.close()
+        self.mass = None
 
     def __del__(self):
         """Delete a wind turbine blade.
@@ -500,6 +502,28 @@ class _Blade:
         """Calculate masses of all structural parts in each station of this blade."""
         for station in self.list_of_stations:
             station.structure.calculate_mass()
+
+    def plot_mass_schedule(self):
+        """Plot the mass vs. span."""
+        self.calculate_all_masses()
+        masses = []
+        for station in self.list_of_stations:
+            masses.append(station.structure.mass)
+        plt.figure()
+        plt.plot(self._df['x1'],masses,'bo-')
+        plt.xlabel('span, x1 [m]')
+        plt.ylabel('mass per unit length [kg/m]')
+        plt.show()
+
+    def calculate_blade_mass(self):
+        """Calculate the total blade mass."""
+        self.calculate_all_masses()
+        masses = []
+        for station in self.list_of_stations:
+            masses.append(station.structure.mass)
+        m = ig.trapz(masses, x=list(self._df['x1']))
+        self.mass = m
+        return m
 
     def get_all_percent_areas(self, save_csv=True):
         """Returns a pandas.DataFrame of percent areas for each part and station.
