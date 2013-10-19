@@ -1164,8 +1164,8 @@ class MonoplaneStructure:
             f.write("# foam region\n")
             f.write("# -----------\n")
             try:
-                f.write(str(st.TE_reinforcement.layer[1].polygon.__geo_interface__))
-            except:
+                f.write(str(self.TE_reinforcement.layer[1].polygon.__geo_interface__))
+            except IndexError:
                 f.write("# ...the foam region doesn't exist!")
             f.close()
         if self.internal_surface_1.exists():
