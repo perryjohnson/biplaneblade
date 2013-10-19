@@ -12,7 +12,9 @@ class Layer:
     Parameters:
     -----------
     polygon : shapely.Polygon object, represents the boundary of this layer
-    material : Material object, represents the material properties of this layer
+    material : Material object, the material properties of this layer
+    parent_part : structure.Part object, the part this layer belongs to
+    mass : float, the mass per unit length of this layer
 
     """
     def __init__(self, polygon, material, parent_part):
@@ -25,11 +27,6 @@ class Layer:
         """Calculate the ratio of this part area to the cross-section area."""
         total_area = self.parent_part.parent_structure.area
         return self.polygon.area/total_area
-
-    # def calculate_mass(self):
-    #     """Calculate the mass (per unit length) of this part."""
-    #     self.mass = self.polygon.area*self.material.rho
-    #     return self.mass
 
     def mass_fraction(self):
         """Calculate the ratio of this part mass to the cross-section mass."""

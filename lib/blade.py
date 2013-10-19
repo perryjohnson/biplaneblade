@@ -515,7 +515,7 @@ class _Blade:
         plt.ylabel('mass per unit length [kg/m]')
         plt.show()
 
-    def calculate_blade_mass(self):
+    def calculate_blade_mass(self, print_flag=True):
         """Calculate the total blade mass."""
         self.calculate_all_masses()
         masses = []
@@ -523,6 +523,9 @@ class _Blade:
             masses.append(station.structure.mass)
         m = ig.trapz(masses, x=list(self._df['x1']))
         self.mass = m
+        if print_flag:
+            print " Mass of {0}: {1} kg".format(
+                self.name, int(round(self.mass)))
         return m
 
     def get_all_percent_areas(self, save_csv=True):

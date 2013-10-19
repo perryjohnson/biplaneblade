@@ -21,13 +21,8 @@ m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
 for station in m.list_of_stations:
     # station.find_SW_cs_coords()
     station.airfoil.create_polygon()
-    try:
-        station.structure.create_all_layers()
-    except Warning:
-        print "  ...skipping Station #{0}************".format(station.station_num)
-        print "length of _list_of_layers =", len(station.structure._list_of_layers)
-        pass
-    # station.write_all_part_polygons()
+    station.structure.create_all_layers()
+    station.structure.write_all_part_polygons()
 
 # m.plot_selected_cross_sections(plot_edges=False, plot_parts=True,
     # selected_stations=[7,11,14,16,18,19,23,26,30,31,32,33])
@@ -41,4 +36,3 @@ for station in m.list_of_stations:
 # plot the mass vs. length (mass schedule)
 m.plot_mass_schedule()
 m.calculate_blade_mass()
-print " Mass of {0}: {1} kg".format(m.name, int(round(m.mass)))

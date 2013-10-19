@@ -22,6 +22,7 @@ The different kinds of parts, listed from outside to inside, are:
 """
 
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import layer as l
@@ -103,7 +104,6 @@ class ExternalSurface(Part):
             height=(height_triax+height_gelcoat))
         self.height_triax = height_triax
         self.height_gelcoat = height_gelcoat
-        # self.layer = [None, None]
     
     def __str__(self):
         return """base:    {0:6.4f} (meters)
@@ -113,7 +113,12 @@ height:  {1:6.4f} (meters)
     self.height_triax, self.height_gelcoat)
     
     def create_layers(self, debug_flag=False):
-        """Create the gelcoat and triax layers in the external surface."""
+        """Create the gelcoat and triax layers in the external surface.
+
+        <external_surface>.layer[0] : gelcoat layer
+        <external_surface>.layer[1] : triax layer
+
+        """
         st = self.parent_structure
         if self.exists():
             # create the gelcoat layer
@@ -140,9 +145,16 @@ height:  {1:6.4f} (meters)
 
 
 class RootBuildup(Part):
-    """Define triax dimensions of the root buildup."""
+    """Define triax dimensions of the root buildup.
+
+
+    """
     def create_layers(self, debug_flag=False):
-        """Create the triax layer in the root buildup."""
+        """Create the triax layer in the root buildup.
+
+        <root_buildup>.layer[0] : triax layer
+
+        """
         st = self.parent_structure
         if self.exists():
             # create the triax layer
@@ -197,8 +209,8 @@ class SparCap(Part):
     def create_layers(self, debug_flag=False):
         """Create the uniax layers in the lower and upper spar caps.
 
-        <spar_cap>.layer[0] is the lower spar cap
-        <spar_cap>.layer[1] is the upper spar cap
+        <spar_cap>.layer[0] : lower spar cap
+        <spar_cap>.layer[1] : upper spar cap
 
         """
         st = self.parent_structure
@@ -247,8 +259,8 @@ class AftPanel(Part):
     def create_layers(self, debug_flag=False):
         """Create the foam layers in the lower and upper aft panels.
 
-        <aft_panel>.layer[0] is the lower aft panel
-        <aft_panel>.layer[1] is the upper aft panel
+        <aft_panel>.layer[0] : lower aft panel
+        <aft_panel>.layer[1] : upper aft panel
 
         """
         st = self.parent_structure
@@ -331,8 +343,8 @@ height:  {1:6.4f} (meters)
         """Create the uniax and foam layers in the TE reinforcement.
 
         The TE reinforcement is split into one OR two regions:
-        <TE_reinforcement>.layer[0] is made of uniax
-        <TE_reinforcement>.layer[1] is made of foam ... (optional layer)
+        <TE_reinforcement>.layer[0] : uniax layer
+        <TE_reinforcement>.layer[1] : foam layer (optional)
 
         """
         st = self.parent_structure
@@ -537,7 +549,12 @@ height:  {1:6.4f} (meters)
         return loop
 
     def create_layers(self, merged_polygon, debug_flag=False):
-        """Create the triax and resin layers in the internal surface."""
+        """Create the triax and resin layers in the internal surface.
+
+        <internal_surface>.layer[0] : triax layer
+        <internal_surface>.layer[1] : resin layer
+
+        """
         st = self.parent_structure
         if self.exists():
             b = st.parent_station.parent_blade
@@ -1044,6 +1061,153 @@ class MonoplaneStructure:
                 print "  {0:5.1%} mass/length, internal surface 4, triax".format(self.internal_surface_4.layer[0].mass_fraction())
                 print "  {0:5.1%} mass/length, internal surface 4, resin".format(self.internal_surface_4.layer[1].mass_fraction())
         return d
+
+    def write_all_part_polygons(self):
+        """Write the coordinates of all structural parts to `station_path`s."""
+        stn = self.parent_station
+        if self.external_surface.exists():
+            f = open(os.path.join(stn.station_path,'external_surface.txt'), 'w')
+            f.write("# gelcoat region\n")
+            f.write("# --------------\n")
+            f.write(str(self.external_surface.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# triax region\n")
+            f.write("# ------------\n")
+            f.write(str(self.external_surface.layer[1].polygon.__geo_interface__))
+            f.close()
+        if self.root_buildup.exists():
+            f = open(os.path.join(stn.station_path,'root_buildup.txt'), 'w')
+            f.write(str(self.root_buildup.layer[0].polygon.__geo_interface__))
+            f.close()
+        if self.spar_cap.exists():
+            f = open(os.path.join(stn.station_path,'spar_cap.txt'), 'w')
+            f.write("# lower spar cap\n")
+            f.write("# --------------\n")
+            f.write(str(self.spar_cap.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# upper spar cap\n")
+            f.write("# --------------\n")
+            f.write(str(self.spar_cap.layer[1].polygon.__geo_interface__))
+            f.close()
+        if self.aft_panel_1.exists():
+            f = open(os.path.join(stn.station_path,'aft_panel_1.txt'), 'w')
+            f.write("# lower aft panel #1\n")
+            f.write("# ------------------\n")
+            f.write(str(self.aft_panel_1.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# upper aft panel #1\n")
+            f.write("# ------------------\n")
+            f.write(str(self.aft_panel_1.layer[1].polygon.__geo_interface__))
+            f.close()
+        if self.aft_panel_2.exists():
+            f = open(os.path.join(stn.station_path,'aft_panel_2.txt'), 'w')
+            f.write("# lower aft panel #2\n")
+            f.write("# ------------------\n")
+            f.write(str(self.aft_panel_2.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# upper aft panel #2\n")
+            f.write("# ------------------\n")
+            f.write(str(self.aft_panel_2.layer[1].polygon.__geo_interface__))
+            f.close()
+        if self.LE_panel.exists():
+            f = open(os.path.join(stn.station_path,'LE_panel.txt'), 'w')
+            f.write(str(self.LE_panel.layer[0].polygon.__geo_interface__))
+            f.close()
+        if self.shear_web_1.exists():
+            f = open(os.path.join(stn.station_path,'shear_web_1.txt'), 'w')
+            f.write("# left biax region\n")
+            f.write("# ----------------\n")
+            f.write(str(self.shear_web_1.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            f.write(str(self.shear_web_1.layer[1].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# right biax region\n")
+            f.write("# -----------------\n")
+            f.write(str(self.shear_web_1.layer[2].polygon.__geo_interface__))
+            f.close()
+        if self.shear_web_2.exists():
+            f = open(os.path.join(stn.station_path,'shear_web_2.txt'), 'w')
+            f.write("# left biax region\n")
+            f.write("# ----------------\n")
+            f.write(str(self.shear_web_2.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            f.write(str(self.shear_web_2.layer[1].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# right biax region\n")
+            f.write("# -----------------\n")
+            f.write(str(self.shear_web_2.layer[2].polygon.__geo_interface__))
+            f.close()
+        if self.shear_web_3.exists():
+            f = open(os.path.join(stn.station_path,'shear_web_3.txt'), 'w')
+            f.write("# left biax region\n")
+            f.write("# ----------------\n")
+            f.write(str(self.shear_web_3.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            f.write(str(self.shear_web_3.layer[1].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# right biax region\n")
+            f.write("# -----------------\n")
+            f.write(str(self.shear_web_3.layer[2].polygon.__geo_interface__))
+            f.close()
+        if self.TE_reinforcement.exists():
+            f = open(os.path.join(stn.station_path,'TE_reinforcement.txt'), 'w')
+            f.write("# uniax region\n")
+            f.write("# ------------\n")
+            f.write(str(self.TE_reinforcement.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# foam region\n")
+            f.write("# -----------\n")
+            try:
+                f.write(str(st.TE_reinforcement.layer[1].polygon.__geo_interface__))
+            except:
+                f.write("# ...the foam region doesn't exist!")
+            f.close()
+        if self.internal_surface_1.exists():
+            f = open(os.path.join(stn.station_path,'internal_surface_1.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_1.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_1.layer[1].polygon.__geo_interface__))
+            f.close()
+        if self.internal_surface_2.exists():
+            f = open(os.path.join(stn.station_path,'internal_surface_2.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_2.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_2.layer[1].polygon.__geo_interface__))
+            f.close()
+        if self.internal_surface_3.exists():
+            f = open(os.path.join(stn.station_path,'internal_surface_3.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_3.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_3.layer[1].polygon.__geo_interface__))
+            f.close()
+        if self.internal_surface_4.exists():
+            f = open(os.path.join(stn.station_path,'internal_surface_4.txt'), 'w')
+            f.write("# triax region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_4.layer[0].polygon.__geo_interface__))
+            f.write("\n\n")
+            f.write("# resin region\n")
+            f.write("--------------\n")
+            f.write(str(self.internal_surface_4.layer[1].polygon.__geo_interface__))
+            f.close()
 
 
 class BiplaneStructure:
