@@ -670,7 +670,106 @@ class MonoplaneStation(_Station):
                     face_color='#999999', edge_color='#000000',
                     alpha=0.8)  # face color is gray
         except AttributeError:
-            raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
+            raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.structure.create_all_layers() first.")
+        plt.show()
+        return (fig, ax)
+
+    def plot_polygon_edges(self):
+        """Plots the polygon edges of parts in this blade station."""
+        fig, ax = plt.subplots()
+        st = self.structure
+        ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
+        ax.set_aspect('equal')
+        ax.grid('on')
+        ax.set_xlabel('x2 [meters]')
+        ax.set_ylabel('x3 [meters]')
+        self.plot_polygon(self.airfoil.polygon, ax,
+            face_color='None', edge_color='#999999', alpha=0.8)
+        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+        ax.set_xlim([minx*1.2,maxx*1.2])
+        ax.set_ylim([miny*1.2,maxy*1.2])
+        try:
+            # if st.external_surface.exists():
+            #     self.plot_polygon(
+            #         st.external_surface.layer[0].polygon, ax,
+            #         face_color='#4000FF', edge_color='#000000',
+            #         alpha=0.8)  # face color is purple
+            #     self.plot_polygon(
+            #         st.external_surface.layer[1].polygon, ax,
+            #         face_color='#4000FF', edge_color='#000000',
+            #         alpha=0.8)  # face color is purple
+            # if st.root_buildup.exists():
+            #     self.plot_polygon(
+            #         st.root_buildup.layer[0].polygon, ax,
+            #         face_color='#BE925A', edge_color='#000000',
+            #         alpha=0.8)  # face color is brown
+            if st.spar_cap.exists():
+                st.spar_cap.layer[0].plot_edges(ax)  # lower spar cap
+                st.spar_cap.layer[1].plot_edges(ax)  # upper spar cap
+            if st.aft_panel_1.exists():
+                st.aft_panel_1.layer[0].plot_edges(ax)  # lower aft panel
+                st.aft_panel_1.layer[1].plot_edges(ax)  # upper aft panel
+            if st.aft_panel_2.exists():
+                st.aft_panel_2.layer[0].plot_edges(ax)  # lower aft panel
+                st.aft_panel_2.layer[1].plot_edges(ax)  # upper aft panel
+            if st.LE_panel.exists():
+                st.LE_panel.layer[0].plot_edges(ax)
+            if st.shear_web_1.exists():
+                st.shear_web_1.layer[0].plot_edges(ax)  # left biax
+                st.shear_web_1.layer[1].plot_edges(ax)  # foam
+                st.shear_web_1.layer[2].plot_edges(ax)  # right biax
+            if st.shear_web_2.exists():
+                st.shear_web_2.layer[0].plot_edges(ax)  # left biax
+                st.shear_web_2.layer[1].plot_edges(ax)  # foam
+                st.shear_web_2.layer[2].plot_edges(ax)  # right biax
+            if st.shear_web_3.exists():
+                st.shear_web_3.layer[0].plot_edges(ax)  # left biax
+                st.shear_web_3.layer[1].plot_edges(ax)  # foam
+                st.shear_web_3.layer[2].plot_edges(ax)  # right biax
+            if st.TE_reinforcement.exists():
+                st.TE_reinforcement.layer[0].plot_edges(ax)  # uniax
+                try:
+                    st.TE_reinforcement.layer[1].plot_edges(ax)  # foam
+                except IndexError:  # foam region doesn't exist
+                    pass
+            # if st.internal_surface_1.exists():
+            #     self.plot_polygon(
+            #         st.internal_surface_1.layer[0].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            #     self.plot_polygon(
+            #         st.internal_surface_1.layer[1].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            # if st.internal_surface_2.exists():
+            #     self.plot_polygon(
+            #         st.internal_surface_2.layer[0].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            #     self.plot_polygon(
+            #         st.internal_surface_2.layer[1].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            # if st.internal_surface_3.exists():
+            #     self.plot_polygon(
+            #         st.internal_surface_3.layer[0].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            #     self.plot_polygon(
+            #         st.internal_surface_3.layer[1].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            # if st.internal_surface_4.exists():
+            #     self.plot_polygon(
+            #         st.internal_surface_4.layer[0].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+            #     self.plot_polygon(
+            #         st.internal_surface_4.layer[1].polygon, ax,
+            #         face_color='#999999', edge_color='#000000',
+            #         alpha=0.8)  # face color is gray
+        except AttributeError:
+            raise AttributeError("Layer instance has no attribute 'left'.\n  Try running <station>.structure.<part>.get_and_save_edges() first.")
         plt.show()
         return (fig, ax)
 

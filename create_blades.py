@@ -56,24 +56,25 @@ if sandia_flag:
 
     # pre-process the airfoil coordinates
     for station in m.list_of_stations:
-        station.find_SW_cs_coords()
         station.airfoil.create_polygon()
         station.structure.create_all_layers()
         station.structure.write_all_part_polygons()
 
     # create some airfoil plots in Matplotlib
-    m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
+    # m.plot_selected_cross_sections(plot_edges=False, plot_parts=True)
 
     # calculate and plot blade quantities
-    m.plot_chord_schedule()
-    m.plot_twist_schedule()
-    m.plot_mass_schedule()
-    m.plot_percent_areas()
-    m.plot_percent_masses()
-    m.calculate_blade_mass()
+    # m.plot_chord_schedule()
+    # m.plot_twist_schedule()
+    # m.plot_mass_schedule()
+    # m.plot_percent_areas()
+    # m.plot_percent_masses()
+    # m.calculate_blade_mass()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    m.plot_blade(stn_nums=True, twist=True, export=False)
+    # for station in m.list_of_stations:
+    #     station.find_SW_cs_coords()
+    # m.plot_blade(stn_nums=True, twist=True, export=False)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------

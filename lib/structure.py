@@ -27,7 +27,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import layer as l
 from math import isnan
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, asLineString
 from shapely.ops import cascaded_union
 from shapely.topology import TopologicalError
 from descartes import PolygonPatch
@@ -145,10 +145,7 @@ height:  {1:6.4f} (meters)
 
 
 class RootBuildup(Part):
-    """Define triax dimensions of the root buildup.
-
-
-    """
+    """Define triax dimensions of the root buildup."""
     def create_layers(self, debug_flag=False):
         """Create the triax layer in the root buildup.
 
@@ -203,6 +200,65 @@ class LE_Panel(Part):
             if debug_flag:
                 print " The LE panel for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
 
+    def get_edges(self):
+        """Returns 4 arrays of coords, one for each edge of the LE panel."""
+        # extract the polygon
+        p = self.layer[0].polygon
+        # store the polygon exterior coords as a numpy array
+        a = np.array(p.exterior.coords)
+        # get the x-coordinates of the polygon exterior
+        x = a[:,0]
+        # get the coordinates for the right edge of the LE panel
+        r = self.right
+        # find the indices where the x-coordinate is equal to the right edge
+        #   of the LE panel (the "corners" of the LE panel)
+        match = np.nonzero(x==r)[0]
+        # split the polygon up at each of the corners into 4 "edges"
+        edge1 = a[match[0]:match[1]+1,:]
+        edge2 = a[match[1]:match[2]+1,:]
+        edge3 = a[match[2]:match[3]+1,:]
+        try:
+            edge4 = a[match[3]:match[4]+1,:]
+        except IndexError:
+            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
+        return (edge1, edge2, edge3, edge4)
+
+    def get_and_save_edges(self):
+        """Identifies and saves the left, top, right, and bottom edges.
+
+        This method saves the LTRB edges as attributes within the layer object.
+
+        self.layer[0].left : np.array, coords for left edge
+        self.layer[0].top : np.array, coords for top edge
+        self.layer[0].right : np.array, coords for right edge
+        self.layer[0].bottom : np.array, coords for bottom edge
+
+        """
+        edges = self.get_edges()
+        # get centroids
+        centroids = []
+        for edge in edges:
+            centroids.append(asLineString(edge).centroid)
+        # determine which edges are top, bottom, left, and right
+        l = range(4)  # list of indices, one for each edge
+        c = np.array([[centroids[0].x, centroids[0].y],
+                      [centroids[1].x, centroids[1].y],
+                      [centroids[2].x, centroids[2].y],
+                      [centroids[3].x, centroids[3].y]])
+        x_min = c[:,0].min()
+        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
+        l.remove(x_min_ind)  # remove the index for the left edge
+        self.layer[0].left = edges[x_min_ind]  # left edge saved!
+        y_max = c[:,1].max()
+        y_max_ind = np.nonzero(c[:,1]==y_max)[0][0]
+        l.remove(y_max_ind)  # remove the index for the top edge
+        self.layer[0].top = edges[y_max_ind]  # top edge saved!
+        y_min = c[:,1].min()
+        y_min_ind = np.nonzero(c[:,1]==y_min)[0][0]
+        l.remove(y_min_ind)  # remove the index for the bottom edge
+        self.layer[0].bottom = edges[y_min_ind]  # bottom edge saved!
+        self.layer[0].right = edges[l[0]]  # right edge saved!
+
 
 class SparCap(Part):
     """Define uniax dimensions of the lower and upper spar caps."""
@@ -253,6 +309,94 @@ class SparCap(Part):
             if debug_flag:
                 print " The spar caps for Station #{0} do not exist!\n  No layers created.".format(st.parent_station.station_num)
 
+    def get_edges(self, which_layer):
+        """Returns 4 arrays of coords for each edge of the chosen layer.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'upper' or 'lower'
+
+        """
+        # extract the desired layer
+        if which_layer == 'lower':
+            lyr = self.layer[0]
+        elif which_layer == 'upper':
+            lyr = self.layer[1]
+        else:
+            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
+        p = lyr.polygon  # get the polygon for this layer
+        # store the polygon exterior coords as a numpy array
+        a = np.array(p.exterior.coords)
+        # get the x-coordinates of the polygon exterior
+        x = a[:,0]
+        # get the coordinates for the left and right edges
+        l = self.left
+        r = self.right
+        # find the indices where the x-coord is equal to the left edge
+        match_l = np.nonzero(x==l)[0]
+        # find the indices where the x-coord is equal to the right edge
+        match_r = np.nonzero(x==r)[0]
+        # group all the indices together in a sorted array
+        match = np.append(match_l, match_r)
+        match.sort()
+        # split the polygon up at each of the corners into 4 "edges"
+        edge1 = a[match[0]:match[1]+1,:]
+        edge2 = a[match[1]:match[2]+1,:]
+        edge3 = a[match[2]:match[3]+1,:]
+        try:
+            edge4 = a[match[3]:match[4]+1,:]
+        except IndexError:
+            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
+        return (edge1, edge2, edge3, edge4)
+
+    def get_and_save_edges(self, which_layer):
+        """Identifies and saves the left, top, right, and bottom edges.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'upper' or 'lower'
+
+        This method saves the LTRB edges as attributes within the layer object.
+
+        self.layer[i].left : np.array, coords for left edge
+        self.layer[i].top : np.array, coords for top edge
+        self.layer[i].right : np.array, coords for right edge
+        self.layer[i].bottom : np.array, coords for bottom edge
+
+        """
+        # extract the desired layer
+        if which_layer == 'lower':
+            lyr = self.layer[0]
+        elif which_layer == 'upper':
+            lyr = self.layer[1]
+        else:
+            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
+        edges = self.get_edges(which_layer)
+        # get centroids
+        centroids = []
+        for edge in edges:
+            centroids.append(asLineString(edge).centroid)
+        # determine which edges are top, bottom, left, and right
+        l = range(4)  # list of indices, one for each edge
+        c = np.array([[centroids[0].x, centroids[0].y],
+                      [centroids[1].x, centroids[1].y],
+                      [centroids[2].x, centroids[2].y],
+                      [centroids[3].x, centroids[3].y]])
+        x_min = c[:,0].min()
+        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
+        l.remove(x_min_ind)  # remove the index for the left edge
+        lyr.left = edges[x_min_ind]  # left edge saved!
+        x_max = c[:,0].max()
+        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
+        l.remove(x_max_ind)  # remove the index for the right edge
+        lyr.right = edges[x_max_ind]  # right edge saved!
+        if centroids[l[0]].y > centroids[l[1]].y:
+            lyr.top = edges[l[0]]     # top edge saved!
+            lyr.bottom = edges[l[1]]  # bottom edge saved!
+        else:
+            lyr.top = edges[l[1]]     # top edge saved!
+            lyr.bottom = edges[l[0]]  # bottom edge saved!
+
 
 class AftPanel(Part):
     """Define foam dimensions of the lower and upper aft panels."""
@@ -302,6 +446,94 @@ class AftPanel(Part):
         else:
             if debug_flag:
                 print " The aft panels for Station #{0} do not exist!\n  No layers created.".format(st.parent_station.station_num)
+
+    def get_edges(self, which_layer):
+        """Returns 4 arrays of coords for each edge of the chosen layer.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'upper' or 'lower'
+
+        """
+        # extract the desired layer
+        if which_layer == 'lower':
+            lyr = self.layer[0]
+        elif which_layer == 'upper':
+            lyr = self.layer[1]
+        else:
+            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
+        p = lyr.polygon  # get the polygon for this layer
+        # store the polygon exterior coords as a numpy array
+        a = np.array(p.exterior.coords)
+        # get the x-coordinates of the polygon exterior
+        x = a[:,0]
+        # get the coordinates for the left and right edges
+        l = self.left
+        r = self.right
+        # find the indices where the x-coord is equal to the left edge
+        match_l = np.nonzero(x==l)[0]
+        # find the indices where the x-coord is equal to the right edge
+        match_r = np.nonzero(x==r)[0]
+        # group all the indices together in a sorted array
+        match = np.append(match_l, match_r)
+        match.sort()
+        # split the polygon up at each of the corners into 4 "edges"
+        edge1 = a[match[0]:match[1]+1,:]
+        edge2 = a[match[1]:match[2]+1,:]
+        edge3 = a[match[2]:match[3]+1,:]
+        try:
+            edge4 = a[match[3]:match[4]+1,:]
+        except IndexError:
+            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
+        return (edge1, edge2, edge3, edge4)
+
+    def get_and_save_edges(self, which_layer):
+        """Identifies and saves the left, top, right, and bottom edges.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'upper' or 'lower'
+
+        This method saves the LTRB edges as attributes within the layer object.
+
+        self.layer[i].left : np.array, coords for left edge
+        self.layer[i].top : np.array, coords for top edge
+        self.layer[i].right : np.array, coords for right edge
+        self.layer[i].bottom : np.array, coords for bottom edge
+
+        """
+        # extract the desired layer
+        if which_layer == 'lower':
+            lyr = self.layer[0]
+        elif which_layer == 'upper':
+            lyr = self.layer[1]
+        else:
+            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
+        edges = self.get_edges(which_layer)
+        # get centroids
+        centroids = []
+        for edge in edges:
+            centroids.append(asLineString(edge).centroid)
+        # determine which edges are top, bottom, left, and right
+        l = range(4)  # list of indices, one for each edge
+        c = np.array([[centroids[0].x, centroids[0].y],
+                      [centroids[1].x, centroids[1].y],
+                      [centroids[2].x, centroids[2].y],
+                      [centroids[3].x, centroids[3].y]])
+        x_min = c[:,0].min()
+        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
+        l.remove(x_min_ind)  # remove the index for the left edge
+        lyr.left = edges[x_min_ind]  # left edge saved!
+        x_max = c[:,0].max()
+        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
+        l.remove(x_max_ind)  # remove the index for the right edge
+        lyr.right = edges[x_max_ind]  # right edge saved!
+        if centroids[l[0]].y > centroids[l[1]].y:
+            lyr.top = edges[l[0]]     # top edge saved!
+            lyr.bottom = edges[l[1]]  # bottom edge saved!
+        else:
+            lyr.top = edges[l[1]]     # top edge saved!
+            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class TE_Reinforcement(Part):
@@ -389,6 +621,90 @@ height:  {1:6.4f} (meters)
         else:
             if debug_flag:
                 print " The TE reinforcement for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
+
+    def get_edges(self, which_layer):
+        """Returns 4 arrays of coords for each edge of the chosen layer.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'upper' or 'lower'
+
+        """
+        # extract the desired layer
+        if which_layer == 'uniax':
+            lyr = self.layer[0]
+        elif which_layer == 'foam':
+            try:
+                lyr = self.layer[1]
+            except IndexError:
+                raise ValueError("`which_layer`='foam', but the foam layer doesn't exist in the TE reinforcement for Station #{0}!".format(self.parent_station.station_num))
+        else:
+            raise ValueError("`which_layer` must be either 'uniax' or 'foam'!")
+        p = lyr.polygon  # get the polygon for this layer
+        # store the polygon exterior coords as a numpy array
+        a = np.array(p.exterior.coords)
+        # get the x-coordinates of the polygon exterior
+        x = a[:,0]
+        # get the coordinates for the left edge
+        l = self.left
+        # find the indices where the x-coord is equal to the left edge
+        match = np.nonzero(x==l)[0]
+        # split the polygon up at each of the corners into 4 "edges"
+        edge1 = a[match[0]:match[1]+1,:]
+        edge2 = a[match[1]:match[2]+1,:]
+        edge3 = a[match[2]:match[3]+1,:]
+        edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
+        return (edge1, edge2, edge3, edge4)
+
+    def get_and_save_edges(self, which_layer):
+        """Identifies and saves the left, top, right, and bottom edges.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'upper' or 'lower'
+
+        This method saves the LTRB edges as attributes within the layer object.
+
+        self.layer[i].left : np.array, coords for left edge
+        self.layer[i].top : np.array, coords for top edge
+        self.layer[i].right : np.array, coords for right edge
+        self.layer[i].bottom : np.array, coords for bottom edge
+
+        """
+        # extract the desired layer
+        if which_layer == 'uniax':
+            lyr = self.layer[0]
+        elif which_layer == 'foam':
+            try:
+                lyr = self.layer[1]
+            except IndexError:
+                raise Warning("`which_layer`='foam', but the foam layer doesn't exist in the TE reinforcement for Station #{0}!".format(self.parent_structure.parent_station.station_num))
+        else:
+            raise ValueError("`which_layer` must be either 'uniax' or 'foam'!")
+        edges = self.get_edges(which_layer)
+        # get centroids
+        centroids = []
+        for edge in edges:
+            centroids.append(asLineString(edge).centroid)
+        # determine which edges are top, bottom, left, and right
+        l = range(4)  # list of indices, one for each edge
+        c = np.array([[centroids[0].x, centroids[0].y],
+                      [centroids[1].x, centroids[1].y],
+                      [centroids[2].x, centroids[2].y],
+                      [centroids[3].x, centroids[3].y]])
+        x_max = c[:,0].max()
+        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
+        l.remove(x_max_ind)  # remove the index for the right edge
+        lyr.right = edges[x_max_ind]  # right edge saved!
+        y_max = c[:,1].max()
+        y_max_ind = np.nonzero(c[:,1]==y_max)[0][0]
+        l.remove(y_max_ind)  # remove the index for the top edge
+        lyr.top = edges[y_max_ind]  # top edge saved!
+        y_min = c[:,1].min()
+        y_min_ind = np.nonzero(c[:,1]==y_min)[0][0]
+        l.remove(y_min_ind)  # remove the index for the bottom edge
+        lyr.bottom = edges[y_min_ind]  # bottom edge saved!
+        lyr.left = edges[l[0]]  # left edge saved!
 
 
 class ShearWeb(Part):
@@ -495,6 +811,106 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
         else:
             if debug_flag:
                 print " The shear web for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
+
+    def get_edges(self, which_layer):
+        """Returns 4 arrays of coords for each edge of the chosen layer.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'left biax', 'foam', or
+            'right biax'
+
+        """
+        # extract the desired layer
+        if which_layer == 'left biax':
+            lyr = self.layer[0]
+            # get the coordinates for the left and right edges
+            l = self.left
+            r = self.left + self.base_biax
+        elif which_layer == 'foam':
+            lyr = self.layer[1]
+            # get the coordinates for the left and right edges
+            l = self.left + self.base_biax
+            r = self.right - self.base_biax
+        elif which_layer == 'right biax':
+            lyr = self.layer[2]
+            # get the coordinates for the left and right edges
+            l = self.right - self.base_biax
+            r = self.right
+        else:
+            raise ValueError("`which_layer` must be either 'left biax', 'foam', or 'right biax'!")
+        p = lyr.polygon  # get the polygon for this layer
+        # store the polygon exterior coords as a numpy array
+        a = np.array(p.exterior.coords)
+        # get the x-coordinates of the polygon exterior
+        x = a[:,0]
+        # find the indices where the x-coord is equal to the left edge
+        match_l = np.nonzero(x==l)[0]
+        # find the indices where the x-coord is equal to the right edge
+        match_r = np.nonzero(x==r)[0]
+        # group all the indices together in a sorted array
+        match = np.append(match_l, match_r)
+        match.sort()
+        # split the polygon up at each of the corners into 4 "edges"
+        edge1 = a[match[0]:match[1]+1,:]
+        edge2 = a[match[1]:match[2]+1,:]
+        edge3 = a[match[2]:match[3]+1,:]
+        try:
+            edge4 = a[match[3]:match[4]+1,:]
+        except IndexError:
+            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
+        return (edge1, edge2, edge3, edge4)
+        
+    def get_and_save_edges(self, which_layer):
+        """Identifies and saves the left, top, right, and bottom edges.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'left biax', 'foam', or
+            'right biax'
+
+        This method saves the LTRB edges as attributes within the layer object.
+
+        self.layer[i].left : np.array, coords for left edge
+        self.layer[i].top : np.array, coords for top edge
+        self.layer[i].right : np.array, coords for right edge
+        self.layer[i].bottom : np.array, coords for bottom edge
+
+        """
+        # extract the desired layer
+        if which_layer == 'left biax':
+            lyr = self.layer[0]
+        elif which_layer == 'foam':
+            lyr = self.layer[1]
+        elif which_layer == 'right biax':
+            lyr = self.layer[2]
+        else:
+            raise ValueError("`which_layer` must be either 'left biax', 'foam', or 'right biax'!")
+        edges = self.get_edges(which_layer)
+        # get centroids
+        centroids = []
+        for edge in edges:
+            centroids.append(asLineString(edge).centroid)
+        # determine which edges are top, bottom, left, and right
+        l = range(4)  # list of indices, one for each edge
+        c = np.array([[centroids[0].x, centroids[0].y],
+                      [centroids[1].x, centroids[1].y],
+                      [centroids[2].x, centroids[2].y],
+                      [centroids[3].x, centroids[3].y]])
+        x_min = c[:,0].min()
+        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
+        l.remove(x_min_ind)  # remove the index for the left edge
+        lyr.left = edges[x_min_ind]  # left edge saved!
+        x_max = c[:,0].max()
+        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
+        l.remove(x_max_ind)  # remove the index for the right edge
+        lyr.right = edges[x_max_ind]  # right edge saved!
+        if centroids[l[0]].y > centroids[l[1]].y:
+            lyr.top = edges[l[0]]     # top edge saved!
+            lyr.bottom = edges[l[1]]  # bottom edge saved!
+        else:
+            lyr.top = edges[l[1]]     # top edge saved!
+            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class InternalSurface(Part):
