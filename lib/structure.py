@@ -330,70 +330,31 @@ class RootBuildup(Part):
                       [centroids[3].x, centroids[3].y]])
         cx = c[:,0]
         cy = c[:,1]
+        # find centroid at x=0
+        ind_x = np.nonzero(cx==0.0)[0][0]
+        l.remove(ind_x)  # remove the index for the right edge
+        # find centroid at y=0
+        ind_y = np.nonzero(cy==0.0)[0][0]
+        l.remove(ind_y)  # remove the index for the left edge
         if which_layer == 'lower left':
-            # find centroid at x=0 ("right" edge)
-            ind_x = np.nonzero(cx==0.0)[0][0]
-            l.remove(ind_x)  # remove the index for the right edge
             lyr.right = edges[ind_x]  # right edge saved!
-            # find centroid at y=0 ("left" edge)
-            ind_y = np.nonzero(cy==0.0)[0][0]
-            l.remove(ind_y)  # remove the index for the left edge
             lyr.left = edges[ind_y]  # left edge saved!
-            # find top and bottom edges
-            if centroids[l[0]].y > centroids[l[1]].y:
-                lyr.top = edges[l[0]]     # top edge saved!
-                lyr.bottom = edges[l[1]]  # bottom edge saved!
-            else:
-                lyr.top = edges[l[1]]     # top edge saved!
-                lyr.bottom = edges[l[0]]  # bottom edge saved!
         elif which_layer == 'lower right':
-            # find centroid at x=0 ("left" edge)
-            ind_x = np.nonzero(cx==0.0)[0][0]
-            l.remove(ind_x)  # remove the index for the left edge
             lyr.left = edges[ind_x]  # left edge saved!
-            # find centroid at y=0 ("right" edge)
-            ind_y = np.nonzero(cy==0.0)[0][0]
-            l.remove(ind_y)  # remove the index for the right edge
             lyr.right = edges[ind_y]  # right edge saved!
-            # find top and bottom edges
-            if centroids[l[0]].y > centroids[l[1]].y:
-                lyr.top = edges[l[0]]     # top edge saved!
-                lyr.bottom = edges[l[1]]  # bottom edge saved!
-            else:
-                lyr.top = edges[l[1]]     # top edge saved!
-                lyr.bottom = edges[l[0]]  # bottom edge saved!
         elif which_layer == 'upper right':
-            # find centroid at x=0 ("left" edge)
-            ind_x = np.nonzero(cx==0.0)[0][0]
-            l.remove(ind_x)  # remove the index for the left edge
             lyr.left = edges[ind_x]  # left edge saved!
-            # find centroid at y=0 ("right" edge)
-            ind_y = np.nonzero(cy==0.0)[0][0]
-            l.remove(ind_y)  # remove the index for the right edge
             lyr.right = edges[ind_y]  # right edge saved!
-            # find top and bottom edges
-            if centroids[l[0]].y > centroids[l[1]].y:
-                lyr.top = edges[l[0]]     # top edge saved!
-                lyr.bottom = edges[l[1]]  # bottom edge saved!
-            else:
-                lyr.top = edges[l[1]]     # top edge saved!
-                lyr.bottom = edges[l[0]]  # bottom edge saved!
         elif which_layer == 'upper left':
-            # find centroid at x=0 ("right" edge)
-            ind_x = np.nonzero(cx==0.0)[0][0]
-            l.remove(ind_x)  # remove the index for the right edge
             lyr.right = edges[ind_x]  # right edge saved!
-            # find centroid at y=0 ("left" edge)
-            ind_y = np.nonzero(cy==0.0)[0][0]
-            l.remove(ind_y)  # remove the index for the left edge
             lyr.left = edges[ind_y]  # left edge saved!
-            # find top and bottom edges
-            if centroids[l[0]].y > centroids[l[1]].y:
-                lyr.top = edges[l[0]]     # top edge saved!
-                lyr.bottom = edges[l[1]]  # bottom edge saved!
-            else:
-                lyr.top = edges[l[1]]     # top edge saved!
-                lyr.bottom = edges[l[0]]  # bottom edge saved!
+        # find top and bottom edges
+        if centroids[l[0]].y > centroids[l[1]].y:
+            lyr.top = edges[l[0]]     # top edge saved!
+            lyr.bottom = edges[l[1]]  # bottom edge saved!
+        else:
+            lyr.top = edges[l[1]]     # top edge saved!
+            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class LE_Panel(Part):
