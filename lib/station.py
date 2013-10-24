@@ -698,11 +698,11 @@ class MonoplaneStation(_Station):
             #         st.external_surface.layer[1].polygon, ax,
             #         face_color='#4000FF', edge_color='#000000',
             #         alpha=0.8)  # face color is purple
-            # if st.root_buildup.exists():
-            #     self.plot_polygon(
-            #         st.root_buildup.layer[0].polygon, ax,
-            #         face_color='#BE925A', edge_color='#000000',
-            #         alpha=0.8)  # face color is brown
+            if st.root_buildup.exists():
+                st.root_buildup.layer[1].plot_edges(ax)  # lower left quadrant
+                st.root_buildup.layer[2].plot_edges(ax)  # lower right quadrant
+                st.root_buildup.layer[3].plot_edges(ax)  # upper right quadrant
+                st.root_buildup.layer[4].plot_edges(ax)  # upper left quadrant
             if st.spar_cap.exists():
                 st.spar_cap.layer[0].plot_edges(ax)  # lower spar cap
                 st.spar_cap.layer[1].plot_edges(ax)  # upper spar cap

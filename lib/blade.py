@@ -324,7 +324,7 @@ class _Blade:
 
     def plot_selected_cross_sections(self, figsize=(22,12), nrows=4, ncols=3,
         selected_stations=[1,7,11,13,16,20,21,23,26,28,30,33], save_flag=True,
-        plot_edges=False, plot_parts=True):
+        plot_edges=False, plot_parts=True, part_display_mode='annulus'):
         """Plots selected cross-sections of the blade."""
         if len(selected_stations) != nrows*ncols:
             raise ValueError("The number of items in 'selected_stations' must equal nrows*ncols.")
@@ -362,10 +362,30 @@ class _Blade:
                                 face_color='#5EE54C', edge_color='#000000',
                                 alpha=0.8)  # face color is purple
                         if st.root_buildup.exists():
-                            station.plot_polygon(
-                                st.root_buildup.layer[0].polygon, ax,
-                                face_color='#BE925A', edge_color='#000000',
-                                alpha=0.8)  # face color is brown
+                            if part_display_mode == 'annulus':
+                                station.plot_polygon(
+                                    st.root_buildup.layer[0].polygon, ax,
+                                    face_color='#BE925A', edge_color='#000000',
+                                    alpha=0.8)  # face color is brown
+                            elif part_display_mode == 'curved rectangles':
+                                station.plot_polygon(
+                                    st.root_buildup.layer[1].polygon, ax,
+                                    face_color='#BE925A', edge_color='#000000',
+                                    alpha=0.8)  # face color is brown
+                                station.plot_polygon(
+                                    st.root_buildup.layer[2].polygon, ax,
+                                    face_color='#BE925A', edge_color='#000000',
+                                    alpha=0.8)  # face color is brown
+                                station.plot_polygon(
+                                    st.root_buildup.layer[3].polygon, ax,
+                                    face_color='#BE925A', edge_color='#000000',
+                                    alpha=0.8)  # face color is brown
+                                station.plot_polygon(
+                                    st.root_buildup.layer[4].polygon, ax,
+                                    face_color='#BE925A', edge_color='#000000',
+                                    alpha=0.8)  # face color is brown
+                            else:
+                                raise ValueError("`part_display_mode` must be either 'annulus' or 'curved rectangles'.")
                         if st.spar_cap.exists():
                             station.plot_polygon(st.spar_cap.layer[0].polygon,
                                 ax, face_color='#00ACEF', edge_color='#000000',
@@ -446,42 +466,42 @@ class _Blade:
                                     alpha=0.8)  # face color is pink
                             except IndexError:  # foam region doesn't exist
                                 pass
-                        if st.internal_surface_1.exists():
-                            station.plot_polygon(
-                                st.internal_surface_1.layer[0].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
-                            station.plot_polygon(
-                                st.internal_surface_1.layer[1].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
-                        if st.internal_surface_2.exists():
-                            station.plot_polygon(
-                                st.internal_surface_2.layer[0].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
-                            station.plot_polygon(
-                                st.internal_surface_2.layer[1].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
-                        if st.internal_surface_3.exists():
-                            station.plot_polygon(
-                                st.internal_surface_3.layer[0].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
-                            station.plot_polygon(
-                                st.internal_surface_3.layer[1].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
-                        if st.internal_surface_4.exists():
-                            station.plot_polygon(
-                                st.internal_surface_4.layer[0].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
-                            station.plot_polygon(
-                                st.internal_surface_4.layer[1].polygon, ax,
-                                face_color='#999999', edge_color='#000000',
-                                alpha=0.8)  # face color is gray
+                        # if st.internal_surface_1.exists():
+                        #     station.plot_polygon(
+                        #         st.internal_surface_1.layer[0].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
+                        #     station.plot_polygon(
+                        #         st.internal_surface_1.layer[1].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
+                        # if st.internal_surface_2.exists():
+                        #     station.plot_polygon(
+                        #         st.internal_surface_2.layer[0].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
+                        #     station.plot_polygon(
+                        #         st.internal_surface_2.layer[1].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
+                        # if st.internal_surface_3.exists():
+                        #     station.plot_polygon(
+                        #         st.internal_surface_3.layer[0].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
+                        #     station.plot_polygon(
+                        #         st.internal_surface_3.layer[1].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
+                        # if st.internal_surface_4.exists():
+                        #     station.plot_polygon(
+                        #         st.internal_surface_4.layer[0].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
+                        #     station.plot_polygon(
+                        #         st.internal_surface_4.layer[1].polygon, ax,
+                        #         face_color='#999999', edge_color='#000000',
+                        #         alpha=0.8)  # face color is gray
                     except AttributeError:
                         raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
                 i += 1

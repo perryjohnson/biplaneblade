@@ -40,4 +40,14 @@ for station in m.list_of_stations:
             station.structure.TE_reinforcement.get_and_save_edges('foam')
         except Warning:  # foam layer doesn't exist
             pass
-    station.plot_polygon_edges()
+    if station.structure.root_buildup.exists():
+        station.structure.root_buildup.get_and_save_edges('lower left')
+        station.structure.root_buildup.get_and_save_edges('lower right')
+        station.structure.root_buildup.get_and_save_edges('upper right')
+        station.structure.root_buildup.get_and_save_edges('upper left')
+    # station.plot_polygon_edges()
+
+stn7 = m.list_of_stations[6]
+stn7.plot_polygon_edges()
+
+# m.plot_selected_cross_sections()
