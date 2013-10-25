@@ -26,6 +26,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import layer as l
+reload(l)
 from math import isnan
 from shapely.geometry import Polygon, asLineString
 from shapely.ops import cascaded_union
@@ -45,7 +46,7 @@ class Part:
         self.height = height
         self.left = None    # assigned later by <station>.find_part_edges()
         self.right = None   # assigned later by <station>.find_part_edges()
-        self.layer = []     # assigned later by <part>.create_layers()
+        self.layer = {}     # assigned later by <part>.create_layers()
     
     def __str__(self):
         return """base:    {0} (meters)
@@ -115,8 +116,8 @@ height:  {1:6.4f} (meters)
     def create_layers(self, debug_flag=False):
         """Create the gelcoat and triax layers in the external surface.
 
-        <external_surface>.layer[0] : gelcoat layer
-        <external_surface>.layer[1] : triax layer
+        <external_surface>.layer['gelcoat'] : gelcoat layer
+        <external_surface>.layer['triax'] : triax layer
         # --
         # <external_surface>.layer[2] : gelcoat layer (lower left quadrant)
         # <external_surface>.layer[3] : gelcoat layer (lower right quadrant)
@@ -142,18 +143,18 @@ height:  {1:6.4f} (meters)
             op_gelcoat = af.polygon  # outer profile is the airfoil profile
             ip_gelcoat = op_gelcoat.buffer(-self.height_gelcoat)
             polygon_gelcoat = op_gelcoat.difference(ip_gelcoat)
-            self.layer.append(l.Layer(polygon_gelcoat,
-                b.dict_of_materials['gelcoat'], parent_part=self))
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['gelcoat'] = l.Layer(polygon_gelcoat,
+                b.dict_of_materials['gelcoat'], parent_part=self)
+            assert self.layer['gelcoat'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['gelcoat'])
             # create the triax layer
             op_triax = ip_gelcoat  # outer profile is the gelcoat inner profile
             ip_triax = op_triax.buffer(-self.height_triax)
             polygon_triax = op_triax.difference(ip_triax)
-            self.layer.append(l.Layer(polygon_triax,
-                b.dict_of_materials['triaxial GFRP'], parent_part=self))
-            assert self.layer[1].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[1])
+            self.layer['triax'] = l.Layer(polygon_triax,
+                b.dict_of_materials['triaxial GFRP'], parent_part=self)
+            assert self.layer['triax'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['triax'])
             # # now, we cut the annulus into 8 curved rectangles (4 per layer),
             # #   with one in each quadrant
             # bb = self.bounding_box() # get bounding boxes for each quadrant
@@ -249,24 +250,11 @@ height:  {1:6.4f} (meters)
 
         """
         # extract the desired layer
-        if which_layer == 'gelcoat, lower left':
-            lyr = self.layer[2]
-        elif which_layer == 'gelcoat, lower right':
-            lyr = self.layer[3]
-        elif which_layer == 'gelcoat, upper right':
-            lyr = self.layer[4]
-        elif which_layer == 'gelcoat, upper left':
-            lyr = self.layer[5]
-        elif which_layer == 'triax, lower left':
-            lyr = self.layer[6]
-        elif which_layer == 'triax, lower right':
-            lyr = self.layer[7]
-        elif which_layer == 'triax, upper right':
-            lyr = self.layer[8]
-        elif which_layer == 'triax, upper left':
-            lyr = self.layer[9]
-        else:
-            raise ValueError("`which_layer` must be either 'gelcoat, lower left', 'gelcoat, lower right', 'gelcoat, upper right', 'gelcoat, upper left', 'triax, lower left', 'triax, lower right', 'triax, upper right', or 'triax, upper left'!")
+        try:
+            lyr = self.layer[which_layer]
+        except KeyError:
+            raise ValueError("`which_layer` must be either 'gelcoat' or 'triax'!")
+            # raise ValueError("`which_layer` must be either 'gelcoat, lower left', 'gelcoat, lower right', 'gelcoat, upper right', 'gelcoat, upper left', 'triax, lower left', 'triax, lower right', 'triax, upper right', or 'triax, upper left'!")
         p = lyr.polygon  # get the polygon for this layer
         # store the polygon exterior coords as a numpy array
         a = np.array(p.exterior.coords)
@@ -300,31 +288,18 @@ height:  {1:6.4f} (meters)
 
         This method saves the LTRB edges as attributes within the layer object.
 
-        self.layer[i].left : np.array, coords for left edge
-        self.layer[i].top : np.array, coords for top edge
-        self.layer[i].right : np.array, coords for right edge
-        self.layer[i].bottom : np.array, coords for bottom edge
+        self.layer[which_layer].left : np.array, coords for left edge
+        self.layer[which_layer].top : np.array, coords for top edge
+        self.layer[which_layer].right : np.array, coords for right edge
+        self.layer[which_layer].bottom : np.array, coords for bottom edge
 
         """
         # extract the desired layer
-        if which_layer == 'gelcoat, lower left':
-            lyr = self.layer[2]
-        elif which_layer == 'gelcoat, lower right':
-            lyr = self.layer[3]
-        elif which_layer == 'gelcoat, upper right':
-            lyr = self.layer[4]
-        elif which_layer == 'gelcoat, upper left':
-            lyr = self.layer[5]
-        elif which_layer == 'triax, lower left':
-            lyr = self.layer[6]
-        elif which_layer == 'triax, lower right':
-            lyr = self.layer[7]
-        elif which_layer == 'triax, upper right':
-            lyr = self.layer[8]
-        elif which_layer == 'triax, upper left':
-            lyr = self.layer[9]
-        else:
-            raise ValueError("`which_layer` must be either 'gelcoat, lower left', 'gelcoat, lower right', 'gelcoat, upper right', 'gelcoat, upper left', 'triax, lower left', 'triax, lower right', 'triax, upper right', or 'triax, upper left'!")
+        try:
+            lyr = self.layer[which_layer]
+        except KeyError:
+            raise ValueError("`which_layer` must be either 'gelcoat' or 'triax'!")
+            # raise ValueError("`which_layer` must be either 'gelcoat, lower left', 'gelcoat, lower right', 'gelcoat, upper right', 'gelcoat, upper left', 'triax, lower left', 'triax, lower right', 'triax, upper right', or 'triax, upper left'!")
         edges = self.get_edges(which_layer)
         # get centroids
         centroids = []
@@ -370,16 +345,22 @@ class RootBuildup(Part):
     def create_layers(self, debug_flag=False):
         """Create the triax layer in the root buildup.
 
-        <root_buildup>.layer[0] : triax layer (entire annulus)
+        <root_buildup>.layer['triax, annulus'] : triax layer (entire annulus)
         --
-        <root_buildup>.layer[1] : triax layer (lower left quadrant)
-        <root_buildup>.layer[2] : triax layer (lower right quadrant)
-        <root_buildup>.layer[3] : triax layer (upper right quadrant)
-        <root_buildup>.layer[4] : triax layer (upper left quadrant)
+        <root_buildup>.layer['triax, lower left'] : triax layer (lower left
+            quadrant)
+        <root_buildup>.layer['triax, lower right'] : triax layer (lower right
+            quadrant)
+        <root_buildup>.layer['triax, upper right'] : triax layer (upper right
+            quadrant)
+        <root_buildup>.layer['triax, upper left'] : triax layer (upper left
+            quadrant)
 
         Note: This stores 2 versions of the same root buildup.
-        (1) entire annulus : .layer[0]
-        (2) 4 curved rectangles : .layer[1], .layer[2], .layer[3], .layer[4]
+        (1) entire annulus : .layer['triax, annulus']
+        (2) 4 curved rectangles : .layer['triax, lower left'],
+            .layer['triax, lower right'], .layer['triax, upper right'],
+            .layer['triax, upper left']
 
         """
         st = self.parent_structure
@@ -390,35 +371,36 @@ class RootBuildup(Part):
             op = af.polygon.buffer(-st.external_surface.height)
             ip = op.buffer(-self.height)
             p = op.difference(ip)  # this polygon is like an annulus
-            self.layer.append(l.Layer(p, b.dict_of_materials['triaxial GFRP'],
-                parent_part=self))
-            # check that layer 0 (the annulus)
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['triax, annulus'] = l.Layer(p,
+                b.dict_of_materials['triaxial GFRP'], parent_part=self)
+            # check that layer['triax, annulus'] is a Polygon
+            assert self.layer['triax, annulus'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['triax, annulus'])
             # now, we cut the annulus into 4 curved rectangles, with one in
             #   each quadrant
             bb = self.bounding_box() # get bounding boxes for each quadrant
-            for i, box in enumerate(bb):
+            for (label,box) in bb.items():
                 p_quad = p.intersection(box)
-                self.layer.append(l.Layer(p_quad,
-                    b.dict_of_materials['triaxial GFRP'], parent_part=self))
-                # check that layer i+1 (start counting at 1) is a polygon
-                assert self.layer[i+1].polygon.geom_type == 'Polygon'
+                self.layer['triax, '+label] = l.Layer(p_quad,
+                    b.dict_of_materials['triaxial GFRP'], parent_part=self,
+                    name=('triax, '+label))
+                # check that the layer just created is a polygon
+                assert self.layer['triax, '+label].polygon.geom_type == 'Polygon'
                 # no need to append these polygons to <station>._list_of_layers
         else:
             if debug_flag:
                 print " The root buildup for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
 
     def bounding_box(self, x_boundary_buffer=1.2, y_boundary_buffer=1.2):
-        """Returns list of 4 polygons for bounding boxes in each quadrant.
+        """Returns dict of 4 polygons for bounding boxes in each quadrant.
 
         The bounding boxes will be used to split the root buildup into 4 curved
         polygons.
 
-        bb[0] : lower left quadrant, (0,0) to (x_min*1.2, y_min*1.2)
-        bb[1] : lower right quadrant, (0,0) to (x_max*1.2, y_min*1.2)
-        bb[2] : upper right quadrant, (0,0) to (x_max*1.2, y_max*1.2)
-        bb[3] : upper left quadrant, (0,0) to (x_min*1.2, y_max*1.2)
+        bb['lower left'] : lower left quadrant, (0,0) to (x_min*1.2, y_min*1.2)
+        bb['lower right'] : lower right quadrant, (0,0) to (x_max*1.2, y_min*1.2)
+        bb['upper right'] : upper right quadrant, (0,0) to (x_max*1.2, y_max*1.2)
+        bb['upper left'] : upper left quadrant, (0,0) to (x_min*1.2, y_max*1.2)
 
         The points of each bounding box are labeled from 1 to 4 as:
 
@@ -437,152 +419,43 @@ class RootBuildup(Part):
 
         """
         af = self.parent_structure.parent_station.airfoil
-        bb = []
+        bb = {}
         (minx, miny, maxx, maxy) = af.polygon.bounds
         # lower left quadrant
         pt1 = (minx*x_boundary_buffer, miny*y_boundary_buffer)
         pt2 = (0.0, miny*y_boundary_buffer)
         pt3 = (0.0, 0.0)
         pt4 = (minx*x_boundary_buffer, 0.0)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['lower left'] = Polygon([pt1, pt2, pt3, pt4])
         # lower right quadrant
         pt1 = (0.0, miny*y_boundary_buffer)
         pt2 = (maxx*x_boundary_buffer, miny*y_boundary_buffer)
         pt3 = (maxx*x_boundary_buffer, 0.0)
         pt4 = (0.0, 0.0)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['lower right'] = Polygon([pt1, pt2, pt3, pt4])
         # upper right quadrant
         pt1 = (0.0, 0.0)
         pt2 = (maxx*x_boundary_buffer, 0.0)
         pt3 = (maxx*x_boundary_buffer, maxy*y_boundary_buffer)
         pt4 = (0.0, maxy*y_boundary_buffer)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['upper right'] = Polygon([pt1, pt2, pt3, pt4])
         # upper left quadrant
         pt1 = (minx*x_boundary_buffer, 0.0)
         pt2 = (0.0, 0.0)
         pt3 = (0.0, maxy*y_boundary_buffer)
         pt4 = (minx*x_boundary_buffer, maxy*y_boundary_buffer)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['upper left'] = Polygon([pt1, pt2, pt3, pt4])
         return bb
-
-    def get_edges(self, which_layer):
-        """Returns 4 arrays of coords for each edge of the chosen layer.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'lower left',
-            'lower right', 'upper right', or 'upper left'
-
-        """
-        # extract the desired layer
-        if which_layer == 'lower left':
-            lyr = self.layer[1]
-        elif which_layer == 'lower right':
-            lyr = self.layer[2]
-        elif which_layer == 'upper right':
-            lyr = self.layer[3]
-        elif which_layer == 'upper left':
-            lyr = self.layer[4]
-        else:
-            raise ValueError("`which_layer` must be either 'lower left', 'lower right', 'upper right', or 'upper left'!")
-        p = lyr.polygon  # get the polygon for this layer
-        # store the polygon exterior coords as a numpy array
-        a = np.array(p.exterior.coords)
-        # get the x- and y-coordinates of the polygon exterior
-        x = a[:,0]
-        y = a[:,1]
-        # find the indices where the x-coord is equal to zero
-        match_x = np.nonzero(x==0.0)[0]
-        # find the indices where the y-coord is equal to the right edge
-        match_y = np.nonzero(y==0.0)[0]
-        # group all the indices together in a sorted array
-        match = np.append(match_x, match_y)
-        match.sort()
-        # split the polygon up at each of the corners into 4 "edges"
-        edge1 = a[match[0]:match[1]+1,:]
-        edge2 = a[match[1]:match[2]+1,:]
-        edge3 = a[match[2]:match[3]+1,:]
-        try:
-            edge4 = a[match[3]:match[4]+1,:]
-        except IndexError:
-            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
-        return (edge1, edge2, edge3, edge4)
-
-    def get_and_save_edges(self, which_layer):
-        """Identifies and saves the left, top, right, and bottom edges.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'lower left',
-            'lower right', 'upper right', or 'upper left'
-
-        This method saves the LTRB edges as attributes within the layer object.
-
-        self.layer[i].left : np.array, coords for left edge
-        self.layer[i].top : np.array, coords for top edge
-        self.layer[i].right : np.array, coords for right edge
-        self.layer[i].bottom : np.array, coords for bottom edge
-
-        """
-        # extract the desired layer
-        if which_layer == 'lower left':
-            lyr = self.layer[1]
-        elif which_layer == 'lower right':
-            lyr = self.layer[2]
-        elif which_layer == 'upper right':
-            lyr = self.layer[3]
-        elif which_layer == 'upper left':
-            lyr = self.layer[4]
-        else:
-            raise ValueError("`which_layer` must be either 'lower left', 'lower right', 'upper right', or 'upper left'!")
-        edges = self.get_edges(which_layer)
-        # get centroids
-        centroids = []
-        for edge in edges:
-            centroids.append(asLineString(edge).centroid)
-        # determine which edges are top, bottom, left, and right
-        l = range(4)  # list of indices, one for each edge
-        c = np.array([[centroids[0].x, centroids[0].y],
-                      [centroids[1].x, centroids[1].y],
-                      [centroids[2].x, centroids[2].y],
-                      [centroids[3].x, centroids[3].y]])
-        cx = c[:,0]
-        cy = c[:,1]
-        # find centroid at x=0
-        ind_x = np.nonzero(cx==0.0)[0][0]
-        l.remove(ind_x)  # remove the index for the right edge
-        # find centroid at y=0
-        ind_y = np.nonzero(cy==0.0)[0][0]
-        l.remove(ind_y)  # remove the index for the left edge
-        if which_layer == 'lower left':
-            lyr.right = edges[ind_x]  # right edge saved!
-            lyr.left = edges[ind_y]  # left edge saved!
-        elif which_layer == 'lower right':
-            lyr.left = edges[ind_x]  # left edge saved!
-            lyr.right = edges[ind_y]  # right edge saved!
-        elif which_layer == 'upper right':
-            lyr.left = edges[ind_x]  # left edge saved!
-            lyr.right = edges[ind_y]  # right edge saved!
-        elif which_layer == 'upper left':
-            lyr.right = edges[ind_x]  # right edge saved!
-            lyr.left = edges[ind_y]  # left edge saved!
-        # find top and bottom edges
-        if centroids[l[0]].y > centroids[l[1]].y:
-            lyr.top = edges[l[0]]     # top edge saved!
-            lyr.bottom = edges[l[1]]  # bottom edge saved!
-        else:
-            lyr.top = edges[l[1]]     # top edge saved!
-            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class LE_Panel(Part):
     """Define foam dimensions of the leading edge panel."""
     def create_layers(self, debug_flag=False):
-        """Create the foam layer in the leading edge panel."""
+        """Create the foam layer in the leading edge panel.
+
+        <LE_panel>.layer['foam'] : the only layer in the LE panel (foam)
+
+        """
         st = self.parent_structure
         if self.exists():
             # create the foam layer
@@ -602,72 +475,13 @@ class LE_Panel(Part):
             bb = self.bounding_box()
             # 5. cut out the structural part
             p = ac.intersection(bb)
-            self.layer.append(l.Layer(p, b.dict_of_materials['foam'],
-                parent_part=self))
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['foam'] = l.Layer(p, b.dict_of_materials['foam'],
+                parent_part=self)
+            assert self.layer['foam'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['foam'])
         else:
             if debug_flag:
                 print " The LE panel for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
-
-    def get_edges(self):
-        """Returns 4 arrays of coords, one for each edge of the LE panel."""
-        # extract the polygon
-        p = self.layer[0].polygon
-        # store the polygon exterior coords as a numpy array
-        a = np.array(p.exterior.coords)
-        # get the x-coordinates of the polygon exterior
-        x = a[:,0]
-        # get the coordinates for the right edge of the LE panel
-        r = self.right
-        # find the indices where the x-coordinate is equal to the right edge
-        #   of the LE panel (the "corners" of the LE panel)
-        match = np.nonzero(x==r)[0]
-        # split the polygon up at each of the corners into 4 "edges"
-        edge1 = a[match[0]:match[1]+1,:]
-        edge2 = a[match[1]:match[2]+1,:]
-        edge3 = a[match[2]:match[3]+1,:]
-        try:
-            edge4 = a[match[3]:match[4]+1,:]
-        except IndexError:
-            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
-        return (edge1, edge2, edge3, edge4)
-
-    def get_and_save_edges(self):
-        """Identifies and saves the left, top, right, and bottom edges.
-
-        This method saves the LTRB edges as attributes within the layer object.
-
-        self.layer[0].left : np.array, coords for left edge
-        self.layer[0].top : np.array, coords for top edge
-        self.layer[0].right : np.array, coords for right edge
-        self.layer[0].bottom : np.array, coords for bottom edge
-
-        """
-        edges = self.get_edges()
-        # get centroids
-        centroids = []
-        for edge in edges:
-            centroids.append(asLineString(edge).centroid)
-        # determine which edges are top, bottom, left, and right
-        l = range(4)  # list of indices, one for each edge
-        c = np.array([[centroids[0].x, centroids[0].y],
-                      [centroids[1].x, centroids[1].y],
-                      [centroids[2].x, centroids[2].y],
-                      [centroids[3].x, centroids[3].y]])
-        x_min = c[:,0].min()
-        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
-        l.remove(x_min_ind)  # remove the index for the left edge
-        self.layer[0].left = edges[x_min_ind]  # left edge saved!
-        y_max = c[:,1].max()
-        y_max_ind = np.nonzero(c[:,1]==y_max)[0][0]
-        l.remove(y_max_ind)  # remove the index for the top edge
-        self.layer[0].top = edges[y_max_ind]  # top edge saved!
-        y_min = c[:,1].min()
-        y_min_ind = np.nonzero(c[:,1]==y_min)[0][0]
-        l.remove(y_min_ind)  # remove the index for the bottom edge
-        self.layer[0].bottom = edges[y_min_ind]  # bottom edge saved!
-        self.layer[0].right = edges[l[0]]  # right edge saved!
 
 
 class SparCap(Part):
@@ -675,8 +489,8 @@ class SparCap(Part):
     def create_layers(self, debug_flag=False):
         """Create the uniax layers in the lower and upper spar caps.
 
-        <spar_cap>.layer[0] : lower spar cap
-        <spar_cap>.layer[1] : upper spar cap
+        <spar_cap>.layer['lower'] : lower spar cap
+        <spar_cap>.layer['upper'] : upper spar cap
 
         """
         st = self.parent_structure
@@ -706,106 +520,18 @@ class SparCap(Part):
                 pl = p.geoms[1]
                 pu = p.geoms[0]
             # 7. add the lower spar cap
-            self.layer.append(l.Layer(pl, b.dict_of_materials['uniaxial GFRP'],
-                parent_part=self))
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['lower'] = l.Layer(pl, b.dict_of_materials['uniaxial GFRP'],
+                parent_part=self)
+            assert self.layer['lower'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['lower'])
             # 8. add the upper spar cap
-            self.layer.append(l.Layer(pu, b.dict_of_materials['uniaxial GFRP'],
-                parent_part=self))
-            assert self.layer[1].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[1])
+            self.layer['upper'] = l.Layer(pu, b.dict_of_materials['uniaxial GFRP'],
+                parent_part=self)
+            assert self.layer['upper'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['upper'])
         else:
             if debug_flag:
                 print " The spar caps for Station #{0} do not exist!\n  No layers created.".format(st.parent_station.station_num)
-
-    def get_edges(self, which_layer):
-        """Returns 4 arrays of coords for each edge of the chosen layer.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'upper' or 'lower'
-
-        """
-        # extract the desired layer
-        if which_layer == 'lower':
-            lyr = self.layer[0]
-        elif which_layer == 'upper':
-            lyr = self.layer[1]
-        else:
-            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
-        p = lyr.polygon  # get the polygon for this layer
-        # store the polygon exterior coords as a numpy array
-        a = np.array(p.exterior.coords)
-        # get the x-coordinates of the polygon exterior
-        x = a[:,0]
-        # get the coordinates for the left and right edges
-        l = self.left
-        r = self.right
-        # find the indices where the x-coord is equal to the left edge
-        match_l = np.nonzero(x==l)[0]
-        # find the indices where the x-coord is equal to the right edge
-        match_r = np.nonzero(x==r)[0]
-        # group all the indices together in a sorted array
-        match = np.append(match_l, match_r)
-        match.sort()
-        # split the polygon up at each of the corners into 4 "edges"
-        edge1 = a[match[0]:match[1]+1,:]
-        edge2 = a[match[1]:match[2]+1,:]
-        edge3 = a[match[2]:match[3]+1,:]
-        try:
-            edge4 = a[match[3]:match[4]+1,:]
-        except IndexError:
-            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
-        return (edge1, edge2, edge3, edge4)
-
-    def get_and_save_edges(self, which_layer):
-        """Identifies and saves the left, top, right, and bottom edges.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'upper' or 'lower'
-
-        This method saves the LTRB edges as attributes within the layer object.
-
-        self.layer[i].left : np.array, coords for left edge
-        self.layer[i].top : np.array, coords for top edge
-        self.layer[i].right : np.array, coords for right edge
-        self.layer[i].bottom : np.array, coords for bottom edge
-
-        """
-        # extract the desired layer
-        if which_layer == 'lower':
-            lyr = self.layer[0]
-        elif which_layer == 'upper':
-            lyr = self.layer[1]
-        else:
-            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
-        edges = self.get_edges(which_layer)
-        # get centroids
-        centroids = []
-        for edge in edges:
-            centroids.append(asLineString(edge).centroid)
-        # determine which edges are top, bottom, left, and right
-        l = range(4)  # list of indices, one for each edge
-        c = np.array([[centroids[0].x, centroids[0].y],
-                      [centroids[1].x, centroids[1].y],
-                      [centroids[2].x, centroids[2].y],
-                      [centroids[3].x, centroids[3].y]])
-        x_min = c[:,0].min()
-        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
-        l.remove(x_min_ind)  # remove the index for the left edge
-        lyr.left = edges[x_min_ind]  # left edge saved!
-        x_max = c[:,0].max()
-        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
-        l.remove(x_max_ind)  # remove the index for the right edge
-        lyr.right = edges[x_max_ind]  # right edge saved!
-        if centroids[l[0]].y > centroids[l[1]].y:
-            lyr.top = edges[l[0]]     # top edge saved!
-            lyr.bottom = edges[l[1]]  # bottom edge saved!
-        else:
-            lyr.top = edges[l[1]]     # top edge saved!
-            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class AftPanel(Part):
@@ -813,8 +539,8 @@ class AftPanel(Part):
     def create_layers(self, debug_flag=False):
         """Create the foam layers in the lower and upper aft panels.
 
-        <aft_panel>.layer[0] : lower aft panel
-        <aft_panel>.layer[1] : upper aft panel
+        <aft_panel>.layer['lower'] : lower aft panel
+        <aft_panel>.layer['upper'] : upper aft panel
 
         """
         st = self.parent_structure
@@ -844,106 +570,18 @@ class AftPanel(Part):
                 pl = p.geoms[1]
                 pu = p.geoms[0]
             # 7. add the lower aft panel
-            self.layer.append(l.Layer(pl, b.dict_of_materials['foam'],
-                parent_part=self))
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['lower'] = l.Layer(pl, b.dict_of_materials['foam'],
+                parent_part=self)
+            assert self.layer['lower'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['lower'])
             # 8. add the upper aft panel
-            self.layer.append(l.Layer(pu, b.dict_of_materials['foam'],
-                parent_part=self))
-            assert self.layer[1].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[1])
+            self.layer['upper'] = l.Layer(pu, b.dict_of_materials['foam'],
+                parent_part=self)
+            assert self.layer['upper'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['upper'])
         else:
             if debug_flag:
                 print " The aft panels for Station #{0} do not exist!\n  No layers created.".format(st.parent_station.station_num)
-
-    def get_edges(self, which_layer):
-        """Returns 4 arrays of coords for each edge of the chosen layer.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'upper' or 'lower'
-
-        """
-        # extract the desired layer
-        if which_layer == 'lower':
-            lyr = self.layer[0]
-        elif which_layer == 'upper':
-            lyr = self.layer[1]
-        else:
-            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
-        p = lyr.polygon  # get the polygon for this layer
-        # store the polygon exterior coords as a numpy array
-        a = np.array(p.exterior.coords)
-        # get the x-coordinates of the polygon exterior
-        x = a[:,0]
-        # get the coordinates for the left and right edges
-        l = self.left
-        r = self.right
-        # find the indices where the x-coord is equal to the left edge
-        match_l = np.nonzero(x==l)[0]
-        # find the indices where the x-coord is equal to the right edge
-        match_r = np.nonzero(x==r)[0]
-        # group all the indices together in a sorted array
-        match = np.append(match_l, match_r)
-        match.sort()
-        # split the polygon up at each of the corners into 4 "edges"
-        edge1 = a[match[0]:match[1]+1,:]
-        edge2 = a[match[1]:match[2]+1,:]
-        edge3 = a[match[2]:match[3]+1,:]
-        try:
-            edge4 = a[match[3]:match[4]+1,:]
-        except IndexError:
-            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
-        return (edge1, edge2, edge3, edge4)
-
-    def get_and_save_edges(self, which_layer):
-        """Identifies and saves the left, top, right, and bottom edges.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'upper' or 'lower'
-
-        This method saves the LTRB edges as attributes within the layer object.
-
-        self.layer[i].left : np.array, coords for left edge
-        self.layer[i].top : np.array, coords for top edge
-        self.layer[i].right : np.array, coords for right edge
-        self.layer[i].bottom : np.array, coords for bottom edge
-
-        """
-        # extract the desired layer
-        if which_layer == 'lower':
-            lyr = self.layer[0]
-        elif which_layer == 'upper':
-            lyr = self.layer[1]
-        else:
-            raise ValueError("`which_layer` must be either 'lower' or 'upper'!")
-        edges = self.get_edges(which_layer)
-        # get centroids
-        centroids = []
-        for edge in edges:
-            centroids.append(asLineString(edge).centroid)
-        # determine which edges are top, bottom, left, and right
-        l = range(4)  # list of indices, one for each edge
-        c = np.array([[centroids[0].x, centroids[0].y],
-                      [centroids[1].x, centroids[1].y],
-                      [centroids[2].x, centroids[2].y],
-                      [centroids[3].x, centroids[3].y]])
-        x_min = c[:,0].min()
-        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
-        l.remove(x_min_ind)  # remove the index for the left edge
-        lyr.left = edges[x_min_ind]  # left edge saved!
-        x_max = c[:,0].max()
-        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
-        l.remove(x_max_ind)  # remove the index for the right edge
-        lyr.right = edges[x_max_ind]  # right edge saved!
-        if centroids[l[0]].y > centroids[l[1]].y:
-            lyr.top = edges[l[0]]     # top edge saved!
-            lyr.bottom = edges[l[1]]  # bottom edge saved!
-        else:
-            lyr.top = edges[l[1]]     # top edge saved!
-            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class TE_Reinforcement(Part):
@@ -985,8 +623,8 @@ height:  {1:6.4f} (meters)
         """Create the uniax and foam layers in the TE reinforcement.
 
         The TE reinforcement is split into one OR two regions:
-        <TE_reinforcement>.layer[0] : uniax layer
-        <TE_reinforcement>.layer[1] : foam layer (optional)
+        <TE_reinforcement>.layer['uniax'] : uniax layer
+        <TE_reinforcement>.layer['foam'] : foam layer (optional)
 
         """
         st = self.parent_structure
@@ -1009,10 +647,10 @@ height:  {1:6.4f} (meters)
             # 5. cut out the uniax layer
             polygon_uniax = ac_uniax.intersection(bb)
             # 6. add the uniax layer
-            self.layer.append(l.Layer(polygon_uniax,
-                b.dict_of_materials['uniaxial GFRP'], parent_part=self))
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['uniax'] = l.Layer(polygon_uniax,
+                b.dict_of_materials['uniaxial GFRP'], parent_part=self)
+            assert self.layer['uniax'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['uniax'])
             if not isnan(self.height_foam):
                 # create the foam layer
                 # 1. get outer profile
@@ -1024,97 +662,13 @@ height:  {1:6.4f} (meters)
                 # 4. cut out the foam layer with the earlier bounding box
                 polygon_foam = ac_foam.intersection(bb)
                 # 5. add the foam layer
-                self.layer.append(l.Layer(polygon_foam,
-                    b.dict_of_materials['foam'], parent_part=self))
-                assert self.layer[1].polygon.geom_type == 'Polygon'
-                st._list_of_layers.append(self.layer[1])
+                self.layer['foam'] = l.Layer(polygon_foam,
+                    b.dict_of_materials['foam'], parent_part=self)
+                assert self.layer['foam'].polygon.geom_type == 'Polygon'
+                st._list_of_layers.append(self.layer['foam'])
         else:
             if debug_flag:
                 print " The TE reinforcement for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
-
-    def get_edges(self, which_layer):
-        """Returns 4 arrays of coords for each edge of the chosen layer.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'upper' or 'lower'
-
-        """
-        # extract the desired layer
-        if which_layer == 'uniax':
-            lyr = self.layer[0]
-        elif which_layer == 'foam':
-            try:
-                lyr = self.layer[1]
-            except IndexError:
-                raise ValueError("`which_layer`='foam', but the foam layer doesn't exist in the TE reinforcement for Station #{0}!".format(self.parent_station.station_num))
-        else:
-            raise ValueError("`which_layer` must be either 'uniax' or 'foam'!")
-        p = lyr.polygon  # get the polygon for this layer
-        # store the polygon exterior coords as a numpy array
-        a = np.array(p.exterior.coords)
-        # get the x-coordinates of the polygon exterior
-        x = a[:,0]
-        # get the coordinates for the left edge
-        l = self.left
-        # find the indices where the x-coord is equal to the left edge
-        match = np.nonzero(x==l)[0]
-        # split the polygon up at each of the corners into 4 "edges"
-        edge1 = a[match[0]:match[1]+1,:]
-        edge2 = a[match[1]:match[2]+1,:]
-        edge3 = a[match[2]:match[3]+1,:]
-        edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
-        return (edge1, edge2, edge3, edge4)
-
-    def get_and_save_edges(self, which_layer):
-        """Identifies and saves the left, top, right, and bottom edges.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'upper' or 'lower'
-
-        This method saves the LTRB edges as attributes within the layer object.
-
-        self.layer[i].left : np.array, coords for left edge
-        self.layer[i].top : np.array, coords for top edge
-        self.layer[i].right : np.array, coords for right edge
-        self.layer[i].bottom : np.array, coords for bottom edge
-
-        """
-        # extract the desired layer
-        if which_layer == 'uniax':
-            lyr = self.layer[0]
-        elif which_layer == 'foam':
-            try:
-                lyr = self.layer[1]
-            except IndexError:
-                raise Warning("`which_layer`='foam', but the foam layer doesn't exist in the TE reinforcement for Station #{0}!".format(self.parent_structure.parent_station.station_num))
-        else:
-            raise ValueError("`which_layer` must be either 'uniax' or 'foam'!")
-        edges = self.get_edges(which_layer)
-        # get centroids
-        centroids = []
-        for edge in edges:
-            centroids.append(asLineString(edge).centroid)
-        # determine which edges are top, bottom, left, and right
-        l = range(4)  # list of indices, one for each edge
-        c = np.array([[centroids[0].x, centroids[0].y],
-                      [centroids[1].x, centroids[1].y],
-                      [centroids[2].x, centroids[2].y],
-                      [centroids[3].x, centroids[3].y]])
-        x_max = c[:,0].max()
-        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
-        l.remove(x_max_ind)  # remove the index for the right edge
-        lyr.right = edges[x_max_ind]  # right edge saved!
-        y_max = c[:,1].max()
-        y_max_ind = np.nonzero(c[:,1]==y_max)[0][0]
-        l.remove(y_max_ind)  # remove the index for the top edge
-        lyr.top = edges[y_max_ind]  # top edge saved!
-        y_min = c[:,1].min()
-        y_min_ind = np.nonzero(c[:,1]==y_min)[0][0]
-        l.remove(y_min_ind)  # remove the index for the bottom edge
-        lyr.bottom = edges[y_min_ind]  # bottom edge saved!
-        lyr.left = edges[l[0]]  # left edge saved!
 
 
 class ShearWeb(Part):
@@ -1181,9 +735,9 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
     def create_layers(self, debug_flag=False):
         """Create the biax and foam layers in this shear web.
 
-        <shear_web>.layer[0] is the left biax layer
-        <shear_web>.layer[1] is the foam layer
-        <shear_web>.layer[2] is the right biax layer
+        <shear_web>.layer['biax, left'] is the left biax layer
+        <shear_web>.layer['foam'] is the foam layer
+        <shear_web>.layer['biax, right'] is the right biax layer
 
         """
         st = self.parent_structure
@@ -1204,123 +758,25 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
             p_foam = op.intersection(bb_foam)
             p_right_biax = op.intersection(bb_right_biax)
             # 4. add the left biax layer
-            self.layer.append(l.Layer(p_left_biax,
-                b.dict_of_materials['biaxial GFRP'], parent_part=self))
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['biax, left'] = l.Layer(p_left_biax,
+                b.dict_of_materials['biaxial GFRP'], parent_part=self,
+                name='biax, left')
+            assert self.layer['biax, left'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['biax, left'])
             # 5. add the foam layer
-            self.layer.append(l.Layer(p_foam, b.dict_of_materials['foam'],
-                parent_part=self))
-            assert self.layer[1].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[1])
+            self.layer['foam'] = l.Layer(p_foam, b.dict_of_materials['foam'],
+                parent_part=self, name='foam')
+            assert self.layer['foam'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['foam'])
             # 6. add the right biax layer
-            self.layer.append(l.Layer(p_right_biax,
-                b.dict_of_materials['biaxial GFRP'], parent_part=self))
-            assert self.layer[2].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[2])
+            self.layer['biax, right'] = l.Layer(p_right_biax,
+                b.dict_of_materials['biaxial GFRP'], parent_part=self,
+                name='biax, right')
+            assert self.layer['biax, right'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['biax, right'])
         else:
             if debug_flag:
                 print " The shear web for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
-
-    def get_edges(self, which_layer):
-        """Returns 4 arrays of coords for each edge of the chosen layer.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'left biax', 'foam', or
-            'right biax'
-
-        """
-        # extract the desired layer
-        if which_layer == 'left biax':
-            lyr = self.layer[0]
-            # get the coordinates for the left and right edges
-            l = self.left
-            r = self.left + self.base_biax
-        elif which_layer == 'foam':
-            lyr = self.layer[1]
-            # get the coordinates for the left and right edges
-            l = self.left + self.base_biax
-            r = self.right - self.base_biax
-        elif which_layer == 'right biax':
-            lyr = self.layer[2]
-            # get the coordinates for the left and right edges
-            l = self.right - self.base_biax
-            r = self.right
-        else:
-            raise ValueError("`which_layer` must be either 'left biax', 'foam', or 'right biax'!")
-        p = lyr.polygon  # get the polygon for this layer
-        # store the polygon exterior coords as a numpy array
-        a = np.array(p.exterior.coords)
-        # get the x-coordinates of the polygon exterior
-        x = a[:,0]
-        # find the indices where the x-coord is equal to the left edge
-        match_l = np.nonzero(x==l)[0]
-        # find the indices where the x-coord is equal to the right edge
-        match_r = np.nonzero(x==r)[0]
-        # group all the indices together in a sorted array
-        match = np.append(match_l, match_r)
-        match.sort()
-        # split the polygon up at each of the corners into 4 "edges"
-        edge1 = a[match[0]:match[1]+1,:]
-        edge2 = a[match[1]:match[2]+1,:]
-        edge3 = a[match[2]:match[3]+1,:]
-        try:
-            edge4 = a[match[3]:match[4]+1,:]
-        except IndexError:
-            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
-        return (edge1, edge2, edge3, edge4)
-        
-    def get_and_save_edges(self, which_layer):
-        """Identifies and saves the left, top, right, and bottom edges.
-
-        Parameters
-        ----------
-        which_layer : str, the desired layer, either 'left biax', 'foam', or
-            'right biax'
-
-        This method saves the LTRB edges as attributes within the layer object.
-
-        self.layer[i].left : np.array, coords for left edge
-        self.layer[i].top : np.array, coords for top edge
-        self.layer[i].right : np.array, coords for right edge
-        self.layer[i].bottom : np.array, coords for bottom edge
-
-        """
-        # extract the desired layer
-        if which_layer == 'left biax':
-            lyr = self.layer[0]
-        elif which_layer == 'foam':
-            lyr = self.layer[1]
-        elif which_layer == 'right biax':
-            lyr = self.layer[2]
-        else:
-            raise ValueError("`which_layer` must be either 'left biax', 'foam', or 'right biax'!")
-        edges = self.get_edges(which_layer)
-        # get centroids
-        centroids = []
-        for edge in edges:
-            centroids.append(asLineString(edge).centroid)
-        # determine which edges are top, bottom, left, and right
-        l = range(4)  # list of indices, one for each edge
-        c = np.array([[centroids[0].x, centroids[0].y],
-                      [centroids[1].x, centroids[1].y],
-                      [centroids[2].x, centroids[2].y],
-                      [centroids[3].x, centroids[3].y]])
-        x_min = c[:,0].min()
-        x_min_ind = np.nonzero(c[:,0]==x_min)[0][0]
-        l.remove(x_min_ind)  # remove the index for the left edge
-        lyr.left = edges[x_min_ind]  # left edge saved!
-        x_max = c[:,0].max()
-        x_max_ind = np.nonzero(c[:,0]==x_max)[0][0]
-        l.remove(x_max_ind)  # remove the index for the right edge
-        lyr.right = edges[x_max_ind]  # right edge saved!
-        if centroids[l[0]].y > centroids[l[1]].y:
-            lyr.top = edges[l[0]]     # top edge saved!
-            lyr.bottom = edges[l[1]]  # bottom edge saved!
-        else:
-            lyr.top = edges[l[1]]     # top edge saved!
-            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class InternalSurface(Part):
@@ -1377,8 +833,8 @@ height:  {1:6.4f} (meters)
     def create_layers(self, merged_polygon, debug_flag=False):
         """Create the triax and resin layers in the internal surface.
 
-        <internal_surface>.layer[0] : triax layer
-        <internal_surface>.layer[1] : resin layer
+        <internal_surface>.layer['triax'] : triax layer
+        <internal_surface>.layer['resin'] : resin layer
 
         """
         st = self.parent_structure
@@ -1388,18 +844,18 @@ height:  {1:6.4f} (meters)
             op_triax = self.interior_loop(merged_polygon)
             ip_triax = op_triax.buffer(-self.height_triax)
             polygon_triax = op_triax.difference(ip_triax)
-            self.layer.append(l.Layer(polygon_triax,
-                b.dict_of_materials['triaxial GFRP'], parent_part=self))
-            assert self.layer[0].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[0])
+            self.layer['triax'] = l.Layer(polygon_triax,
+                b.dict_of_materials['triaxial GFRP'], parent_part=self)
+            assert self.layer['triax'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['triax'])
             # resin region
             op_resin = ip_triax
             ip_resin = op_resin.buffer(-self.height_resin)
             polygon_resin = op_resin.difference(ip_resin)
-            self.layer.append(l.Layer(polygon_resin,
-                b.dict_of_materials['resin'], parent_part=self))
-            assert self.layer[1].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer[1])
+            self.layer['resin'] = l.Layer(polygon_resin,
+                b.dict_of_materials['resin'], parent_part=self)
+            assert self.layer['resin'].polygon.geom_type == 'Polygon'
+            st._list_of_layers.append(self.layer['resin'])
         else:
             if debug_flag:
                 print " The internal surface for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
@@ -1591,21 +1047,21 @@ class MonoplaneStructure:
             p = cascaded_union(list_of_polygons)
         except ValueError:
             # gather all the parts
-            p = self.external_surface.layer[0].polygon
-            p = p.union(self.external_surface.layer[1].polygon)
+            p = self.external_surface.layer['gelcoat'].polygon
+            p = p.union(self.external_surface.layer['triax'].polygon)
             if self.root_buildup.exists():
-                RB = self.root_buildup.layer[0].polygon
+                RB = self.root_buildup.layer['triax, annulus'].polygon
                 p = p.union(RB)
             if self.LE_panel.exists():
-                LE = self.LE_panel.layer[0].polygon
+                LE = self.LE_panel.layer['foam'].polygon
                 p = p.union(LE)
             if self.spar_cap.exists():
-                sc_l = self.spar_cap.layer[0].polygon
+                sc_l = self.spar_cap.layer['lower'].polygon
                 try:
                     p = p.union(sc_l)
                 except TopologicalError:
                     print " [Warning] could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
-                sc_u = self.spar_cap.layer[1].polygon
+                sc_u = self.spar_cap.layer['upper'].polygon
                 try:
                     p = p.union(sc_u)
                 except TopologicalError:
@@ -1616,17 +1072,17 @@ class MonoplaneStructure:
                     except TopologicalError:
                         print " ... on second try, still COULD NOT merge upper spar cap!"
             if self.aft_panel_1.exists():
-                aft1_u = self.aft_panel_1.layer[0].polygon
-                aft1_l = self.aft_panel_1.layer[1].polygon
+                aft1_u = self.aft_panel_1.layer['upper'].polygon
+                aft1_l = self.aft_panel_1.layer['lower'].polygon
                 p = p.union(aft1_u)
                 p = p.union(aft1_l)
             if self.aft_panel_2.exists():
-                aft2_u = self.aft_panel_2.layer[0].polygon
-                aft2_l = self.aft_panel_2.layer[1].polygon
+                aft2_u = self.aft_panel_2.layer['upper'].polygon
+                aft2_l = self.aft_panel_2.layer['lower'].polygon
                 p = p.union(aft2_u)
                 p = p.union(aft2_l)
             if self.TE_reinforcement.exists():
-                TE_uniax = self.TE_reinforcement.layer[0].polygon
+                TE_uniax = self.TE_reinforcement.layer['uniax'].polygon
                 try:
                     p = p.union(TE_uniax)
                 except TopologicalError:
@@ -1641,7 +1097,7 @@ class MonoplaneStructure:
                         except ValueError:
                             print " ... on third try, still COULD NOT merge uniax layer of TE reinforcement!"
                 try:
-                    TE_foam = self.TE_reinforcement.layer[1].polygon
+                    TE_foam = self.TE_reinforcement.layer['foam'].polygon
                     try:
                         p = p.union(TE_foam)
                     except TopologicalError:
@@ -1649,16 +1105,16 @@ class MonoplaneStructure:
                 except ValueError:
                     print " foam layer of TE reinforcement does not exist in Station #{0}".format(self.parent_station.station_num)
             if self.shear_web_1.exists():
-                sw1 = self.shear_web_1.layer[0].polygon.union(self.shear_web_1.layer[1].polygon)
-                sw1 = sw1.union(self.shear_web_1.layer[2].polygon)
+                sw1 = self.shear_web_1.layer['biax, left'].polygon.union(self.shear_web_1.layer['foam'].polygon)
+                sw1 = sw1.union(self.shear_web_1.layer['biax, right'].polygon)
                 p = p.union(sw1)
             if self.shear_web_2.exists():
-                sw2 = self.shear_web_2.layer[0].polygon.union(self.shear_web_2.layer[1].polygon)
-                sw2 = sw2.union(self.shear_web_2.layer[2].polygon)
+                sw2 = self.shear_web_2.layer['biax, left'].polygon.union(self.shear_web_2.layer['foam'].polygon)
+                sw2 = sw2.union(self.shear_web_2.layer['biax, right'].polygon)
                 p = p.union(sw2)
             if self.shear_web_3.exists():
-                sw3 = self.shear_web_3.layer[0].polygon.union(self.shear_web_3.layer[1].polygon)
-                sw3 = sw3.union(self.shear_web_3.layer[2].polygon)
+                sw3 = self.shear_web_3.layer['biax, left'].polygon.union(self.shear_web_3.layer['foam'].polygon)
+                sw3 = sw3.union(self.shear_web_3.layer['biax, right'].polygon)
                 p = p.union(sw3)
         if plot_flag:
             # plot the merged polygon
