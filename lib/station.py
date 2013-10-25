@@ -690,14 +690,14 @@ class MonoplaneStation(_Station):
         ax.set_ylim([miny*1.2,maxy*1.2])
         try:
             # if st.external_surface.exists():
-            #     self.plot_polygon(
-            #         st.external_surface.layer[0].polygon, ax,
-            #         face_color='#4000FF', edge_color='#000000',
-            #         alpha=0.8)  # face color is purple
-            #     self.plot_polygon(
-            #         st.external_surface.layer[1].polygon, ax,
-            #         face_color='#4000FF', edge_color='#000000',
-            #         alpha=0.8)  # face color is purple
+            #     st.external_surface.layer[2].plot_edges(ax)  # gelcoat, lower left
+            #     st.external_surface.layer[3].plot_edges(ax)  # gelcoat, lower right
+            #     st.external_surface.layer[4].plot_edges(ax)  # gelcoat, upper right
+            #     st.external_surface.layer[5].plot_edges(ax)  # gelcoat, upper left
+            #     st.external_surface.layer[6].plot_edges(ax)  # triax, lower left
+            #     st.external_surface.layer[7].plot_edges(ax)  # triax, lower right
+            #     st.external_surface.layer[8].plot_edges(ax)  # triax, upper right
+            #     st.external_surface.layer[9].plot_edges(ax)  # triax, upper left
             if st.root_buildup.exists():
                 st.root_buildup.layer[1].plot_edges(ax)  # lower left quadrant
                 st.root_buildup.layer[2].plot_edges(ax)  # lower right quadrant

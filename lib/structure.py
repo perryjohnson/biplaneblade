@@ -117,6 +117,21 @@ height:  {1:6.4f} (meters)
 
         <external_surface>.layer[0] : gelcoat layer
         <external_surface>.layer[1] : triax layer
+        # --
+        # <external_surface>.layer[2] : gelcoat layer (lower left quadrant)
+        # <external_surface>.layer[3] : gelcoat layer (lower right quadrant)
+        # <external_surface>.layer[4] : gelcoat layer (upper right quadrant)
+        # <external_surface>.layer[5] : gelcoat layer (upper left quadrant)
+        # --
+        # <external_surface>.layer[6] : triax layer (lower left quadrant)
+        # <external_surface>.layer[7] : triax layer (lower right quadrant)
+        # <external_surface>.layer[8] : triax layer (upper right quadrant)
+        # <external_surface>.layer[9] : triax layer (upper left quadrant)
+
+        # Note: This stores 2 versions of the same external surface.
+        # (1) entire annulus : .layer[0], .layer[1]
+        # (2) 8 curved rectangles : .layer[2], .layer[3], .layer[4], .layer[5],
+        #     .layer[6], .layer[7], .layer[8], .layer[9]
 
         """
         st = self.parent_structure
@@ -139,9 +154,215 @@ height:  {1:6.4f} (meters)
                 b.dict_of_materials['triaxial GFRP'], parent_part=self))
             assert self.layer[1].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer[1])
+            # # now, we cut the annulus into 8 curved rectangles (4 per layer),
+            # #   with one in each quadrant
+            # bb = self.bounding_box() # get bounding boxes for each quadrant
+            # # gelcoat layer
+            # print "Station #{0} ----------".format(st.parent_station.station_num)
+            # for i, box in enumerate(bb):
+            #     p_quad = polygon_gelcoat.intersection(box)
+            #     self.layer.append(l.Layer(p_quad,
+            #         b.dict_of_materials['gelcoat'], parent_part=self))
+            #     # check that layer i+2 (start counting at 2) is a polygon
+            #     print "Layer #{0}, {1}".format((i+2), self.layer[i+2].polygon.geom_type)
+            #     assert self.layer[i+2].polygon.geom_type == 'Polygon'
+            #     # no need to append these polygons to <station>._list_of_layers
+            # # triax layer
+            # for i, box in enumerate(bb):
+            #     p_quad = polygon_triax.intersection(box)
+            #     self.layer.append(l.Layer(p_quad,
+            #         b.dict_of_materials['triaxial GFRP'], parent_part=self))
+            #     # check that layer i+6 (start counting at 6) is a polygon
+            #     assert self.layer[i+6].polygon.geom_type == 'Polygon'
+            #     # no need to append these polygons to <station>._list_of_layers
         else:
             if debug_flag:
                 print " The external surface for Station #{0} does not exist!\n  No layers created.".format(st.parent_station.station_num)
+
+    def bounding_box(self, x_boundary_buffer=1.2, y_boundary_buffer=1.2):
+        """Returns list of 4 polygons for bounding boxes in each quadrant.
+
+        The bounding boxes will be used to split the root buildup into 4 curved
+        polygons.
+
+        bb[0] : lower left quadrant, (0,0) to (x_min*1.2, y_min*1.2)
+        bb[1] : lower right quadrant, (0,0) to (x_max*1.2, y_min*1.2)
+        bb[2] : upper right quadrant, (0,0) to (x_max*1.2, y_max*1.2)
+        bb[3] : upper left quadrant, (0,0) to (x_min*1.2, y_max*1.2)
+
+        The points of each bounding box are labeled from 1 to 4 as:
+
+        4---3
+        |   |
+        1---2
+
+        Parameters
+        ----------
+        x_boundary_buffer : float (default: 1.2), factor to multiply with the
+            minx and maxx bound of the airfoil polygon, to stretch the bounding
+            box past the left and right edges of the airfoil polygon
+        y_boundary_buffer : float (default: 1.2), factor to multiply with the
+            miny and maxy bound of the airfoil polygon, to stretch the bounding
+            box above and below the top and bottom edges of the airfoil polygon
+
+        """
+        af = self.parent_structure.parent_station.airfoil
+        bb = []
+        (minx, miny, maxx, maxy) = af.polygon.bounds
+        # lower left quadrant
+        pt1 = (minx*x_boundary_buffer, miny*y_boundary_buffer)
+        pt2 = (0.0, miny*y_boundary_buffer)
+        pt3 = (0.0, 0.0)
+        pt4 = (minx*x_boundary_buffer, 0.0)
+        bounding_box = Polygon([pt1, pt2, pt3, pt4])
+        bb.append(bounding_box)
+        # lower right quadrant
+        pt1 = (0.0, miny*y_boundary_buffer)
+        pt2 = (maxx*x_boundary_buffer, miny*y_boundary_buffer)
+        pt3 = (maxx*x_boundary_buffer, 0.0)
+        pt4 = (0.0, 0.0)
+        bounding_box = Polygon([pt1, pt2, pt3, pt4])
+        bb.append(bounding_box)
+        # upper right quadrant
+        pt1 = (0.0, 0.0)
+        pt2 = (maxx*x_boundary_buffer, 0.0)
+        pt3 = (maxx*x_boundary_buffer, maxy*y_boundary_buffer)
+        pt4 = (0.0, maxy*y_boundary_buffer)
+        bounding_box = Polygon([pt1, pt2, pt3, pt4])
+        bb.append(bounding_box)
+        # upper left quadrant
+        pt1 = (minx*x_boundary_buffer, 0.0)
+        pt2 = (0.0, 0.0)
+        pt3 = (0.0, maxy*y_boundary_buffer)
+        pt4 = (minx*x_boundary_buffer, maxy*y_boundary_buffer)
+        bounding_box = Polygon([pt1, pt2, pt3, pt4])
+        bb.append(bounding_box)
+        return bb
+
+    def get_edges(self, which_layer):
+        """Returns 4 arrays of coords for each edge of the chosen layer.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'lower left',
+            'lower right', 'upper right', or 'upper left'
+
+        """
+        # extract the desired layer
+        if which_layer == 'gelcoat, lower left':
+            lyr = self.layer[2]
+        elif which_layer == 'gelcoat, lower right':
+            lyr = self.layer[3]
+        elif which_layer == 'gelcoat, upper right':
+            lyr = self.layer[4]
+        elif which_layer == 'gelcoat, upper left':
+            lyr = self.layer[5]
+        elif which_layer == 'triax, lower left':
+            lyr = self.layer[6]
+        elif which_layer == 'triax, lower right':
+            lyr = self.layer[7]
+        elif which_layer == 'triax, upper right':
+            lyr = self.layer[8]
+        elif which_layer == 'triax, upper left':
+            lyr = self.layer[9]
+        else:
+            raise ValueError("`which_layer` must be either 'gelcoat, lower left', 'gelcoat, lower right', 'gelcoat, upper right', 'gelcoat, upper left', 'triax, lower left', 'triax, lower right', 'triax, upper right', or 'triax, upper left'!")
+        p = lyr.polygon  # get the polygon for this layer
+        # store the polygon exterior coords as a numpy array
+        a = np.array(p.exterior.coords)
+        # get the x- and y-coordinates of the polygon exterior
+        x = a[:,0]
+        y = a[:,1]
+        # find the indices where the x-coord is equal to zero
+        match_x = np.nonzero(x==0.0)[0]
+        # find the indices where the y-coord is equal to the right edge
+        match_y = np.nonzero(y==0.0)[0]
+        # group all the indices together in a sorted array
+        match = np.append(match_x, match_y)
+        match.sort()
+        # split the polygon up at each of the corners into 4 "edges"
+        edge1 = a[match[0]:match[1]+1,:]
+        edge2 = a[match[1]:match[2]+1,:]
+        edge3 = a[match[2]:match[3]+1,:]
+        try:
+            edge4 = a[match[3]:match[4]+1,:]
+        except IndexError:
+            edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
+        return (edge1, edge2, edge3, edge4)
+
+    def get_and_save_edges(self, which_layer):
+        """Identifies and saves the left, top, right, and bottom edges.
+
+        Parameters
+        ----------
+        which_layer : str, the desired layer, either 'lower left',
+            'lower right', 'upper right', or 'upper left'
+
+        This method saves the LTRB edges as attributes within the layer object.
+
+        self.layer[i].left : np.array, coords for left edge
+        self.layer[i].top : np.array, coords for top edge
+        self.layer[i].right : np.array, coords for right edge
+        self.layer[i].bottom : np.array, coords for bottom edge
+
+        """
+        # extract the desired layer
+        if which_layer == 'gelcoat, lower left':
+            lyr = self.layer[2]
+        elif which_layer == 'gelcoat, lower right':
+            lyr = self.layer[3]
+        elif which_layer == 'gelcoat, upper right':
+            lyr = self.layer[4]
+        elif which_layer == 'gelcoat, upper left':
+            lyr = self.layer[5]
+        elif which_layer == 'triax, lower left':
+            lyr = self.layer[6]
+        elif which_layer == 'triax, lower right':
+            lyr = self.layer[7]
+        elif which_layer == 'triax, upper right':
+            lyr = self.layer[8]
+        elif which_layer == 'triax, upper left':
+            lyr = self.layer[9]
+        else:
+            raise ValueError("`which_layer` must be either 'gelcoat, lower left', 'gelcoat, lower right', 'gelcoat, upper right', 'gelcoat, upper left', 'triax, lower left', 'triax, lower right', 'triax, upper right', or 'triax, upper left'!")
+        edges = self.get_edges(which_layer)
+        # get centroids
+        centroids = []
+        for edge in edges:
+            centroids.append(asLineString(edge).centroid)
+        # determine which edges are top, bottom, left, and right
+        l = range(4)  # list of indices, one for each edge
+        c = np.array([[centroids[0].x, centroids[0].y],
+                      [centroids[1].x, centroids[1].y],
+                      [centroids[2].x, centroids[2].y],
+                      [centroids[3].x, centroids[3].y]])
+        cx = c[:,0]
+        cy = c[:,1]
+        # find centroid at x=0
+        ind_x = np.nonzero(cx==0.0)[0][0]
+        l.remove(ind_x)  # remove the index for the right edge
+        # find centroid at y=0
+        ind_y = np.nonzero(cy==0.0)[0][0]
+        l.remove(ind_y)  # remove the index for the left edge
+        if which_layer == 'lower left':
+            lyr.right = edges[ind_x]  # right edge saved!
+            lyr.left = edges[ind_y]  # left edge saved!
+        elif which_layer == 'lower right':
+            lyr.left = edges[ind_x]  # left edge saved!
+            lyr.right = edges[ind_y]  # right edge saved!
+        elif which_layer == 'upper right':
+            lyr.left = edges[ind_x]  # left edge saved!
+            lyr.right = edges[ind_y]  # right edge saved!
+        elif which_layer == 'upper left':
+            lyr.right = edges[ind_x]  # right edge saved!
+            lyr.left = edges[ind_y]  # left edge saved!
+        # find top and bottom edges
+        if centroids[l[0]].y > centroids[l[1]].y:
+            lyr.top = edges[l[0]]     # top edge saved!
+            lyr.bottom = edges[l[1]]  # bottom edge saved!
+        else:
+            lyr.top = edges[l[1]]     # top edge saved!
+            lyr.bottom = edges[l[0]]  # bottom edge saved!
 
 
 class RootBuildup(Part):
@@ -150,6 +371,7 @@ class RootBuildup(Part):
         """Create the triax layer in the root buildup.
 
         <root_buildup>.layer[0] : triax layer (entire annulus)
+        --
         <root_buildup>.layer[1] : triax layer (lower left quadrant)
         <root_buildup>.layer[2] : triax layer (lower right quadrant)
         <root_buildup>.layer[3] : triax layer (upper right quadrant)
@@ -256,7 +478,7 @@ class RootBuildup(Part):
             'lower right', 'upper right', or 'upper left'
 
         """
-        # extract the desired layer and
+        # extract the desired layer
         if which_layer == 'lower left':
             lyr = self.layer[1]
         elif which_layer == 'lower right':
@@ -306,7 +528,7 @@ class RootBuildup(Part):
         self.layer[i].bottom : np.array, coords for bottom edge
 
         """
-        # extract the desired layer and
+        # extract the desired layer
         if which_layer == 'lower left':
             lyr = self.layer[1]
         elif which_layer == 'lower right':
