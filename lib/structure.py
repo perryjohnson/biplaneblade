@@ -144,7 +144,8 @@ height:  {1:6.4f} (meters)
             ip_gelcoat = op_gelcoat.buffer(-self.height_gelcoat)
             polygon_gelcoat = op_gelcoat.difference(ip_gelcoat)
             self.layer['gelcoat'] = l.Layer(polygon_gelcoat,
-                b.dict_of_materials['gelcoat'], parent_part=self)
+                b.dict_of_materials['gelcoat'], parent_part=self,
+                name='gelcoat')
             assert self.layer['gelcoat'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['gelcoat'])
             # create the triax layer
@@ -152,7 +153,8 @@ height:  {1:6.4f} (meters)
             ip_triax = op_triax.buffer(-self.height_triax)
             polygon_triax = op_triax.difference(ip_triax)
             self.layer['triax'] = l.Layer(polygon_triax,
-                b.dict_of_materials['triaxial GFRP'], parent_part=self)
+                b.dict_of_materials['triaxial GFRP'], parent_part=self,
+                name='triax')
             assert self.layer['triax'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['triax'])
             # # now, we cut the annulus into 8 curved rectangles (4 per layer),
@@ -372,7 +374,8 @@ class RootBuildup(Part):
             ip = op.buffer(-self.height)
             p = op.difference(ip)  # this polygon is like an annulus
             self.layer['triax, annulus'] = l.Layer(p,
-                b.dict_of_materials['triaxial GFRP'], parent_part=self)
+                b.dict_of_materials['triaxial GFRP'], parent_part=self,
+                name='triax, annulus')
             # check that layer['triax, annulus'] is a Polygon
             assert self.layer['triax, annulus'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['triax, annulus'])
@@ -476,7 +479,7 @@ class LE_Panel(Part):
             # 5. cut out the structural part
             p = ac.intersection(bb)
             self.layer['foam'] = l.Layer(p, b.dict_of_materials['foam'],
-                parent_part=self)
+                parent_part=self, name='foam')
             assert self.layer['foam'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['foam'])
         else:
@@ -521,12 +524,12 @@ class SparCap(Part):
                 pu = p.geoms[0]
             # 7. add the lower spar cap
             self.layer['lower'] = l.Layer(pl, b.dict_of_materials['uniaxial GFRP'],
-                parent_part=self)
+                parent_part=self, name='lower')
             assert self.layer['lower'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['lower'])
             # 8. add the upper spar cap
             self.layer['upper'] = l.Layer(pu, b.dict_of_materials['uniaxial GFRP'],
-                parent_part=self)
+                parent_part=self, name='upper')
             assert self.layer['upper'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['upper'])
         else:
@@ -536,6 +539,10 @@ class SparCap(Part):
 
 class AftPanel(Part):
     """Define foam dimensions of the lower and upper aft panels."""
+    def __init__(self, num, parent_structure, base, height):
+        Part.__init__(self, parent_structure, base, height)
+        self.num = num
+
     def create_layers(self, debug_flag=False):
         """Create the foam layers in the lower and upper aft panels.
 
@@ -571,12 +578,12 @@ class AftPanel(Part):
                 pu = p.geoms[0]
             # 7. add the lower aft panel
             self.layer['lower'] = l.Layer(pl, b.dict_of_materials['foam'],
-                parent_part=self)
+                parent_part=self, name='lower')
             assert self.layer['lower'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['lower'])
             # 8. add the upper aft panel
             self.layer['upper'] = l.Layer(pu, b.dict_of_materials['foam'],
-                parent_part=self)
+                parent_part=self, name='upper')
             assert self.layer['upper'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['upper'])
         else:
@@ -648,7 +655,8 @@ height:  {1:6.4f} (meters)
             polygon_uniax = ac_uniax.intersection(bb)
             # 6. add the uniax layer
             self.layer['uniax'] = l.Layer(polygon_uniax,
-                b.dict_of_materials['uniaxial GFRP'], parent_part=self)
+                b.dict_of_materials['uniaxial GFRP'], parent_part=self,
+                name='uniax')
             assert self.layer['uniax'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['uniax'])
             if not isnan(self.height_foam):
@@ -663,7 +671,7 @@ height:  {1:6.4f} (meters)
                 polygon_foam = ac_foam.intersection(bb)
                 # 5. add the foam layer
                 self.layer['foam'] = l.Layer(polygon_foam,
-                    b.dict_of_materials['foam'], parent_part=self)
+                    b.dict_of_materials['foam'], parent_part=self, name='foam')
                 assert self.layer['foam'].polygon.geom_type == 'Polygon'
                 st._list_of_layers.append(self.layer['foam'])
         else:
@@ -683,7 +691,7 @@ class ShearWeb(Part):
     height : NaN (DO NOT SPECIFY), height of shear web
 
     """
-    def __init__(self, parent_structure, base_biax, base_foam, x2,
+    def __init__(self, num, parent_structure, base_biax, base_foam, x2,
         height=np.nan):
         Part.__init__(self, parent_structure, base=(2.0*base_biax+base_foam),
             height=height)
@@ -691,6 +699,7 @@ class ShearWeb(Part):
         self.base_foam = base_foam
         self.x2 = x2
         self.cs_coords = None   # assigned later by <station>.find_SW_cs_coords()
+        self.num = num
 
     def __str__(self):
         return """base:    {0:6.4f} (meters)
@@ -781,13 +790,13 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
 
 class InternalSurface(Part):
     """Define triax and resin dimensions of the internal surface."""
-    def __init__(self, parent_structure, base, height_triax, height_resin,
-        internal_surface_num):
+    def __init__(self, num, parent_structure, base, height_triax,
+        height_resin):
         Part.__init__(self, parent_structure, base,
             height=(height_triax+height_resin))
         self.height_triax = height_triax
         self.height_resin = height_resin
-        self.internal_surface_num = internal_surface_num
+        self.num = num
     
     def __str__(self):
         return """base:    {0:6.4f} (meters)
@@ -823,11 +832,11 @@ height:  {1:6.4f} (meters)
         if len(good_loops) > 1:
             good_loops.sort(key=attrgetter('centroid.x'))
         # get the interior loop for the desired internal surface
-        #   internal_surface_1 ==> internal_surface_num=1 ==> good_loops[0]
-        #   internal_surface_2 ==> internal_surface_num=2 ==> good_loops[1]
-        #   internal_surface_3 ==> internal_surface_num=3 ==> good_loops[2]
-        #   internal_surface_4 ==> internal_surface_num=4 ==> good_loops[3]
-        loop = Polygon(good_loops[self.internal_surface_num-1])
+        #   internal_surface_1 ==> self.num=1 ==> good_loops[0]
+        #   internal_surface_2 ==> self.num=2 ==> good_loops[1]
+        #   internal_surface_3 ==> self.num=3 ==> good_loops[2]
+        #   internal_surface_4 ==> self.num=4 ==> good_loops[3]
+        loop = Polygon(good_loops[self.num-1])
         return loop
 
     def create_layers(self, merged_polygon, debug_flag=False):
@@ -845,7 +854,8 @@ height:  {1:6.4f} (meters)
             ip_triax = op_triax.buffer(-self.height_triax)
             polygon_triax = op_triax.difference(ip_triax)
             self.layer['triax'] = l.Layer(polygon_triax,
-                b.dict_of_materials['triaxial GFRP'], parent_part=self)
+                b.dict_of_materials['triaxial GFRP'], parent_part=self,
+                name='triax')
             assert self.layer['triax'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['triax'])
             # resin region
@@ -853,7 +863,7 @@ height:  {1:6.4f} (meters)
             ip_resin = op_resin.buffer(-self.height_resin)
             polygon_resin = op_resin.difference(ip_resin)
             self.layer['resin'] = l.Layer(polygon_resin,
-                b.dict_of_materials['resin'], parent_part=self)
+                b.dict_of_materials['resin'], parent_part=self, name='resin')
             assert self.layer['resin'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['resin'])
         else:
@@ -882,16 +892,19 @@ class MonoplaneStructure:
             base = b_SC,
             height = h_SC)
         self.shear_web_1 = ShearWeb(
+            num = 1,
             parent_structure = self,
             base_biax = b_SW1_biax,
             base_foam = b_SW1_foam,
             x2 = x2_SW1)
         self.shear_web_2 = ShearWeb(
+            num = 2,
             parent_structure = self,
             base_biax = b_SW2_biax,
             base_foam = b_SW2_foam,
             x2 = x2_SW2)
         self.shear_web_3 = ShearWeb(
+            num = 3,
             parent_structure = self,
             base_biax = b_SW3_biax,
             base_foam = b_SW3_foam,
@@ -906,37 +919,39 @@ class MonoplaneStructure:
             base = np.nan,
             height = h_LE_panel)
         self.aft_panel_1 = AftPanel(
+            num = 1,
             parent_structure = self,
             base = np.nan,
             height = h_aft_panel_1)
         self.aft_panel_2 = AftPanel(
+            num = 2,
             parent_structure = self,
             base = np.nan,
             height = h_aft_panel_2)
         self.internal_surface_1 = InternalSurface(
+            num = 1,
             parent_structure = self,
             base = np.nan,
             height_triax = h_int_surf_1_triax,
-            height_resin = h_int_surf_1_resin,
-            internal_surface_num = 1)
+            height_resin = h_int_surf_1_resin)
         self.internal_surface_2 = InternalSurface(
+            num = 2,
             parent_structure = self,
             base = np.nan,
             height_triax = h_int_surf_2_triax,
-            height_resin = h_int_surf_2_resin,
-            internal_surface_num = 2)
+            height_resin = h_int_surf_2_resin)
         self.internal_surface_3 = InternalSurface(
+            num = 3,
             parent_structure = self,
             base = np.nan,
             height_triax = h_int_surf_3_triax,
-            height_resin = h_int_surf_3_resin,
-            internal_surface_num = 3)
+            height_resin = h_int_surf_3_resin)
         self.internal_surface_4 = InternalSurface(
+            num = 4,
             parent_structure = self,
             base = np.nan,
             height_triax = h_int_surf_4_triax,
-            height_resin = h_int_surf_4_resin,
-            internal_surface_num = 4)
+            height_resin = h_int_surf_4_resin)
         self.external_surface = ExternalSurface(
             parent_structure = self,
             base = np.nan,
@@ -1490,6 +1505,132 @@ class MonoplaneStructure:
             f.write("--------------\n")
             f.write(str(self.internal_surface_4.layer[1].polygon.__geo_interface__))
             f.close()
+
+    def save_all_layer_edges(self):
+        """Save all layer edges as layer attributes.
+
+        Identifies and saves the left, top, right, and bottom (LTRB) edges for
+        each layer.
+
+        This method saves LTRB edges as attributes within each layer object.
+
+        <structure>.<part>.<layer>.left : np.array, coords for left edge
+        <structure>.<part>.<layer>.top : np.array, coords for top edge
+        <structure>.<part>.<layer>.right : np.array, coords for right edge
+        <structure>.<part>.<layer>.bottom : np.array, coords for bottom edge
+
+        Note: External and internal surfaces have not yet been implemented!
+
+        """
+        if self.LE_panel.exists():
+            self.LE_panel.layer['foam'].get_and_save_edges()
+        if self.spar_cap.exists():
+            self.spar_cap.layer['lower'].get_and_save_edges()
+            self.spar_cap.layer['upper'].get_and_save_edges()
+        if self.aft_panel_1.exists():
+            self.aft_panel_1.layer['lower'].get_and_save_edges()
+            self.aft_panel_1.layer['upper'].get_and_save_edges()
+        if self.aft_panel_2.exists():
+            self.aft_panel_2.layer['lower'].get_and_save_edges()
+            self.aft_panel_2.layer['upper'].get_and_save_edges()
+        if self.shear_web_1.exists():
+            self.shear_web_1.layer['biax, left'].get_and_save_edges()
+            self.shear_web_1.layer['foam'].get_and_save_edges()
+            self.shear_web_1.layer['biax, right'].get_and_save_edges()
+        if self.shear_web_2.exists():
+            self.shear_web_2.layer['biax, left'].get_and_save_edges()
+            self.shear_web_2.layer['foam'].get_and_save_edges()
+            self.shear_web_2.layer['biax, right'].get_and_save_edges()
+        if self.shear_web_3.exists():
+            self.shear_web_3.layer['biax, left'].get_and_save_edges()
+            self.shear_web_3.layer['foam'].get_and_save_edges()
+            self.shear_web_3.layer['biax, right'].get_and_save_edges()
+        if self.TE_reinforcement.exists():
+            self.TE_reinforcement.layer['uniax'].get_and_save_edges()
+            try:
+                self.TE_reinforcement.layer['foam'].get_and_save_edges()
+            except KeyError:  # foam layer doesn't exist
+                pass
+        if self.root_buildup.exists():
+            self.root_buildup.layer['triax, lower left'].get_and_save_edges()
+            self.root_buildup.layer['triax, lower right'].get_and_save_edges()
+            self.root_buildup.layer['triax, upper right'].get_and_save_edges()
+            self.root_buildup.layer['triax, upper left'].get_and_save_edges()
+        # if self.external_surface.exists():
+        #     self.external_surface.get_and_save_edges('gelcoat, lower left')
+        #     self.external_surface.get_and_save_edges('gelcoat, lower right')
+        #     self.external_surface.get_and_save_edges('gelcoat, upper right')
+        #     self.external_surface.get_and_save_edges('gelcoat, upper left')
+        #     self.external_surface.get_and_save_edges('triax, lower left')
+        #     self.external_surface.get_and_save_edges('triax, lower right')
+        #     self.external_surface.get_and_save_edges('triax, upper right')
+        #     self.external_surface.get_and_save_edges('triax, upper left')
+        # if self.internal_surface_1.exists():
+        #     # do something...
+
+    def write_all_layer_edges(self, filename='l_edges.tg'):
+        """Write the coordinates of all layer edges to `station_path`.
+
+        This file is formatted as a TrueGrid input file (*.tg).
+
+        Returns edge_num_dict, a dictionary of edge names for curve ID numbers.
+
+        """
+        stn = self.parent_station
+        edge_num_dict = {}
+        start_edge_num = 1
+        f = open(os.path.join(stn.station_path, filename), 'w')
+        # Procedure for each structural part:
+        # 1. write edges for a layer
+        # 2. increment start_edge_num by 4 edges (left, bottom, top, right)
+        # 3. append d to edge_num_dict
+        if self.root_buildup.exists():
+            for (layer_name, layer_obj) in self.root_buildup.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.spar_cap.exists():
+            for (layer_name, layer_obj) in self.spar_cap.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.aft_panel_1.exists():
+            for (layer_name, layer_obj) in self.aft_panel_1.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.aft_panel_2.exists():
+            for (layer_name, layer_obj) in self.aft_panel_2.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.LE_panel.exists():
+            for (layer_name, layer_obj) in self.LE_panel.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.shear_web_1.exists():
+            for (layer_name, layer_obj) in self.shear_web_1.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.shear_web_2.exists():
+            for (layer_name, layer_obj) in self.shear_web_2.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.shear_web_3.exists():
+            for (layer_name, layer_obj) in self.shear_web_3.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        if self.TE_reinforcement.exists():
+            for (layer_name, layer_obj) in self.TE_reinforcement.layer.items():
+                d = layer_obj.write_layer_edge(f, start_edge_num)
+                start_edge_num += 4
+                edge_num_dict.update(d)
+        f.close()
+        return edge_num_dict
 
 
 class BiplaneStructure:

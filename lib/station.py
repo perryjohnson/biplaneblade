@@ -674,8 +674,8 @@ class MonoplaneStation(_Station):
         plt.show()
         return (fig, ax)
 
-    def plot_polygon_edges(self):
-        """Plots the polygon edges of parts in this blade station."""
+    def plot_layer_edges(self):
+        """Plots the edges of layers in this blade station."""
         fig, ax = plt.subplots()
         st = self.structure
         ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
