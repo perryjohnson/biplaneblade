@@ -880,9 +880,11 @@ class MonoplaneStructure:
                  h_int_surf_1_resin, h_int_surf_2_triax, h_int_surf_2_resin,
                  h_int_surf_3_triax, h_int_surf_3_resin, h_int_surf_4_triax,
                  h_int_surf_4_resin, h_ext_surf_triax, h_ext_surf_gelcoat,
-                 parent_station):
+                 parent_station, truegrid_input_filename='mesh.tg'):
         self.parent_station = parent_station
         self._list_of_layers = []
+        self._dict_of_edge_nums = {}
+        self.truegrid_input_filename = truegrid_input_filename
         self.root_buildup = RootBuildup(
             parent_structure = self,
             base = np.nan,
@@ -1568,8 +1570,7 @@ class MonoplaneStructure:
         # if self.internal_surface_1.exists():
         #     # do something...
 
-    def write_truegrid_header(self, filename='l_edges.tg',
-        outputfile_type='abaqus'):
+    def write_truegrid_header(self, outputfile_type='abaqus'):
         """Create a TrueGrid input file and write the header.
 
         This file is formatted as a TrueGrid input file (*.tg).
@@ -1578,7 +1579,8 @@ class MonoplaneStructure:
         stn = self.parent_station
         b = stn.parent_blade
         separator = "c " + "-"*40 + "\n"
-        f = open(os.path.join(stn.station_path, filename), 'w')
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'w')
         f.write("c {0} ".format(b.name) + "-"*40 + "\n")
         f.write("c Station #{0}\n".format(stn.station_num))
         f.write("c ...print station properties? (see airfoil_v4.tg)\n")
@@ -1601,11 +1603,11 @@ class MonoplaneStructure:
         f.write("\n")
         f.close()
 
-    def write_truegrid_footer(self, filename='l_edges.tg',
-        interrupt_flag=False):
+    def write_truegrid_footer(self, interrupt_flag=False):
         """Write the footer for the TrueGrid input file."""
         stn = self.parent_station
-        f = open(os.path.join(stn.station_path, filename), 'a')
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'a')
         f.write("c display all 3D curves\n")
         f.write("dacd\n")
         f.write("c display numbers of defined 3D curves\n")
@@ -1619,106 +1621,180 @@ class MonoplaneStructure:
         f.write("tvv\n")
         f.close()
 
-    def write_all_layer_edges(self, filename='l_edges.tg'):
+    def write_all_layer_edges(self):
         """Write the coordinates of all layer edges to `station_path`.
 
         This file is formatted as a TrueGrid input file (*.tg).
 
-        Returns edge_num_dict, a dictionary of edge names for curve ID numbers.
+        Saves self.dict_of_edge_nums, a dictionary of edge names for curve ID
+        numbers. For example, some entries might look like:
+
+        _dict_of_edge_nums['TE_Reinforcement; uniax; right'] = 5
+        _dict_of_edge_nums['LE_Panel; foam; left'] = 10
+        _dict_of_edge_nums['ShearWeb1; biax, left; top'] = 15
+        _dict_of_edge_nums['AftPanel2; foam; bottom'] = 19
+        _dict_of_edge_nums['SparCap; uniax; right'] = 22
 
         """
         stn = self.parent_station
-        edge_num_dict = {}
         start_edge_num = 1
-        f = open(os.path.join(stn.station_path, filename), 'a')
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'a')
         # Procedure for each structural part:
         # 1. write edges for a layer
         # 2. increment start_edge_num by 4 edges (left, bottom, top, right)
-        # 3. append d to edge_num_dict
+        # 3. append d to self._dict_of_edge_nums
         if self.root_buildup.exists():
             f.write("c root buildup " + "-"*20 + "\n")
-            for (layer_name, layer_obj) in self.root_buildup.layer.items():
+            # remove the unnecessary 'triax, annulus' layer, which is not used
+            #   for meshing
+            rb_dict = self.root_buildup.layer
+            rb_dict.pop('triax, annulus')
+            for (layer_name, layer_obj) in rb_dict.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.spar_cap.exists():
             f.write("c spar cap " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.spar_cap.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.aft_panel_1.exists():
             f.write("c aft panel #1 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.aft_panel_1.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.aft_panel_2.exists():
             f.write("c aft panel #2 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.aft_panel_2.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.LE_panel.exists():
             f.write("c LE panel " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.LE_panel.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.shear_web_1.exists():
             f.write("c shear web #1 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_1.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.shear_web_2.exists():
             f.write("c shear web #2 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_2.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.shear_web_3.exists():
             f.write("c shear web #3 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_3.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         if self.TE_reinforcement.exists():
             f.write("c TE reinforcement " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.TE_reinforcement.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
-                edge_num_dict.update(d)
+                self._dict_of_edge_nums.update(d)
         f.close()
-        return edge_num_dict
 
-    def write_all_block_meshes(self, d, filename='l_edges.tg',
-        interrupt_flag=False):
+    def write_all_block_meshes(self, interrupt_flag=False):
         """Write the commands for creating all TrueGrid block meshes.
 
         This file is formatted as a TrueGrid input file (*.tg).
 
         """
         stn = self.parent_station
-        f = open(os.path.join(stn.station_path, filename), 'a')
+        d = self._dict_of_edge_nums
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'a')
         # Procedure for each structural part:
         # 1. write edges for a layer
         # 2. increment start_edge_num by 4 edges (left, bottom, top, right)
         # 3. append d to edge_num_dict
-        # if self.root_buildup.exists():
-        #     f.write("c make a block mesh for the root buildup\n")
-        #     i_cells = 2
-        #     j_cells = 60
-        #     f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
-        #     f.write("-0.1 0.1; -0.1 0.1; 0;\n")
-        #     f.write("c left edge (i=1, j varies)\n")
-        #     f.write("cure 1 1 1 1 2 1 {0}\n".format)
-        #     c bottom edge (j=1, i varies)
-        #     cure 1 1 1 2 1 1 6
-        #     c right edge (i=2, j varies)
-        #     cure 2 1 1 2 2 1 7
-        #     c top edge (j=2, i varies)
-        #     cure 1 2 1 2 2 1 8
+        if self.root_buildup.exists():
+            # lower left layer
+            f.write("c make a block mesh for the root buildup, lower left layer\n")
+            i_cells = 60
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['RootBuildup; triax, lower left; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['RootBuildup; triax, lower left; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, lower left; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, lower left; top']))
+            f.write("\n")
+            # lower right layer
+            f.write("c make a block mesh for the root buildup, lower right layer\n")
+            i_cells = 60
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['RootBuildup; triax, lower right; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['RootBuildup; triax, lower right; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, lower right; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, lower right; top']))
+            f.write("\n")
+            # upper right layer
+            f.write("c make a block mesh for the root buildup, upper right layer\n")
+            i_cells = 60
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['RootBuildup; triax, upper right; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['RootBuildup; triax, upper right; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, upper right; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, upper right; top']))
+            f.write("\n")
+            # upper left layer
+            f.write("c make a block mesh for the root buildup, upper left layer\n")
+            i_cells = 60
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['RootBuildup; triax, upper left; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['RootBuildup; triax, upper left; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, upper left; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['RootBuildup; triax, upper left; top']))
+            f.write("\n")
         if self.spar_cap.exists():
             # upper layer
             f.write("c make a block mesh for the spar cap, upper layer\n")
@@ -2092,6 +2168,15 @@ class MonoplaneStructure:
                     d['TE_Reinforcement; foam; top']))
                 f.write("\n")
         f.close()
+
+    def write_truegrid_inputfile(self):
+        """Write the TrueGrid input file in `station_path`."""
+        self.write_truegrid_header()
+        self.write_all_layer_edges()
+        self.write_all_block_meshes()
+        self.write_truegrid_footer()
+        print " Wrote TrueGrid input file for Station #{0}.".format(
+            self.parent_station.station_num)
 
 
 class BiplaneStructure:

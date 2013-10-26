@@ -28,7 +28,7 @@ class Layer:
         get_and_save_edges()
 
     """
-    def __init__(self, polygon, material, parent_part, name=''):
+    def __init__(self, polygon, material, parent_part, name):
         self.polygon = polygon
         self.material = material
         self.parent_part = parent_part
