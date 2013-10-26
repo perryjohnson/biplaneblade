@@ -24,114 +24,14 @@ stn16 = m.list_of_stations[15]
 # stn16.plot_layer_edges()
 # stn16.plot_parts()
 
+stn16.structure.write_truegrid_header()
 d = stn16.structure.write_all_layer_edges()
+stn16.structure.write_all_block_meshes(d, interrupt_flag=False)
+stn16.structure.write_truegrid_footer()
 
-# f = open(os.path.join(stn16.station_path, 'curves.tg'), 'w')
-# # write the curves of the LE panel into a file
-# # left curve
-# curve_num = 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.LE_panel.layer['foam'].left:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # bottom curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.LE_panel.layer['foam'].bottom:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # right curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.LE_panel.layer['foam'].right:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # top curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.LE_panel.layer['foam'].top:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-
-# # write the curves of shear web 1 into the file
-# # left biax layer -----
-# # left curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, left'].left:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # bottom curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, left'].bottom:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # right curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, left'].right:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # top curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, left'].top:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # foam layer -----
-# # left curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['foam'].left:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # bottom curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['foam'].bottom:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # right curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['foam'].right:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # top curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['foam'].top:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # right biax layer -----
-# # left curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, right'].left:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # bottom curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, right'].bottom:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # right curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, right'].right:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-# # top curve
-# curve_num += 1
-# f.write('curd {0} lp3\n'.format(curve_num))
-# for coord_pair in stn16.structure.shear_web_1.layer['biax, right'].top:
-#     f.write('{0: .8f}  {1: .8f}  0.0\n'.format(coord_pair[0], coord_pair[1]))
-# f.write(';;\n\n')
-
-
-
-# f.close()
+# next steps for tomorrow:
+# (1) plot meshes for all stations!
+# (2) fix mesh errors in TE reinforcement
+#     ... may need to split LBTR curves further near sharp corners...
 
 # m.plot_selected_cross_sections()

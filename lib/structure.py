@@ -1568,6 +1568,57 @@ class MonoplaneStructure:
         # if self.internal_surface_1.exists():
         #     # do something...
 
+    def write_truegrid_header(self, filename='l_edges.tg',
+        outputfile_type='abaqus'):
+        """Create a TrueGrid input file and write the header.
+
+        This file is formatted as a TrueGrid input file (*.tg).
+
+        """
+        stn = self.parent_station
+        b = stn.parent_blade
+        separator = "c " + "-"*40 + "\n"
+        f = open(os.path.join(stn.station_path, filename), 'w')
+        f.write("c {0} ".format(b.name) + "-"*40 + "\n")
+        f.write("c Station #{0}\n".format(stn.station_num))
+        f.write("c ...print station properties? (see airfoil_v4.tg)\n")
+        f.write("\n")
+        f.write(separator)
+        f.write("\n")
+        f.write("c set the name of the mesh output file\n")
+        f.write("mof blade_station_{0}_abq.txt\n".format(stn.station_num))
+        f.write("\n")
+        f.write("c set the output file type\n")
+        f.write(outputfile_type + "\n")
+        f.write("\n")
+        f.write("c set some {0}-specific parameters\n".format(outputfile_type))
+        f.write("c   assign a title to the problem\n")
+        f.write("title blade station #{0}\n".format(stn.station_num))
+        f.write("c   build 2nd-order quadrilateral elements (with mid-side nodes)\n")
+        f.write("quadratic\n")
+        f.write("\n")
+        f.write(separator)
+        f.write("\n")
+        f.close()
+
+    def write_truegrid_footer(self, filename='l_edges.tg',
+        interrupt_flag=False):
+        """Write the footer for the TrueGrid input file."""
+        stn = self.parent_station
+        f = open(os.path.join(stn.station_path, filename), 'a')
+        f.write("c display all 3D curves\n")
+        f.write("dacd\n")
+        f.write("c display numbers of defined 3D curves\n")
+        f.write("labels crv\n")
+        f.write("c display the mesh\n")
+        f.write("disp\n")
+        f.write("\n")
+        if interrupt_flag:
+            f.write("interrupt\n")
+        f.write("merge\n")
+        f.write("tvv\n")
+        f.close()
+
     def write_all_layer_edges(self, filename='l_edges.tg'):
         """Write the coordinates of all layer edges to `station_path`.
 
@@ -1579,58 +1630,468 @@ class MonoplaneStructure:
         stn = self.parent_station
         edge_num_dict = {}
         start_edge_num = 1
-        f = open(os.path.join(stn.station_path, filename), 'w')
+        f = open(os.path.join(stn.station_path, filename), 'a')
         # Procedure for each structural part:
         # 1. write edges for a layer
         # 2. increment start_edge_num by 4 edges (left, bottom, top, right)
         # 3. append d to edge_num_dict
         if self.root_buildup.exists():
+            f.write("c root buildup " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.root_buildup.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.spar_cap.exists():
+            f.write("c spar cap " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.spar_cap.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.aft_panel_1.exists():
+            f.write("c aft panel #1 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.aft_panel_1.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.aft_panel_2.exists():
+            f.write("c aft panel #2 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.aft_panel_2.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.LE_panel.exists():
+            f.write("c LE panel " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.LE_panel.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.shear_web_1.exists():
+            f.write("c shear web #1 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_1.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.shear_web_2.exists():
+            f.write("c shear web #2 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_2.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.shear_web_3.exists():
+            f.write("c shear web #3 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_3.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         if self.TE_reinforcement.exists():
+            f.write("c TE reinforcement " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.TE_reinforcement.layer.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
                 start_edge_num += 4
                 edge_num_dict.update(d)
         f.close()
         return edge_num_dict
+
+    def write_all_block_meshes(self, d, filename='l_edges.tg',
+        interrupt_flag=False):
+        """Write the commands for creating all TrueGrid block meshes.
+
+        This file is formatted as a TrueGrid input file (*.tg).
+
+        """
+        stn = self.parent_station
+        f = open(os.path.join(stn.station_path, filename), 'a')
+        # Procedure for each structural part:
+        # 1. write edges for a layer
+        # 2. increment start_edge_num by 4 edges (left, bottom, top, right)
+        # 3. append d to edge_num_dict
+        # if self.root_buildup.exists():
+        #     f.write("c make a block mesh for the root buildup\n")
+        #     i_cells = 2
+        #     j_cells = 60
+        #     f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+        #     f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+        #     f.write("c left edge (i=1, j varies)\n")
+        #     f.write("cure 1 1 1 1 2 1 {0}\n".format)
+        #     c bottom edge (j=1, i varies)
+        #     cure 1 1 1 2 1 1 6
+        #     c right edge (i=2, j varies)
+        #     cure 2 1 1 2 2 1 7
+        #     c top edge (j=2, i varies)
+        #     cure 1 2 1 2 2 1 8
+        if self.spar_cap.exists():
+            # upper layer
+            f.write("c make a block mesh for the spar cap, upper layer\n")
+            i_cells = 30
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['SparCap; upper; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['SparCap; upper; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['SparCap; upper; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['SparCap; upper; top']))
+            f.write("\n")
+            # lower layer
+            f.write("c make a block mesh for the spar cap, lower layer\n")
+            i_cells = 30
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['SparCap; lower; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['SparCap; lower; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['SparCap; lower; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['SparCap; lower; top']))
+            f.write("\n")
+        if self.aft_panel_1.exists():
+            # upper layer
+            f.write("c make a block mesh for aft panel #1, upper layer\n")
+            i_cells = 18
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['AftPanel1; upper; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['AftPanel1; upper; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['AftPanel1; upper; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['AftPanel1; upper; top']))
+            f.write("\n")
+            # lower layer
+            f.write("c make a block mesh for aft panel #1, lower layer\n")
+            i_cells = 18
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['AftPanel1; lower; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['AftPanel1; lower; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['AftPanel1; lower; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['AftPanel1; lower; top']))
+            f.write("\n")
+        if self.aft_panel_2.exists():
+            # upper layer
+            f.write("c make a block mesh for aft panel #2, upper layer\n")
+            i_cells = 18
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['AftPanel2; upper; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['AftPanel2; upper; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['AftPanel2; upper; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['AftPanel2; upper; top']))
+            f.write("\n")
+            # lower layer
+            f.write("c make a block mesh for aft panel #2, lower layer\n")
+            i_cells = 18
+            j_cells = 2
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['AftPanel2; lower; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['AftPanel2; lower; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['AftPanel2; lower; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['AftPanel2; lower; top']))
+            f.write("\n")
+        if self.LE_panel.exists():
+            # foam layer
+            f.write("c make a block mesh for the LE panel, foam layer\n")
+            i_cells = 2
+            j_cells = 60
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['LE_Panel; foam; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['LE_Panel; foam; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['LE_Panel; foam; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['LE_Panel; foam; top']))
+            f.write("\n")
+        if self.shear_web_1.exists():
+            # left biax layer
+            f.write("c make a block mesh for shear web #1, left biax layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb1; biax, left; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb1; biax, left; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb1; biax, left; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb1; biax, left; top']))
+            f.write("\n")
+            # foam layer
+            f.write("c make a block mesh for shear web #1, foam layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb1; foam; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb1; foam; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb1; foam; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb1; foam; top']))
+            f.write("\n")
+            # right biax layer
+            f.write("c make a block mesh for shear web #1, right biax layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb1; biax, right; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb1; biax, right; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb1; biax, right; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb1; biax, right; top']))
+            f.write("\n")
+        if self.shear_web_2.exists():
+            # left biax layer
+            f.write("c make a block mesh for shear web #2, left biax layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb2; biax, left; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb2; biax, left; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb2; biax, left; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb2; biax, left; top']))
+            f.write("\n")
+            # foam layer
+            f.write("c make a block mesh for shear web #2, foam layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb2; foam; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb2; foam; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb2; foam; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb2; foam; top']))
+            f.write("\n")
+            # right biax layer
+            f.write("c make a block mesh for shear web #2, right biax layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb2; biax, right; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb2; biax, right; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb2; biax, right; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb2; biax, right; top']))
+            f.write("\n")
+        if self.shear_web_3.exists():
+            # left biax layer
+            f.write("c make a block mesh for shear web #3, left biax layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb3; biax, left; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb3; biax, left; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb3; biax, left; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb3; biax, left; top']))
+            f.write("\n")
+            # foam layer
+            f.write("c make a block mesh for shear web #3, foam layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb3; foam; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb3; foam; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb3; foam; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb3; foam; top']))
+            f.write("\n")
+            # right biax layer
+            f.write("c make a block mesh for shear web #3, right biax layer\n")
+            i_cells = 2
+            j_cells = 18
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['ShearWeb3; biax, right; left']))
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['ShearWeb3; biax, right; bottom']))
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['ShearWeb3; biax, right; right']))
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['ShearWeb3; biax, right; top']))
+            f.write("\n")
+        if self.TE_reinforcement.exists():
+            # uniax layer
+            f.write("c make a block mesh for TE reinforcement, uniax layer\n")
+            i_cells = 2
+            j_cells = 30
+            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+            if interrupt_flag:
+                f.write("interrupt\n")
+            f.write("c left edge (i=1, j varies)\n")
+            f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                d['TE_Reinforcement; uniax; left']))
+            if interrupt_flag:
+                f.write("interrupt\n")
+            f.write("c bottom edge (j=1, i varies)\n")
+            f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                d['TE_Reinforcement; uniax; bottom']))
+            if interrupt_flag:
+                f.write("interrupt\n")
+            f.write("c right edge (i=2, j varies)\n")
+            f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                d['TE_Reinforcement; uniax; right']))
+            if interrupt_flag:
+                f.write("interrupt\n")
+            f.write("c top edge (j=2, i varies)\n")
+            f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                d['TE_Reinforcement; uniax; top']))
+            f.write("\n")
+            # foam layer
+            foam_flag = False
+            # check if the foam layer exists
+            if 'TE_Reinforcement; foam; left' in d.keys():
+                foam_flag = True
+            if foam_flag:
+                # if the foam layer exists, mesh it!
+                f.write("c make a block mesh for TE reinforcement, foam layer\n")
+                i_cells = 2
+                j_cells = 30
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; foam; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c right edge (i=2, j varies)\n")
+                f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam; right']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam; top']))
+                f.write("\n")
+        f.close()
 
 
 class BiplaneStructure:

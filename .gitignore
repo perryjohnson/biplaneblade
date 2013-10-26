@@ -12,3 +12,6 @@ biplane_flap-sym_stagger/*.png
 *.log
 sandia_blade/percent_areas.csv
 sandia_blade/percent_masses.csv
+tsave*
+tghist
+
