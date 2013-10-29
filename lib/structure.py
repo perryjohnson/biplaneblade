@@ -1648,7 +1648,8 @@ class MonoplaneStructure:
             f.write("c root buildup " + "-"*20 + "\n")
             # remove the unnecessary 'triax, annulus' layer, which is not used
             #   for meshing
-            rb_dict = self.root_buildup.layer
+            # make a new copy of the dictionary, we don't mutate the original
+            rb_dict = self.root_buildup.layer.copy()
             rb_dict.pop('triax, annulus')
             for (layer_name, layer_obj) in rb_dict.items():
                 d = layer_obj.write_layer_edge(f, start_edge_num)
@@ -2169,12 +2170,12 @@ class MonoplaneStructure:
                 f.write("\n")
         f.close()
 
-    def write_truegrid_inputfile(self):
+    def write_truegrid_inputfile(self, interrupt_flag=False):
         """Write the TrueGrid input file in `station_path`."""
         self.write_truegrid_header()
         self.write_all_layer_edges()
         self.write_all_block_meshes()
-        self.write_truegrid_footer()
+        self.write_truegrid_footer(interrupt_flag=interrupt_flag)
         print " Wrote TrueGrid input file for Station #{0}.".format(
             self.parent_station.station_num)
 

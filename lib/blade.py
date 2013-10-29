@@ -354,154 +354,154 @@ class _Blade:
                     try:
                         if st.external_surface.exists():
                             station.plot_polygon(
-                                st.external_surface.layer[0].polygon, ax,
+                                st.external_surface.layer['gelcoat'].polygon, ax,
                                 face_color='#5EE54C', edge_color='#000000',
-                                alpha=0.8)  # face color is purple
+                                alpha=0.8)  # face color is light green
                             station.plot_polygon(
-                                st.external_surface.layer[1].polygon, ax,
+                                st.external_surface.layer['triax'].polygon, ax,
                                 face_color='#5EE54C', edge_color='#000000',
-                                alpha=0.8)  # face color is purple
+                                alpha=0.8)  # face color is light green
                         if st.root_buildup.exists():
                             if part_display_mode == 'annulus':
                                 station.plot_polygon(
-                                    st.root_buildup.layer[0].polygon, ax,
+                                    st.root_buildup.layer['triax, annulus'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
                             elif part_display_mode == 'curved rectangles':
                                 station.plot_polygon(
-                                    st.root_buildup.layer[1].polygon, ax,
+                                    st.root_buildup.layer['triax, lower left'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
                                 station.plot_polygon(
-                                    st.root_buildup.layer[2].polygon, ax,
+                                    st.root_buildup.layer['triax, lower right'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
                                 station.plot_polygon(
-                                    st.root_buildup.layer[3].polygon, ax,
+                                    st.root_buildup.layer['triax, upper right'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
                                 station.plot_polygon(
-                                    st.root_buildup.layer[4].polygon, ax,
+                                    st.root_buildup.layer['triax, upper left'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
                             else:
                                 raise ValueError("`part_display_mode` must be either 'annulus' or 'curved rectangles'.")
                         if st.spar_cap.exists():
-                            station.plot_polygon(st.spar_cap.layer[0].polygon,
+                            station.plot_polygon(st.spar_cap.layer['lower'].polygon,
                                 ax, face_color='#00ACEF', edge_color='#000000',
                                 alpha=0.8)  # face color is blue
-                            station.plot_polygon(st.spar_cap.layer[1].polygon,
+                            station.plot_polygon(st.spar_cap.layer['upper'].polygon,
                                 ax, face_color='#00ACEF', edge_color='#000000',
                                 alpha=0.8)  # face color is blue
                         if st.aft_panel_1.exists():
                             station.plot_polygon(
-                                st.aft_panel_1.layer[0].polygon, ax,
+                                st.aft_panel_1.layer['lower'].polygon, ax,
                                 face_color='#F58612', edge_color='#000000',
                                 alpha=0.8)  # face color is orange
                             station.plot_polygon(
-                                st.aft_panel_1.layer[1].polygon, ax,
+                                st.aft_panel_1.layer['upper'].polygon, ax,
                                 face_color='#F58612', edge_color='#000000',
                                 alpha=0.8)  # face color is orange
                         if st.aft_panel_2.exists():
                             station.plot_polygon(
-                                st.aft_panel_2.layer[0].polygon, ax,
+                                st.aft_panel_2.layer['lower'].polygon, ax,
                                 face_color='#F58612', edge_color='#000000',
                                 alpha=0.8)  # face color is orange
                             station.plot_polygon(
-                                st.aft_panel_2.layer[1].polygon, ax,
+                                st.aft_panel_2.layer['upper'].polygon, ax,
                                 face_color='#F58612', edge_color='#000000',
                                 alpha=0.8)  # face color is orange
                         if st.LE_panel.exists():
-                            station.plot_polygon(st.LE_panel.layer[0].polygon,
+                            station.plot_polygon(st.LE_panel.layer['foam'].polygon,
                                 ax, face_color='#00A64F', edge_color='#000000',
                                 alpha=0.8)  # face color is green
                         if st.shear_web_1.exists():
                             station.plot_polygon(
-                                st.shear_web_1.layer[0].polygon, ax,
+                                st.shear_web_1.layer['biax, left'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                             station.plot_polygon(
-                                st.shear_web_1.layer[1].polygon, ax,
+                                st.shear_web_1.layer['foam'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                             station.plot_polygon(
-                                st.shear_web_1.layer[2].polygon, ax,
+                                st.shear_web_1.layer['biax, right'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                         if st.shear_web_2.exists():
                             station.plot_polygon(
-                                st.shear_web_2.layer[0].polygon, ax,
+                                st.shear_web_2.layer['biax, left'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                             station.plot_polygon(
-                                st.shear_web_2.layer[1].polygon, ax,
+                                st.shear_web_2.layer['foam'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                             station.plot_polygon(
-                                st.shear_web_2.layer[2].polygon, ax,
+                                st.shear_web_2.layer['biax, right'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                         if st.shear_web_3.exists():
                             station.plot_polygon(
-                                st.shear_web_3.layer[0].polygon, ax,
+                                st.shear_web_3.layer['biax, left'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                             station.plot_polygon(
-                                st.shear_web_3.layer[1].polygon, ax,
+                                st.shear_web_3.layer['foam'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                             station.plot_polygon(
-                                st.shear_web_3.layer[2].polygon, ax,
+                                st.shear_web_3.layer['biax, right'].polygon, ax,
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                         if st.TE_reinforcement.exists():
                             station.plot_polygon(
-                                st.TE_reinforcement.layer[0].polygon, ax,
+                                st.TE_reinforcement.layer['uniax'].polygon, ax,
                                 face_color='#F366BA', edge_color='#000000',
                                 alpha=0.8)  # face color is pink
                             try:
                                 station.plot_polygon(
-                                    st.TE_reinforcement.layer[1].polygon, ax,
+                                    st.TE_reinforcement.layer['foam'].polygon, ax,
                                     face_color='#F366BA', edge_color='#000000',
                                     alpha=0.8)  # face color is pink
-                            except IndexError:  # foam region doesn't exist
+                            except KeyError:  # foam region doesn't exist
                                 pass
-                        # if st.internal_surface_1.exists():
-                        #     station.plot_polygon(
-                        #         st.internal_surface_1.layer[0].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
-                        #     station.plot_polygon(
-                        #         st.internal_surface_1.layer[1].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
-                        # if st.internal_surface_2.exists():
-                        #     station.plot_polygon(
-                        #         st.internal_surface_2.layer[0].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
-                        #     station.plot_polygon(
-                        #         st.internal_surface_2.layer[1].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
-                        # if st.internal_surface_3.exists():
-                        #     station.plot_polygon(
-                        #         st.internal_surface_3.layer[0].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
-                        #     station.plot_polygon(
-                        #         st.internal_surface_3.layer[1].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
-                        # if st.internal_surface_4.exists():
-                        #     station.plot_polygon(
-                        #         st.internal_surface_4.layer[0].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
-                        #     station.plot_polygon(
-                        #         st.internal_surface_4.layer[1].polygon, ax,
-                        #         face_color='#999999', edge_color='#000000',
-                        #         alpha=0.8)  # face color is gray
+                        if st.internal_surface_1.exists():
+                            station.plot_polygon(
+                                st.internal_surface_1.layer['triax'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                            station.plot_polygon(
+                                st.internal_surface_1.layer['resin'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                        if st.internal_surface_2.exists():
+                            station.plot_polygon(
+                                st.internal_surface_2.layer['triax'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                            station.plot_polygon(
+                                st.internal_surface_2.layer['resin'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                        if st.internal_surface_3.exists():
+                            station.plot_polygon(
+                                st.internal_surface_3.layer['triax'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                            station.plot_polygon(
+                                st.internal_surface_3.layer['resin'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                        if st.internal_surface_4.exists():
+                            station.plot_polygon(
+                                st.internal_surface_4.layer['triax'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
+                            station.plot_polygon(
+                                st.internal_surface_4.layer['resin'].polygon, ax,
+                                face_color='#999999', edge_color='#000000',
+                                alpha=0.8)  # face color is gray
                     except AttributeError:
                         raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.find_all_part_polygons() first.")
                 i += 1

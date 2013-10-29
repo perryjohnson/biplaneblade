@@ -542,12 +542,12 @@ class MonoplaneStation(_Station):
             if st.external_surface.exists():
                 self.plot_polygon(
                     st.external_surface.layer['gelcoat'].polygon, ax,
-                    face_color='#4000FF', edge_color='#000000',
-                    alpha=0.8)  # face color is purple
+                    face_color='#5EE54C', edge_color='#000000',
+                    alpha=0.8)  # face color is light green
                 self.plot_polygon(
                     st.external_surface.layer['triax'].polygon, ax,
-                    face_color='#4000FF', edge_color='#000000',
-                    alpha=0.8)  # face color is purple
+                    face_color='#5EE54C', edge_color='#000000',
+                    alpha=0.8)  # face color is light green
             if st.root_buildup.exists():
                 self.plot_polygon(
                     st.root_buildup.layer['triax, annulus'].polygon, ax,
