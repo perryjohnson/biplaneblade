@@ -524,7 +524,7 @@ class MonoplaneStation(_Station):
         except AttributeError:
             raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
 
-    def plot_parts(self):
+    def plot_parts(self, alternate_layers=False):
         """Plots the structural parts in this blade station."""
         fig, ax = plt.subplots()
         st = self.structure
@@ -549,10 +549,28 @@ class MonoplaneStation(_Station):
                     face_color='#5EE54C', edge_color='#000000',
                     alpha=0.8)  # face color is light green
             if st.root_buildup.exists():
-                self.plot_polygon(
-                    st.root_buildup.layer['triax, annulus'].polygon, ax,
-                    face_color='#BE925A', edge_color='#000000',
-                    alpha=0.8)  # face color is brown
+                if alternate_layers:
+                    self.plot_polygon(
+                        st.root_buildup.layer['triax, upper left'].polygon, ax,
+                        face_color='#BE925A', edge_color='#000000',
+                        alpha=0.8)  # face color is brown
+                    self.plot_polygon(
+                        st.root_buildup.layer['triax, upper right'].polygon, ax,
+                        face_color='#BE925A', edge_color='#000000',
+                        alpha=0.8)  # face color is brown
+                    self.plot_polygon(
+                        st.root_buildup.layer['triax, lower left'].polygon, ax,
+                        face_color='#BE925A', edge_color='#000000',
+                        alpha=0.8)  # face color is brown
+                    self.plot_polygon(
+                        st.root_buildup.layer['triax, lower right'].polygon, ax,
+                        face_color='#BE925A', edge_color='#000000',
+                        alpha=0.8)  # face color is brown
+                else:
+                    self.plot_polygon(
+                        st.root_buildup.layer['triax, annulus'].polygon, ax,
+                        face_color='#BE925A', edge_color='#000000',
+                        alpha=0.8)  # face color is brown
             if st.spar_cap.exists():
                 self.plot_polygon(st.spar_cap.layer['lower'].polygon,
                     ax, face_color='#00ACEF', edge_color='#000000',
@@ -622,17 +640,63 @@ class MonoplaneStation(_Station):
                     face_color='#FFF100', edge_color='#000000',
                     alpha=0.8)  # face color is yellow
             if st.TE_reinforcement.exists():
-                self.plot_polygon(
-                    st.TE_reinforcement.layer['uniax'].polygon, ax,
-                    face_color='#F366BA', edge_color='#000000',
-                    alpha=0.8)  # face color is pink
-                try:
+                if alternate_layers:
                     self.plot_polygon(
-                        st.TE_reinforcement.layer['foam'].polygon, ax,
+                        st.TE_reinforcement.layer['uniax, upper right'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['uniax, lower right'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['uniax, upper left'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['uniax, lower left'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    try:
+                        self.plot_polygon(
+                            st.TE_reinforcement.layer['uniax, upper middle'].polygon,
+                            ax, face_color='#F366BA', edge_color='#000000',
+                            alpha=0.8)  # face color is pink
+                        self.plot_polygon(
+                            st.TE_reinforcement.layer['uniax, lower middle'].polygon,
+                            ax, face_color='#F366BA', edge_color='#000000',
+                            alpha=0.8)  # face color is pink
+                        self.plot_polygon(
+                            st.TE_reinforcement.layer['foam, upper middle'].polygon,
+                            ax, face_color='#F366BA', edge_color='#000000',
+                            alpha=0.8)  # face color is pink
+                        self.plot_polygon(
+                            st.TE_reinforcement.layer['foam, lower middle'].polygon,
+                            ax, face_color='#F366BA', edge_color='#000000',
+                            alpha=0.8)  # face color is pink
+                        self.plot_polygon(
+                            st.TE_reinforcement.layer['foam, upper left'].polygon,
+                            ax, face_color='#F366BA', edge_color='#000000',
+                            alpha=0.8)  # face color is pink
+                        self.plot_polygon(
+                            st.TE_reinforcement.layer['foam, lower left'].polygon,
+                            ax, face_color='#F366BA', edge_color='#000000',
+                            alpha=0.8)  # face color is pink
+                    except KeyError:
+                        # middle layers don't exist, b/c foam doesn't exist
+                        pass
+                else:
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['uniax'].polygon, ax,
                         face_color='#F366BA', edge_color='#000000',
                         alpha=0.8)  # face color is pink
-                except KeyError:  # foam region doesn't exist
-                    pass
+                    try:
+                        self.plot_polygon(
+                            st.TE_reinforcement.layer['foam'].polygon, ax,
+                            face_color='#F366BA', edge_color='#000000',
+                            alpha=0.8)  # face color is pink
+                    except KeyError:  # foam region doesn't exist
+                        pass
             if st.internal_surface_1.exists():
                 self.plot_polygon(
                     st.internal_surface_1.layer['triax'].polygon, ax,

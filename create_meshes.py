@@ -25,4 +25,7 @@ for station in m.list_of_stations:
 #     2, 3, 4, 6, 7, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
 #     26, 27, 28, 29, 30, 31, 32, 33, 34
 
-m.plot_selected_cross_sections(selected_stations=range(10,22), part_display_mode='curved rectangles')
+m.plot_selected_cross_sections()
+# m.plot_selected_cross_sections(selected_stations=range(22,34))
+# stn16 = m.list_of_stations[15]
+# stn16.plot_parts()
