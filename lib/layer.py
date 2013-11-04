@@ -76,8 +76,8 @@ class Layer:
         elif self.parent_part.__class__.__name__ == 'LE_Panel':
             # get the coordinates for the right edge of the LE panel
             r = self.parent_part.right
-            # find the indices where the x-coordinate is equal to the right edge
-            #   of the LE panel (the "corners" of the LE panel)
+            # find the indices where the x-coordinate is equal to the right
+            #   edge of the LE panel (the "corners" of the LE panel)
             match = np.nonzero(x==r)[0]
         elif self.parent_part.__class__.__name__ == 'SparCap':
             # get the coordinates for the left and right edges
@@ -100,10 +100,29 @@ class Layer:
             # group all the indices together in a sorted array
             match = np.append(match_l, match_r)
         elif self.parent_part.__class__.__name__ == 'TE_Reinforcement':
-            # get the coordinates for the left edge
-            l = self.parent_part.left
-            # find the indices where the x-coord is equal to the left edge
-            match = np.nonzero(x==l)[0]
+            if self.name == 'uniax' or self.name == 'foam':
+                # get the coordinates for the left edge
+                l = self.parent_part.left
+                # find the indices where the x-coord is equal to the left edge
+                match = np.nonzero(x==l)[0]
+            else:
+                # this is an alternate layer
+                # get the coordinates for the left and right edges
+                if self.name.endswith('left'):
+                    l = self.parent_part.left_vertex[0]
+                    r = self.parent_part.foam_left_vertex[0]
+                elif self.name.endswith('middle'):
+                    l = self.parent_part.foam_left_vertex[0]
+                    r = self.parent_part.uniax_left_vertex[0]
+                elif self.name.endswith('right'):
+                    l = self.parent_part.uniax_left_vertex[0]
+                    r = self.parent_part.uniax_right_vertex[0]
+                # find the indices where the x-coord is equal to the left edge
+                match_l = np.nonzero(x==l)[0]
+                # find the indices where the x-coord is equal to the right edge
+                match_r = np.nonzero(x==r)[0]
+                # group all the indices together in a sorted array
+                match = np.append(match_l, match_r)
         elif self.parent_part.__class__.__name__ == 'ShearWeb':
             # get the coordinates for the left and right edges
             if self.name == 'biax, left':
@@ -146,20 +165,37 @@ class Layer:
         edges = self.get_edges()
         # get centroids
         centroids = []
+        triangular_region = False
         for edge in edges:
-            centroids.append(asLineString(edge).centroid)
+            try:
+                centroids.append(asLineString(edge).centroid)
+            except ValueError:
+                # if the region is triangular, one of its "edges" will be a
+                #   point, not a line string.
+                triangular_region = True
         # determine which edges are top, bottom, left, and right
-        l = range(4)  # list of indices, one for each edge
-        c = np.array([[centroids[0].x, centroids[0].y],
-                      [centroids[1].x, centroids[1].y],
-                      [centroids[2].x, centroids[2].y],
-                      [centroids[3].x, centroids[3].y]])
-        cx = c[:,0]
-        cy = c[:,1]
-        x_max_ind = np.nonzero(cx==cx.max())[0][0]
-        x_min_ind = np.nonzero(cx==cx.min())[0][0]
-        y_max_ind = np.nonzero(cy==cy.max())[0][0]
-        y_min_ind = np.nonzero(cy==cy.min())[0][0]
+        if not triangular_region:
+            l = range(4)  # list of indices, one for each edge
+            c = np.array([[centroids[0].x, centroids[0].y],
+                          [centroids[1].x, centroids[1].y],
+                          [centroids[2].x, centroids[2].y],
+                          [centroids[3].x, centroids[3].y]])
+            cx = c[:,0]
+            cy = c[:,1]
+            x_max_ind = np.nonzero(cx==cx.max())[0][0]
+            x_min_ind = np.nonzero(cx==cx.min())[0][0]
+            y_max_ind = np.nonzero(cy==cy.max())[0][0]
+            y_min_ind = np.nonzero(cy==cy.min())[0][0]
+        else:
+            l = range(3)
+            c = np.array([[centroids[0].x, centroids[0].y],
+                          [centroids[1].x, centroids[1].y],
+                          [centroids[2].x, centroids[2].y]])
+            cx = c[:,0]
+            cy = c[:,1]
+            x_min_ind = np.nonzero(cx==cx.min())[0][0]
+            y_max_ind = np.nonzero(cy==cy.max())[0][0]
+            y_min_ind = np.nonzero(cy==cy.min())[0][0]
         if self.parent_part.__class__.__name__ == 'RootBuildup':
             # find centroid at x=0
             ind_x = np.nonzero(cx==0.0)[0][0]
@@ -217,13 +253,30 @@ class Layer:
                 self.top = edges[l[1]]     # top edge saved!
                 self.bottom = edges[l[0]]  # bottom edge saved!
         elif self.parent_part.__class__.__name__ == 'TE_Reinforcement':
-            l.remove(x_max_ind)  # remove the index for the right edge
-            self.right = edges[x_max_ind]  # right edge saved!
-            l.remove(y_max_ind)  # remove the index for the top edge
-            self.top = edges[y_max_ind]  # top edge saved!
-            l.remove(y_min_ind)  # remove the index for the bottom edge
-            self.bottom = edges[y_min_ind]  # bottom edge saved!
-            self.left = edges[l[0]]  # left edge saved!
+            if self.name == 'uniax' or self.name == 'foam':
+                l.remove(x_max_ind)  # remove the index for the right edge
+                self.right = edges[x_max_ind]  # right edge saved!
+                l.remove(y_max_ind)  # remove the index for the top edge
+                self.top = edges[y_max_ind]  # top edge saved!
+                l.remove(y_min_ind)  # remove the index for the bottom edge
+                self.bottom = edges[y_min_ind]  # bottom edge saved!
+                self.left = edges[l[0]]  # left edge saved!
+            else:
+                # this is an alternate layer
+                l.remove(x_min_ind)  # remove the index for the left edge
+                self.left = edges[x_min_ind]  # left edge saved!
+                if not triangular_region:
+                    # if this region is rectangular, assign the right edge
+                    l.remove(x_max_ind)  # remove the index for the right edge
+                    self.right = edges[x_max_ind]  # right edge saved!
+                else:
+                    self.right = None
+                if centroids[l[0]].y > centroids[l[1]].y:
+                    self.top = edges[l[0]]     # top edge saved!
+                    self.bottom = edges[l[1]]  # bottom edge saved!
+                else:
+                    self.top = edges[l[1]]     # top edge saved!
+                    self.bottom = edges[l[0]]  # bottom edge saved!
         elif self.parent_part.__class__.__name__ == 'ShearWeb':
             l.remove(x_min_ind)  # remove the index for the left edge
             self.left = edges[x_min_ind]  # left edge saved!

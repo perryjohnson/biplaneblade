@@ -353,7 +353,9 @@ class MonoplaneStation(_Station):
             filename=stn_series['airfoil']+'.txt',
             chord=stn_series['chord'],
             pitch_axis=stn_series['pitch axis'],
-            twist=stn_series['twist'])
+            twist=stn_series['twist'],
+            has_sharp_TE=stn_series['has sharp TE'],
+            parent_station=self)
         self.logf = open(_Station.logfile_name, "a")
         self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
         self.logf.write(str(self.airfoil) + '\n')
@@ -640,7 +642,7 @@ class MonoplaneStation(_Station):
                     face_color='#FFF100', edge_color='#000000',
                     alpha=0.8)  # face color is yellow
             if st.TE_reinforcement.exists():
-                if alternate_layers:
+                if alternate_layers and self.airfoil.has_sharp_TE:
                     self.plot_polygon(
                         st.TE_reinforcement.layer['uniax, upper right'].polygon,
                         ax, face_color='#F366BA', edge_color='#000000',
@@ -657,34 +659,30 @@ class MonoplaneStation(_Station):
                         st.TE_reinforcement.layer['uniax, lower left'].polygon,
                         ax, face_color='#F366BA', edge_color='#000000',
                         alpha=0.8)  # face color is pink
-                    try:
-                        self.plot_polygon(
-                            st.TE_reinforcement.layer['uniax, upper middle'].polygon,
-                            ax, face_color='#F366BA', edge_color='#000000',
-                            alpha=0.8)  # face color is pink
-                        self.plot_polygon(
-                            st.TE_reinforcement.layer['uniax, lower middle'].polygon,
-                            ax, face_color='#F366BA', edge_color='#000000',
-                            alpha=0.8)  # face color is pink
-                        self.plot_polygon(
-                            st.TE_reinforcement.layer['foam, upper middle'].polygon,
-                            ax, face_color='#F366BA', edge_color='#000000',
-                            alpha=0.8)  # face color is pink
-                        self.plot_polygon(
-                            st.TE_reinforcement.layer['foam, lower middle'].polygon,
-                            ax, face_color='#F366BA', edge_color='#000000',
-                            alpha=0.8)  # face color is pink
-                        self.plot_polygon(
-                            st.TE_reinforcement.layer['foam, upper left'].polygon,
-                            ax, face_color='#F366BA', edge_color='#000000',
-                            alpha=0.8)  # face color is pink
-                        self.plot_polygon(
-                            st.TE_reinforcement.layer['foam, lower left'].polygon,
-                            ax, face_color='#F366BA', edge_color='#000000',
-                            alpha=0.8)  # face color is pink
-                    except KeyError:
-                        # middle layers don't exist, b/c foam doesn't exist
-                        pass
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['uniax, upper middle'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['uniax, lower middle'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['foam, upper middle'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['foam, lower middle'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['foam, upper left'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
+                    self.plot_polygon(
+                        st.TE_reinforcement.layer['foam, lower left'].polygon,
+                        ax, face_color='#F366BA', edge_color='#000000',
+                        alpha=0.8)  # face color is pink
                 else:
                     self.plot_polygon(
                         st.TE_reinforcement.layer['uniax'].polygon, ax,

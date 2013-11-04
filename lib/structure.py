@@ -625,6 +625,11 @@ class TE_Reinforcement(Part):
         Part.__init__(self, parent_structure, base, height=(hu+hf))
         self.height_uniax = height_uniax
         self.height_foam = height_foam
+        # these 4 attributes are assigned later by self.create_alternate_layers()
+        self.left_vertex = None
+        self.foam_left_vertex = None
+        self.uniax_left_vertex = None
+        self.uniax_right_vertex = None
     
     def __str__(self):
         return """base:    {0:6.4f} (meters)
@@ -707,7 +712,7 @@ height:  {1:6.4f} (meters)
         <TE_reinforcement>.layer['foam, lower middle'] : foam layer (lower
             middle block)
 
-        Note: if the foam region exists, we store 8 quads and 2 triangles:
+        Note: This stores 8 quadrilaterals and 2 triangles:
             8 quadrilaterals : .layer['uniax, upper left'], 
                 .layer['uniax, upper middle'], .layer['uniax, upper right'],
                 .layer['uniax, lower left'], .layer['uniax, lower middle'],
@@ -715,10 +720,6 @@ height:  {1:6.4f} (meters)
                 .layer['foam, lower left']
             2 triangles : .layer['foam, upper right'],
                 .layer['foam, lower right']
-        but, if the foam region doesn't exist, then we only store 4 quads:
-            4 quadrilaterals : .layer['uniax, upper left'], 
-                .layer['uniax, upper right'], .layer['uniax, lower left'],
-                .layer['uniax, lower right']
 
         """
         st = self.parent_structure
@@ -728,37 +729,33 @@ height:  {1:6.4f} (meters)
             u = self.layer['uniax']
         except KeyError:
             raise Warning("<TE_Reinforcement>.layer['uniax'] was not found.\n  Try running <TE_Reinforcement>.create_layers() before running <TE_Reinforcement>.create_alternate_layers().")
-        # check if the foam layer exists
-        foam_exists = True
         try:
+            # try to access the entire foam layer
             f = self.layer['foam']
         except KeyError:
-            foam_exists = False
-            foam_left_vertex = None
-        # get vertex on left edge of TE
+            raise Warning("<TE_Reinforcement>.layer['foam'] was not found.\n  Try running <TE_Reinforcement>.create_layers() before running <TE_Reinforcement>.create_alternate_layers().")
+        # get vertex on left edge of TE (self.left_vertex)
         temp = np.average(
             [self.layer['uniax'].top, self.layer['uniax'].bottom], axis=0)
-        left_vertex = np.average(temp, axis=0)
-        if foam_exists:
-            # get vertex on left edge of foam
-            ind = np.nonzero(f.left[:,0]==f.left[:,0].max())[0][0]
-            foam_left_vertex = f.left[ind,:]
-        # get vertex on left edge of uniax
+        self.left_vertex = np.average(temp, axis=0)
+        # get vertex on left edge of foam (self.foam_left_vertex)
+        ind = np.nonzero(f.left[:,0]==f.left[:,0].max())[0][0]
+        self.foam_left_vertex = f.left[ind,:]
+        # get vertex on left edge of uniax (self.uniax_left_vertex)
         ind = np.nonzero(u.left[:,0]==u.left[:,0].max())[0]
         if len(ind) == 1:
-            uniax_left_vertex = u.left[ind[0],:]
+            self.uniax_left_vertex = u.left[ind[0],:]
         else:
-            uniax_left_vertex = np.average(
+            self.uniax_left_vertex = np.average(
                 [u.left[ind[0],:], u.left[ind[1],:]], axis=0)
-        # get vertex on right edge of uniax
+        # get vertex on right edge of uniax (self.uniax_right_vertex)
         ind = np.nonzero(u.right[:,0]==u.right[:,0].max())[0]
         if len(ind) == 1:
-            uniax_right_vertex = u.right[ind[0],:]
+            self.uniax_right_vertex = u.right[ind[0],:]
         else:
-            uniax_right_vertex = np.average(
+            self.uniax_right_vertex = np.average(
                 [u.right[ind[0],:], u.right[ind[1],:]], axis=0)
-        bb = self.alternate_bounding_boxes(left_vertex, foam_left_vertex,
-            uniax_left_vertex, uniax_right_vertex)
+        bb = self.alternate_bounding_boxes()
         for (label,box) in bb.items():
             # split up uniax region into alternate layers
             u_new = u.polygon.intersection(box)
@@ -789,8 +786,8 @@ height:  {1:6.4f} (meters)
                 raise Warning("At Station #{0}, created a layer named '{1}', but it has <layer>.polygon.geom_type={2}, not .geom_type='Polygon'".format(st.parent_station.station_num, ('uniax, '+label), self.layer['uniax, '+label].polygon.geom_type))
             # no need to append these polygons to <station>._list_of_layers
             # split up foam region into alternate layers
-            if foam_exists and not label.endswith('right'):
-                # only get 'left' and 'middle' bounding boxes
+            if not label.endswith('right'):
+                # get only 'left' and 'middle' bounding boxes
                 f_new = f.polygon.intersection(box)
                 if f_new.geom_type == 'MultiPolygon':
                     # if the intersection operation picked up a second polygon,
@@ -819,8 +816,7 @@ height:  {1:6.4f} (meters)
                     raise Warning("At Station #{0}, created a layer named '{1}', but it has <layer>.polygon.geom_type={2}, not .geom_type='Polygon'".format(st.parent_station.station_num, ('foam, '+label), self.layer['foam, '+label].polygon.geom_type))
                 # no need to append these polygons to <station>._list_of_layers
 
-    def alternate_bounding_boxes(self, left_vertex, foam_left_vertex,
-        uniax_left_vertex, uniax_right_vertex, x_boundary_buffer=1.2,
+    def alternate_bounding_boxes(self, x_boundary_buffer=1.2,
         y_boundary_buffer=1.2):
         """Returns dict of polygons for bounding boxes for alternate layers.
 
@@ -851,83 +847,65 @@ height:  {1:6.4f} (meters)
 
         Parameters
         ----------
-        left_vertex : np.array, coordinates at the midpoint of the left edge of
-            the TE reinforcement. This coordinate does not sit on the TE
-            reinforcement, it lies between the top and bottom "legs" of the
-            TE reinforcement. It help us draw the upper left and lower left
-            bounding boxes.
-        foam_left_vertex : np.array, coordinates for the sharp corner on the
-            left edge of the foam region. If the foam region doesn't exist,
-            foam_left_vertex=None.
-        uniax_left_vertex : np.array, coordinates for the sharp corner on the
-            left edge of the uniax region.
-        uniax_right_vertex : np.array, coordinates for the middle of the blunt
-            TE along the right edge of the uniax region.
         x_boundary_buffer : float (default: 1.2), factor to multiply with the
             minx and maxx bound of the airfoil polygon, to stretch the bounding
             box past the left and right edges of the airfoil polygon
         y_boundary_buffer : float (default: 1.2), factor to multiply with the
             miny and maxy bound of the airfoil polygon, to stretch the bounding
             box above and below the top and bottom edges of the airfoil polygon
+        self.left_vertex : np.array, coordinates at the midpoint of the left
+            edge of the TE reinforcement. This coordinate does not sit on the
+            TE reinforcement, it lies between the top and bottom "legs" of the
+            TE reinforcement. It help us draw the upper left and lower left
+            bounding boxes.
+        self.foam_left_vertex : np.array, coordinates for the sharp corner on
+            the left edge of the foam region. If the foam region doesn't exist,
+            foam_left_vertex=None.
+        self.uniax_left_vertex : np.array, coordinates for the sharp corner on
+            the left edge of the uniax region.
+        self.uniax_right_vertex : np.array, coordinates for the middle of the
+            blunt TE along the right edge of the uniax region.
 
         """
-        if uniax_left_vertex is None:
-            foam_exists = False
-        else:
-            foam_exists = True
         af = self.parent_structure.parent_station.airfoil
         bb = {}
         (minx, miny, maxx, maxy) = af.polygon.bounds
         # upper right box
-        pt1 = tuple(uniax_left_vertex)
-        pt2 = tuple(uniax_right_vertex)
+        pt1 = tuple(self.uniax_left_vertex)
+        pt2 = tuple(self.uniax_right_vertex)
         pt3 = (self.right, maxy*y_boundary_buffer)
-        pt4 = (uniax_left_vertex[0], maxy*y_boundary_buffer)
+        pt4 = (self.uniax_left_vertex[0], maxy*y_boundary_buffer)
         bb['upper right'] = Polygon([pt1, pt2, pt3, pt4])
         # lower right box
-        pt1 = (uniax_left_vertex[0], miny*y_boundary_buffer)
+        pt1 = (self.uniax_left_vertex[0], miny*y_boundary_buffer)
         pt2 = (self.right, miny*y_boundary_buffer)
-        pt3 = tuple(uniax_right_vertex)
-        pt4 = tuple(uniax_left_vertex)
+        pt3 = tuple(self.uniax_right_vertex)
+        pt4 = tuple(self.uniax_left_vertex)
         bb['lower right'] = Polygon([pt1, pt2, pt3, pt4])
-        if foam_exists:
-            # upper middle box
-            pt1 = tuple(foam_left_vertex)
-            pt2 = tuple(uniax_left_vertex)
-            pt3 = (uniax_left_vertex[0], maxy*y_boundary_buffer)
-            pt4 = (foam_left_vertex[0], maxy*y_boundary_buffer)
-            bb['upper middle'] = Polygon([pt1, pt2, pt3, pt4])
-            # lower middle box
-            pt1 = (foam_left_vertex[0], miny*y_boundary_buffer)
-            pt2 = (uniax_left_vertex[0], miny*y_boundary_buffer)
-            pt3 = tuple(uniax_left_vertex)
-            pt4 = tuple(foam_left_vertex)
-            bb['lower middle'] = Polygon([pt1, pt2, pt3, pt4])
-            # upper left box
-            pt1 = tuple(left_vertex)
-            pt2 = tuple(foam_left_vertex)
-            pt3 = (foam_left_vertex[0], maxy*y_boundary_buffer)
-            pt4 = (self.left, maxy*y_boundary_buffer)
-            bb['upper left'] = Polygon([pt1, pt2, pt3, pt4])
-            # lower left box
-            pt1 = (self.left, miny*y_boundary_buffer)
-            pt2 = (foam_left_vertex[0], miny*y_boundary_buffer)
-            pt3 = tuple(foam_left_vertex)
-            pt4 = tuple(left_vertex)
-            bb['lower left'] = Polygon([pt1, pt2, pt3, pt4])
-        else:
-            # upper left box
-            pt1 = tuple(left_vertex)
-            pt2 = tuple(uniax_left_vertex)
-            pt3 = (uniax_left_vertex[0], maxy*y_boundary_buffer)
-            pt4 = (self.left, maxy*y_boundary_buffer)
-            bb['upper left'] = Polygon([pt1, pt2, pt3, pt4])
-            # lower left box
-            pt1 = (self.left, miny*y_boundary_buffer)
-            pt2 = (uniax_left_vertex[0], miny*y_boundary_buffer)
-            pt3 = tuple(uniax_left_vertex)
-            pt4 = tuple(left_vertex)
-            bb['lower left'] = Polygon([pt1, pt2, pt3, pt4])
+        # upper middle box
+        pt1 = tuple(self.foam_left_vertex)
+        pt2 = tuple(self.uniax_left_vertex)
+        pt3 = (self.uniax_left_vertex[0], maxy*y_boundary_buffer)
+        pt4 = (self.foam_left_vertex[0], maxy*y_boundary_buffer)
+        bb['upper middle'] = Polygon([pt1, pt2, pt3, pt4])
+        # lower middle box
+        pt1 = (self.foam_left_vertex[0], miny*y_boundary_buffer)
+        pt2 = (self.uniax_left_vertex[0], miny*y_boundary_buffer)
+        pt3 = tuple(self.uniax_left_vertex)
+        pt4 = tuple(self.foam_left_vertex)
+        bb['lower middle'] = Polygon([pt1, pt2, pt3, pt4])
+        # upper left box
+        pt1 = tuple(self.left_vertex)
+        pt2 = tuple(self.foam_left_vertex)
+        pt3 = (self.foam_left_vertex[0], maxy*y_boundary_buffer)
+        pt4 = (self.left, maxy*y_boundary_buffer)
+        bb['upper left'] = Polygon([pt1, pt2, pt3, pt4])
+        # lower left box
+        pt1 = (self.left, miny*y_boundary_buffer)
+        pt2 = (self.foam_left_vertex[0], miny*y_boundary_buffer)
+        pt3 = tuple(self.foam_left_vertex)
+        pt4 = tuple(self.left_vertex)
+        bb['lower left'] = Polygon([pt1, pt2, pt3, pt4])
         return bb
 
 
@@ -1298,7 +1276,7 @@ class MonoplaneStructure:
         if self.root_buildup.exists():
             self.root_buildup.create_alternate_layers()
         if self.TE_reinforcement.exists():
-            if self.parent_station.station_num >= 16:
+            if self.parent_station.airfoil.has_sharp_TE:
                 self.TE_reinforcement.create_alternate_layers()
 
     def merge_all_polygons(self, plot_flag=False):
@@ -1841,12 +1819,19 @@ class MonoplaneStructure:
             self.root_buildup.layer['triax, lower right'].get_and_save_edges()
             self.root_buildup.layer['triax, upper right'].get_and_save_edges()
             self.root_buildup.layer['triax, upper left'].get_and_save_edges()
-        # if self.TE_reinforcement.exists():
-        #     self.TE_reinforcement.layer['uniax'].get_and_save_edges()
-        #     try:
-        #         self.TE_reinforcement.layer['foam'].get_and_save_edges()
-        #     except KeyError:  # foam layer doesn't exist
-        #         pass
+        if (self.TE_reinforcement.exists() and
+            self.parent_station.airfoil.has_sharp_TE):
+            te = self.TE_reinforcement
+            te.layer['uniax, upper left'].get_and_save_edges()
+            te.layer['uniax, upper right'].get_and_save_edges()
+            te.layer['uniax, lower left'].get_and_save_edges()
+            te.layer['uniax, lower right'].get_and_save_edges()
+            te.layer['uniax, upper middle'].get_and_save_edges()
+            te.layer['uniax, lower middle'].get_and_save_edges()
+            te.layer['foam, upper left'].get_and_save_edges()
+            te.layer['foam, upper middle'].get_and_save_edges()
+            te.layer['foam, lower left'].get_and_save_edges()
+            te.layer['foam, lower middle'].get_and_save_edges()
         # if self.external_surface.exists():
         #     self.external_surface.get_and_save_edges('gelcoat, lower left')
         #     self.external_surface.get_and_save_edges('gelcoat, lower right')

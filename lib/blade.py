@@ -324,7 +324,7 @@ class _Blade:
 
     def plot_selected_cross_sections(self, figsize=(22,12), nrows=4, ncols=3,
         selected_stations=[1,7,11,13,16,20,21,23,26,28,30,33], save_flag=True,
-        plot_edges=False, plot_parts=True, part_display_mode='annulus'):
+        plot_edges=False, plot_parts=True, alternate_layers=False):
         """Plots selected cross-sections of the blade."""
         if len(selected_stations) != nrows*ncols:
             raise ValueError("The number of items in 'selected_stations' must equal nrows*ncols.")
@@ -362,12 +362,12 @@ class _Blade:
                                 face_color='#5EE54C', edge_color='#000000',
                                 alpha=0.8)  # face color is light green
                         if st.root_buildup.exists():
-                            if part_display_mode == 'annulus':
+                            if not alternate_layers:
                                 station.plot_polygon(
                                     st.root_buildup.layer['triax, annulus'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
-                            elif part_display_mode == 'curved rectangles':
+                            else:
                                 station.plot_polygon(
                                     st.root_buildup.layer['triax, lower left'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
@@ -384,8 +384,6 @@ class _Blade:
                                     st.root_buildup.layer['triax, upper left'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
-                            else:
-                                raise ValueError("`part_display_mode` must be either 'annulus' or 'curved rectangles'.")
                         if st.spar_cap.exists():
                             station.plot_polygon(st.spar_cap.layer['lower'].polygon,
                                 ax, face_color='#00ACEF', edge_color='#000000',
@@ -455,17 +453,59 @@ class _Blade:
                                 face_color='#FFF100', edge_color='#000000',
                                 alpha=0.8)  # face color is yellow
                         if st.TE_reinforcement.exists():
-                            station.plot_polygon(
-                                st.TE_reinforcement.layer['uniax'].polygon, ax,
-                                face_color='#F366BA', edge_color='#000000',
-                                alpha=0.8)  # face color is pink
-                            try:
+                            if alternate_layers and station.airfoil.has_sharp_TE:
                                 station.plot_polygon(
-                                    st.TE_reinforcement.layer['foam'].polygon, ax,
+                                    st.TE_reinforcement.layer['uniax, upper right'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['uniax, lower right'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['uniax, upper left'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['uniax, lower left'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['uniax, upper middle'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['uniax, lower middle'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['foam, upper middle'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['foam, lower middle'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['foam, upper left'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['foam, lower left'].polygon,
+                                    ax, face_color='#F366BA', edge_color='#000000',
+                                    alpha=0.8)  # face color is pink
+                            else:
+                                station.plot_polygon(
+                                    st.TE_reinforcement.layer['uniax'].polygon, ax,
                                     face_color='#F366BA', edge_color='#000000',
                                     alpha=0.8)  # face color is pink
-                            except KeyError:  # foam region doesn't exist
-                                pass
+                                try:
+                                    station.plot_polygon(
+                                        st.TE_reinforcement.layer['foam'].polygon, ax,
+                                        face_color='#F366BA', edge_color='#000000',
+                                        alpha=0.8)  # face color is pink
+                                except KeyError:  # foam region doesn't exist
+                                    pass
                         if st.internal_surface_1.exists():
                             station.plot_polygon(
                                 st.internal_surface_1.layer['triax'].polygon, ax,

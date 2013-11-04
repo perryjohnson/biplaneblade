@@ -27,8 +27,10 @@ class _Airfoil:
 
 class MonoplaneAirfoil(_Airfoil):
     """Define a monoplane airfoil (external dimensions)."""
-    def __init__(self, name, filename, chord, pitch_axis, twist):
+    def __init__(self, name, filename, chord, pitch_axis, twist, has_sharp_TE,
+        parent_station):
         _Airfoil.__init__(self, name, pitch_axis, twist)
+        self.parent_station = parent_station
         self.filename = filename
         self.path = None        # assigned later by Blade.copy_airfoil_coords()
         self.chord = chord      # units [m]
@@ -37,6 +39,12 @@ class MonoplaneAirfoil(_Airfoil):
         self.suction = None     # assigned later by split_at_LE_and_TE()
         self.pressure = None    # assigned later by split_at_LE_and_TE()
         self.polygon = None     # assigned later by create_polygon()
+        if has_sharp_TE == 'yes':
+            self.has_sharp_TE = True
+        elif has_sharp_TE == 'no':
+            self.has_sharp_TE = False
+        else:
+            raise ValueError("Detected ambiguous 'has sharp TE' value for Station #{0}!\n  Must be either 'yes' or 'no'. Check the blade definition file for errors.".format(self.parent_station.station_num))
 
     def __str__(self):
         return """Monoplane Airfoil ---
