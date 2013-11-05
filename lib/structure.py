@@ -2399,8 +2399,8 @@ class MonoplaneStructure:
             if self.parent_station.airfoil.has_sharp_TE:
                 # uniax, upper left
                 f.write("c make a block mesh for TE reinforcement, uniax, upper left layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2426,8 +2426,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # uniax, upper middle
                 f.write("c make a block mesh for TE reinforcement, uniax, upper middle layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2453,8 +2453,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # uniax, upper right
                 f.write("c make a block mesh for TE reinforcement, uniax, upper right layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2485,8 +2485,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # uniax, lower left
                 f.write("c make a block mesh for TE reinforcement, uniax, lower left layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2512,8 +2512,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # uniax, lower middle
                 f.write("c make a block mesh for TE reinforcement, uniax, lower middle layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2539,8 +2539,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # uniax, lower right
                 f.write("c make a block mesh for TE reinforcement, uniax, lower right layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2571,8 +2571,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # foam, upper left
                 f.write("c make a block mesh for TE reinforcement, foam, upper left layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2598,8 +2598,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # foam, upper middle
                 f.write("c make a block mesh for TE reinforcement, foam, upper middle layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2620,8 +2620,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # foam, lower left
                 f.write("c make a block mesh for TE reinforcement, foam, lower left layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
@@ -2647,8 +2647,8 @@ class MonoplaneStructure:
                 f.write("\n")
                 # foam, lower middle
                 f.write("c make a block mesh for TE reinforcement, foam, lower middle layer\n")
-                i_cells = 2
-                j_cells = 10
+                i_cells = 10
+                j_cells = 2
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
                 f.write("-0.1 0.1; -0.1 0.1; 0;\n")
                 if interrupt_flag:
