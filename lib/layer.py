@@ -289,7 +289,7 @@ class Layer:
                 self.top = edges[l[1]]     # top edge saved!
                 self.bottom = edges[l[0]]  # bottom edge saved!
 
-    def write_layer_edge(self, f, start_edge_num):
+    def write_layer_edges(self, f, start_edge_num, triangular_region=False):
         """Writes the edges for this layer in the file f.
 
         Returns a dictionary of ID numbers for each edge.
@@ -297,6 +297,11 @@ class Layer:
         d['<part>, <layer>, bottom'] : start_edge_num+1
         d['<part>, <layer>, right'] : start_edge_num+2
         d['<part>, <layer>, top'] : start_edge_num+3
+
+        If triangular_region=True, then only 3 items are in the dictionary.
+        d['<part>, <layer>, left'] : start_edge_num
+        d['<part>, <layer>, bottom'] : start_edge_num+1
+        d['<part>, <layer>, top'] : start_edge_num+2
 
         Parameters
         ----------
@@ -311,10 +316,16 @@ class Layer:
             prefix = '{0}{1}; {2}'.format(part_name, part_num, layer_name)
         else:
             prefix = '{0}; {1}'.format(part_name, layer_name)
-        d = {'{0}; left'.format(prefix) : start_edge_num,
-             '{0}; bottom'.format(prefix) : start_edge_num+1,
-             '{0}; right'.format(prefix) : start_edge_num+2,
-             '{0}; top'.format(prefix) : start_edge_num+3}
+        if triangular_region:
+            d = {'{0}; left'.format(prefix) : start_edge_num,
+                 '{0}; bottom'.format(prefix) : start_edge_num+1,
+                 '{0}; top'.format(prefix) : start_edge_num+2}
+        else:
+            # this is a quadrilateral region
+            d = {'{0}; left'.format(prefix) : start_edge_num,
+                 '{0}; bottom'.format(prefix) : start_edge_num+1,
+                 '{0}; right'.format(prefix) : start_edge_num+2,
+                 '{0}; top'.format(prefix) : start_edge_num+3}
         # left edge
         f.write('curd {0} lp3\n'.format(start_edge_num))
         for cd_pair in self.left:
@@ -325,14 +336,21 @@ class Layer:
         for cd_pair in self.bottom:
             f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
         f.write(';;\n\n')
-        # right edge
-        f.write('curd {0} lp3\n'.format(start_edge_num+2))
-        for cd_pair in self.right:
-            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
-        f.write(';;\n\n')
-        # top edge
-        f.write('curd {0} lp3\n'.format(start_edge_num+3))
-        for cd_pair in self.top:
-            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
-        f.write(';;\n\n')
+        if triangular_region:
+            # top edge
+            f.write('curd {0} lp3\n'.format(start_edge_num+2))
+            for cd_pair in self.top:
+                f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+            f.write(';;\n\n')
+        else:
+            # right edge
+            f.write('curd {0} lp3\n'.format(start_edge_num+2))
+            for cd_pair in self.right:
+                f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+            f.write(';;\n\n')
+            # top edge
+            f.write('curd {0} lp3\n'.format(start_edge_num+3))
+            for cd_pair in self.top:
+                f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+            f.write(';;\n\n')
         return d

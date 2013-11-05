@@ -1922,60 +1922,74 @@ class MonoplaneStructure:
             f.write("c root buildup " + "-"*20 + "\n")
             # remove the unnecessary 'triax, annulus' layer, which is not used
             #   for meshing
-            # make a new copy of the dictionary, we don't mutate the original
+            # make a new copy of the dictionary, so we don't mutate the
+            #   original 'layer' dictionary
             rb_dict = self.root_buildup.layer.copy()
             rb_dict.pop('triax, annulus')
             for (layer_name, layer_obj) in rb_dict.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.spar_cap.exists():
             f.write("c spar cap " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.spar_cap.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.aft_panel_1.exists():
             f.write("c aft panel #1 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.aft_panel_1.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.aft_panel_2.exists():
             f.write("c aft panel #2 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.aft_panel_2.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.LE_panel.exists():
             f.write("c LE panel " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.LE_panel.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.shear_web_1.exists():
             f.write("c shear web #1 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_1.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.shear_web_2.exists():
             f.write("c shear web #2 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_2.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.shear_web_3.exists():
             f.write("c shear web #3 " + "-"*20 + "\n")
             for (layer_name, layer_obj) in self.shear_web_3.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
+                d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4
                 self._dict_of_edge_nums.update(d)
         if self.TE_reinforcement.exists():
             f.write("c TE reinforcement " + "-"*20 + "\n")
-            for (layer_name, layer_obj) in self.TE_reinforcement.layer.items():
-                d = layer_obj.write_layer_edge(f, start_edge_num)
-                start_edge_num += 4
+            te_dict = self.TE_reinforcement.layer.copy()
+            # make a new copy of the dictionary, so we don't mutate the
+            #   original 'layer' dictionary
+            if self.parent_station.airfoil.has_sharp_TE:
+                # remove the unnecessary 'uniax' and 'foam' layers, which are
+                #   not used for meshing
+                te_dict.pop('uniax')
+                te_dict.pop('foam')
+            for (layer_name, layer_obj) in te_dict.items():
+                if layer_obj.right is None:
+                    # this is a triangular region
+                    d = layer_obj.write_layer_edges(f, start_edge_num,
+                        triangular_region=True)
+                else:
+                    d = layer_obj.write_layer_edges(f, start_edge_num)
+                start_edge_num += len(d)
                 self._dict_of_edge_nums.update(d)
         f.close()
 
@@ -2382,41 +2396,280 @@ class MonoplaneStructure:
                 d['ShearWeb3; biax, right; top']))
             f.write("\n")
         if self.TE_reinforcement.exists():
-            # uniax layer
-            f.write("c make a block mesh for TE reinforcement, uniax layer\n")
-            i_cells = 2
-            j_cells = 30
-            f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
-            f.write("-0.1 0.1; -0.1 0.1; 0;\n")
-            if interrupt_flag:
-                f.write("interrupt\n")
-            f.write("c left edge (i=1, j varies)\n")
-            f.write("cure 1 1 1 1 2 1 {0}\n".format(
-                d['TE_Reinforcement; uniax; left']))
-            if interrupt_flag:
-                f.write("interrupt\n")
-            f.write("c bottom edge (j=1, i varies)\n")
-            f.write("cure 1 1 1 2 1 1 {0}\n".format(
-                d['TE_Reinforcement; uniax; bottom']))
-            if interrupt_flag:
-                f.write("interrupt\n")
-            f.write("c right edge (i=2, j varies)\n")
-            f.write("cure 2 1 1 2 2 1 {0}\n".format(
-                d['TE_Reinforcement; uniax; right']))
-            if interrupt_flag:
-                f.write("interrupt\n")
-            f.write("c top edge (j=2, i varies)\n")
-            f.write("cure 1 2 1 2 2 1 {0}\n".format(
-                d['TE_Reinforcement; uniax; top']))
-            f.write("\n")
-            # foam layer
-            foam_flag = False
-            # check if the foam layer exists
-            if 'TE_Reinforcement; foam; left' in d.keys():
-                foam_flag = True
-            if foam_flag:
-                # if the foam layer exists, mesh it!
-                f.write("c make a block mesh for TE reinforcement, foam layer\n")
+            if self.parent_station.airfoil.has_sharp_TE:
+                # uniax, upper left
+                f.write("c make a block mesh for TE reinforcement, uniax, upper left layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper left; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper left; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c right edge (i=2, j varies)\n")
+                f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper left; right']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper left; top']))
+                f.write("\n")
+                # uniax, upper middle
+                f.write("c make a block mesh for TE reinforcement, uniax, upper middle layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper middle; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper middle; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c right edge (i=2, j varies)\n")
+                f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper middle; right']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper middle; top']))
+                f.write("\n")
+                # uniax, upper right
+                f.write("c make a block mesh for TE reinforcement, uniax, upper right layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper right; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper right; bottom']))
+                try:
+                    if interrupt_flag:
+                        f.write("interrupt\n")
+                    f.write("c right edge (i=2, j varies)\n")
+                    f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                        d['TE_Reinforcement; uniax, upper right; right']))
+                except KeyError:
+                    # there is no right edge
+                    # (this is a triangular region)
+                    pass
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, upper right; top']))
+                f.write("\n")
+                # uniax, lower left
+                f.write("c make a block mesh for TE reinforcement, uniax, lower left layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower left; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower left; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c right edge (i=2, j varies)\n")
+                f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower left; right']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower left; top']))
+                f.write("\n")
+                # uniax, lower middle
+                f.write("c make a block mesh for TE reinforcement, uniax, lower middle layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower middle; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower middle; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c right edge (i=2, j varies)\n")
+                f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower middle; right']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower middle; top']))
+                f.write("\n")
+                # uniax, lower right
+                f.write("c make a block mesh for TE reinforcement, uniax, lower right layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower right; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower right; bottom']))
+                try:
+                    if interrupt_flag:
+                        f.write("interrupt\n")
+                    f.write("c right edge (i=2, j varies)\n")
+                    f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                        d['TE_Reinforcement; uniax, lower right; right']))
+                except KeyError:
+                    # there is no right edge
+                    # (this is a triangular region)
+                    pass
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; uniax, lower right; top']))
+                f.write("\n")
+                # foam, upper left
+                f.write("c make a block mesh for TE reinforcement, foam, upper left layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, upper left; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, upper left; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c right edge (i=2, j varies)\n")
+                f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, upper left; right']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, upper left; top']))
+                f.write("\n")
+                # foam, upper middle
+                f.write("c make a block mesh for TE reinforcement, foam, upper middle layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, upper middle; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, upper middle; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, upper middle; top']))
+                f.write("\n")
+                # foam, lower left
+                f.write("c make a block mesh for TE reinforcement, foam, lower left layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, lower left; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, lower left; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c right edge (i=2, j varies)\n")
+                f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, lower left; right']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, lower left; top']))
+                f.write("\n")
+                # foam, lower middle
+                f.write("c make a block mesh for TE reinforcement, foam, lower middle layer\n")
+                i_cells = 2
+                j_cells = 10
+                f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c left edge (i=1, j varies)\n")
+                f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, lower middle; left']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c bottom edge (j=1, i varies)\n")
+                f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, lower middle; bottom']))
+                if interrupt_flag:
+                    f.write("interrupt\n")
+                f.write("c top edge (j=2, i varies)\n")
+                f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                    d['TE_Reinforcement; foam, lower middle; top']))
+                f.write("\n")
+            else:
+                # uniax layer
+                f.write("c make a block mesh for TE reinforcement, uniax layer\n")
                 i_cells = 2
                 j_cells = 30
                 f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
@@ -2425,23 +2678,56 @@ class MonoplaneStructure:
                     f.write("interrupt\n")
                 f.write("c left edge (i=1, j varies)\n")
                 f.write("cure 1 1 1 1 2 1 {0}\n".format(
-                    d['TE_Reinforcement; foam; left']))
+                    d['TE_Reinforcement; uniax; left']))
                 if interrupt_flag:
                     f.write("interrupt\n")
                 f.write("c bottom edge (j=1, i varies)\n")
                 f.write("cure 1 1 1 2 1 1 {0}\n".format(
-                    d['TE_Reinforcement; foam; bottom']))
+                    d['TE_Reinforcement; uniax; bottom']))
                 if interrupt_flag:
                     f.write("interrupt\n")
                 f.write("c right edge (i=2, j varies)\n")
                 f.write("cure 2 1 1 2 2 1 {0}\n".format(
-                    d['TE_Reinforcement; foam; right']))
+                    d['TE_Reinforcement; uniax; right']))
                 if interrupt_flag:
                     f.write("interrupt\n")
                 f.write("c top edge (j=2, i varies)\n")
                 f.write("cure 1 2 1 2 2 1 {0}\n".format(
-                    d['TE_Reinforcement; foam; top']))
+                    d['TE_Reinforcement; uniax; top']))
                 f.write("\n")
+                # foam layer
+                foam_flag = False
+                # check if the foam layer exists
+                if 'TE_Reinforcement; foam; left' in d.keys():
+                    foam_flag = True
+                if foam_flag:
+                    # if the foam layer exists, mesh it!
+                    f.write("c make a block mesh for TE reinforcement, foam layer\n")
+                    i_cells = 2
+                    j_cells = 30
+                    f.write("block 1 {0}; 1 {1}; -1;\n".format(i_cells,j_cells))
+                    f.write("-0.1 0.1; -0.1 0.1; 0;\n")
+                    if interrupt_flag:
+                        f.write("interrupt\n")
+                    f.write("c left edge (i=1, j varies)\n")
+                    f.write("cure 1 1 1 1 2 1 {0}\n".format(
+                        d['TE_Reinforcement; foam; left']))
+                    if interrupt_flag:
+                        f.write("interrupt\n")
+                    f.write("c bottom edge (j=1, i varies)\n")
+                    f.write("cure 1 1 1 2 1 1 {0}\n".format(
+                        d['TE_Reinforcement; foam; bottom']))
+                    if interrupt_flag:
+                        f.write("interrupt\n")
+                    f.write("c right edge (i=2, j varies)\n")
+                    f.write("cure 2 1 1 2 2 1 {0}\n".format(
+                        d['TE_Reinforcement; foam; right']))
+                    if interrupt_flag:
+                        f.write("interrupt\n")
+                    f.write("c top edge (j=2, i varies)\n")
+                    f.write("cure 1 2 1 2 2 1 {0}\n".format(
+                        d['TE_Reinforcement; foam; top']))
+                    f.write("\n")
         f.close()
 
     def write_truegrid_inputfile(self, interrupt_flag=False):
