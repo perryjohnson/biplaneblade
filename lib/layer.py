@@ -140,6 +140,16 @@ class Layer:
             match_r = np.nonzero(x==r)[0]
             # group all the indices together in a sorted array
             match = np.append(match_l, match_r)
+        elif self.parent_part.__class__.__name__ == 'ExternalSurface':
+            stn = self.parent_part.parent_structure.parent_station
+            sharp_TE = stn.airfoil.has_sharp_TE
+            if not sharp_TE:
+                # find the indices where the x-coord is equal to zero
+                match_x = np.nonzero(x==0.0)[0]
+                # find the indices where the y-coord is equal to the right edge
+                match_y = np.nonzero(y==0.0)[0]
+                # group all the indices together in a sorted array
+                match = np.append(match_x, match_y)
         match.sort()
         # split the polygon up at each of the corners into 4 "edges"
         edge1 = a[match[0]:match[1]+1,:]

@@ -118,21 +118,6 @@ height:  {1:6.4f} (meters)
 
         <external_surface>.layer['gelcoat'] : gelcoat layer
         <external_surface>.layer['triax'] : triax layer
-        # --
-        # <external_surface>.layer[2] : gelcoat layer (lower left quadrant)
-        # <external_surface>.layer[3] : gelcoat layer (lower right quadrant)
-        # <external_surface>.layer[4] : gelcoat layer (upper right quadrant)
-        # <external_surface>.layer[5] : gelcoat layer (upper left quadrant)
-        # --
-        # <external_surface>.layer[6] : triax layer (lower left quadrant)
-        # <external_surface>.layer[7] : triax layer (lower right quadrant)
-        # <external_surface>.layer[8] : triax layer (upper right quadrant)
-        # <external_surface>.layer[9] : triax layer (upper left quadrant)
-
-        # Note: This stores 2 versions of the same external surface.
-        # (1) entire annulus : .layer[0], .layer[1]
-        # (2) 8 curved rectangles : .layer[2], .layer[3], .layer[4], .layer[5],
-        #     .layer[6], .layer[7], .layer[8], .layer[9]
 
         """
         st = self.parent_structure
@@ -156,27 +141,59 @@ height:  {1:6.4f} (meters)
             name='triax')
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['triax'])
-        # # now, we cut the annulus into 8 curved rectangles (4 per layer),
-        # #   with one in each quadrant
-        # bb = self.bounding_box() # get bounding boxes for each quadrant
-        # # gelcoat layer
-        # print "Station #{0} ----------".format(st.parent_station.station_num)
-        # for i, box in enumerate(bb):
-        #     p_quad = polygon_gelcoat.intersection(box)
-        #     self.layer.append(l.Layer(p_quad,
-        #         b.dict_of_materials['gelcoat'], parent_part=self))
-        #     # check that layer i+2 (start counting at 2) is a polygon
-        #     print "Layer #{0}, {1}".format((i+2), self.layer[i+2].polygon.geom_type)
-        #     assert self.layer[i+2].polygon.geom_type == 'Polygon'
-        #     # no need to append these polygons to <station>._list_of_layers
-        # # triax layer
-        # for i, box in enumerate(bb):
-        #     p_quad = polygon_triax.intersection(box)
-        #     self.layer.append(l.Layer(p_quad,
-        #         b.dict_of_materials['triaxial GFRP'], parent_part=self))
-        #     # check that layer i+6 (start counting at 6) is a polygon
-        #     assert self.layer[i+6].polygon.geom_type == 'Polygon'
-        #     # no need to append these polygons to <station>._list_of_layers
+
+    def create_alternate_layers(self):
+        """Create the alternate layers for meshing the external surface.
+
+        The alternate layers will be used to create meshes in TrueGrid.
+
+        If the trailing edge is smooth (sharp_TE=False), save 8 quadrilaterals:
+        -----------------------------------------------------------------------
+        <external_surface>.layer['gelcoat, lower left'] : gelcoat layer (lower
+            left quadrant)
+        <external_surface>.layer['gelcoat, lower right'] : gelcoat layer (lower
+            right quadrant)
+        <external_surface>.layer['gelcoat, upper right'] : gelcoat layer (upper
+            right quadrant)
+        <external_surface>.layer['gelcoat, upper left'] : gelcoat layer (upper
+            left quadrant)
+        <external_surface>.layer['triax, lower left'] : triax layer (lower left
+            quadrant)
+        <external_surface>.layer['triax, lower right'] : triax layer (lower
+            right quadrant)
+        <external_surface>.layer['triax, upper right'] : triax layer (upper
+            right quadrant)
+        <external_surface>.layer['triax, upper left'] : triax layer (upper left
+            quadrant)
+
+        """
+        st = self.parent_structure
+        b = st.parent_station.parent_blade
+        sharp_TE = st.parent_station.airfoil.has_sharp_TE
+        material_list = ['triax', 'gelcoat']
+        if not sharp_TE:
+            # cut annulus into quadrants
+            for material in material_list:
+                try:
+                    # try to access the annulus layer
+                    p = self.layer[material].polygon  # annulus
+                except KeyError:
+                    # if the annulus layer doesn't exist, throw a warning
+                    raise Warning("<ExternalSurface>.layer[{0}] was not found.\n  Try running <ExternalSurface>.create_layers() before running <ExternalSurface>.create_alternate_layers().".format(material))
+                # cut the annulus into 4 curved rectangles, w/ one in each quadrant
+                bb = self.bounding_box() # get bounding boxes for each quadrant
+                for (label,box) in bb.items():
+                    p_quad = p.intersection(box)
+                    if material == 'triax':
+                        dict_key = 'triaxial GFRP'
+                    else:
+                        dict_key = 'gelcoat'
+                    self.layer[material+', '+label] = l.Layer(p_quad,
+                        b.dict_of_materials[dict_key], parent_part=self,
+                        name=(material+', '+label))
+                    # check that the layer just created is a polygon
+                    assert self.layer[material+', '+label].polygon.geom_type == 'Polygon'
+                    # no need to append these polygons to <station>._list_of_layers
 
     def bounding_box(self, x_boundary_buffer=1.2, y_boundary_buffer=1.2):
         """Returns list of 4 polygons for bounding boxes in each quadrant.
@@ -206,36 +223,32 @@ height:  {1:6.4f} (meters)
 
         """
         af = self.parent_structure.parent_station.airfoil
-        bb = []
+        bb = {}
         (minx, miny, maxx, maxy) = af.polygon.bounds
         # lower left quadrant
         pt1 = (minx*x_boundary_buffer, miny*y_boundary_buffer)
         pt2 = (0.0, miny*y_boundary_buffer)
         pt3 = (0.0, 0.0)
         pt4 = (minx*x_boundary_buffer, 0.0)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['lower left'] = Polygon([pt1, pt2, pt3, pt4])
         # lower right quadrant
         pt1 = (0.0, miny*y_boundary_buffer)
         pt2 = (maxx*x_boundary_buffer, miny*y_boundary_buffer)
         pt3 = (maxx*x_boundary_buffer, 0.0)
         pt4 = (0.0, 0.0)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['lower right'] = Polygon([pt1, pt2, pt3, pt4])
         # upper right quadrant
         pt1 = (0.0, 0.0)
         pt2 = (maxx*x_boundary_buffer, 0.0)
         pt3 = (maxx*x_boundary_buffer, maxy*y_boundary_buffer)
         pt4 = (0.0, maxy*y_boundary_buffer)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['upper right'] = Polygon([pt1, pt2, pt3, pt4])
         # upper left quadrant
         pt1 = (minx*x_boundary_buffer, 0.0)
         pt2 = (0.0, 0.0)
         pt3 = (0.0, maxy*y_boundary_buffer)
         pt4 = (minx*x_boundary_buffer, maxy*y_boundary_buffer)
-        bounding_box = Polygon([pt1, pt2, pt3, pt4])
-        bb.append(bounding_box)
+        bb['upper left'] = Polygon([pt1, pt2, pt3, pt4])
         return bb
 
     def get_edges(self, which_layer):
@@ -343,22 +356,7 @@ class RootBuildup(Part):
     def create_layers(self):
         """Create the triax layer in the root buildup.
 
-        <root_buildup>.layer['triax, annulus'] : triax layer (entire annulus)
-        --
-        <root_buildup>.layer['triax, lower left'] : triax layer (lower left
-            quadrant)
-        <root_buildup>.layer['triax, lower right'] : triax layer (lower right
-            quadrant)
-        <root_buildup>.layer['triax, upper right'] : triax layer (upper right
-            quadrant)
-        <root_buildup>.layer['triax, upper left'] : triax layer (upper left
-            quadrant)
-
-        Note: This stores 2 versions of the same root buildup.
-        (1) entire annulus : .layer['triax, annulus']
-        (2) 4 curved rectangles : .layer['triax, lower left'],
-            .layer['triax, lower right'], .layer['triax, upper right'],
-            .layer['triax, upper left']
+        <root_buildup>.layer['triax'] : triax layer (entire annulus)
 
         """
         st = self.parent_structure
@@ -368,12 +366,11 @@ class RootBuildup(Part):
         op = af.polygon.buffer(-st.external_surface.height)
         ip = op.buffer(-self.height)
         p = op.difference(ip)  # this polygon is like an annulus
-        self.layer['triax, annulus'] = l.Layer(p,
-            b.dict_of_materials['triaxial GFRP'], parent_part=self,
-            name='triax, annulus')
-        # check that layer['triax, annulus'] is a Polygon
-        assert self.layer['triax, annulus'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['triax, annulus'])
+        self.layer['triax'] = l.Layer(p, b.dict_of_materials['triaxial GFRP'],
+            parent_part=self, name='triax')
+        # check that layer['triax'] is a Polygon
+        assert self.layer['triax'].polygon.geom_type == 'Polygon'
+        st._list_of_layers.append(self.layer['triax'])
 
     def create_alternate_layers(self):
         """Create the alternate triax layers for meshing the root buildup.
@@ -398,10 +395,10 @@ class RootBuildup(Part):
         b = st.parent_station.parent_blade
         try:
             # try to access the annulus layer
-            p = self.layer['triax, annulus'].polygon  # annulus
+            p = self.layer['triax'].polygon  # annulus
         except KeyError:
             # if the annulus layer doesn't exist, throw a warning
-            raise Warning("<RootBuildup>.layer['triax, annulus'] was not found.\n  Try running <RootBuildup>.create_layers() before running <RootBuildup>.create_alternate_layers().")
+            raise Warning("<RootBuildup>.layer['triax'] was not found.\n  Try running <RootBuildup>.create_layers() before running <RootBuildup>.create_alternate_layers().")
         # cut the annulus into 4 curved rectangles, w/ one in each quadrant
         bb = self.bounding_box() # get bounding boxes for each quadrant
         for (label,box) in bb.items():
@@ -1278,6 +1275,8 @@ class MonoplaneStructure:
         if self.TE_reinforcement.exists():
             if self.parent_station.airfoil.has_sharp_TE:
                 self.TE_reinforcement.create_alternate_layers()
+        # if self.external_surface.exists():
+        #     self.external_surface.create_alternate_layers()
 
     def merge_all_polygons(self, plot_flag=False):
         """Merges all the layer polygons in this structure into one polygon.
@@ -1311,7 +1310,7 @@ class MonoplaneStructure:
             p = self.external_surface.layer['gelcoat'].polygon
             p = p.union(self.external_surface.layer['triax'].polygon)
             if self.root_buildup.exists():
-                RB = self.root_buildup.layer['triax, annulus'].polygon
+                RB = self.root_buildup.layer['triax'].polygon
                 p = p.union(RB)
             if self.LE_panel.exists():
                 LE = self.LE_panel.layer['foam'].polygon
@@ -1612,11 +1611,11 @@ class MonoplaneStructure:
             f = open(os.path.join(stn.station_path,'external_surface.txt'), 'w')
             f.write("# gelcoat region\n")
             f.write("# --------------\n")
-            f.write(str(self.external_surface.layer[0].polygon.__geo_interface__))
+            f.write(str(self.external_surface.layer['gelcoat'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# triax region\n")
             f.write("# ------------\n")
-            f.write(str(self.external_surface.layer[1].polygon.__geo_interface__))
+            f.write(str(self.external_surface.layer['triax'].polygon.__geo_interface__))
             f.close()
         if self.root_buildup.exists():
             f = open(os.path.join(stn.station_path,'root_buildup.txt'), 'w')
@@ -1626,88 +1625,88 @@ class MonoplaneStructure:
             f = open(os.path.join(stn.station_path,'spar_cap.txt'), 'w')
             f.write("# lower spar cap\n")
             f.write("# --------------\n")
-            f.write(str(self.spar_cap.layer[0].polygon.__geo_interface__))
+            f.write(str(self.spar_cap.layer['upper'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# upper spar cap\n")
             f.write("# --------------\n")
-            f.write(str(self.spar_cap.layer[1].polygon.__geo_interface__))
+            f.write(str(self.spar_cap.layer['lower'].polygon.__geo_interface__))
             f.close()
         if self.aft_panel_1.exists():
             f = open(os.path.join(stn.station_path,'aft_panel_1.txt'), 'w')
             f.write("# lower aft panel #1\n")
             f.write("# ------------------\n")
-            f.write(str(self.aft_panel_1.layer[0].polygon.__geo_interface__))
+            f.write(str(self.aft_panel_1.layer['lower'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# upper aft panel #1\n")
             f.write("# ------------------\n")
-            f.write(str(self.aft_panel_1.layer[1].polygon.__geo_interface__))
+            f.write(str(self.aft_panel_1.layer['upper'].polygon.__geo_interface__))
             f.close()
         if self.aft_panel_2.exists():
             f = open(os.path.join(stn.station_path,'aft_panel_2.txt'), 'w')
             f.write("# lower aft panel #2\n")
             f.write("# ------------------\n")
-            f.write(str(self.aft_panel_2.layer[0].polygon.__geo_interface__))
+            f.write(str(self.aft_panel_2.layer['lower'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# upper aft panel #2\n")
             f.write("# ------------------\n")
-            f.write(str(self.aft_panel_2.layer[1].polygon.__geo_interface__))
+            f.write(str(self.aft_panel_2.layer['upper'].polygon.__geo_interface__))
             f.close()
         if self.LE_panel.exists():
             f = open(os.path.join(stn.station_path,'LE_panel.txt'), 'w')
-            f.write(str(self.LE_panel.layer[0].polygon.__geo_interface__))
+            f.write(str(self.LE_panel.layer['foam'].polygon.__geo_interface__))
             f.close()
         if self.shear_web_1.exists():
             f = open(os.path.join(stn.station_path,'shear_web_1.txt'), 'w')
             f.write("# left biax region\n")
             f.write("# ----------------\n")
-            f.write(str(self.shear_web_1.layer[0].polygon.__geo_interface__))
+            f.write(str(self.shear_web_1.layer['biax, left'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# foam region\n")
             f.write("# -----------\n")
-            f.write(str(self.shear_web_1.layer[1].polygon.__geo_interface__))
+            f.write(str(self.shear_web_1.layer['foam'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# right biax region\n")
             f.write("# -----------------\n")
-            f.write(str(self.shear_web_1.layer[2].polygon.__geo_interface__))
+            f.write(str(self.shear_web_1.layer['biax, right'].polygon.__geo_interface__))
             f.close()
         if self.shear_web_2.exists():
             f = open(os.path.join(stn.station_path,'shear_web_2.txt'), 'w')
             f.write("# left biax region\n")
             f.write("# ----------------\n")
-            f.write(str(self.shear_web_2.layer[0].polygon.__geo_interface__))
+            f.write(str(self.shear_web_2.layer['biax, left'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# foam region\n")
             f.write("# -----------\n")
-            f.write(str(self.shear_web_2.layer[1].polygon.__geo_interface__))
+            f.write(str(self.shear_web_2.layer['foam'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# right biax region\n")
             f.write("# -----------------\n")
-            f.write(str(self.shear_web_2.layer[2].polygon.__geo_interface__))
+            f.write(str(self.shear_web_2.layer['biax, right'].polygon.__geo_interface__))
             f.close()
         if self.shear_web_3.exists():
             f = open(os.path.join(stn.station_path,'shear_web_3.txt'), 'w')
             f.write("# left biax region\n")
             f.write("# ----------------\n")
-            f.write(str(self.shear_web_3.layer[0].polygon.__geo_interface__))
+            f.write(str(self.shear_web_3.layer['biax, left'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# foam region\n")
             f.write("# -----------\n")
-            f.write(str(self.shear_web_3.layer[1].polygon.__geo_interface__))
+            f.write(str(self.shear_web_3.layer['foam'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# right biax region\n")
             f.write("# -----------------\n")
-            f.write(str(self.shear_web_3.layer[2].polygon.__geo_interface__))
+            f.write(str(self.shear_web_3.layer['biax, right'].polygon.__geo_interface__))
             f.close()
         if self.TE_reinforcement.exists():
             f = open(os.path.join(stn.station_path,'TE_reinforcement.txt'), 'w')
             f.write("# uniax region\n")
             f.write("# ------------\n")
-            f.write(str(self.TE_reinforcement.layer[0].polygon.__geo_interface__))
+            f.write(str(self.TE_reinforcement.layer['uniax'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# foam region\n")
             f.write("# -----------\n")
             try:
-                f.write(str(self.TE_reinforcement.layer[1].polygon.__geo_interface__))
+                f.write(str(self.TE_reinforcement.layer['foam'].polygon.__geo_interface__))
             except IndexError:
                 f.write("# ...the foam region doesn't exist!")
             f.close()
@@ -1715,41 +1714,41 @@ class MonoplaneStructure:
             f = open(os.path.join(stn.station_path,'internal_surface_1.txt'), 'w')
             f.write("# triax region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_1.layer[0].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_1.layer['triax'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# resin region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_1.layer[1].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_1.layer['resin'].polygon.__geo_interface__))
             f.close()
         if self.internal_surface_2.exists():
             f = open(os.path.join(stn.station_path,'internal_surface_2.txt'), 'w')
             f.write("# triax region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_2.layer[0].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_2.layer['triax'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# resin region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_2.layer[1].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_2.layer['resin'].polygon.__geo_interface__))
             f.close()
         if self.internal_surface_3.exists():
             f = open(os.path.join(stn.station_path,'internal_surface_3.txt'), 'w')
             f.write("# triax region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_3.layer[0].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_3.layer['triax'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# resin region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_3.layer[1].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_3.layer['resin'].polygon.__geo_interface__))
             f.close()
         if self.internal_surface_4.exists():
             f = open(os.path.join(stn.station_path,'internal_surface_4.txt'), 'w')
             f.write("# triax region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_4.layer[0].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_4.layer['triax'].polygon.__geo_interface__))
             f.write("\n\n")
             f.write("# resin region\n")
             f.write("--------------\n")
-            f.write(str(self.internal_surface_4.layer[1].polygon.__geo_interface__))
+            f.write(str(self.internal_surface_4.layer['resin'].polygon.__geo_interface__))
             f.close()
 
     def save_all_layer_edges(self):
@@ -1833,14 +1832,16 @@ class MonoplaneStructure:
             te.layer['foam, lower left'].get_and_save_edges()
             te.layer['foam, lower middle'].get_and_save_edges()
         # if self.external_surface.exists():
-        #     self.external_surface.get_and_save_edges('gelcoat, lower left')
-        #     self.external_surface.get_and_save_edges('gelcoat, lower right')
-        #     self.external_surface.get_and_save_edges('gelcoat, upper right')
-        #     self.external_surface.get_and_save_edges('gelcoat, upper left')
-        #     self.external_surface.get_and_save_edges('triax, lower left')
-        #     self.external_surface.get_and_save_edges('triax, lower right')
-        #     self.external_surface.get_and_save_edges('triax, upper right')
-        #     self.external_surface.get_and_save_edges('triax, upper left')
+        #     es = self.external_surface
+        #     if not self.parent_station.airfoil.has_sharp_TE:
+        #         es.layer['gelcoat, lower left'].get_and_save_edges()
+        #         es.layer['gelcoat, lower right'].get_and_save_edges()
+        #         es.layer['gelcoat, upper right'].get_and_save_edges()
+        #         es.layer['gelcoat, upper left'].get_and_save_edges()
+        #         es.layer['triax, lower left'].get_and_save_edges()
+        #         es.layer['triax, lower right'].get_and_save_edges()
+        #         es.layer['triax, upper right'].get_and_save_edges()
+        #         es.layer['triax, upper left'].get_and_save_edges()
         # if self.internal_surface_1.exists():
         #     # do something...
 
@@ -1920,12 +1921,12 @@ class MonoplaneStructure:
         # 3. append d to self._dict_of_edge_nums
         if self.root_buildup.exists():
             f.write("c root buildup " + "-"*20 + "\n")
-            # remove the unnecessary 'triax, annulus' layer, which is not used
+            # remove the unnecessary 'triax' layer, which is not used
             #   for meshing
             # make a new copy of the dictionary, so we don't mutate the
             #   original 'layer' dictionary
             rb_dict = self.root_buildup.layer.copy()
-            rb_dict.pop('triax, annulus')
+            rb_dict.pop('triax')
             for (layer_name, layer_obj) in rb_dict.items():
                 d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += 4

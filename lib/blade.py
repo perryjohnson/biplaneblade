@@ -361,10 +361,53 @@ class _Blade:
                                 st.external_surface.layer['triax'].polygon, ax,
                                 face_color='#5EE54C', edge_color='#000000',
                                 alpha=0.8)  # face color is light green
+                            # if not alternate_layers:
+                            #     station.plot_polygon(
+                            #         st.external_surface.layer['gelcoat'].polygon, ax,
+                            #         face_color='#5EE54C', edge_color='#000000',
+                            #         alpha=0.8)  # face color is light green
+                            #     station.plot_polygon(
+                            #         st.external_surface.layer['triax'].polygon, ax,
+                            #         face_color='#5EE54C', edge_color='#000000',
+                            #         alpha=0.8)  # face color is light green
+                            # else:
+                            #     if not station.airfoil.has_sharp_TE:
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['gelcoat, upper left'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['gelcoat, upper right'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['gelcoat, lower left'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['gelcoat, lower right'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['triax, upper left'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['triax, upper right'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['triax, lower left'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
+                            #         station.plot_polygon(
+                            #             st.external_surface.layer['triax, lower right'].polygon, ax,
+                            #             face_color='#5EE54C', edge_color='#000000',
+                            #             alpha=0.8)  # face color is light green
                         if st.root_buildup.exists():
                             if not alternate_layers:
                                 station.plot_polygon(
-                                    st.root_buildup.layer['triax, annulus'].polygon, ax,
+                                    st.root_buildup.layer['triax'].polygon, ax,
                                     face_color='#BE925A', edge_color='#000000',
                                     alpha=0.8)  # face color is brown
                             else:
