@@ -6,6 +6,7 @@ Last updated: October 11, 2013
 """
 
 
+import os
 import numpy as np
 from shapely.geometry import asLineString
 
@@ -364,3 +365,35 @@ class Layer:
                 f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
             f.write(';;\n\n')
         return d
+
+    def write_polygon_edges(self):
+        """Write edges for this layer's polygon to a file in `station_path`."""
+        stn = self.parent_part.parent_structure.parent_station
+        part_name = self.parent_part.__class__.__name__  # part name
+        layer_name = self.name  # layer name
+        if part_name in ['ShearWeb', 'AftPanel', 'InternalSurface']:
+            part_num = self.parent_part.num
+            prefix = '{0}{1}_{2}'.format(part_name, part_num, layer_name)
+        else:
+            prefix = '{0}_{1}'.format(part_name, layer_name)
+        f = open(os.path.join(stn.station_path,prefix+'.txt'), 'w')
+        # exterior
+        f.write('# exterior:\n')
+        f.write('# ---------\n')
+        for cd_pair in self.polygon.exterior.coords:
+            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+        f.write(';;\n\n')
+        # interior
+        try:
+            # pick the first interior sequence
+            # (layers should not have multiple interiors)
+            interior = self.polygon.interiors[0]
+            f.write('# interior:\n')
+            f.write('# ---------\n')
+            for cd_pair in interior.coords:
+                f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+            f.write(';;\n\n')
+        except IndexError:
+            # no interior coords exist
+            pass
+        f.close()
