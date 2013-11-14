@@ -1805,7 +1805,7 @@ class MonoplaneStructure:
 
         This file is formatted as a TrueGrid input file (*.tg).
 
-        Saves self.dict_of_edge_nums, a dictionary of edge names for curve ID
+        Saves self._dict_of_edge_nums, a dictionary of edge names for curve ID
         numbers. For example, some entries might look like:
 
         _dict_of_edge_nums['TE_Reinforcement; uniax; right'] = 5
