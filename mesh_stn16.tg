@@ -2521,6 +2521,14 @@ c   region
 c   interface
     3;     c  assign this to be the interface ID number
 
+c make block boundary (master #5) on right edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min
+    2 2 1  c  i-max j-max k-max
+c   interface
+    5;     c  assign this to be the interface ID number
+
 c assign the material to be uniax (material #1)
 mate 1
 
@@ -2543,6 +2551,14 @@ c   region
     1 2 1  c  i-max j-max k-max
 c   interface
     4;     c  assign this to be the interface ID number
+
+c make block boundary (master #6) on right edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min
+    2 2 1  c  i-max j-max k-max
+c   interface
+    6;     c  assign this to be the interface ID number
 
 c assign the material to be uniax (material #1)
 mate 1
@@ -2620,6 +2636,37 @@ c assign the left and right regions to be biax (material #2)
 mt 1 1 1 2 4 1 2
 mt 3 1 1 4 4 1 2
 
+c make a block mesh for: AftPanel1; lower -------------------------------------
+block 1 25; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 13
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 14
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 15
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 16
+
+c make block boundary (master #7) on left edge of mesh
+bb
+c   region
+    1 1 1  c  i-min j-min k-min
+    1 2 1  c  i-max j-max k-max
+c   interface
+    7;     c  assign this to be the interface ID number
+
+c make block boundary (master #9) on right edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min
+    2 2 1  c  i-max j-max k-max
+c   interface
+    9;     c  assign this to be the interface ID number
+
+c assign the material to be foam (material #4)
+mate 4
+
 c make a block mesh for: AftPanel1; upper -------------------------------------
 block 1 25; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2632,19 +2679,101 @@ cure 2 1 1 2 2 1 11
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 12
 
-c make a block mesh for: AftPanel1; lower
-block 1 25; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 13
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 14
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 15
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 16
+c make block boundary (master #8) on left edge of mesh
+bb
+c   region
+    1 1 1  c  i-min j-min k-min
+    1 2 1  c  i-max j-max k-max
+c   interface
+    8;     c  assign this to be the interface ID number
 
-c make a block mesh for: AftPanel2; upper
+c make block boundary (master #10) on right edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min
+    2 2 1  c  i-max j-max k-max
+c   interface
+    10;     c  assign this to be the interface ID number
+
+c assign the material to be foam (material #4)
+mate 4
+
+
+c shear web #2 ----------------------------------------------------------------
+c make a block mesh for: ShearWeb2
+block 1 2 3 4; 1 2 59 60; -1;
+-0.1 -0.05 0.05 0.1; -0.1 -0.05 0.05 0.1; 0;
+
+c --- biax, right ---
+c make block boundary (slave #5) on lower left edge of mesh
+bb
+c   region
+    1 2 1  c  i-min j-min k-min
+    1 1 1  c  i-max j-max k-max
+c   interface
+    5;     c  assign this to be the interface ID number
+c make block boundary (slave #6) on upper left edge of mesh
+bb
+c   region
+    1 4 1  c  i-min j-min k-min
+    1 3 1  c  i-max j-max k-max
+c   interface
+    6;     c  assign this to be the interface ID number
+c left edge (i=1, j varies)
+curs 1 1 1 1 2 1 41
+c bottom edge (j=1, i varies)
+curs 1 1 1 2 1 1 42
+c right edge (i=2, j varies)
+curs 2 1 1 2 2 1 43
+c top edge (j=2, i varies)
+curs 1 2 1 2 2 1 44
+
+c --- foam ---
+c bottom edge (j=1, i varies)
+curs 1 1 1 2 1 1 46
+c top edge (j=2, i varies)
+curs 1 2 1 2 2 1 48
+
+c --- biax, right ---
+c make block boundary (slave #7) on lower right edge of mesh
+bb
+c   region
+    4 2 1  c  i-min j-min k-min
+    4 1 1  c  i-max j-max k-max
+c   interface
+    7;     c  assign this to be the interface ID number
+c make block boundary (slave #8) on upper right edge of mesh
+bb
+c   region
+    4 4 1  c  i-min j-min k-min
+    4 3 1  c  i-max j-max k-max
+c   interface
+    8;     c  assign this to be the interface ID number
+c left edge (i=1, j varies)
+curs 1 1 1 1 2 1 49
+c bottom edge (j=1, i varies)
+curs 1 1 1 2 1 1 50
+c right edge (i=2, j varies)
+curs 2 1 1 2 2 1 51
+c top edge (j=2, i varies)
+curs 1 2 1 2 2 1 52
+
+c move nodes at left biax/foam boundary to align with y-heights of spar caps
+pbs 2 2 1 2 2 1 y 7.1  c move this node to y-coord of point 1 in curve 7
+pbs 2 3 1 2 3 1 y 3.1  c move this node to y-coord of point 1 in curve 3
+
+c move nodes at right biax/foam boundary to align with y-heights of aft panel 1
+pbs 3 2 1 3 2 1 y 13.2  c move this node to y-coord of point 2 in curve 13
+pbs 3 3 1 3 3 1 y 9.1  c move this node to y-coord of point 1 in curve 9
+
+c assign the default material to be foam (material #4)
+mate 4
+c assign the left and right regions to be biax (material #2)
+mt 1 1 1 2 4 1 2
+mt 3 1 1 4 4 1 2
+
+
+c make a block mesh for: AftPanel2; upper -------------------------------------
 block 1 18; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2656,7 +2785,7 @@ cure 2 1 1 2 2 1 19
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 20
 
-c make a block mesh for: AftPanel2; lower
+c make a block mesh for: AftPanel2; lower -------------------------------------
 block 1 18; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2667,42 +2796,6 @@ c right edge (i=2, j varies)
 cure 2 1 1 2 2 1 23
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 24
-
-c make a block mesh for: ShearWeb2; biax, left
-block 1 2; 1 30; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 41
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 42
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 43
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 44
-
-c make a block mesh for: ShearWeb2; foam
-block 1 2; 1 30; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 45
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 46
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 47
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 48
-
-c make a block mesh for: ShearWeb2; biax, right
-block 1 2; 1 30; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 49
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 50
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 51
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 52
 
 c make a block mesh for: ShearWeb3; biax, left
 block 1 2; 1 18; -1;
