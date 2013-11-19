@@ -2565,7 +2565,7 @@ mate 1
 
 c shear web #1 ----------------------------------------------------------------
 c make a block mesh for: ShearWeb1
-block 1 2 3 4; 1 2 59 60; -1;
+block 1 2 3 4; 1 2 39 40; -1;
 -0.1 -0.05 0.05 0.1; -0.1 -0.05 0.05 0.1; 0;
 
 c --- biax, left ---
@@ -2701,7 +2701,7 @@ mate 4
 
 c shear web #2 ----------------------------------------------------------------
 c make a block mesh for: ShearWeb2
-block 1 2 3 4; 1 2 59 60; -1;
+block 1 2 3 4; 1 2 39 40; -1;
 -0.1 -0.05 0.05 0.1; -0.1 -0.05 0.05 0.1; 0;
 
 c --- biax, right ---
@@ -2719,20 +2719,20 @@ c   region
     1 3 1  c  i-max j-max k-max
 c   interface
     6;     c  assign this to be the interface ID number
-c left edge (i=1, j varies)
-curs 1 1 1 1 2 1 41
-c bottom edge (j=1, i varies)
+c left edge (i=1, j=1-4)
+curs 1 1 1 1 4 1 41
+c bottom edge (i=1-2, j=1)
 curs 1 1 1 2 1 1 42
-c right edge (i=2, j varies)
-curs 2 1 1 2 2 1 43
-c top edge (j=2, i varies)
-curs 1 2 1 2 2 1 44
+c right edge (i=2, j=1-4)
+curs 2 1 1 2 4 1 43
+c top edge (i=1-2, j=4)
+curs 1 4 1 2 4 1 44
 
 c --- foam ---
-c bottom edge (j=1, i varies)
-curs 1 1 1 2 1 1 46
-c top edge (j=2, i varies)
-curs 1 2 1 2 2 1 48
+c bottom edge (i=2-3, j=1)
+curs 2 1 1 3 1 1 46
+c top edge (i=2-3, j=4)
+curs 2 4 1 3 4 1 48
 
 c --- biax, right ---
 c make block boundary (slave #7) on lower right edge of mesh
@@ -2749,18 +2749,18 @@ c   region
     4 3 1  c  i-max j-max k-max
 c   interface
     8;     c  assign this to be the interface ID number
-c left edge (i=1, j varies)
-curs 1 1 1 1 2 1 49
-c bottom edge (j=1, i varies)
-curs 1 1 1 2 1 1 50
-c right edge (i=2, j varies)
-curs 2 1 1 2 2 1 51
-c top edge (j=2, i varies)
-curs 1 2 1 2 2 1 52
+c left edge (i=3, j=1-4)
+curs 3 1 1 3 4 1 49
+c bottom edge (i=3-4, j=1)
+curs 3 1 1 4 1 1 50
+c right edge (i=4, j=1-4)
+curs 4 1 1 4 4 1 51
+c top edge (i=3-4, j=4)
+curs 3 4 1 4 4 1 52
 
 c move nodes at left biax/foam boundary to align with y-heights of spar caps
 pbs 2 2 1 2 2 1 y 7.1  c move this node to y-coord of point 1 in curve 7
-pbs 2 3 1 2 3 1 y 3.1  c move this node to y-coord of point 1 in curve 3
+pbs 2 3 1 2 3 1 y 3.2  c move this node to y-coord of point 1 in curve 3
 
 c move nodes at right biax/foam boundary to align with y-heights of aft panel 1
 pbs 3 2 1 3 2 1 y 13.2  c move this node to y-coord of point 2 in curve 13
@@ -2771,7 +2771,6 @@ mate 4
 c assign the left and right regions to be biax (material #2)
 mt 1 1 1 2 4 1 2
 mt 3 1 1 4 4 1 2
-
 
 c make a block mesh for: AftPanel2; upper -------------------------------------
 block 1 18; 1 2; -1;
@@ -3530,6 +3529,6 @@ labels crv
 c display the mesh
 disp
 
-c interrupt
+interrupt
 merge
 tvv
