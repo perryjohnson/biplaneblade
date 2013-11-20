@@ -2698,13 +2698,12 @@ c   interface
 c assign the material to be foam (material #4)
 mate 4
 
-
 c shear web #2 ----------------------------------------------------------------
 c make a block mesh for: ShearWeb2
 block 1 2 3 4; 1 2 39 40; -1;
 -0.1 -0.05 0.05 0.1; -0.1 -0.05 0.05 0.1; 0;
 
-c --- biax, right ---
+c --- biax, left ---
 c make block boundary (slave #5) on lower left edge of mesh
 bb
 c   region
@@ -2760,7 +2759,7 @@ curs 3 4 1 4 4 1 52
 
 c move nodes at left biax/foam boundary to align with y-heights of spar caps
 pbs 2 2 1 2 2 1 y 7.1  c move this node to y-coord of point 1 in curve 7
-pbs 2 3 1 2 3 1 y 3.2  c move this node to y-coord of point 1 in curve 3
+pbs 2 3 1 2 3 1 y 3.2  c move this node to y-coord of point 2 in curve 3
 
 c move nodes at right biax/foam boundary to align with y-heights of aft panel 1
 pbs 3 2 1 3 2 1 y 13.2  c move this node to y-coord of point 2 in curve 13
@@ -2771,18 +2770,6 @@ mate 4
 c assign the left and right regions to be biax (material #2)
 mt 1 1 1 2 4 1 2
 mt 3 1 1 4 4 1 2
-
-c make a block mesh for: AftPanel2; upper -------------------------------------
-block 1 18; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 17
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 18
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 19
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 20
 
 c make a block mesh for: AftPanel2; lower -------------------------------------
 block 1 18; 1 2; -1;
@@ -2796,43 +2783,130 @@ cure 2 1 1 2 2 1 23
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 24
 
-c make a block mesh for: ShearWeb3; biax, left
-block 1 2; 1 18; -1;
+c make block boundary (master #11) on left edge of mesh
+bb
+c   region
+    1 1 1  c  i-min j-min k-min
+    1 2 1  c  i-max j-max k-max
+c   interface
+    11;     c  assign this to be the interface ID number
+
+c make block boundary (master #13) on right edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min
+    2 2 1  c  i-max j-max k-max
+c   interface
+    13;     c  assign this to be the interface ID number
+
+c assign the material to be foam (material #4)
+mate 4
+
+c make a block mesh for: AftPanel2; upper -------------------------------------
+block 1 18; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 53
+cure 1 1 1 1 2 1 17
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 54
+cure 1 1 1 2 1 1 18
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 55
+cure 2 1 1 2 2 1 19
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 56
+cure 1 2 1 2 2 1 20
 
-c make a block mesh for: ShearWeb3; foam
-block 1 2; 1 18; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 57
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 58
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 59
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 60
+c make block boundary (master #12) on left edge of mesh
+bb
+c   region
+    1 1 1  c  i-min j-min k-min
+    1 2 1  c  i-max j-max k-max
+c   interface
+    12;     c  assign this to be the interface ID number
 
-c make a block mesh for: ShearWeb3; biax, right
-block 1 2; 1 18; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 61
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 62
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 63
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 64
+c make block boundary (master #14) on right edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min
+    2 2 1  c  i-max j-max k-max
+c   interface
+    14;     c  assign this to be the interface ID number
 
-c make a block mesh for: TE_Reinforcement; uniax, upper left
+c assign the material to be foam (material #4)
+mate 4
+
+c shear web #3 ----------------------------------------------------------------
+c make a block mesh for: ShearWeb3
+block 1 2 3 4; 1 2 17 18; -1;
+-0.1 -0.05 0.05 0.1; -0.1 -0.05 0.05 0.1; 0;
+
+c --- biax, left ---
+c make block boundary (slave #9) on lower left edge of mesh
+bb
+c   region
+    1 2 1  c  i-min j-min k-min
+    1 1 1  c  i-max j-max k-max
+c   interface
+    9;     c  assign this to be the interface ID number
+c make block boundary (slave #10) on upper left edge of mesh
+bb
+c   region
+    1 4 1  c  i-min j-min k-min
+    1 3 1  c  i-max j-max k-max
+c   interface
+    10;     c  assign this to be the interface ID number
+c left edge (i=1, j=1-4)
+curs 1 1 1 1 4 1 53
+c bottom edge (i=1-2, j=1)
+curs 1 1 1 2 1 1 54
+c right edge (i=2, j=1-4)
+curs 2 1 1 2 4 1 55
+c top edge (i=1-2, j=4)
+curs 1 4 1 2 4 1 56
+
+c --- foam ---
+c bottom edge (i=2-3, j=1)
+curs 2 1 1 3 1 1 58
+c top edge (i=2-3, j=4)
+curs 2 4 1 3 4 1 60
+
+c --- biax, right ---
+c make block boundary (slave #11) on lower right edge of mesh
+bb
+c   region
+    4 2 1  c  i-min j-min k-min
+    4 1 1  c  i-max j-max k-max
+c   interface
+    11;     c  assign this to be the interface ID number
+c make block boundary (slave #12) on upper right edge of mesh
+bb
+c   region
+    4 4 1  c  i-min j-min k-min
+    4 3 1  c  i-max j-max k-max
+c   interface
+    12;     c  assign this to be the interface ID number
+c left edge (i=3, j=1-4)
+curs 3 1 1 3 4 1 61
+c bottom edge (i=3-4, j=1)
+curs 3 1 1 4 1 1 62
+c right edge (i=4, j=1-4)
+curs 4 1 1 4 4 1 63
+c top edge (i=3-4, j=4)
+curs 3 4 1 4 4 1 64
+
+c move nodes at left biax/foam boundary to align with y-heights of spar caps
+pbs 2 2 1 2 2 1 y 15.1  c move this node to y-coord of point 1 in curve 15
+pbs 2 3 1 2 3 1 y 10.1  c move this node to y-coord of point 1 in curve 10
+
+c move nodes at right biax/foam boundary to align with y-heights of aft panel 1
+pbs 3 2 1 3 2 1 y 21.2  c move this node to y-coord of point 2 in curve 21
+pbs 3 3 1 3 3 1 y 17.1  c move this node to y-coord of point 1 in curve 17
+
+c assign the default material to be foam (material #4)
+mate 4
+c assign the left and right regions to be biax (material #2)
+mt 1 1 1 2 4 1 2
+mt 3 1 1 4 4 1 2
+
+c make a block mesh for: TE_Reinforcement; uniax, upper left ------------------
 block 1 6; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
