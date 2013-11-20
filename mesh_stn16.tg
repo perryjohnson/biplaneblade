@@ -2917,8 +2917,18 @@ c right edge (i=2, j varies)
 cure 2 1 1 2 2 1 79
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 80
+c make block boundary (slave #14) on left edge of mesh
+bb
+c   region
+    1 2 1  c  i-min j-min k-min
+    1 1 1  c  i-max j-max k-max
+c   interface
+    14;     c  assign this to be the interface ID number
 
-c make a block mesh for: TE_Reinforcement; uniax, upper middle
+c assign the material to be uniax (material #1)
+mate 1
+
+c make a block mesh for: TE_Reinforcement; uniax, upper middle ----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2930,7 +2940,10 @@ cure 2 1 1 2 2 1 87
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 88
 
-c make a block mesh for: TE_Reinforcement; uniax, upper right
+c assign the material to be uniax (material #1)
+mate 1
+
+c make a block mesh for: TE_Reinforcement; uniax, upper right -----------------
 block 1 10; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2942,7 +2955,10 @@ cure 2 1 1 2 2 1 91
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 92
 
-c make a block mesh for: TE_Reinforcement; uniax, lower left
+c assign the material to be uniax (material #1)
+mate 1
+
+c make a block mesh for: TE_Reinforcement; uniax, lower left ------------------
 block 1 6; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2953,8 +2969,18 @@ c right edge (i=2, j varies)
 cure 2 1 1 2 2 1 67
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 68
+c make block boundary (slave #13) on left edge of mesh
+bb
+c   region
+    1 2 1  c  i-min j-min k-min
+    1 1 1  c  i-max j-max k-max
+c   interface
+    13;     c  assign this to be the interface ID number
 
-c make a block mesh for: TE_Reinforcement; uniax, lower middle
+c assign the material to be uniax (material #1)
+mate 1
+
+c make a block mesh for: TE_Reinforcement; uniax, lower middle ----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2966,7 +2992,10 @@ cure 2 1 1 2 2 1 95
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 96
 
-c make a block mesh for: TE_Reinforcement; uniax, lower right
+c assign the material to be uniax (material #1)
+mate 1
+
+c make a block mesh for: TE_Reinforcement; uniax, lower right -----------------
 block 1 10; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2978,7 +3007,10 @@ cure 2 1 1 2 2 1 83
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 84
 
-c make a block mesh for: TE_Reinforcement; foam, upper left
+c assign the material to be uniax (material #1)
+mate 1
+
+c make a block mesh for: TE_Reinforcement; foam, upper left -------------------
 block 1 6; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -2990,7 +3022,10 @@ cure 2 1 1 2 2 1 75
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 76
 
-c make a block mesh for: TE_Reinforcement; foam, upper middle
+c assign the material to be foam (material #4)
+mate 4
+
+c make a block mesh for: TE_Reinforcement; foam, upper middle -----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -3001,7 +3036,10 @@ c right edge (i=2, j varies)
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 99
 
-c make a block mesh for: TE_Reinforcement; foam, lower left
+c assign the material to be foam (material #4)
+mate 4
+
+c make a block mesh for: TE_Reinforcement; foam, lower left -------------------
 block 1 6; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -3013,7 +3051,10 @@ cure 2 1 1 2 2 1 71
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 72
 
-c make a block mesh for: TE_Reinforcement; foam, lower middle
+c assign the material to be foam (material #4)
+mate 4
+
+c make a block mesh for: TE_Reinforcement; foam, lower middle -----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
@@ -3024,7 +3065,10 @@ c right edge (i=2, j varies)
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 102
 
-C c make a block mesh for: ExternalSurface; triax, lower right
+c assign the material to be foam (material #4)
+mate 4
+
+C c make a block mesh for: ExternalSurface; triax, lower right ----------------
 C block 1 200; 1 2; -1;
 C -0.1 0.1; -0.1 0.1; 0;
 C c left edge (i=1, j varies)
