@@ -3146,9 +3146,54 @@ c top edge (j=3, i=1-16)
 curs 1 3 1 16 3 1 110
 c middle edge (j=2, i=1-16)
 curs 1 2 1 16 2 1 103
-interrupt
-c move nodes
+c move nodes to align with boundaries of shear webs and TE reinforcement
+pbs 2 3 1 2 3 1 xyz 30.1
+pbs 2 2 1 2 2 1 xyz 103.62
+pbs 2 1 1 2 1 1 xyz 115.47
+pbs 3 3 1 3 3 1 xyz 34.1
+pbs 3 2 1 3 2 1 xyz 103.60
+pbs 3 1 1 3 1 1 xyz 115.45
+pbs 4 3 1 4 3 1 xyz 5.1
+pbs 4 2 1 4 2 1 xyz 103.59
+pbs 4 1 1 4 1 1 xyz 115.44
+pbs 5 3 1 5 3 1 xyz 6.1
+pbs 5 2 1 5 2 1 xyz 103.50
+pbs 5 1 1 5 1 1 xyz 115.35
+pbs 6 3 1 6 3 1 xyz 42.1
+pbs 6 2 1 6 2 1 xyz 103.49
+pbs 6 1 1 6 1 1 xyz 115.34
+pbs 7 3 1 7 3 1 xyz 46.1
+pbs 7 2 1 7 2 1 xyz 103.48
+pbs 7 1 1 7 1 1 xyz 115.33
+pbs 8 3 1 8 3 1 xyz 13.1
+pbs 8 2 1 8 2 1 xyz 103.47
+pbs 8 1 1 8 1 1 xyz 115.32
+pbs 9 3 1 9 3 1 xyz 14.1
+pbs 9 2 1 9 2 1 xyz 103.36
+pbs 9 1 1 9 1 1 xyz 115.22
+pbs 10 3 1 10 3 1 xyz 54.1
+pbs 10 2 1 10 2 1 xyz 103.35
+pbs 10 1 1 10 1 1 xyz 115.21
+pbs 11 3 1 11 3 1 xyz 58.1
+pbs 11 2 1 11 2 1 xyz 103.34
+pbs 11 1 1 11 1 1 xyz 115.20
+pbs 12 3 1 12 3 1 xyz 21.1
+pbs 12 2 1 12 2 1 xyz 103.33
+pbs 12 1 1 12 1 1 xyz 115.19
+pbs 13 3 1 13 3 1 xyz 22.1
+pbs 13 2 1 13 2 1 xyz 103.20
+pbs 13 1 1 13 1 1 xyz 115.12
+pbs 14 3 1 14 3 1 xyz 66.1
+pbs 14 2 1 14 2 1 xyz 103.15
+pbs 14 1 1 14 1 1 xyz 115.9
+pbs 15 3 1 15 3 1 xyz 81.1
+pbs 15 2 1 15 2 1 xyz 103.10
+pbs 15 1 1 15 1 1 xyz 115.6
 
+c assign the default material to be triax (material #3)
+mate 3
+c assign the bottom regions to be gelcoat (material #5)
+mt 1 1 1 16 2 1  5
 
 C c make a block mesh for: ExternalSurface; triax, upper left -----------------
 C block 1 200; 1 2; -1;
