@@ -3192,22 +3192,33 @@ pbs 15 1 1 15 1 1 xyz 115.6
 
 c assign the default material to be triax (material #3)
 mate 3
-c assign the bottom regions to be gelcoat (material #5)
+c assign the bottom regions (i=1-16, j=1-2) to be gelcoat (material #5)
 mt 1 1 1 16 2 1  5
 
-C c make a block mesh for: ExternalSurface; triax, upper left -----------------
-C block 1 200; 1 2; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 114
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 110
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 115
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 105
+c make a block mesh for: ExternalSurface; LE ----------------------------------
+block 1 2 3; 1 80; -1;
+-3.15 -3.10 -3.00; -1.5 1.5; 0;
+c right edge (i=3, j=1-2)
+cure 3 1 1 3 2 1 109
+c bottom triax edge (i=2-3, j=1)
+cure 2 1 1 3 1 1 111
+c bottom gelcoat edge (i=1-2, j=1)
+cure 1 1 1 2 1 1 122
+c middle edge (i=2, j=1-2)
+cure 2 1 1 2 2 1 104
+c left edge (i=1, j=1-2)
+cure 1 1 1 1 2 1 116
+c top triax edge (i=2-3, j=2)
+cure 2 2 1 3 2 1 112
+c top gelcoat edge (i=1-2, j=2)
+cure 1 2 1 2 2 1 121
 
-C c make a block mesh for: ExternalSurface; triax, upper right
+c assign the default material to be triax (material #3)
+mate 3
+c assign the left region (i=1-2, j=1-2) to be gelcoat (material #5)
+mt 1 1 1 2 2 1  5
+
+C c make a block mesh for: ExternalSurface; triax, upper right ----------------
 C block 1 200; 1 2; -1;
 C -0.1 0.1; -0.1 0.1; 0;
 C c left edge (i=1, j varies)
