@@ -72,9 +72,9 @@ if sandia_flag:
     # m.calculate_blade_mass()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
-    # for station in m.list_of_stations:
-    #     station.find_SW_cs_coords()
-    # m.plot_blade(stn_nums=True, twist=True, export=False)
+    for station in m.list_of_stations:
+        station.find_SW_cs_coords()
+    m.plot_blade(stn_nums=True, twist=True, export=False)
 
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
