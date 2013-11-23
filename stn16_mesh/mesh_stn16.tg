@@ -3421,7 +3421,7 @@ c assign the left region (i=1-2, j=1-2) to be resin (material #6)
 mt 1 1 1 2 2 1  6
 
 c make a block mesh for: InternalSurface2; left -------------------------------
-block 1 2 3; 1 38; -1;
+block 1 2 3; 1 38; -1;   c  triax: i=1-2;  resin: i=2-3
 -0.1 0.0 0.1; -1.5 1.5; 0;
 c left edge (i=1, j=1-2)
 cure 1 1 1 1 2 1 133
@@ -3512,55 +3512,99 @@ mate 3
 c assign the bottom region (i=1-2, j=1-2) to be resin (material #6)
 mt 1 1 1 2 2 1  6
 
-C c make a block mesh for: InternalSurface3; triax, left ----------------------
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 143
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 152
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 148
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 151
+c make a block mesh for: InternalSurface3; left -------------------------------
+block 1 2 3; 1 38; -1;   c  triax: i=1-2;  resin: i=2-3
+-0.1 0.0 0.1; -1.5 1.5; 0;
+c left edge (i=1, j=1-2)
+cure 1 1 1 1 2 1 143
+c bottom triax edge (i=1-2, j=1)
+cure 1 1 1 2 1 1 152
+c bottom resin edge (i=2-3, j=1)
+cure 2 1 1 3 1 1 193
+c middle edge (i=2, j=1-2)
+cure 2 1 1 2 2 1 148
+c right edge (i=3, j=1-2)
+cure 3 1 1 3 2 1 189
+c top triax edge (i=1-2, j=2)
+cure 1 2 1 2 2 1 151
+c top resin edge (i=2-3, j=2)
+cure 2 2 1 3 2 1 192
 
-C c make a block mesh for: InternalSurface3; triax, bottom
-C block 1 60; 1 2; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 152
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 16
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 149
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 145
+c assign the default material to be triax (material #3)
+mate 3
+c assign the right region (i=2-3, j=1-2) to be resin (material #6)
+mt 2 1 1 3 2 1  6
 
-C c make a block mesh for: InternalSurface3; triax, right
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 146
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 149
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 144
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 150
+c make a block mesh for: InternalSurface3; bottom -----------------------------
+block 1 25; 1 2 3; -1;   c  triax: j=1-2;  resin: j=2-3
+-0.75 0.75; -0.1 0.0 0.1; 0;
+c left triax edge (i=1, j=1-2)
+cure 1 1 1 1 2 1 152
+c left resin edge (i=1, j=2-3)
+cure 1 2 1 1 3 1 193
+c right triax edge (i=2, j=1-2)
+cure 2 1 1 2 2 1 149
+c right resin edge (i=2, j=2-3)
+cure 2 2 1 2 3 1 190
+c bottom edge (i=1-2, j=1)
+cure 1 1 1 2 1 1 16
+c middle edge (i=1-2, j=2)
+cure 1 2 1 2 2 1 145
+c top edge (i=1-2, j=3)
+cure 1 3 1 2 3 1 186
 
-C c make a block mesh for: InternalSurface3; triax, top
-C block 1 60; 1 2; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 151
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 147
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 150
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 10
+c assign the default material to be triax (material #3)
+mate 3
+c assign the top region (i=1-2, j=2-3) to be resin (material #6)
+mt 1 2 1 2 3 1  6
 
-C c make a block mesh for: InternalSurface4; triax, left
+c make a block mesh for: InternalSurface3; right ------------------------------
+block 1 2 3; 1 16; -1;   c  resin: i=1-2;  triax: i=2-3
+-0.1 0.0 0.1; -1.5 1.5; 0;
+c left edge (i=1, j=1-2)
+cure 1 1 1 1 2 1 187
+c bottom resin edge (i=1-2, j=1)
+cure 1 1 1 2 1 1 190
+c bottom triax edge (i=2-3, j=1)
+cure 2 1 1 3 1 1 149
+c middle edge (i=2, j=1-2)
+cure 2 1 1 2 2 1 146
+c right edge (i=3, j=1-2)
+cure 3 1 1 3 2 1 144
+c top resin edge (i=1-2, j=2)
+cure 1 2 1 2 2 1 191
+c top triax edge (i=2-3, j=2)
+cure 2 2 1 3 2 1 150
+
+c assign the default material to be triax (material #3)
+mate 3
+c assign the left region (i=1-2, j=1-2) to be resin (material #6)
+mt 1 1 1 2 2 1  6
+
+c make a block mesh for: InternalSurface3; top --------------------------------
+block 1 25; 1 2 3; -1;   c  resin: j=1-2;  triax: j=2-3
+-0.75 0.75; -0.1 0.0 0.1; 0;
+c left resin edge (i=1, j=1-2)
+cure 1 1 1 1 2 1 192
+c left triax edge (i=1, j=2-3)
+cure 1 2 1 1 3 1 151
+c right resin edge (i=2, j=1-2)
+cure 2 1 1 2 2 1 191
+c right triax edge (i=2, j=2-3)
+cure 2 2 1 2 3 1 150
+c bottom edge (i=1-2, j=1)
+cure 1 1 1 2 1 1 188
+c middle edge (i=1-2, j=2)
+cure 1 2 1 2 2 1 147
+c top edge (i=1-2, j=3)
+cure 1 3 1 2 3 1 10
+
+c assign the default material to be triax (material #3)
+mate 3
+c assign the bottom region (i=1-2, j=1-2) to be resin (material #6)
+mt 1 1 1 2 2 1  6
+
+c make a block mesh for: InternalSurface4; left -------------------------------
 C block 1 2; 1 60; -1;
 C -0.1 0.1; -0.1 0.1; 0;
 C c left edge (i=1, j varies)
@@ -3666,125 +3710,10 @@ C c right edge (i=2, j varies)
 C c top edge (j=2, i varies)
 C cure 1 2 1 2 2 1 170
 
-C c make a block mesh for: InternalSurface1; resin, left
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 130
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 176
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 174
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 177
 
-C c make a block mesh for: InternalSurface1; resin, right
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 175
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 176
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 129
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 177
 
-C c make a block mesh for: InternalSurface2; resin, left
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 138
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 185
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 181
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 184
 
-C c make a block mesh for: InternalSurface2; resin, bottom
-C block 1 60; 1 2; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 185
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 135
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 182
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 178
 
-C c make a block mesh for: InternalSurface2; resin, right
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 179
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 182
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 136
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 183
-
-C c make a block mesh for: InternalSurface2; resin, top
-C block 1 60; 1 2; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 184
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 180
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 183
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 137
-
-C c make a block mesh for: InternalSurface3; resin, left
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 148
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 193
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 189
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 192
-
-C c make a block mesh for: InternalSurface3; resin, bottom
-C block 1 60; 1 2; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 193
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 145
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 190
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 186
-
-C c make a block mesh for: InternalSurface3; resin, right
-C block 1 2; 1 60; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 187
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 190
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 146
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 191
-
-C c make a block mesh for: InternalSurface3; resin, top
-C block 1 60; 1 2; -1;
-C -0.1 0.1; -0.1 0.1; 0;
-C c left edge (i=1, j varies)
-C cure 1 1 1 1 2 1 192
-C c bottom edge (j=1, i varies)
-C cure 1 1 1 2 1 1 188
-C c right edge (i=2, j varies)
-C cure 2 1 1 2 2 1 191
-C c top edge (j=2, i varies)
-C cure 1 2 1 2 2 1 147
 
 C c make a block mesh for: InternalSurface4; resin, left
 C block 1 2; 1 60; -1;
