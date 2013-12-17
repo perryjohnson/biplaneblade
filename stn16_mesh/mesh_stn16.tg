@@ -2624,6 +2624,10 @@ c   interface
 c assign the material to be foam (material #4)
 mate 4
 
+c name this set of elements
+eset 0 0 1 0 0 1 = lepanel
+esetc lepanel  LE panel; foam
+
 c make a block mesh for: SparCap; lower ---------------------------------------
 block 1 15; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2655,6 +2659,10 @@ c   interface
 c assign the material to be uniax (material #1)
 mate 1
 
+c name this set of elements
+eset 0 0 1 0 0 1 = sclower
+esetc sclower  SparCap; lower; uniax
+
 c make a block mesh for: SparCap; upper ---------------------------------------
 block 1 15; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2685,6 +2693,10 @@ c   interface
 
 c assign the material to be uniax (material #1)
 mate 1
+
+c name this set of elements
+eset 0 0 1 0 0 1 = scupper
+esetc sclower  SparCap; upper; uniax
 
 c shear web #1 ----------------------------------------------------------------
 c make a block mesh for: ShearWeb1
@@ -2759,6 +2771,14 @@ c assign the left and right regions to be biax (material #2)
 mt 1 1 1 2 4 1 2
 mt 3 1 1 4 4 1 2
 
+c name these sets of elements
+eset 1 1 1 2 4 1 = sw1biaxl
+eset 2 1 1 3 4 1 = sw1foam
+eset 3 1 1 4 4 1 = sw1biaxr
+esetc sw1biaxl  ShearWeb1; biax, left
+esetc sw1foam   ShearWeb1; foam
+esetc sw1biaxr  ShearWeb1; biax, right
+
 c make a block mesh for: AftPanel1; lower -------------------------------------
 block 1 25; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2790,6 +2810,10 @@ c   interface
 c assign the material to be foam (material #4)
 mate 4
 
+c name this set of elements
+eset 0 0 1 0 0 1 = ap1lower
+esetc ap1lower  AftPanel1; lower; foam
+
 c make a block mesh for: AftPanel1; upper -------------------------------------
 block 1 25; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2820,6 +2844,10 @@ c   interface
 
 c assign the material to be foam (material #4)
 mate 4
+
+c name this set of elements
+eset 0 0 1 0 0 1 = ap1upper
+esetc ap1upper  AftPanel1; upper; foam
 
 c shear web #2 ----------------------------------------------------------------
 c make a block mesh for: ShearWeb2
@@ -2894,6 +2922,14 @@ c assign the left and right regions to be biax (material #2)
 mt 1 1 1 2 4 1 2
 mt 3 1 1 4 4 1 2
 
+c name these sets of elements
+eset 1 1 1 2 4 1 = sw2biaxl
+eset 2 1 1 3 4 1 = sw2foam
+eset 3 1 1 4 4 1 = sw2biaxr
+esetc sw2biaxl  ShearWeb2; biax, left
+esetc sw2foam   ShearWeb2; foam
+esetc sw2biaxr  ShearWeb2; biax, right
+
 c make a block mesh for: AftPanel2; lower -------------------------------------
 block 1 18; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2925,6 +2961,10 @@ c   interface
 c assign the material to be foam (material #4)
 mate 4
 
+c name this set of elements
+eset 0 0 1 0 0 1 = ap2lower
+esetc ap2lower  AftPanel2; lower; foam
+
 c make a block mesh for: AftPanel2; upper -------------------------------------
 block 1 18; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2955,6 +2995,10 @@ c   interface
 
 c assign the material to be foam (material #4)
 mate 4
+
+c name this set of elements
+eset 0 0 1 0 0 1 = ap2upper
+esetc ap2upper  AftPanel2; upper; foam
 
 c shear web #3 ----------------------------------------------------------------
 c make a block mesh for: ShearWeb3
@@ -3029,6 +3073,14 @@ c assign the left and right regions to be biax (material #2)
 mt 1 1 1 2 4 1 2
 mt 3 1 1 4 4 1 2
 
+c name these sets of elements
+eset 1 1 1 2 4 1 = sw3biaxl
+eset 2 1 1 3 4 1 = sw3foam
+eset 3 1 1 4 4 1 = sw3biaxr
+esetc sw3biaxl  ShearWeb3; biax, left
+esetc sw3foam   ShearWeb3; foam
+esetc sw3biaxr  ShearWeb3; biax, right
+
 c make a block mesh for: TE_Reinforcement; uniax, upper left ------------------
 block 1 6 7 8; 1 2; -1;
 3.72 3.96 3.99 4.01; 0.13 0.14; 0;
@@ -3058,6 +3110,10 @@ pbs 3 2 1 3 2 1 xyz 80.5
 c assign the material to be uniax (material #1)
 mate 1
 
+c name this set of elements
+eset 0 0 1 0 0 1 = TEunixul
+esetc TEunixul  TE Reinforcement; uniax, upper left
+
 c make a block mesh for: TE_Reinforcement; uniax, upper middle ----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -3073,6 +3129,10 @@ cure 1 2 1 2 2 1 88
 c assign the material to be uniax (material #1)
 mate 1
 
+c name this set of elements
+eset 0 0 1 0 0 1 = TEunixum
+esetc TEunixum  TE Reinforcement; uniax, upper middle
+
 c make a block mesh for: TE_Reinforcement; uniax, upper right -----------------
 block 1 10; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -3087,6 +3147,10 @@ cure 1 2 1 2 2 1 92
 
 c assign the material to be uniax (material #1)
 mate 1
+
+c name this set of elements
+eset 0 0 1 0 0 1 = TEunixur
+esetc TEunixur  TE Reinforcement; uniax, upper right
 
 c make a block mesh for: TE_Reinforcement; uniax, lower left ------------------
 block 1 6 7 8; 1 2; -1;
@@ -3117,6 +3181,10 @@ pbs 3 2 1 3 2 1 xyz  68.11
 c assign the material to be uniax (material #1)
 mate 1
 
+c name this set of elements
+eset 0 0 1 0 0 1 = TEunixll
+esetc TEunixll  TE Reinforcement; uniax, lower left
+
 c make a block mesh for: TE_Reinforcement; uniax, lower middle ----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -3132,6 +3200,10 @@ cure 1 2 1 2 2 1 96
 c assign the material to be uniax (material #1)
 mate 1
 
+c name this set of elements
+eset 0 0 1 0 0 1 = TEunixlm
+esetc TEunixlm  TE Reinforcement; uniax, lower middle
+
 c make a block mesh for: TE_Reinforcement; uniax, lower right -----------------
 block 1 10; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -3146,6 +3218,10 @@ cure 1 2 1 2 2 1 84
 
 c assign the material to be uniax (material #1)
 mate 1
+
+c name this set of elements
+eset 0 0 1 0 0 1 = TEunixlr
+esetc TEunixlr  TE Reinforcement; uniax, lower right
 
 c make a block mesh for: TE_Reinforcement; foam, upper left -------------------
 block 1 6 7 8; 1 2; -1;
@@ -3168,6 +3244,10 @@ pbs 3 2 1 3 2 1 xyz 76.11
 c assign the material to be foam (material #4)
 mate 4
 
+c name this set of elements
+eset 0 0 1 0 0 1 = TEfoamul
+esetc TEfoamul  TE Reinforcement; foam, upper left
+
 c make a block mesh for: TE_Reinforcement; foam, upper middle -----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -3181,6 +3261,10 @@ cure 1 2 1 2 2 1 99
 
 c assign the material to be foam (material #4)
 mate 4
+
+c name this set of elements
+eset 0 0 1 0 0 1 = TEfoamum
+esetc TEfoamum  TE Reinforcement; foam, upper middle
 
 c make a block mesh for: TE_Reinforcement; foam, lower left -------------------
 block 1 6 7 8; 1 2; -1;
@@ -3204,6 +3288,10 @@ pbs 3 2 1 3 2 1 xyz 72.19
 c assign the material to be foam (material #4)
 mate 4
 
+c name this set of elements
+eset 0 0 1 0 0 1 = TEfoamll
+esetc TEfoamll  TE Reinforcement; foam, lower left
+
 c make a block mesh for: TE_Reinforcement; foam, lower middle -----------------
 block 1 8; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -3217,6 +3305,10 @@ cure 1 2 1 2 2 1 102
 
 c assign the material to be foam (material #4)
 mate 4
+
+c name this set of elements
+eset 0 0 1 0 0 1 = TEfoamlm
+esetc TEfoamlm  TE Reinforcement; foam, lower middle
 
 c make a block mesh for: ExternalSurface; lower -------------------------------
 block 1 2 3 4  18 19 20 21  45 46 47 48   c i: 1 2 3 4  5 6 7 8  9 10 11 12
@@ -3294,6 +3386,12 @@ mate 3
 c assign the bottom regions (i=1-18, j=1-2) to be gelcoat (material #5)
 mt 1 1 1 18 2 1  5
 
+c name these sets of elements
+eset 0 1 1 0 2 1 = eslowerg
+eset 0 2 1 0 3 1 = eslowert
+esetc eslowerg  ExternalSurface; lower, gelcoat
+esetc eslowert  ExternalSurface; lower, triax
+
 c make a block mesh for: ExternalSurface; LE ----------------------------------
 block 1 2 3; 1 80; -1;   c  gelcoat: i=1-2;  triax: i=2-3
 -3.15 -3.10 -3.00; -1.5 1.5; 0;
@@ -3316,6 +3414,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the left region (i=1-2, j=1-2) to be gelcoat (material #5)
 mt 1 1 1 2 2 1  5
+
+c name these sets of elements
+eset 1 0 1 2 0 1 = esleg
+eset 2 0 1 3 0 1 = eslet
+esetc esleg  ExternalSurface; LE, gelcoat
+esetc eslet  ExternalSurface; LE, triax
 
 c make a block mesh for: ExternalSurface; upper -------------------------------
 block 1 2 3 4  18 19 20 21  45 46 47 48   c i: 1 2 3 4  5 6 7 8  9 10 11 12
@@ -3408,8 +3512,14 @@ res 17 1 1 18 3 1 i 1.0
 
 c assign the default material to be triax (material #3)
 mate 3
-c assign the top regions (i=1-16, j=2-3) to be gelcoat (material #5)
+c assign the top regions (i=1-18, j=2-3) to be gelcoat (material #5)
 mt 1 2 1 18 3 1  5
+
+c name these sets of elements
+eset 0 1 1 0 2 1 = esuppert
+eset 0 2 1 0 3 1 = esupperg
+esetc esuppert  ExternalSurface; upper, triax
+esetc esupperg  ExternalSurface; upper, gelcoat
 
 c make a block mesh for: ExternalSurface; TE ----------------------------------
 block 1 2 3; 1 2 3; -1;   c  triax: i=1-2;  gelcoat: i=2-3
@@ -3439,6 +3549,12 @@ mate 3
 c assign the right regions (i=2-3, j=1-3) to be gelcoat (material #5)
 mt 2 1 1 3 3 1  5
 
+c name these sets of elements
+eset 1 0 1 2 0 1 = estet
+eset 2 0 1 3 0 1 = esteg
+esetc estet  external surface; TE, triax
+esetc esteg  external surface; TE, gelcoat
+
 c make a block mesh for: InternalSurface1; left -------------------------------
 block 1 2 3; 1 80; -1;   c  triax: i=1-2;  resin: i=2-3
 -3.1 -3.0 -2.9; -1.5 1.5; 0;
@@ -3461,6 +3577,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the right region (i=2-3, j=1-2) to be resin (material #6)
 mt 2 1 1 3 2 1  6
+
+c name these sets of elements
+eset 1 0 1 2 0 1 = is1lt
+eset 2 0 1 3 0 1 = is1lr
+esetc is1lt  InternalSurface1; left, triax
+esetc is1lr  InternalSurface1; left, resin
 
 c make a block mesh for: InternalSurface1; right ------------------------------
 block 1 2 3; 1 38; -1;   c  resin: i=1-2;  triax: i=2-3
@@ -3485,6 +3607,12 @@ mate 3
 c assign the left region (i=1-2, j=1-2) to be resin (material #6)
 mt 1 1 1 2 2 1  6
 
+c name these sets of elements
+eset 1 0 1 2 0 1 = is1rt
+eset 2 0 1 3 0 1 = is1rr
+esetc is1rt  InternalSurface1; right, triax
+esetc is1rr  InternalSurface1; right, resin
+
 c make a block mesh for: InternalSurface2; left -------------------------------
 block 1 2 3; 1 38; -1;   c  triax: i=1-2;  resin: i=2-3
 -0.1 0.0 0.1; -1.5 1.5; 0;
@@ -3507,6 +3635,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the right region (i=2-3, j=1-2) to be resin (material #6)
 mt 2 1 1 3 2 1  6
+
+c name these sets of elements
+eset 1 0 1 2 0 1 = is2lt
+eset 2 0 1 3 0 1 = is2lr
+esetc is2lt  InternalSurface2; left, triax
+esetc is2lr  InternalSurface2; left, resin
 
 c make a block mesh for: InternalSurface2; bottom -----------------------------
 block 1 15; 1 2 3; -1;   c  triax: j=1-2;  resin: j=2-3
@@ -3531,6 +3665,12 @@ mate 3
 c assign the top region (i=1-2, j=2-3) to be resin (material #6)
 mt 1 2 1 2 3 1  6
 
+c name these sets of elements
+eset 0 1 1 0 2 1 = is2bt
+eset 0 2 1 0 3 1 = is2br
+esetc is2bt  InternalSurface2; bottom, triax
+esetc is2br  InternalSurface2; bottom, resin
+
 c make a block mesh for: InternalSurface2; right ------------------------------
 block 1 2 3; 1 38; -1;   c  resin: i=1-2;  triax: i=2-3
 -0.1 0.0 0.1; -1.5 1.5; 0;
@@ -3553,6 +3693,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the left region (i=1-2, j=1-2) to be resin (material #6)
 mt 1 1 1 2 2 1  6
+
+c name these sets of elements
+eset 1 0 1 2 0 1 = is2rt
+eset 2 0 1 3 0 1 = is2rr
+esetc is2rt  InternalSurface2; right, triax
+esetc is2rr  InternalSurface2; right, resin
 
 c make a block mesh for: InternalSurface2; top ------------------------------
 block 1 15; 1 2 3; -1;   c  resin: j=1-2;  triax: j=2-3
@@ -3577,6 +3723,12 @@ mate 3
 c assign the bottom region (i=1-2, j=1-2) to be resin (material #6)
 mt 1 1 1 2 2 1  6
 
+c name these sets of elements
+eset 0 1 1 0 2 1 = is2tt
+eset 0 2 1 0 3 1 = is2tr
+esetc is2tt  InternalSurface2; top, triax
+esetc is2tr  InternalSurface2; top, resin
+
 c make a block mesh for: InternalSurface3; left -------------------------------
 block 1 2 3; 1 38; -1;   c  triax: i=1-2;  resin: i=2-3
 -0.1 0.0 0.1; -1.5 1.5; 0;
@@ -3599,6 +3751,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the right region (i=2-3, j=1-2) to be resin (material #6)
 mt 2 1 1 3 2 1  6
+
+c name these sets of elements
+eset 1 0 1 2 0 1 = is3lt
+eset 2 0 1 3 0 1 = is3lr
+esetc is3lt  InternalSurface3; left, triax
+esetc is3lr  InternalSurface3; left, resin
 
 c make a block mesh for: InternalSurface3; bottom -----------------------------
 block 1 25; 1 2 3; -1;   c  triax: j=1-2;  resin: j=2-3
@@ -3623,6 +3781,12 @@ mate 3
 c assign the top region (i=1-2, j=2-3) to be resin (material #6)
 mt 1 2 1 2 3 1  6
 
+c name these sets of elements
+eset 0 1 1 0 2 1 = is3bt
+eset 0 2 1 0 3 1 = is3br
+esetc is3bt  InternalSurface3; bottom, triax
+esetc is3br  InternalSurface3; bottom, resin
+
 c make a block mesh for: InternalSurface3; right ------------------------------
 block 1 2 3; 1 16; -1;   c  resin: i=1-2;  triax: i=2-3
 -0.1 0.0 0.1; -1.5 1.5; 0;
@@ -3645,6 +3809,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the left region (i=1-2, j=1-2) to be resin (material #6)
 mt 1 1 1 2 2 1  6
+
+c name these sets of elements
+eset 1 0 1 2 0 1 = is3rt
+eset 2 0 1 3 0 1 = is3rr
+esetc is3rt  InternalSurface3; right, triax
+esetc is3rr  InternalSurface3; right, resin
 
 c make a block mesh for: InternalSurface3; top --------------------------------
 block 1 25; 1 2 3; -1;   c  resin: j=1-2;  triax: j=2-3
@@ -3669,6 +3839,12 @@ mate 3
 c assign the bottom region (i=1-2, j=1-2) to be resin (material #6)
 mt 1 1 1 2 2 1  6
 
+c name these sets of elements
+eset 0 1 1 0 2 1 = is3tt
+eset 0 2 1 0 3 1 = is3tr
+esetc is3tt  InternalSurface3; top, triax
+esetc is3tr  InternalSurface3; top, resin
+
 c make a block mesh for: InternalSurface4; left -------------------------------
 block 1 2 3; 1 16; -1;   c  triax: i=1-2;  resin: i=2-3
 -0.1 0.0 0.1; -1.5 1.5; 0;
@@ -3691,6 +3867,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the right region (i=2-3, j=1-2) to be resin (material #6)
 mt 2 1 1 3 2 1  6
+
+c name these sets of elements
+eset 1 0 1 2 0 1 = is4lt
+eset 2 0 1 3 0 1 = is4lr
+esetc is4lt  InternalSurface4; left, triax
+esetc is4lr  InternalSurface4; left, resin
 
 c make a block mesh for: InternalSurface4; bottom -----------------------------
 block 1 18 19 20 21 26 27 28; 1 2 3; -1;   c  triax: j=1-2;  resin: j=2-3
@@ -3723,22 +3905,16 @@ pbs 3 2 1 3 2 1 xyz 155.2
 c   boundary point on outside edge (i=3, j=3)
 pbs 3 3 1 3 3 1 xyz 195.2
 c   boundary point on top triax edge (i=4, j=1)
-interrupt
 pbs 4 1 1 4 1 1 xyz 162.2
 c   boundary point on top triax edge (i=4, j=2)
-interrupt
 pbs 4 2 1 4 2 1 xyz 162.1
 c   top triax edge (i=4, j=1-2)
-interrupt
 cure 4 1 1 4 2 1 162
 c   top resin edge (i=4, j=2-3)
-interrupt
 cure 4 2 1 4 3 1 202
 c   middle edge (i=3-4, j=2)
-interrupt
 curs 3 2 1 4 2 1 155
 c   outside edge (i=3-4, j=3)
-interrupt
 curs 3 3 1 4 3 1 195
 
 c bend, right region (i=4-5)
@@ -3790,8 +3966,14 @@ mate 3
 c assign the top region (i=1-3, j=2-3) to be resin (material #6)
 mt 1 2 1 7 3 1 6
 
+c name these sets of elements
+eset 0 1 1 0 2 1 = is4bt
+eset 0 2 1 0 3 1 = is4br
+esetc is4bt  InternalSurface4; bottom, triax
+esetc is4br  InternalSurface4; bottom, resin
+
 c make a block mesh for: InternalSurface4; top --------------------------------
-block 1 18 19 20 21 26 27 28; 1 2 3; -1;   c  triax: j=1-2;  resin: j=2-3
+block 1 18 19 20 21 26 27 28; 1 2 3; -1;   c  resin: j=1-2;  triax: j=2-3
 2.600 3.600 3.700 3.710 3.720 3.968 3.990 4.000; 0.30 0.35 0.40; 0;
 c delete the bottom right block (i=7-8, j=1-2)
 dei 7 8;1 2; -1;
@@ -3882,6 +4064,12 @@ c assign the default material to be triax (material #3)
 mate 3
 c assign the bottom region (i=1-3, j=1-2) to be resin (material #6)
 mt 1 1 1 7 2 1  6
+
+c name these sets of elements
+eset 0 1 1 0 2 1 = is4tt
+eset 0 2 1 0 3 1 = is4tr
+esetc is4tt  InternalSurface4; top, triax
+esetc is4tr  InternalSurface4; top, resin
 
 
 c -----------------------------------------------------------------------------
