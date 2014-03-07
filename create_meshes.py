@@ -1,7 +1,19 @@
 """Write initial TrueGrid files for Sandia blade stations.
 
+Usage
+-----
+start an IPython (qt)console with the pylab flag:
+$ ipython qtconsole --pylab
+or
+$ ipython --pylab
+Then, from the prompt, run this script:
+|> %run create_meshes
+Once you are finished looking at the meshes, you can clean up extra files:
+|> %run clean
+(See the 'clean.py' script in this directory for details.)
+
 Author: Perry Roth-Johnson
-Last updated: November 5, 2013
+Last updated: March 6, 2014
 
 """
 
@@ -26,5 +38,5 @@ for station in m.list_of_stations:
     station.structure.write_truegrid_inputfile(interrupt_flag=True)
     station.structure.write_all_part_polygons()
 
-# m.plot_selected_cross_sections(alternate_layers=True)
-m.list_of_stations[15].plot_parts(alternate_layers=True)
+m.plot_selected_cross_sections(alternate_layers=True)
+# m.list_of_stations[15].plot_parts(alternate_layers=True)
