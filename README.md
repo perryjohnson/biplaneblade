@@ -41,19 +41,19 @@ Plan forward (as of March 6, 2014)
 ----------------------------------
 Instead of automatically generating meshes with Python, let's only use Python to automatically generate boundary curves for each part in a blade station. (I think I already have this functionality.) Then, manually mesh each station in TrueGrid. (Start with Station #1 and work your way out to Station #34.) Save the final `*.tg` file in an archive of all the blade input files. Export the grid in ABAQUS format and use Python to tranlate it to VABS format. Use VABS to generate the mass and stiffness matrix. This will be tedious, but straightforward. In the end, you should have an archive of all the blade input files that looks like:
 
-`sandia_blade/`
---`blade_definition.csv`
---`materials.csv`
---`airfoils/`
-----`Cylinder.txt`
-----...
-----`NACA_64-618.txt`
---`stn01/`
-----`mesh_start.tg` (initial TrueGrid input file with part boundary curves)
-----`mesh_final.tg` (final TrueGrid input file with grids inside curves)
-----`mesh_abq.txt` (exported grid file in ABAQUS format)
-----`mesh_vabs.dat` (VABS input file of geometry and materials)
-----`mesh_vabs.dat.K` (VABS output of mass and stiffness matrices)
---`stn02/`
---...
---`stn34/`
+* `sandia_blade/`  
+  * `blade_definition.csv`  
+  * `materials.csv`  
+  * `airfoils/`  
+    * `Cylinder.txt`
+    * ...
+    * `NACA_64-618.txt`
+  * `stn01/`
+    * `mesh_start.tg` (initial TrueGrid input file with part boundary curves)
+    * `mesh_final.tg` (final TrueGrid input file with grids inside curves)
+    * `mesh_abq.txt` (exported grid file in ABAQUS format)
+    * `mesh_vabs.dat` (VABS input file of geometry and materials)
+    * `mesh_vabs.dat.K` (VABS output of mass and stiffness matrices)
+  * `stn02/`
+  * ...
+  * `stn34/`
