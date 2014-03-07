@@ -1,3 +1,10 @@
+"""Write initial TrueGrid file for Sandia station #16.
+
+Author: Perry Roth-Johnson
+Last updated: November 5, 2013
+
+"""
+
 import os
 import matplotlib.pyplot as plt
 import numpy as np
