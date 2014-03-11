@@ -1302,6 +1302,123 @@ cure 1 1 1 2 1 1 30
 c assign the material to be gelcoat (material #5)
 mate 5
 
+c internal surface 1 ----------------------------------------
+
+c triax -----
+c make a block mesh for: internal surface, triax, lower left
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 65
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 66
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 67
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 68
+c assign the material to be triax (material #3)
+mate 3
+
+c make a block mesh for: internal surface, triax, lower right
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 71
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 72
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 69
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 70
+c assign the material to be triax (material #3)
+mate 3
+
+c make a block mesh for: internal surface, triax, upper left
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 73
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 74
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 75
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 76
+c assign the material to be triax (material #3)
+mate 3
+
+c make a block mesh for: internal surface, triax, upper right
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 79
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 80
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 77
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 78
+c assign the material to be triax (material #3)
+mate 3
+
+c resin -----
+c make a block mesh for: internal surface, resin, lower left
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 49
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 50
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 51
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 52
+c assign the material to be resin (material #6)
+mate 6
+
+c make a block mesh for: internal surface, resin, lower right
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 55
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 56
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 53
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 54
+c assign the material to be resin (material #6)
+mate 6
+
+c make a block mesh for: internal surface, resin, upper left
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 57
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 58
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 59
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 60
+c assign the material to be resin (material #6)
+mate 6
+
+c make a block mesh for: internal surface, resin, upper right
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 63
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 64
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 61
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 62
+c assign the material to be resin (material #6)
+mate 6
+
+
 c ----------------------------------------
 interrupt
 c display all 3D curves
