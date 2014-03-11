@@ -1188,63 +1188,6 @@ mate 3
 
 c external surface ----------------------------------------
 
-c gelcoat -----
-c make a block mesh for: external surface, gelcoat, lower left
-block 1 2; 1 %j_elem; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 17
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 18
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 19
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 20
-c assign the material to be gelcoat (material #5)
-mate 5
-
-c make a block mesh for: external surface, gelcoat, lower right
-block 1 2; 1 %j_elem; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 23
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 24
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 21
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 22
-c assign the material to be gelcoat (material #5)
-mate 5
-
-c make a block mesh for: external surface, gelcoat, upper left
-block 1 2; 1 %j_elem; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 25
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 26
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 27
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 28
-c assign the material to be gelcoat (material #5)
-mate 5
-
-c make a block mesh for: external surface, gelcoat, upper right
-block 1 2; 1 %j_elem; -1;
--0.1 0.1; -0.1 0.1; 0;
-c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 31
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 32
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 29
-c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 30
-c assign the material to be gelcoat (material #5)
-mate 5
-
 c triax -----
 c make a block mesh for: external surface, triax, lower left
 block 1 2; 1 %j_elem; -1;
@@ -1302,8 +1245,65 @@ cure 1 1 1 2 1 1 46
 c assign the material to be triax (material #3)
 mate 3
 
-c ----------------------------------------
+c gelcoat -----
+c make a block mesh for: external surface, gelcoat, lower left
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 17
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 18
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 19
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 20
+c assign the material to be gelcoat (material #5)
+mate 5
 
+c make a block mesh for: external surface, gelcoat, lower right
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 23
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 24
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 21
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 22
+c assign the material to be gelcoat (material #5)
+mate 5
+
+c make a block mesh for: external surface, gelcoat, upper left
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 25
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 26
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 27
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 28
+c assign the material to be gelcoat (material #5)
+mate 5
+
+c make a block mesh for: external surface, gelcoat, upper right
+block 1 2; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 31
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 32
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 29
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 30
+c assign the material to be gelcoat (material #5)
+mate 5
+
+c ----------------------------------------
+interrupt
 c display all 3D curves
 dacd
 c display numbers of defined 3D curves
@@ -1311,6 +1311,6 @@ labels crv
 c display the mesh
 disp
 
-c interrupt
+interrupt
 merge
 tvv
