@@ -1949,8 +1949,21 @@ class MonoplaneStructure:
         f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
             'a')
         if self.root_buildup.exists():
-            f.write("c root buildup " + "-"*20 + "\n")
-            for (layer_name, layer_obj) in self.root_buildup.alt_layer.items():
+            f.write("c root buildup " + "-"*40 + "\n")
+            sd = sorted(self.root_buildup.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges(f)
+        if self.external_surface.exists():
+            f.write("c external surface " + "-"*40 + "\n")
+            sd = sorted(self.external_surface.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges(f)
+        if self.internal_surface_1.exists():
+            f.write("c internal surface " + "-"*40 + "\n")
+            sd = sorted(self.internal_surface_1.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges(f)
         # if self.spar_cap.exists():
