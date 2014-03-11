@@ -542,14 +542,58 @@ class MonoplaneStation(_Station):
         ax.set_ylim([miny*1.2,maxy*1.2])
         try:
             if st.external_surface.exists():
-                self.plot_polygon(
-                    st.external_surface.layer['gelcoat'].polygon, ax,
-                    face_color='#5EE54C', edge_color='#000000',
-                    alpha=0.8)  # face color is light green
-                self.plot_polygon(
-                    st.external_surface.layer['triax'].polygon, ax,
-                    face_color='#5EE54C', edge_color='#000000',
-                    alpha=0.8)  # face color is light green
+                if alternate_layers:
+                    self.plot_polygon(
+                        st.external_surface.layer['gelcoat, upper left'].polygon, ax,
+                        st.external_surface.layer['gelcoat, upper left'].face_color,
+                        st.external_surface.layer['gelcoat, upper left'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['gelcoat, upper right'].polygon, ax,
+                        st.external_surface.layer['gelcoat, upper right'].face_color,
+                        st.external_surface.layer['gelcoat, upper right'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['gelcoat, lower left'].polygon, ax,
+                        st.external_surface.layer['gelcoat, lower left'].face_color,
+                        st.external_surface.layer['gelcoat, lower left'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['gelcoat, lower right'].polygon, ax,
+                        st.external_surface.layer['gelcoat, lower right'].face_color,
+                        st.external_surface.layer['gelcoat, lower right'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['triax, upper left'].polygon, ax,
+                        st.external_surface.layer['triax, upper left'].face_color,
+                        st.external_surface.layer['triax, upper left'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['triax, upper right'].polygon, ax,
+                        st.external_surface.layer['triax, upper right'].face_color,
+                        st.external_surface.layer['triax, upper right'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['triax, lower left'].polygon, ax,
+                        st.external_surface.layer['triax, lower left'].face_color,
+                        st.external_surface.layer['triax, lower left'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['triax, lower right'].polygon, ax,
+                        st.external_surface.layer['triax, lower right'].face_color,
+                        st.external_surface.layer['triax, lower right'].edge_color,
+                        alpha=0.8)
+                else:
+                    self.plot_polygon(
+                        st.external_surface.layer['gelcoat'].polygon, ax,
+                        st.external_surface.layer['gelcoat'].face_color,
+                        st.external_surface.layer['gelcoat'].edge_color,
+                        alpha=0.8)
+                    self.plot_polygon(
+                        st.external_surface.layer['triax'].polygon, ax,
+                        st.external_surface.layer['triax'].face_color,
+                        st.external_surface.layer['triax'].edge_color,
+                        alpha=0.8)
                 # if not alternate_layers:
                 #     self.plot_polygon(
                 #         st.external_surface.layer['gelcoat'].polygon, ax,
@@ -597,25 +641,30 @@ class MonoplaneStation(_Station):
                 if alternate_layers:
                     self.plot_polygon(
                         st.root_buildup.layer['triax, upper left'].polygon, ax,
-                        face_color='#BE925A', edge_color='#000000',
-                        alpha=0.8)  # face color is brown
+                        st.root_buildup.layer['triax, upper left'].face_color,
+                        st.root_buildup.layer['triax, upper left'].edge_color,
+                        alpha=0.8)
                     self.plot_polygon(
                         st.root_buildup.layer['triax, upper right'].polygon, ax,
-                        face_color='#BE925A', edge_color='#000000',
-                        alpha=0.8)  # face color is brown
+                        st.root_buildup.layer['triax, upper right'].face_color,
+                        st.root_buildup.layer['triax, upper right'].edge_color,
+                        alpha=0.8)
                     self.plot_polygon(
                         st.root_buildup.layer['triax, lower left'].polygon, ax,
-                        face_color='#BE925A', edge_color='#000000',
-                        alpha=0.8)  # face color is brown
+                        st.root_buildup.layer['triax, lower left'].face_color,
+                        st.root_buildup.layer['triax, lower left'].edge_color,
+                        alpha=0.8)
                     self.plot_polygon(
                         st.root_buildup.layer['triax, lower right'].polygon, ax,
-                        face_color='#BE925A', edge_color='#000000',
-                        alpha=0.8)  # face color is brown
+                        st.root_buildup.layer['triax, lower right'].face_color,
+                        st.root_buildup.layer['triax, lower right'].edge_color,
+                        alpha=0.8)
                 else:
                     self.plot_polygon(
                         st.root_buildup.layer['triax'].polygon, ax,
-                        face_color='#BE925A', edge_color='#000000',
-                        alpha=0.8)  # face color is brown
+                        st.root_buildup.layer['triax'].face_color,
+                        st.root_buildup.layer['triax'].edge_color,
+                        alpha=0.8)
             if st.spar_cap.exists():
                 self.plot_polygon(st.spar_cap.layer['lower'].polygon,
                     ax, face_color='#00ACEF', edge_color='#000000',
@@ -741,12 +790,14 @@ class MonoplaneStation(_Station):
             if st.internal_surface_1.exists():
                 self.plot_polygon(
                     st.internal_surface_1.layer['triax'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_1.layer['triax'].face_color,
+                    st.internal_surface_1.layer['triax'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.internal_surface_1.layer['resin'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_1.layer['resin'].face_color,
+                    st.internal_surface_1.layer['resin'].edge_color,
+                    alpha=0.8)
             if st.internal_surface_2.exists():
                 self.plot_polygon(
                     st.internal_surface_2.layer['triax'].polygon, ax,

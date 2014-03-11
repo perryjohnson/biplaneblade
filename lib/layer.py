@@ -27,9 +27,14 @@ class Layer:
         get_and_save_edges()
     bottom : np.array, coords for bottom edge, saved later by
         get_and_save_edges()
+    face_color : str, hex color code for plotting this layer face
+        (default: red)
+    edge_color : str, hex color code for plotting this layer edge
+        (default: black)
 
     """
-    def __init__(self, polygon, material, parent_part, name):
+    def __init__(self, polygon, material, parent_part, name,
+        face_color='#FF0000', edge_color='#000000'):
         self.polygon = polygon
         self.material = material
         self.parent_part = parent_part
@@ -39,6 +44,8 @@ class Layer:
         self.top = None  # saved later by <part>.get_and_save_edges()
         self.right = None  # saved later by <part>.get_and_save_edges()
         self.bottom = None  # saved later by <part>.get_and_save_edges()
+        self.face_color = face_color
+        self.edge_color = edge_color
 
     def area_fraction(self):
         """Calculate the ratio of this part area to the cross-section area."""

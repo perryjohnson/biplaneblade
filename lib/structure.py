@@ -129,7 +129,7 @@ height:  {1:6.4f} (meters)
         polygon_gelcoat = op_gelcoat.difference(ip_gelcoat)
         self.layer['gelcoat'] = l.Layer(polygon_gelcoat,
             b.dict_of_materials['gelcoat'], parent_part=self,
-            name='gelcoat')
+            name='gelcoat', face_color='#5EE54C')
         assert self.layer['gelcoat'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['gelcoat'])
         # create the triax layer
@@ -138,9 +138,23 @@ height:  {1:6.4f} (meters)
         polygon_triax = op_triax.difference(ip_triax)
         self.layer['triax'] = l.Layer(polygon_triax,
             b.dict_of_materials['triaxial GFRP'], parent_part=self,
-            name='triax')
+            name='triax', face_color='#5EE54C')
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['triax'])
+
+    def add_new_layer(self, new_name, new_polygon, material):
+        """Add a new layer to the external surface part."""
+        st = self.parent_structure
+        b = st.parent_station.parent_blade
+        if material == 'triax':
+            m = b.dict_of_materials['triaxial GFRP']
+        elif material == 'gelcoat':
+            m = b.dict_of_materials['gelcoat']
+        else:
+            raise Warning("Unrecognized material requested:", material)
+        self.layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
+        assert self.layer[new_name].polygon.geom_type == 'Polygon'
+        st._list_of_layers.append(self.layer[new_name])
 
     def create_alternate_layers(self):
         """Create the alternate layers for meshing the external surface.
@@ -190,7 +204,7 @@ height:  {1:6.4f} (meters)
                         dict_key = 'gelcoat'
                     self.layer[material+', '+label] = l.Layer(p_quad,
                         b.dict_of_materials[dict_key], parent_part=self,
-                        name=(material+', '+label))
+                        name=(material+', '+label), face_color='#5EE54C')
                     # check that the layer just created is a polygon
                     assert self.layer[material+', '+label].polygon.geom_type == 'Polygon'
                     # no need to append these polygons to <station>._list_of_layers
@@ -367,10 +381,18 @@ class RootBuildup(Part):
         ip = op.buffer(-self.height)
         p = op.difference(ip)  # this polygon is like an annulus
         self.layer['triax'] = l.Layer(p, b.dict_of_materials['triaxial GFRP'],
-            parent_part=self, name='triax')
+            parent_part=self, name='triax', face_color='#BE925A')
         # check that layer['triax'] is a Polygon
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['triax'])
+
+    def add_new_layer(self, new_name, new_polygon):
+        """Add a new layer to the root buildup part."""
+        st = self.parent_structure
+        b = st.parent_station.parent_blade
+        self.layer[new_name] = l.Layer(new_polygon, b.dict_of_materials['triaxial GFRP'], parent_part=self, name=new_name)
+        assert self.layer[new_name].polygon.geom_type == 'Polygon'
+        st._list_of_layers.append(self.layer[new_name])
 
     def create_alternate_layers(self):
         """Create the alternate triax layers for meshing the root buildup.
@@ -405,7 +427,8 @@ class RootBuildup(Part):
             p_quad = p.intersection(box)
             self.layer['triax, '+label] = l.Layer(p_quad,
                 b.dict_of_materials['triaxial GFRP'], parent_part=self,
-                name=('triax, '+label))
+                name=('triax, '+label), face_color='#BE925A')
+            # face color is brown
             # check that the layer just created is a polygon
             assert self.layer['triax, '+label].polygon.geom_type == 'Polygon'
             # no need to append these polygons to <station>._list_of_layers
@@ -1077,7 +1100,7 @@ height:  {1:6.4f} (meters)
         polygon_triax = op_triax.difference(ip_triax)
         self.layer['triax'] = l.Layer(polygon_triax,
             b.dict_of_materials['triaxial GFRP'], parent_part=self,
-            name='triax')
+            name='triax', face_color='#999999')
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['triax'])
         # resin region
@@ -1085,9 +1108,24 @@ height:  {1:6.4f} (meters)
         ip_resin = op_resin.buffer(-self.height_resin)
         polygon_resin = op_resin.difference(ip_resin)
         self.layer['resin'] = l.Layer(polygon_resin,
-            b.dict_of_materials['resin'], parent_part=self, name='resin')
+            b.dict_of_materials['resin'], parent_part=self, name='resin',
+            face_color='#999999')
         assert self.layer['resin'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['resin'])
+
+    def add_new_layer(self, new_name, new_polygon, material):
+        """Add a new layer to the external surface part."""
+        st = self.parent_structure
+        b = st.parent_station.parent_blade
+        if material == 'triax':
+            m = b.dict_of_materials['triaxial GFRP']
+        elif material == 'resin':
+            m = b.dict_of_materials['resin']
+        else:
+            raise Warning("Unrecognized material requested:", material)
+        self.layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
+        assert self.layer[new_name].polygon.geom_type == 'Polygon'
+        st._list_of_layers.append(self.layer[new_name])
 
 
 class MonoplaneStructure:
@@ -1276,7 +1314,9 @@ class MonoplaneStructure:
             if self.parent_station.airfoil.has_sharp_TE:
                 self.TE_reinforcement.create_alternate_layers()
         # if self.external_surface.exists():
-        #     self.external_surface.create_alternate_layers()
+            # self.external_surface.create_alternate_layers()
+        # if self.internal_surface_1.exists():
+            # self.internal_surface_1.create_alternate_layers()
 
     def merge_all_polygons(self, plot_flag=False):
         """Merges all the layer polygons in this structure into one polygon.
