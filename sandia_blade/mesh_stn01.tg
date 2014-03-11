@@ -18,6 +18,7 @@ quadratic
 c ----------------------------------------
 
 c set some global parameters
+para i_elem 4;
 para j_elem 80;
 
 c ----------------------------------------
@@ -1128,7 +1129,7 @@ curd 80 lp3
 c --------------------------------------------------------------------
 
 c make a block mesh for: root buildup, triax, lower left
-block 1 2; 1 %j_elem; -1;
+block 1 %i_elem; 1 %j_elem; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 1
@@ -1142,7 +1143,7 @@ c assign the material to be triax (material #3)
 mate 3
 
 c make a block mesh for: root buildup, triax, lower right
-block 1 2; 1 %j_elem; -1;
+block 1 %i_elem; 1 %j_elem; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 7
@@ -1155,6 +1156,34 @@ cure 1 1 1 2 1 1 6
 c assign the material to be triax (material #3)
 mate 3
 
+c make a block mesh for: root buildup, triax, upper left
+block 1 %i_elem; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 9
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 10
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 11
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 12
+c assign the material to be triax (material #3)
+mate 3
+
+c make a block mesh for: root buildup, triax, upper right
+block 1 %i_elem; 1 %j_elem; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 15
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 16
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 13
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 14
+c assign the material to be triax (material #3)
+mate 3
+
 
 
 c display all 3D curves
@@ -1164,6 +1193,6 @@ labels crv
 c display the mesh
 disp
 
-interrupt
-c merge
-c tvv
+c interrupt
+merge
+tvv
