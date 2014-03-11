@@ -47,6 +47,7 @@ class Part:
         self.left = None    # assigned later by <station>.find_part_edges()
         self.right = None   # assigned later by <station>.find_part_edges()
         self.layer = {}     # assigned later by <part>.create_layers()
+        self.alt_layer = {} # assigned later by <part>.add_new_layer(...)
     
     def __str__(self):
         return """base:    {0} (meters)
@@ -152,9 +153,8 @@ height:  {1:6.4f} (meters)
             m = b.dict_of_materials['gelcoat']
         else:
             raise Warning("Unrecognized material requested:", material)
-        self.layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
-        assert self.layer[new_name].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer[new_name])
+        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
+        assert self.alt_layer[new_name].polygon.geom_type == 'Polygon'
 
     def create_alternate_layers(self):
         """Create the alternate layers for meshing the external surface.
@@ -386,13 +386,16 @@ class RootBuildup(Part):
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['triax'])
 
-    def add_new_layer(self, new_name, new_polygon):
+    def add_new_layer(self, new_name, new_polygon, material='triax'):
         """Add a new layer to the root buildup part."""
         st = self.parent_structure
         b = st.parent_station.parent_blade
-        self.layer[new_name] = l.Layer(new_polygon, b.dict_of_materials['triaxial GFRP'], parent_part=self, name=new_name)
-        assert self.layer[new_name].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer[new_name])
+        if material == 'triax':
+            m = b.dict_of_materials['triaxial GFRP']
+        else:
+            raise Warning("Unrecognized material requested:", material)
+        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name, face_color='#BE925A')
+        assert self.alt_layer[new_name].polygon.geom_type == 'Polygon'
 
     def create_alternate_layers(self):
         """Create the alternate triax layers for meshing the root buildup.
@@ -1123,9 +1126,8 @@ height:  {1:6.4f} (meters)
             m = b.dict_of_materials['resin']
         else:
             raise Warning("Unrecognized material requested:", material)
-        self.layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
-        assert self.layer[new_name].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer[new_name])
+        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
+        assert self.alt_layer[new_name].polygon.geom_type == 'Polygon'
 
 
 class MonoplaneStructure:
@@ -1802,7 +1804,6 @@ class MonoplaneStructure:
             'w')
         f.write("c {0} ".format(b.name) + "-"*40 + "\n")
         f.write("c Station #{0}\n".format(stn.station_num))
-        f.write("c ...print station properties? (see airfoil_v4.tg)\n")
         f.write("\n")
         f.write(separator)
         f.write("\n")
@@ -1936,6 +1937,83 @@ class MonoplaneStructure:
                     d = layer_obj.write_layer_edges(f, start_edge_num)
                 start_edge_num += len(d)
                 self._dict_of_edge_nums.update(d)
+        f.close()
+
+    def write_all_alt_layer_edges(self):
+        """Write the coordinates of all layer edges to `station_path`.
+
+        This file is formatted as a TrueGrid input file (*.tg).
+
+        """
+        stn = self.parent_station
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'a')
+        if self.root_buildup.exists():
+            f.write("c root buildup " + "-"*20 + "\n")
+            for (layer_name, layer_obj) in self.root_buildup.alt_layer.items():
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges(f)
+        # if self.spar_cap.exists():
+        #     f.write("c spar cap " + "-"*20 + "\n")
+        #     for (layer_name, layer_obj) in self.spar_cap.layer.items():
+        #         d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += 4
+        #         self._dict_of_edge_nums.update(d)
+        # if self.aft_panel_1.exists():
+        #     f.write("c aft panel #1 " + "-"*20 + "\n")
+        #     for (layer_name, layer_obj) in self.aft_panel_1.layer.items():
+        #         d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += 4
+        #         self._dict_of_edge_nums.update(d)
+        # if self.aft_panel_2.exists():
+        #     f.write("c aft panel #2 " + "-"*20 + "\n")
+        #     for (layer_name, layer_obj) in self.aft_panel_2.layer.items():
+        #         d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += 4
+        #         self._dict_of_edge_nums.update(d)
+        # if self.LE_panel.exists():
+        #     f.write("c LE panel " + "-"*20 + "\n")
+        #     for (layer_name, layer_obj) in self.LE_panel.layer.items():
+        #         d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += 4
+        #         self._dict_of_edge_nums.update(d)
+        # if self.shear_web_1.exists():
+        #     f.write("c shear web #1 " + "-"*20 + "\n")
+        #     for (layer_name, layer_obj) in self.shear_web_1.layer.items():
+        #         d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += 4
+        #         self._dict_of_edge_nums.update(d)
+        # if self.shear_web_2.exists():
+        #     f.write("c shear web #2 " + "-"*20 + "\n")
+        #     for (layer_name, layer_obj) in self.shear_web_2.layer.items():
+        #         d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += 4
+        #         self._dict_of_edge_nums.update(d)
+        # if self.shear_web_3.exists():
+        #     f.write("c shear web #3 " + "-"*20 + "\n")
+        #     for (layer_name, layer_obj) in self.shear_web_3.layer.items():
+        #         d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += 4
+        #         self._dict_of_edge_nums.update(d)
+        # if self.TE_reinforcement.exists():
+        #     f.write("c TE reinforcement " + "-"*20 + "\n")
+        #     te_dict = self.TE_reinforcement.layer.copy()
+        #     # make a new copy of the dictionary, so we don't mutate the
+        #     #   original 'layer' dictionary
+        #     if self.parent_station.airfoil.has_sharp_TE:
+        #         # remove the unnecessary 'uniax' and 'foam' layers, which are
+        #         #   not used for meshing
+        #         te_dict.pop('uniax')
+        #         te_dict.pop('foam')
+        #     for (layer_name, layer_obj) in te_dict.items():
+        #         if layer_obj.right is None:
+        #             # this is a triangular region
+        #             d = layer_obj.write_layer_edges(f, start_edge_num,
+        #                 triangular_region=True)
+        #         else:
+        #             d = layer_obj.write_layer_edges(f, start_edge_num)
+        #         start_edge_num += len(d)
+        #         self._dict_of_edge_nums.update(d)
         f.close()
 
     def write_block_mesh(self, dict_key_prefix, i_cells, j_cells):
@@ -2134,8 +2212,9 @@ class MonoplaneStructure:
     def write_truegrid_inputfile(self, interrupt_flag=False):
         """Write the TrueGrid input file in `station_path`."""
         self.write_truegrid_header()
-        self.write_all_layer_edges()
-        self.write_all_block_meshes()
+        # self.write_all_layer_edges()
+        self.write_all_alt_layer_edges()
+        # self.write_all_block_meshes()
         self.write_truegrid_footer(interrupt_flag=interrupt_flag)
         print " Wrote TrueGrid input file for Station #{0}.".format(
             self.parent_station.station_num)
