@@ -1120,12 +1120,15 @@ curd 80 lp3
  0.00000000   2.68124218  0.0
 ;;
 
+block 1 2; 1 80; -1;
+-0.1 0.1; -0.1 0.1; 0;
+
 c display all 3D curves
 dacd
 c display numbers of defined 3D curves
 labels crv
 c display the mesh
-c disp
+disp
 
 interrupt
 c merge
