@@ -1,10 +1,10 @@
 c Sandia blade SNL100-00 ----------------------------------------
-c Station #1
+c Station #01
 
 c ----------------------------------------
 
 c set the name of the mesh output file
-mof blade_station_1_abq.txt
+mof mesh_stn01_abq.txt
 
 c set the output file type
 abaqus
@@ -1143,6 +1143,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 4
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = rbtrill
+esetc rbtrill  RootBuildup; triax; lower left
 
 c make a block mesh for: root buildup, triax, lower right
 block 1 %i_elem; 1 %j_elem; -1;
@@ -1157,6 +1160,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 6
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = rbtrilr
+esetc rbtrilr  RootBuildup; triax; lower right
 
 c make a block mesh for: root buildup, triax, upper left
 block 1 %i_elem; 1 %j_elem; -1;
@@ -1171,6 +1177,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 12
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = rbtriul
+esetc rbtriul  RootBuildup; triax; upper left
 
 c make a block mesh for: root buildup, triax, upper right
 block 1 %i_elem; 1 %j_elem; -1;
@@ -1185,6 +1194,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 14
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = rbtriur
+esetc rbtriur  RootBuildup; triax; upper right
 
 c external surface ----------------------------------------
 
@@ -1202,6 +1214,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 36
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrill
+esetc estrill  ExternalSurface; triax; lower left
 
 c make a block mesh for: external surface, triax, lower right
 block 1 2; 1 %j_elem; -1;
@@ -1216,6 +1231,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 38
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrilr
+esetc estrilr  ExternalSurface; triax; lower right
 
 c make a block mesh for: external surface, triax, upper left
 block 1 2; 1 %j_elem; -1;
@@ -1230,6 +1248,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 44
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estriul
+esetc estriul  ExternalSurface; triax; upper left
 
 c make a block mesh for: external surface, triax, upper right
 block 1 2; 1 %j_elem; -1;
@@ -1244,6 +1265,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 46
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estriur
+esetc estriur  ExternalSurface; triax; upper right
 
 c gelcoat -----
 c make a block mesh for: external surface, gelcoat, lower left
@@ -1259,6 +1283,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 20
 c assign the material to be gelcoat (material #5)
 mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgelll
+esetc esgelll  ExternalSurface; gelcoat; lower left
 
 c make a block mesh for: external surface, gelcoat, lower right
 block 1 2; 1 %j_elem; -1;
@@ -1273,6 +1300,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 22
 c assign the material to be gelcoat (material #5)
 mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgellr
+esetc esgellr  ExternalSurface; gelcoat; lower right
 
 c make a block mesh for: external surface, gelcoat, upper left
 block 1 2; 1 %j_elem; -1;
@@ -1287,6 +1317,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 28
 c assign the material to be gelcoat (material #5)
 mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgelul
+esetc esgelul  ExternalSurface; gelcoat; upper left
 
 c make a block mesh for: external surface, gelcoat, upper right
 block 1 2; 1 %j_elem; -1;
@@ -1301,6 +1334,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 30
 c assign the material to be gelcoat (material #5)
 mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgelur
+esetc esgelur  ExternalSurface; gelcoat; upper right
 
 c internal surface 1 ----------------------------------------
 
@@ -1318,6 +1354,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 68
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = istrill
+esetc istrill  InternalSurface; triax; lower left
 
 c make a block mesh for: internal surface, triax, lower right
 block 1 2; 1 %j_elem; -1;
@@ -1332,6 +1371,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 70
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = istrilr
+esetc istrilr  InternalSurface; triax; lower right
 
 c make a block mesh for: internal surface, triax, upper left
 block 1 2; 1 %j_elem; -1;
@@ -1346,6 +1388,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 76
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = istriul
+esetc istriul  InternalSurface; triax; upper left
 
 c make a block mesh for: internal surface, triax, upper right
 block 1 2; 1 %j_elem; -1;
@@ -1360,6 +1405,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 78
 c assign the material to be triax (material #3)
 mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = istriur
+esetc istriur  InternalSurface; triax; upper right
 
 c resin -----
 c make a block mesh for: internal surface, resin, lower left
@@ -1375,6 +1423,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 52
 c assign the material to be resin (material #6)
 mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = isresll
+esetc isresll  InternalSurface; resin; lower left
 
 c make a block mesh for: internal surface, resin, lower right
 block 1 2; 1 %j_elem; -1;
@@ -1389,6 +1440,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 54
 c assign the material to be resin (material #6)
 mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = isreslr
+esetc isreslr  InternalSurface; resin; lower right
 
 c make a block mesh for: internal surface, resin, upper left
 block 1 2; 1 %j_elem; -1;
@@ -1403,6 +1457,9 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 60
 c assign the material to be resin (material #6)
 mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = isresul
+esetc isresul  InternalSurface; resin; upper left
 
 c make a block mesh for: internal surface, resin, upper right
 block 1 2; 1 %j_elem; -1;
@@ -1417,17 +1474,28 @@ c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 62
 c assign the material to be resin (material #6)
 mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = isresur
+esetc isresur  InternalSurface; resin; upper right
 
 
 c ----------------------------------------
-interrupt
+c interrupt
 c display all 3D curves
 dacd
 c display numbers of defined 3D curves
 labels crv
-c display the mesh
+c display the mesh (wireframe)
 disp
 
-interrupt
+c interrupt
+c merge all the individual block meshes into a single mesh
 merge
+c display the mesh (filled)
 tvv
+
+c interrupt
+c write the mesh to an output file
+write
+
+exit

@@ -1803,12 +1803,12 @@ class MonoplaneStructure:
         f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
             'w')
         f.write("c {0} ".format(b.name) + "-"*40 + "\n")
-        f.write("c Station #{0}\n".format(stn.station_num))
+        f.write("c Station #{0:02d}\n".format(stn.station_num))
         f.write("\n")
         f.write(separator)
         f.write("\n")
         f.write("c set the name of the mesh output file\n")
-        f.write("mof blade_station_{0}_abq.txt\n".format(stn.station_num))
+        f.write("mof mesh_stn{0:02d}_abq.txt\n".format(stn.station_num))
         f.write("\n")
         f.write("c set the output file type\n")
         f.write(outputfile_type + "\n")
@@ -1828,17 +1828,26 @@ class MonoplaneStructure:
         stn = self.parent_station
         f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
             'a')
+        if interrupt_flag:
+            f.write("interrupt\n")
         f.write("c display all 3D curves\n")
         f.write("dacd\n")
         f.write("c display numbers of defined 3D curves\n")
         f.write("labels crv\n")
-        f.write("c display the mesh\n")
+        f.write("c display the mesh (wireframe)\n")
         f.write("disp\n")
         f.write("\n")
         if interrupt_flag:
             f.write("interrupt\n")
+        f.write("c merge all the individual block meshes into a single mesh\n")
         f.write("merge\n")
+        f.write("c display the mesh (filled)\n")
         f.write("tvv\n")
+        f.write("\n")
+        if interrupt_flag:
+            f.write("interrupt\n")
+        f.write("c write the mesh to an output file\n")
+        f.write("write\n")
         f.close()
 
     def write_all_layer_edges(self):
