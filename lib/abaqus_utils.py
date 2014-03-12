@@ -161,7 +161,7 @@ class AbaqusGrid:
         self._parse_nodes()
         self._parse_elements(debug_flag=debug_flag)
         # self.id_corner_and_midside_nodes(debug_flag=debug_flag)
-        # self._parse_elementsets(debug_flag=debug_flag)  # rewrite this ... we need to calculate theta1 for each element, since we don't know theta1 beforehand anymore, since we're not making rectangular cross-sections
+        # self._parse_elementsets(debug_flag=debug_flag)  # ***REWRITE THIS ... we need to calculate theta1 for each element, since we don't know theta1 beforehand anymore, since we're not making rectangular cross-sections***
         # Sort element_array by element number.
         self.element_array.sort(order='elem_no')
         # Sort elementset_array by element number.

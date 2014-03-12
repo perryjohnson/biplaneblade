@@ -2,8 +2,14 @@
 A module to translate data from a 2D cross-section grid file (from TrueGrid)
 into a VABS input file.
 
+Functions to update
+-------------------
+self._write_element_layers()
+self._write_layers()
+self._write_materials()
+
 Author: Perry Roth-Johnson
-Last updated: March 28, 2013
+Last updated: March 12, 2014
 
 """
 
@@ -18,7 +24,7 @@ The VabsInputFile class contains methods for translating data from a 2D
 cross-section grid file (from TrueGrid) into a VABS input file.
 
 Usage:
-import vabs_utils as vu
+import lib.vabs_utils as vu
 f = vu.VabsInputFile(
 vabs_filename='blade_station_26_vabs.dat',
 grid_filename='blade_station_26_abq.txt',
@@ -103,7 +109,6 @@ debug_flag=True)
                                             0))
                                             # element['node9']))
         self.vabs_file.write('\n')
-
 
     def _write_element_layers(self):
         n = str(len(str(self.grid.number_of_elements)))
