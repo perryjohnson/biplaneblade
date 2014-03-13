@@ -1,5 +1,4 @@
-"""
-Determine the layer ply angle of an element in a grid.
+"""Determine the layer ply angle of an element in a grid.
 
 Author: Perry Roth-Johnson
 Last modified: March 12, 2014
@@ -12,6 +11,7 @@ http://stackoverflow.com/questions/19295725/angle-less-than-180-between-two-segm
 
 import numpy as np
 import matplotlib.pyplot as plt
+import lib.grid as gr
 import lib.vabs_utils as vu
 from shapely.geometry import Polygon, LineString
 from descartes import PolygonPatch
@@ -31,36 +31,15 @@ def plot_line(ax, ob, color='b'):
     x, y = ob.xy
     ax.plot(x, y, color=color, alpha=0.7, linewidth=3, solid_capstyle='round', zorder=2)
 
-class Node:
-    def __init__(self, node_no, x2, x3):
-        self.node_no = node_no
-        self.x2 = x2
-        self.x3 = x3
-        self.xy = (self.x2,self.x3)
-        self.parent_element = None
-
-class Element:
-    def __init__(self, elem_no, node1, node2, node3, node4):
-        self.elem_no = elem_no
-        self.node1 = node1
-        self.node2 = node2
-        self.node3 = node3
-        self.node4 = node4
-        self.theta1 = None
-        self.node1.parent_element = self
-        self.node2.parent_element = self
-        self.node3.parent_element = self
-        self.node4.parent_element = self
-
 # list_of_elements = f.grid.element_array[[1,250,500,750,1000,1250,1500,1750,2000,-1]]
 list_of_elements = f.grid.element_array[::25]
 # save a single element
 for elem in list_of_elements:
-    n1 = Node(elem['node1'], f.grid.node_array[elem['node1']-1]['x2'], f.grid.node_array[elem['node1']-1]['x3'])
-    n2 = Node(elem['node2'], f.grid.node_array[elem['node2']-1]['x2'], f.grid.node_array[elem['node2']-1]['x3'])
-    n3 = Node(elem['node3'], f.grid.node_array[elem['node3']-1]['x2'], f.grid.node_array[elem['node3']-1]['x3'])
-    n4 = Node(elem['node4'], f.grid.node_array[elem['node4']-1]['x2'], f.grid.node_array[elem['node4']-1]['x3'])
-    e = Element(elem['elem_no'], n1, n2, n3, n4)
+    n1 = gr.Node(elem['node1'], f.grid.node_array[elem['node1']-1]['x2'], f.grid.node_array[elem['node1']-1]['x3'])
+    n2 = gr.Node(elem['node2'], f.grid.node_array[elem['node2']-1]['x2'], f.grid.node_array[elem['node2']-1]['x3'])
+    n3 = gr.Node(elem['node3'], f.grid.node_array[elem['node3']-1]['x2'], f.grid.node_array[elem['node3']-1]['x3'])
+    n4 = gr.Node(elem['node4'], f.grid.node_array[elem['node4']-1]['x2'], f.grid.node_array[elem['node4']-1]['x3'])
+    e = gr.Element(elem['elem_no'], n1, n2, n3, n4)
     print 'element #{0}'.format(e.elem_no)
     # plot the element
     p = Polygon([n1.xy, n2.xy, n3.xy, n4.xy])
