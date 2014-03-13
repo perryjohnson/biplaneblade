@@ -21,7 +21,7 @@ from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
 from descartes import PolygonPatch
 # the descartes module translates shapely objects into matplotlib objects
-from operator import attrgetter
+# from operator import attrgetter
 # helps to sort lists of objects by their attributes
 # ref: https://wiki.python.org/moin/HowTo/Sorting#Operator_Module_Functions
 from math import isnan

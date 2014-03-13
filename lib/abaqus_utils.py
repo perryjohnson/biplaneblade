@@ -1,4 +1,6 @@
-"""A module to parse data from an ABAQUS-formatted 2D cross-section grid file.
+"""DEPRECATED: use abaqus_utils2 instead.
+
+A module to parse data from an ABAQUS-formatted 2D cross-section grid file.
 
 Authors: Perry Roth-Johnson, Phil Chiu
 Last updated: March 12, 2014

@@ -1,7 +1,7 @@
 """A module to parse data from an ABAQUS-formatted 2D cross-section grid file.
 
 Authors: Perry Roth-Johnson, Phil Chiu
-Last updated: March 12, 2014
+Last updated: March 13, 2014
 
 """
 
@@ -10,6 +10,8 @@ import re
 import os
 import numpy as np
 import grid as gr
+reload(gr)
+from operator import attrgetter
 
 
 class AbaqusGrid:
@@ -17,16 +19,15 @@ class AbaqusGrid:
     2D grid file (cross-section grid).
 
     Usage:
-    import abaqus_utils as au
+    import lib.abaqus_utils2 as au
     g = au.AbaqusGrid('cs_abq.txt')
-    g.node_array
-    g.node_array['node_no']
-    g.node_array['x2']
-    g.node_array['x3']
-    g.element_array
-    g.elementset_array
     g.number_of_nodes
+    g.list_of_nodes
+    g.list_of_nodes[0].node_num
+    g.list_of_nodes[0].x2
+    g.list_of_nodes[0].x3
     g.number_of_elements
+    g.list_of_elements
 
     Initialization:
     AbaqusGrid(filename, debug_flag=False)
@@ -35,14 +36,16 @@ class AbaqusGrid:
 
     Public attributes:
     filename - A string for the full path of the ABAQUS-formatted grid file.
-    node_array - A structured array that stores nodes in 3 columns:
-        node_no: A unique integer that labels this node.
+    list_of_nodes - A list of gr.Node objects, with attributes:
+        node_num: A unique integer that labels this node.
         x2: A float for the x2-coordinate of this node.
         x3: A float for the x3-coordinate of this node.
-    element_array - A structured array that stores element connectivity.
-        If the element is linear (4-noded), 6 columns are stored:
+    list_of_elements - A list of gr._Element objects that stores element
+        connectivity.
+        If the element is linear (4-noded), the list is populated with
+            gr.LinearElement objects, with attributes:
             layer_no: An integer for the unique layer associated with this element.
-            elem_no: An integer that represents this unique element.
+            elem_num: An integer that represents this unique element.
                                     4-------3
                                     |       |   The VABS linear quadrilateral
                                     |       |   element node numbering scheme.
@@ -56,9 +59,10 @@ class AbaqusGrid:
                 of this element.
             node4: An integer for the unique node located at the top left corner of
                 this element.
-        If the element is quadratic (8-noded), 10 columns are stored:
+        If the element is quadratic (8-noded), the list is populated with
+            gr.QuadraticElement objects, with attributes:
             layer_no: An integer for the unique layer associated with this element.
-            elem_no: An integer that represents this unique element.
+            elem_num: An integer that represents this unique element.
                                     4---7---3
                                     |       |   The VABS quadratic quadrilateral
                                     8       6   element node numbering scheme.
@@ -80,8 +84,7 @@ class AbaqusGrid:
                 top side of this element.
             node8: An integer for the unique node located at the midpoint of the
                 left side of this element.
-            The VABS quadrilateral element node numbering scheme is shown below:
-    elementset_array - A structured array that stores element orientation angles in
+    list_of_element_sets - A structured array that stores element orientation angles in
         2 columns:
         theta1: The orientation (in degrees) of this element. Sometimes this is
             also referred to as the "layer plane angle."
@@ -96,13 +99,11 @@ class AbaqusGrid:
                             ---------------------
                                 theta1 = 180
 
-        elem_no: An integer that represents a unique element.
+        elem_num: An integer that represents a unique element.
     number_of_nodes - An integer for the number of nodes in the grid.
     number_of_elements - An integer for the number of elements in the grid.
 
     """
-
-
     def __init__(self, filename, debug_flag=False):
         self.filename = filename
         # attributes for self._read_file()
@@ -119,40 +120,21 @@ class AbaqusGrid:
         self._element_block_start = None
         self._elementset_block_start = None
         # attributes for self._parse_nodes()
-        self.number_of_nodes = None
+        self.number_of_nodes = 0
         self.list_of_nodes = []
-        # self.node_array = None
         # attributes for self._parse_elements()
         self.number_of_elements = None
-        self.element_array = None
-        # attributes for self._parse_elementsets()
-        self.elementset_array = None
-        # --
+        self.list_of_elements = []
+        # parse the ABAQUS output file into grid objects
         self._parse_abaqus(debug_flag=debug_flag)
 
     def _parse_abaqus(self, debug_flag=False):
-        """Parses the ABAQUS output file and saves the node, element, and eset structured
-        arrays as object attributes.
+        """Parses the ABAQUS output file and saves it grid objects.
 
-        This non-public method is automatically run when a new AbaqusGrid instance is
-        created.
-
-        Saves:
-        self.number_of_nodes
-        self.node_array
-
-        Usage:
-        cd safe
-        import scripts.abaqus_utilities as au
-        g = au.AbaqusGrid('run_01/input/spar_station_04_linear_abq.txt')
-        g._parse_abaqus(debug_flag=True)
-
-        g.node_array
-        g.element_array
-        g.elementset_array
+        This non-public method is automatically run when a new AbaqusGrid
+        instance is created.
 
         """
-
         if debug_flag:
             print 'ABAQUS file: ' + self.filename
         self._read_file()
@@ -162,16 +144,15 @@ class AbaqusGrid:
         self._find_block_starts()
         self._parse_nodes()
         self._parse_elements(debug_flag=debug_flag)
-        # self.id_corner_and_midside_nodes(debug_flag=debug_flag)
-        # self._parse_elementsets(debug_flag=debug_flag)  # ***REWRITE THIS ... we need to calculate theta1 for each element, since we don't know theta1 beforehand anymore, since we're not making rectangular cross-sections***
-        # Sort element_array by element number.
-        self.element_array.sort(order='elem_no')
-        # Sort elementset_array by element number.
-        # self.elementset_array.sort(order='elem_no')
+        self._parse_elementsets(debug_flag=debug_flag)
+        # Sort list_of_elements by element number.
+        self.list_of_elements.sort(key=attrgetter('elem_num'))
+        # Sort list_of_element_sets by element number.
+        # self.list_of_element_sets.sort(order='elem_num')
         if debug_flag:
-            print '.node_array[0] =', self.node_array[0]
-            print '.element_array[0] =', self.element_array[0]
-            # print '.elementset_array[0] =', self.elementset_array[0]
+            print 'list_of_nodes[0] =', self.list_of_nodes[0]
+            print 'list_of_elements[0] =', self.list_of_elements[0]
+            # print 'list_of_element_sets[0] =', self.list_of_element_sets[0]
             print 'number of nodes: ' + str(self.number_of_nodes)
             # print '    corner nodes: ' + str(self.number_of_corner_nodes)
             # print '    midside nodes: ' + str(self.number_of_midside_nodes)
@@ -189,7 +170,6 @@ class AbaqusGrid:
         f = open(self.filename, 'r')
         self._abq_file = f.readlines()
         f.close()
-
 
     def _define_patterns(self):
         """Define regular expressions to search for nodes and elements in the ABAQUS file.
@@ -237,7 +217,6 @@ class AbaqusGrid:
 
         self._elementset_header_pattern = re.compile(r'\*ELSET,ELSET=.+')
         
-
     def _find_block_starts(self):
         """Returns the indices (line number) for the start of the node, element
         connectivity, and element set blocks in self._abq_file.
@@ -277,42 +256,34 @@ class AbaqusGrid:
             self._elementset_block_start = 0
             print "WARNING: elementset block start not found!"
 
-
     def _parse_nodes(self):
-        """Save the nodes in a structured array (as an attribute).
+        """Save the nodes in a list of gr.Node objects.
 
         Saves:
         self.number_of_nodes
-        self.node_array
+        self.list_of_nodes
 
         """
-        list_of_node_tuples = []
         for line in self._abq_file[self._node_block_start:self._element_block_start]:
             node_match = self._node_pattern.match(line)
             if node_match: # if we find a node
                 # save the first 3 entries; drop x1 (last entry)
-                (node_no, x2, x3) = line.strip().split(',')[:-1]
-                list_of_node_tuples.append((int(node_no), float(x2), float(x3), -1))
-        self.number_of_nodes = len(list_of_node_tuples)
-        # initialize a structured array
-        self.node_array = np.zeros((self.number_of_nodes,),
-            dtype=[('node_no', 'i4'), ('x2', 'f8'), ('x3', 'f8'), ('is_corner_node', 'i4')])
-        # save the nodes in the structured array
-        self.node_array[:] = list_of_node_tuples
-
+                (node_num, x2, x3) = line.strip().split(',')[:-1]
+                n = gr.Node(node_num, x2, x3)
+                self.list_of_nodes.append(n)
+        self.number_of_nodes = len(self.list_of_nodes)
 
     def _parse_elements(self, debug_flag=False):
-        """Saves the elements in a structured array (as an attribute).
+        """Saves the elements in a list of gr.Element objects.
 
-        Note: This function only supports linear (4-noded) elements and quadratic
-        (8-noded) elements from TrueGrid.
+        Note: This function only supports linear (4-noded) elements and 
+        quadratic (8-noded) elements from TrueGrid.
 
         Saves:
         self.number_of_elements
-        self.element_array
+        self.list_of_elements
 
         """
-        list_of_element_tuples = []
         new_element_header_found = False
         for i, line in enumerate(
                 self._abq_file[self._element_block_start:self._elementset_block_start]):
@@ -331,144 +302,47 @@ class AbaqusGrid:
                 if debug_flag and new_element_header_found:
                     print 'first element: #' + line.strip().split(',')[0]
                     new_element_header_found = False
-                (elem_no, node1, node2, node3, node4,
-                        node5, node6, node7, node8) = line.strip().split(',')
-                list_of_element_tuples.append(
-                        (int(layer_no), int(elem_no), int(node1), int(node2),
-                        int(node3), int(node4), int(node5), int(node6),
-                        int(node7), int(node8)))
+                (elem_num, node1_num, node2_num, node3_num, node4_num,
+                    node5_num, node6_num, node7_num,
+                    node8_num) = line.strip().split(',')
+                e = gr.QuadraticElement(
+                    elem_num = int(elem_num),
+                    node1 = self.list_of_nodes[int(node1_num)-1],
+                    node2 = self.list_of_nodes[int(node2_num)-1],
+                    node3 = self.list_of_nodes[int(node3_num)-1],
+                    node4 = self.list_of_nodes[int(node4_num)-1],
+                    node5 = self.list_of_nodes[int(node5_num)-1],
+                    node6 = self.list_of_nodes[int(node6_num)-1],
+                    node7 = self.list_of_nodes[int(node7_num)-1],
+                    node8 = self.list_of_nodes[int(node8_num)-1])
+                self.list_of_elements.append(e)
             elif linear_element_match:
                 if debug_flag and new_element_header_found:
                     print 'first element: #' + line.strip().split(',')[0]
                     new_element_header_found = False
-                (elem_no, node1, node2, node3, node4) = line.strip().split(',')
-                list_of_element_tuples.append(
-                        (int(layer_no), int(elem_no), int(node1), int(node2),
-                        int(node3), int(node4)))
-        self.number_of_elements = len(list_of_element_tuples)
-        if len(list_of_element_tuples[0]) == 10:
-            is_quadratic = True
-        else:
-            is_quadratic = False
-        # initialize a structured array
-        if is_quadratic:
-            self.element_array = np.zeros(
-                    (self.number_of_elements,), dtype=[('layer_no', 'i4'),
-                    ('elem_no', 'i4'), ('node1', 'i4'), ('node2', 'i4'),
-                    ('node3', 'i4'), ('node4', 'i4'), ('node5', 'i4'),
-                    ('node6', 'i4'), ('node7', 'i4'), ('node8', 'i4')])
-        else:
-            self.element_array = np.zeros(
-                    (self.number_of_elements,), dtype=[('layer_no', 'i4'),
-                    ('elem_no', 'i4'), ('node1', 'i4'), ('node2', 'i4'),
-                    ('node3', 'i4'), ('node4', 'i4')])
-        # save the nodes in the structured array
-        self.element_array[:] = list_of_element_tuples
-
-
-    def id_corner_and_midside_nodes(self, debug_flag=False):
-        """Identifies which nodes are corner nodes and midside nodes.
-
-        If node[i] is a corner node, then self.node_array[i]['is_corner_node'] = 1.
-        If node[i] is a midside node, then self.node_array[i]['is_corner_node'] = 0.
-
-        If node[i] is neither, then self.node_array[i]['is_corner_node'] = -1.
-        (This is the default value set in self._parse_nodes().)
-
-        """
-        for elem in self.element_array:
-            # corner nodes
-            corner_nodes = [elem['node1'], elem['node2'], elem['node3'], elem['node4']]
-            for node in corner_nodes:
-                self.node_array[node-1]['is_corner_node'] = 1
-            # midside nodes
-            midside_nodes = [elem['node5'], elem['node6'], elem['node7'], elem['node8']]
-            for node in midside_nodes:
-                self.node_array[node-1]['is_corner_node'] = 0
-        # count the total number of corner and midside nodes
-        self.number_of_corner_nodes = len(np.nonzero(self.node_array['is_corner_node']==1)[0])
-        self.number_of_midside_nodes = len(np.nonzero(self.node_array['is_corner_node']==0)[0])
-        # check that all nodes were assigned as corner or midside nodes
-        # (no -1 values should exist in self.node_array['is_corner_node'])
-        num_unassigned_nodes = len(np.nonzero(self.node_array['is_corner_node']==-1)[0])
-        if debug_flag and num_unassigned_nodes > 0:
-            print 'WARNING: not all nodes were assigned as corner or midside nodes'
-
-
-    def id_labels_for_midside_nodes(self):
-        """Identifies the first node label (lower label) and second node label (higher
-        label) for each midside node.
-
-        This information is only needed for the SAFE input file.
-
-        """
-        return
-
+                (elem_num, node1_num, node2_num, node3_num,
+                    node4_num) = line.strip().split(',')
+                e = gr.LinearElement(
+                    elem_num = int(elem_num),
+                    node1 = self.list_of_nodes[int(node1_num)-1],
+                    node2 = self.list_of_nodes[int(node2_num)-1],
+                    node3 = self.list_of_nodes[int(node3_num)-1],
+                    node4 = self.list_of_nodes[int(node4_num)-1])
+                self.list_of_elements.append(e)
+        self.number_of_elements = len(self.list_of_elements)
 
     def _parse_elementsets(self, debug_flag=False):
-        """Save all the elements and their orientations (theta1) in a structured array
-        (as an attribute).
-
-        Saves:
-        self.elementset_array
-
-        FUTURE WORK: theta1_dict should be pulled out and replaced with an input file
-        supplied by the user...maybe add theta1_dict as a keyword argument?
-
-        KNOWN BUG: The elementsets in the ABAQUS file may be missing some elements!
-        seems to be more likely to happen when quadratic elements are generated with
-        TrueGrid. When linear elements are generated, everything is usually okay. A
-        quick and dirty fix was implemented in the past: search for elements in the
-        mesh that have not yet been assigned a theta1 value. Based on the middle
-        coordinates of that element, assign a theta1 value.
+        """Save all the element sets as attributes of their Elements.
 
         """
-        list_of_elementset_tuples = []
-        # Define the relationship between elementset names and theta1 values
-        # e.g., elementset 'scb' (bottom spar cap) has theta1=180 degrees
-        theta1_dict = { 'swlbiaxl': 90, # left wall
-                        'swlfoam': 90, # left wall
-                        'swlbiaxr': 90, # left wall
-                        'swrbiaxl': 270, # right wall
-                        'swrfoam': 270, # right wall
-                        'swrbiaxr': 270, # right wall
-                        'sct': 0, # top wall
-                        'rbt': 0, # top wall
-                        'scb': 180, # bottom wall
-                        'rbb': 180 } # bottom wall
-
         for line in self._abq_file[self._elementset_block_start:]:
             elementset_header_match = self._elementset_header_pattern.match(line)
             if elementset_header_match:
                 # Extract the elementset name and look up its theta1 value.
                 elementset_name = line.strip().split('=')[-1]
-                if theta1_dict.has_key(elementset_name):
-                    theta1 = theta1_dict[elementset_name]
-                else: # (if the elementset name is not in the theta1 dictionary)
-                    theta1 = 0 # assume the theta1 value is zero
                 if debug_flag:
                     print 'element set: ' + line.strip().split('=')[-1]
-                    print 'theta1 = ' + str(theta1) + '\n'
             else:
-                elements = line.strip().strip(',').split(',')
-                for elem_no in elements:
-                    list_of_elementset_tuples.append((theta1,int(elem_no)))
-        elementset_len = len(list_of_elementset_tuples)
-        # initialize a structured array
-        self.elementset_array = np.zeros((self.number_of_elements,),
-            dtype=[('theta1', 'i4'), ('elem_no', 'i4')])
-        # save the nodes in the structured array
-        try:
-            self.elementset_array[:] = list_of_elementset_tuples
-        except:
-            print """
-<*WARNING* in abaqus_utilities.AbaqusGrid._parse_elementsets()>
-self.number_of_elements != len(list_of_elementset_tuples)
-Elements are missing from the elementset blocks in the ABAQUS file!
-...Saving as many elements as possible in self.elementset_array
-"""
-            # Reinitialize the structured array with a smaller shape in order
-            # to match the number of elements parsed from the elemensets.
-            self.elementset_array = np.zeros((elementset_len,),
-                dtype=[('theta1', 'i4'), ('elem_no', 'i4')])
-            self.elementset_array[:] = list_of_elementset_tuples
+                element_nums = line.strip().strip(',').split(',')
+                for elem_num in element_nums:
+                    self.list_of_elements[int(elem_num)-1].element_set = elementset_name

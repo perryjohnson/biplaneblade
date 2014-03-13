@@ -15,32 +15,29 @@ Last updated: March 12, 2014
 
 
 import numpy as np
-import abaqus_utils as au
+import abaqus_utils2 as au
+reload(au)
 
 
 class VabsInputFile:
+    """The VabsInputFile class contains methods for translating data from an
+    AbaqusGrid object (from TrueGrid) into a VABS input file.
+
+    Usage:
+    import lib.vabs_utils as vu
+    f = vu.VabsInputFile(
+    vabs_filename='sandia_blade/mesh_stn01.vabs',
+    grid=g,
+    debug_flag=True)
+
     """
-The VabsInputFile class contains methods for translating data from a 2D
-cross-section grid file (from TrueGrid) into a VABS input file.
-
-Usage:
-import lib.vabs_utils as vu
-f = vu.VabsInputFile(
-vabs_filename='sandia_blade/mesh_stn01.vabs',
-grid_filename='sandia_blade/mesh_stn01.abq',
-debug_flag=True)
-
-    """
-
-
-    def __init__(self, vabs_filename, grid_filename, debug_flag=False):
+    def __init__(self, vabs_filename, grid, debug_flag=False):
         self.vabs_filename = vabs_filename
-        self.grid_filename = grid_filename
-        self.grid = au.AbaqusGrid(grid_filename)
+        self.grid = grid
         self.set_flags()
         self._write_input_file(debug_flag=debug_flag)
 
-
+    # Rewrite this! User should set flags from the __init__() method.
     def set_flags(self):
         self.format_flag = 1
         self.number_of_layers = 1
@@ -55,7 +52,6 @@ debug_flag=True)
             self.k1 = 0
             self.k2 = 0
             self.k3 = 0
-
 
     def _write_header(self):
         flag1_fmt = '{0:d} {1:d}\n'
@@ -79,16 +75,14 @@ debug_flag=True)
                                             1))
                                             # self.grid.number_of_materials))
 
-
     def _write_nodes(self):
         n = str(len(str(self.grid.number_of_nodes)))
         fmt = '{0:>'+n+'d}' + 5*' ' + '{1:> 10.8f}' + 2*' ' + '{2:> 10.8f}\n'
-        for node in self.grid.node_array:
-            self.vabs_file.write(fmt.format(node['node_no'],
-                                            node['x2'],
-                                            node['x3']))
+        for node in self.grid.list_of_nodes:
+            self.vabs_file.write(fmt.format(node.node_num,
+                                            node.x2,
+                                            node.x3))
         self.vabs_file.write('\n')
-
 
     def _write_element_connectivity(self):
         nn = str(len(str(self.grid.number_of_nodes)))
@@ -96,16 +90,16 @@ debug_flag=True)
         ne = str(len(str(self.grid.number_of_elements)))
         efmt = '>' + ne + 'd'
         fmt = '{0:'+efmt+'}     {1:'+nfmt+'} {2:'+nfmt+'} {3:'+nfmt+'} {4:'+nfmt+'} {5:'+nfmt+'} {6:'+nfmt+'} {7:'+nfmt+'} {8:'+nfmt+'} {9:'+nfmt+'}\n'
-        for element in self.grid.element_array:
-            self.vabs_file.write(fmt.format(element['elem_no'],
-                                            element['node1'],
-                                            element['node2'],
-                                            element['node3'],
-                                            element['node4'],
-                                            element['node5'],
-                                            element['node6'],
-                                            element['node7'],
-                                            element['node8'],
+        for element in self.grid.list_of_elements:
+            self.vabs_file.write(fmt.format(element.elem_num,
+                                            element.node1.node_num,
+                                            element.node2.node_num,
+                                            element.node3.node_num,
+                                            element.node4.node_num,
+                                            element.node5.node_num,
+                                            element.node6.node_num,
+                                            element.node7.node_num,
+                                            element.node8.node_num,
                                             0))
                                             # element['node9']))
         self.vabs_file.write('\n')
@@ -113,17 +107,12 @@ debug_flag=True)
     def _write_element_layers(self):
         n = str(len(str(self.grid.number_of_elements)))
         fmt = '{0:>'+n+'d}' + 5*' ' + '{1:d} {2:>7.2f}\n'
-        for element in self.grid.element_array:
-            self.vabs_file.write(fmt.format(element['elem_no'],
-                                            element['layer_no'],
-                                            0.0))
-                                            # element['theta1']))
+        for element in self.grid.list_of_elements:
+            self.vabs_file.write(fmt.format(element.elem_num,1,element.theta1))
         self.vabs_file.write('\n')
-
 
     def _write_layers(self):
         self.vabs_file.write('1    1     0.00\n\n')
-
 
     def _write_materials(self):
         # write material properties  # HARDCODED FOR FOAM! CHANGE LATER!
@@ -144,16 +133,13 @@ debug_flag=True)
         # self.vabs_file.write('2.56000e+08   3.00000e-01\n')
         # self.vabs_file.write('2.00000e+02\n')
 
-
     def _write_input_file(self, debug_flag=False):
+        """Writes the VABS input file.
+
+        This non-public method is automatically run when a new VabsInputFile
+        instance is created.
+
         """
-Writes the VABS input file.
-
-This non-public method is automatically run when a new VabsInputFile instance
-is created.
-
-        """
-
         if debug_flag:
             print 'VABS input file: ' + self.vabs_filename
         # open the input file
