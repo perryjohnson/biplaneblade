@@ -26,8 +26,8 @@ cross-section grid file (from TrueGrid) into a VABS input file.
 Usage:
 import lib.vabs_utils as vu
 f = vu.VabsInputFile(
-vabs_filename='blade_station_26_vabs.dat',
-grid_filename='blade_station_26_abq.txt',
+vabs_filename='sandia_blade/mesh_stn01.vabs',
+grid_filename='sandia_blade/mesh_stn01.abq',
 debug_flag=True)
 
     """
