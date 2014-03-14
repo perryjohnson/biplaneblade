@@ -4,7 +4,7 @@ c Station #01
 c ----------------------------------------
 
 c set the name of the mesh output file
-mof mesh_stn01_abq.txt
+mof mesh_stn01.abq
 
 c set the output file type
 abaqus
@@ -1491,6 +1491,11 @@ disp
 c interrupt
 c merge all the individual block meshes into a single mesh
 merge
+c delete redundant nodes at part boundaries
+stp 0.0001
+c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375
+c   choose a tolerance smaller than this (0.0001)
+c   the command stp deletes nodes who are near each other (w/in the tolerance)
 c display the mesh (filled)
 tvv
 
