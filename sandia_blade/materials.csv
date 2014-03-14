@@ -1,7 +1,7 @@
 number,name,fabric/resin,layup,type,E1,E2,E3,G12,G13,G23,nu12,nu13,nu23,rho
-1,uniaxial GFRP,E-LT-5500/EP-3,[0]2,orthotropic,4.18E+10,1.40E+10,1.40E+10,2.63E+09,2.63E+09,2.63E+09,0.28,0.28,0.28,1920
-2,biaxial GFRP,Saertex/EP-3,[+/-45]4,orthotropic,1.36E+10,1.33E+10,1.33E+10,1.18E+10,1.18E+10,1.18E+10,0.49,0.49,0.49,1780
-3,triaxial GFRP,SNL Triax,[+/-45]4[0]2,orthotropic,2.77E+10,1.37E+10,1.37E+10,7.20E+09,7.20E+09,7.20E+09,0.39,0.39,0.39,1850
-4,foam,,,isotropic,2.56E+08,,,,,,0.3,,,200
-5,gelcoat,,,isotropic,3.44E+09,,,,,,0.3,,,1235
-6,resin,,,isotropic,3.50E+09,,,,,,0.3,,,1100
+1,uniaxial GFRP,E-LT-5500/EP-3,[0]2,orthotropic,4.18E+10,1.40E+10,1.40E+10,2.63E+09,2.63E+09,2.63E+09,0.28,0.28,0.28,1920.0
+2,biaxial GFRP,Saertex/EP-3,[+/-45]4,orthotropic,1.36E+10,1.33E+10,1.33E+10,1.18E+10,1.18E+10,1.18E+10,0.49,0.49,0.49,1780.0
+3,triaxial GFRP,SNL Triax,[+/-45]4[0]2,orthotropic,2.77E+10,1.37E+10,1.37E+10,7.20E+09,7.20E+09,7.20E+09,0.39,0.39,0.39,1850.0
+4,foam,,,isotropic,2.56E+08,,,,,,0.3,,,200.0
+5,gelcoat,,,isotropic,3.44E+09,,,,,,0.3,,,1235.0
+6,resin,,,isotropic,3.50E+09,,,,,,0.3,,,1100.0
