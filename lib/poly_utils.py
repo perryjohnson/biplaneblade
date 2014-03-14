@@ -23,24 +23,28 @@ def plot_polygon(p, face_color, edge_color='r'):
     patch = PolygonPatch(p, fc=face_color, ec=edge_color, alpha=0.8)
     ax.add_patch(patch)
 
-def cut_plot_and_write_alt_layer(part, material, ext_label, b_polygon):
+def cut_plot_and_write_alt_layer(part, material, ext_label, b_polygon,
+    area_threshold=1.0e-08):
     """Cut, plot, and write a polygon for an alternate layer."""
     l = part.layer[material]
     # cut polygon
     p_new = cut_polygon(l.polygon, b_polygon)
     # check if extra negligibly small polygons were created
     if p_new.geom_type != 'Polygon':
-        print '  Found a non-Polygon made of {0} polygons.'.format(len(p_new.geoms))
+        fmt = " In '{0}' region, found a non-Polygon made of {1} polygons. "
+        print fmt.format(ext_label,len(p_new.geoms))
+        print ' -> area threshold set to', area_threshold
         good_poly_index = None
         for i,p in enumerate(p_new.geoms):
-            print '  polygon[{0}]: area={1}, centroid={2}'.format(i,p.area,p.centroid.xy)
-            if p.area > 1.0e-08:
+            fmt2 = '   polygon[{0}]: area={1:5.3e}, centroid=({2:.4},{3:.4})'
+            print fmt2.format(i,p.area,p.centroid.xy[0][0],p.centroid.xy[1][0])
+            if p.area > area_threshold:
                 # only keep polygons with significant area
                 good_poly_index = i
-                print '  ...keep polygon[{0}]!'.format(i)
+                print '   ...keep polygon[{0}]!'.format(i)
             else:
                 # throw out any polygon with insignificant area
-                print '  ...throw out polygon[{0}]'.format(i)
+                print '   ...throw out polygon[{0}]'.format(i)
         # overwrite p_new with the good polygon
         p_new = p_new.geoms[good_poly_index]
     # plot polygon
