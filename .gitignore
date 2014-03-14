@@ -1,5 +1,15 @@
 *.pyc
-sandia_blade/stn*
+sandia_blade/stn02
+sandia_blade/stn03
+sandia_blade/stn04
+sandia_blade/stn05
+sandia_blade/stn06
+sandia_blade/stn07
+sandia_blade/stn08
+sandia_blade/stn09
+sandia_blade/stn1*
+sandia_blade/stn2*
+sandia_blade/stn3*
 biplane_flap-asym_no-stagger/stn*
 biplane_flap-asym_stagger/stn*
 biplane_flap-sym_no-stagger/stn*

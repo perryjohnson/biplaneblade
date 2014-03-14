@@ -9,9 +9,8 @@ Current workflow (as of March 13, 2014)
 2. manually edit `mesh_stnXX.tg` to create block meshes fitted to boundary curves
 3. run TrueGrid on `mesh_stnXX.tg` to write ABAQUS output file: `mesh_stnXX.abq`
 4. run `layer_plane_angles.py` - write updated grid object to VABS input file: `mesh_stnXX.vabs`
-5. move `mesh_stnXX.vabs` to the same directory as `VABSIII.exe`
-6. run `VABSIII.exe mesh_stn01.vabs` - use VABS to calculate cross-section properties
-7. `mesh_stn01.vabs.K` - mass and stiffness matrices are in this file! 
+5. run `run_vabs.py` - use VABS to calculate mass and stiffness matrices
+6. `mesh_stnXX.vabs.K` - mass and stiffness matrices are in this file! 
 
 Usage: `create_blades.py`
 -------------------------

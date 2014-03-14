@@ -1139,11 +1139,11 @@ class MonoplaneStructure:
                  h_int_surf_1_resin, h_int_surf_2_triax, h_int_surf_2_resin,
                  h_int_surf_3_triax, h_int_surf_3_resin, h_int_surf_4_triax,
                  h_int_surf_4_resin, h_ext_surf_triax, h_ext_surf_gelcoat,
-                 parent_station, truegrid_input_filename='mesh.tg'):
+                 parent_station):
         self.parent_station = parent_station
         self._list_of_layers = []
         self._dict_of_edge_nums = {}
-        self.truegrid_input_filename = truegrid_input_filename
+        self.truegrid_input_filename = 'mesh_stn{0:02d}_start.tg'.format(self.parent_station.station_num)
         self.root_buildup = RootBuildup(
             parent_structure = self,
             base = np.nan,
