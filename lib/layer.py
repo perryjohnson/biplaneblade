@@ -8,7 +8,7 @@ Last updated: October 11, 2013
 
 import os
 import numpy as np
-from shapely.geometry import asLineString
+from shapely.geometry import asLineString, Point, LineString
 
 
 class Layer:
@@ -31,6 +31,8 @@ class Layer:
         (default: red)
     edge_color : str, hex color code for plotting this layer edge
         (default: black)
+    corners : list of shapely Point objects, the corners of this polygon
+    edges : list of numpy arrays of coords for each edge of this polygon
 
     """
     def __init__(self, polygon, material, parent_part, name,
@@ -46,6 +48,8 @@ class Layer:
         self.bottom = None  # saved later by <part>.get_and_save_edges()
         self.face_color = face_color
         self.edge_color = edge_color
+        self.corners = []
+        self.edges = []
 
     def area_fraction(self):
         """Calculate the ratio of this part area to the cross-section area."""
@@ -168,6 +172,38 @@ class Layer:
         except IndexError:
             edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
         return (edge1, edge2, edge3, edge4)
+
+    def get_edges2(self):
+        """Saves a list of arrays of coords for each edge of this layer.
+
+        This is an alternate version of the method get_edges().
+
+        Saves:
+        self.edges
+
+        """
+        p = self.polygon  # get the polygon for this layer
+        # store the polygon exterior coords as a numpy array
+        a = np.array(p.exterior.coords)
+        # find the indices of the corners
+        match = []
+        for corner in self.corners:
+            c = np.array((corner.x, corner.y))
+            corner_index = np.where((a==c).all(axis=1))[0][0]
+            match.append(corner_index)
+        match.sort()
+        # split the polygon up at each of the corners into "edges"
+        for m in range(len(match))[:-1]:
+            self.edges.append(a[match[m]:match[m+1]+1,:])
+        # grab the last edge
+        if len(a[:match[0],:]) > 0:
+            # if the last edge wraps from the last element of `a`
+            #   to the first element of `a`
+            last_edge = np.vstack((a[match[-1]:-1,:], a[:match[0],:]))
+        else:
+            # if the last edge ends at the last element of `a`
+            last_edge = a[match[-1]:,:]
+        self.edges.append(last_edge)
 
     def get_and_save_edges(self):
         """Identifies and saves the left, top, right, and bottom (LTRB) edges.
@@ -307,6 +343,23 @@ class Layer:
                 self.top = edges[l[1]]     # top edge saved!
                 self.bottom = edges[l[0]]  # bottom edge saved!
 
+    def find_corners(self, bounding_polygon, tol=1.0e-08, print_flag=False):
+        """Find the corners of a layer cut by a bounding polygon.
+
+        Saves: self.corners
+
+        """
+        list_of_corners = []
+        bounding_line = LineString(bounding_polygon.exterior)
+        for coord in self.polygon.exterior.coords[:-1]:
+            pt = Point(coord[0],coord[1])
+            # determine if this point is on the bounding_polygon
+            if bounding_line.distance(pt) < tol:
+                list_of_corners.append(pt)
+                if print_flag:
+                    print pt
+        self.corners = list_of_corners
+
     def write_alt_layer_edges(self, f):
         """Writes the edges for this alternate layer in the file f."""
         part_name = self.parent_part.__class__.__name__  # part name
@@ -316,12 +369,14 @@ class Layer:
             prefix = '{0}{1}; {2}'.format(part_name, part_num, layer_name)
         else:
             prefix = '{0}; {1}'.format(part_name, layer_name)
-        f.write('curd # lp3\n')
-        # store the polygon exterior coords as a numpy array
-        a = np.array(self.polygon.exterior.coords)
-        for cd_pair in a:
-            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
-        f.write(';;\n\n')
+        # get the edges
+        self.get_edges2()
+        for edge in self.edges:
+            f.write('curd # lp3\n')
+            for cd_pair in edge:
+                f.write('{0: .8f}  {1: .8f}  0.0\n'.format(
+                    cd_pair[0], cd_pair[1]))
+            f.write(';;\n\n')
 
     def write_layer_edges(self, f, start_edge_num, triangular_region=False):
         """Writes the edges for this layer in the file f.

@@ -8,12 +8,9 @@ or
 $ ipython --pylab
 Then, from the prompt, run this script:
 |> %run create_stnXX_mesh
-Once you are finished looking at the meshes, you can clean up extra files:
-|> %run clean
-(See the 'clean.py' script in this directory for details.)
 
 Author: Perry Roth-Johnson
-Last updated: March 13, 2014
+Last updated: March 15, 2014
 
 """
 

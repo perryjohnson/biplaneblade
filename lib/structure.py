@@ -387,7 +387,7 @@ class RootBuildup(Part):
         st._list_of_layers.append(self.layer['triax'])
 
     def add_new_layer(self, new_name, new_polygon, material='triax'):
-        """Add a new layer to the root buildup part."""
+        """Add a new alternate layer to the root buildup part."""
         st = self.parent_structure
         b = st.parent_station.parent_blade
         if material == 'triax':
@@ -1117,7 +1117,7 @@ height:  {1:6.4f} (meters)
         st._list_of_layers.append(self.layer['resin'])
 
     def add_new_layer(self, new_name, new_polygon, material):
-        """Add a new layer to the external surface part."""
+        """Add a new alternate layer to the external surface part."""
         st = self.parent_structure
         b = st.parent_station.parent_blade
         if material == 'triax':
