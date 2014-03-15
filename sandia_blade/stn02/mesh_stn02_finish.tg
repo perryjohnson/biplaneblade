@@ -67,11 +67,13 @@ c inner
 
 c SparCap, lower ----------------------------------------
 curd 5 lp3
+c left
 -0.75000000  -2.59318185  0.0
 -0.75000000  -2.57955091  0.0
 ;;
 
 curd 6 lp3
+c inner
  0.75000000  -2.59318185  0.0
  0.69913984  -2.60921869  0.0
  0.46906946  -2.66022359  0.0
@@ -84,11 +86,13 @@ curd 6 lp3
 ;;
 
 curd 7 lp3
+c right
  0.75000000  -2.57955091  0.0
  0.75000000  -2.59318185  0.0
 ;;
 
 curd 8 lp3
+c outer
 -0.75000000  -2.57955091  0.0
 -0.69577192  -2.59664971  0.0
 -0.46680996  -2.64740887  0.0
@@ -102,6 +106,7 @@ curd 8 lp3
 
 c TE_Reinforcement, uniax ----------------------------------------
 curd 9 lp3
+c outer
  1.84700000  -1.96652337  0.0
  1.90937022  -1.90937022  0.0
  2.06851859  -1.73569442  0.0
@@ -126,11 +131,13 @@ curd 9 lp3
 ;;
 
 curd 10 lp3
+c bottom left
  1.84700000  -1.96787973  0.0
  1.84700000  -1.96652337  0.0
 ;;
 
 curd 11 lp3
+c inner
  1.84700000   1.96787973  0.0
  1.91007800   1.91007800  0.0
  2.06928536   1.73633782  0.0
@@ -155,6 +162,7 @@ curd 11 lp3
 ;;
 
 curd 12 lp3
+c top left
  1.84700000   1.96652337  0.0
  1.84700000   1.96787973  0.0
 ;;
@@ -2333,6 +2341,7 @@ c --------------------------------------------------------------------
 
 c spar cap ----------------------------------------
 
+c upper -----
 c make a block mesh for: spar cap, uniax, upper
 block 1 2; 1 %j_elemSP; -1;
 -0.1 0.1; -0.1 0.1; 0;
@@ -2351,6 +2360,46 @@ mate 1
 c name this set of elements
 eset 0 0 1 0 0 1 = scupper
 esetc scupper  SparCap; uniax; upper
+
+c lower -----
+c make a block mesh for: spar cap, uniax, lower
+block 1 2; 1 %j_elemSP; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c rotate 90 degrees
+tr 0 0 1 0 0 1 rz 90;
+c bottom edge (i=1, j varies)
+cure 1 1 1 1 2 1 8
+c left edge (j=2, i varies)
+cure 1 2 1 2 2 1 5
+c top edge (i=2, j varies)
+cure 2 1 1 2 2 1 6
+c right edge (j=1, i varies)
+cure 1 1 1 2 1 1 7
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = sclower
+esetc sclower  SparCap; uniax; lower
+
+c TE reinforcement ----------------------------------------
+
+c uniax -----
+c make a block mesh for: TE reinforcement, uniax
+block 1 2; 1 %j_elemTE; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 11
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 12
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 9
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 10
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = teuniax
+esetc teuniax  TE_Reinforcement; uniax
 
 
 
