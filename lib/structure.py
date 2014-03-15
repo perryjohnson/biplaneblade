@@ -1831,6 +1831,7 @@ class MonoplaneStructure:
         if interrupt_flag:
             f.write("interrupt\n")
         f.write("c display all 3D curves\n")
+        f.write("merge\n")
         f.write("dacd\n")
         f.write("c display numbers of defined 3D curves\n")
         f.write("labels crv\n")
