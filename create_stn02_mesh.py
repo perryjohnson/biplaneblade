@@ -205,10 +205,117 @@ pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label,
 pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
     bounding_polygon)
 
+# upper middle corner, internal surface -------------------------------------
+label = 'upper middle corner'
+# create the bounding polygon
+points = [
+    (0.75, 2.59318185),
+    (0.75999982,   2.57954345),
+    (0.77, 2.5),
+    (0.75, 2.5)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+
+# lower middle corner, internal surface -------------------------------------
+label = 'lower middle corner'
+# create the bounding polygon
+points = [
+    (0.75, -2.59318185),
+    (0.75999982,   -2.57954345),
+    (0.77, -2.5),
+    (0.75, -2.5)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+
+# upper left corner, internal surface -------------------------------------
+label = 'upper left corner'
+# create the bounding polygon
+points = [
+    (-0.75000000,   2.59318185),
+    (-0.75999982,  2.57954345),
+    (-0.77, 2.56),
+    (-0.75, 2.56)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+
+# lower left corner, internal surface -------------------------------------
+label = 'lower left corner'
+# create the bounding polygon
+points = [
+    (-0.75000000,   -2.59318185),
+    (-0.75999982,  -2.57954345),
+    (-0.77, -2.56),
+    (-0.75, -2.56)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+
+# upper right corner, internal surface -------------------------------------
+label = 'upper right corner'
+# create the bounding polygon
+points = [
+    (1.84700000,   1.96787973),
+    (1.84700000,   1.95),
+    (1.835, 1.95),
+    (1.83771501, 1.96282449)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+
+# lower right corner, internal surface -------------------------------------
+label = 'lower right corner'
+# create the bounding polygon
+points = [
+    (1.84700000,   -1.96787973),
+    (1.84700000,   -1.95),
+    (1.835, -1.95),
+    (1.83771501, -1.96282449)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
 
 # show the plot
 plt.show()
 
 # write the TrueGrid input file for mesh generation ---------------------
-st.write_truegrid_inputfile(interrupt_flag=True)
+st.write_truegrid_inputfile(
+    interrupt_flag=True, 
+    additional_layers=[
+        st.spar_cap.layer['upper'],
+        st.spar_cap.layer['lower'],
+        st.TE_reinforcement.layer['uniax']
+    ])

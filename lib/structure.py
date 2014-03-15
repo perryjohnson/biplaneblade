@@ -1841,6 +1841,11 @@ class MonoplaneStructure:
             f.write("interrupt\n")
         f.write("c merge all the individual block meshes into a single mesh\n")
         f.write("merge\n")
+        f.write("c delete redundant nodes at part boundaries\n")
+        f.write("stp 0.0001\n")
+        f.write("c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375\n")
+        f.write("c   choose a tolerance smaller than this (0.0001)\n")
+        f.write("c   the command stp deletes nodes who are near each other (w/in the tolerance)\n")
         f.write("c display the mesh (filled)\n")
         f.write("tvv\n")
         f.write("\n")
@@ -1848,6 +1853,8 @@ class MonoplaneStructure:
             f.write("interrupt\n")
         f.write("c write the mesh to an output file\n")
         f.write("write\n")
+        f.write("\n")
+        f.write("c exit\n")
         f.close()
 
     def write_all_layer_edges(self):
@@ -2231,11 +2238,23 @@ class MonoplaneStructure:
                         i_cells=2,
                         j_cells=30)
 
-    def write_truegrid_inputfile(self, interrupt_flag=False):
+    def write_truegrid_inputfile(self, interrupt_flag=False, additional_layers=[]):
         """Write the TrueGrid input file in `station_path`."""
         self.write_truegrid_header()
         # self.write_all_layer_edges()
         self.write_all_alt_layer_edges()
+        if len(additional_layers) > 0:
+            stn = self.parent_station
+            f = open(os.path.join(stn.station_path,
+                self.truegrid_input_filename), 'a')
+            for layer in additional_layers:
+                part_name = layer.parent_part.__class__.__name__
+                layer_name = layer.name  # layer name
+                fmt = 'c {0}, {1} ' + '-'*40 + '\n'
+                f.write(fmt.format(part_name, layer_name))
+                layer.write_layer_edges(f, 100)
+                # hardcoded start_edge_num=100 for now...
+            f.close()
         # self.write_all_block_meshes()
         self.write_truegrid_footer(interrupt_flag=interrupt_flag)
         print " Wrote TrueGrid input file for Station #{0}.".format(

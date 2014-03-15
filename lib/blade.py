@@ -184,7 +184,7 @@ class _Blade:
         if mt._Material.number_of_materials != 0:
             mt._Material.number_of_materials = 0  # initialize to zero
             print " [Warning] The number of materials has been reset to zero."
-            self.logf = open(_Material.logfile_name, 'a')
+            self.logf = open(mt._Material.logfile_name, 'a')
             self.logf.write("[{0}] [Warning] The number of materials (_Material.number_of_materials) was reset to zero.\n".format(datetime.datetime.now()))
         self.dict_of_materials = {}
         for m in range(1, self.number_of_materials+1):
