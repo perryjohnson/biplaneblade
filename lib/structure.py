@@ -1808,7 +1808,7 @@ class MonoplaneStructure:
         f.write(separator)
         f.write("\n")
         f.write("c set the name of the mesh output file\n")
-        f.write("mof mesh_stn{0:02d}_abq.txt\n".format(stn.station_num))
+        f.write("mof mesh_stn{0:02d}.abq\n".format(stn.station_num))
         f.write("\n")
         f.write("c set the output file type\n")
         f.write(outputfile_type + "\n")
@@ -2253,8 +2253,7 @@ class MonoplaneStructure:
                 layer_name = layer.name  # layer name
                 fmt = 'c {0}, {1} ' + '-'*40 + '\n'
                 f.write(fmt.format(part_name, layer_name))
-                layer.write_layer_edges(f, 100)
-                # hardcoded start_edge_num=100 for now...
+                layer.write_layer_edges2(f)
             f.close()
         # self.write_all_block_meshes()
         self.write_truegrid_footer(interrupt_flag=interrupt_flag)

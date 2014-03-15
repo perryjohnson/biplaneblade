@@ -444,6 +444,42 @@ class Layer:
             f.write(';;\n\n')
         return d
 
+    def write_layer_edges2(self, f, curve_num_placeholder='#'):
+        """Writes the edges for this layer in the file f.
+
+        Parameters
+        ----------
+        f : file object, the handle for the file being written to
+
+        """
+        part_name = self.parent_part.__class__.__name__  # part name
+        layer_name = self.name  # layer name
+        if part_name in ['ShearWeb', 'AftPanel', 'InternalSurface']:
+            part_num = self.parent_part.num
+            prefix = '{0}{1}; {2}'.format(part_name, part_num, layer_name)
+        else:
+            prefix = '{0}; {1}'.format(part_name, layer_name)
+        # left edge
+        f.write('curd {0} lp3\n'.format(curve_num_placeholder))
+        for cd_pair in self.left:
+            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+        f.write(';;\n\n')
+        # bottom edge
+        f.write('curd {0} lp3\n'.format(curve_num_placeholder))
+        for cd_pair in self.bottom:
+            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+        f.write(';;\n\n')
+        # right edge
+        f.write('curd {0} lp3\n'.format(curve_num_placeholder))
+        for cd_pair in self.right:
+            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+        f.write(';;\n\n')
+        # top edge
+        f.write('curd {0} lp3\n'.format(curve_num_placeholder))
+        for cd_pair in self.top:
+            f.write('{0: .8f}  {1: .8f}  0.0\n'.format(cd_pair[0], cd_pair[1]))
+        f.write(';;\n\n')
+
     def write_polygon_edges(self):
         """Write edges for this layer's polygon to a file in `station_path`."""
         stn = self.parent_part.parent_structure.parent_station

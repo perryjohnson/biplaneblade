@@ -70,139 +70,139 @@ pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label,
 pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
     bounding_polygon)
 
-# # lower spar cap -----------------------------------------------------------
-# label = 'lower spar cap'
+# lower spar cap -----------------------------------------------------------
+label = 'lower spar cap'
 
-# # create the bounding polygon
-# points = [
-#     (-0.75,-3.0),
-#     ( 0.75,-3.0),
-#     ( 0.75,-2.5),
-#     (-0.75,-2.5)
-#     ]
-# bounding_polygon = Polygon(points)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points = [
+    (-0.75,-3.0),
+    ( 0.75,-3.0),
+    ( 0.75,-2.5),
+    (-0.75,-2.5)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
-# # TE reinforcement ---------------------------------------------------------
-# label = 'TE reinforcement'
+# TE reinforcement ---------------------------------------------------------
+label = 'TE reinforcement'
 
-# # create the bounding polygon
-# points = [
-#     (1.84700000, 1.96787973),
-#     (1.98565, 2.10803),
-#     (3.0, 2.0),
-#     (3.0,-2.0),
-#     (1.98565,-2.10803),
-#     (1.84700000,-1.96787973)
-#     ]
-# bounding_polygon = Polygon(points)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points = [
+    (1.84700000,   1.97935234),
+    (1.95, 2.1),
+    (3.0, 2.0),
+    (3.0,-2.0),
+    (1.95,-2.1),
+    (1.84700000,  -1.97935234)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
-# # LE -----------------------------------------------------------------------
-# label = 'LE'
+# LE -----------------------------------------------------------------------
+label = 'LE'
 
-# # create the bounding polygon
-# points = [
-#     (-3.00,-3.0),
-#     (-0.75,-3.0),
-#     (-0.75,-2.59318185),
-#     (-0.75999982, -2.57954345),
-#     (-0.75999982,  2.57954345),
-#     (-0.75, 2.59318185),
-#     (-0.75, 3.0),
-#     (-3.00, 3.0)
-#     ]
-# bounding_polygon = Polygon(points)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
+# create the bounding polygon
+points = [
+    (-3.00,-3.0),
+    (-0.75,-3.0),
+    (-0.75000000, -2.59364847),
+    (-0.76000000, -2.58004063),
+    (-0.76000000,  2.58004063),
+    (-0.75000000,  2.59364847),
+    (-0.75, 3.0),
+    (-3.00, 3.0)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
-# # upper right --------------------------------------------------------------
-# label = 'upper right'
-# # create the bounding polygon
-# points = [
-#     (0.75, 2.8),
-#     (2.0,  2.8),
-#     (1.98565, 2.10803),
-#     (1.84700000, 1.96787973),
-#     (1.83771501, 1.96282449),
-#     (0.8, 2.0),
-#     (0.75999982,   2.57954345),
-#     (0.75000000,   2.59318185)
-#     ]
-# bounding_polygon = Polygon(points)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
+# upper right --------------------------------------------------------------
+label = 'upper right'
+# create the bounding polygon
+points = [
+    (0.75, 2.8),
+    (2.0,  2.8),
+    (1.95, 2.1),
+    (1.84700000,   1.97935234),
+    (1.83718488,   1.97476178),
+    (0.8, 2.0),
+    (0.76000000,   2.58004063),
+    (0.75000000,   2.59364847)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
-# # lower right --------------------------------------------------------------
-# label = 'lower right'
-# # create the bounding polygon
-# points = [
-#     (0.75, -2.8),
-#     (2.0,  -2.8),
-#     (1.98565, -2.10803),
-#     (1.84700000, -1.96787973),
-#     (1.83771501, -1.96282449),
-#     (0.8, -2.0),
-#     (0.75999982,   -2.57954345),
-#     (0.75000000,   -2.59318185)
-#     ]
-# bounding_polygon = Polygon(points)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
+# lower right --------------------------------------------------------------
+label = 'lower right'
+# create the bounding polygon
+points = [
+    (0.75, -2.8),
+    (2.0,  -2.8),
+    (1.95, -2.1),
+    (1.84700000,   -1.97935234),
+    (1.83718488,   -1.97476178),
+    (0.8, -2.0),
+    (0.76000000,   -2.58004063),
+    (0.75000000,   -2.59364847)
+    ]
+bounding_polygon = Polygon(points)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
 # # upper middle corner, internal surface -------------------------------------
 # label = 'upper middle corner'
