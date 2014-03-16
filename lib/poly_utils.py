@@ -24,17 +24,21 @@ def cut_polygon(original, bounding, ext_label, area_threshold=1.0e-08):
         print fmt.format(ext_label,len(p_new.geoms))
         print ' -> area threshold set to', area_threshold
         good_poly_index = None
+        num_good_polys_found = 0
         for i,p in enumerate(p_new.geoms):
             fmt2 = '   polygon[{0}]: area={1:5.3e}, centroid=({2:.4},{3:.4})'
             print fmt2.format(i,p.area,p.centroid.xy[0][0],p.centroid.xy[1][0])
             if p.area > area_threshold:
                 # only keep polygons with significant area
                 good_poly_index = i
+                num_good_polys_found += 1
                 print '   ...keep polygon[{0}]!'.format(i)
             else:
                 # throw out any polygon with insignificant area
                 print '   ...throw out polygon[{0}]'.format(i)
         # overwrite p_new with the good polygon
+        if num_good_polys_found > 1:
+            raise Warning("More than 1 good polygon found. Check that bounding polygon coords are correct! ***")
         try:
             p_new = p_new.geoms[good_poly_index]
         except TypeError:
