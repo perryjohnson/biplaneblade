@@ -38,7 +38,7 @@ def cut_polygon(original, bounding, ext_label, area_threshold=1.0e-08):
                 print '   ...throw out polygon[{0}]'.format(i)
         # overwrite p_new with the good polygon
         if num_good_polys_found > 1:
-            raise Warning("More than 1 good polygon found. Check that bounding polygon coords are correct! ***")
+            raise Warning("More than 1 good polygon found. Check bounding polygon coords!")
         try:
             p_new = p_new.geoms[good_poly_index]
         except TypeError:
