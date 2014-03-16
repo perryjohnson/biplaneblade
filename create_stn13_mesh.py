@@ -10,7 +10,7 @@ Then, from the prompt, run this script:
 |> %run create_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: March 15, 2014
+Last updated: March 16, 2014
 
 """
 
@@ -511,5 +511,8 @@ st.write_truegrid_inputfile(
         st.shear_web_1.layer['biax, right'],
         st.shear_web_2.layer['biax, left'],
         st.shear_web_2.layer['foam'],
-        st.shear_web_2.layer['biax, right']
+        st.shear_web_2.layer['biax, right'],
+        st.shear_web_3.layer['biax, left'],
+        st.shear_web_3.layer['foam'],
+        st.shear_web_3.layer['biax, right']
     ])
