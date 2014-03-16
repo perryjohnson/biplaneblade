@@ -20,7 +20,7 @@ import lib.blade as bl
 reload(bl)
 import lib.poly_utils as pu
 reload(pu)
-from shapely.geometry import Polygon, Point, LineString
+from shapely.geometry import Polygon
 
 
 # SET THESE PARAMETERS -----------------
