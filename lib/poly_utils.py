@@ -14,7 +14,10 @@ from descartes import PolygonPatch
 # cut up the layer polygons to prepare for grid generation
 def cut_polygon(original, bounding, ext_label, area_threshold=1.0e-08):
     """Cut the original layer polygon with the bounding polygon."""
-    p_new = original.intersection(bounding)
+    try:
+        p_new = original.intersection(bounding)
+    except:
+        raise Warning("The original polygon does not intersect the bounding polygon!")
     # check if extra negligibly small polygons were created
     if p_new.geom_type != 'Polygon':
         fmt = " In '{0}' region, found a non-Polygon made of {1} polygons. "
@@ -32,7 +35,10 @@ def cut_polygon(original, bounding, ext_label, area_threshold=1.0e-08):
                 # throw out any polygon with insignificant area
                 print '   ...throw out polygon[{0}]'.format(i)
         # overwrite p_new with the good polygon
-        p_new = p_new.geoms[good_poly_index]
+        try:
+            p_new = p_new.geoms[good_poly_index]
+        except TypeError:
+            raise Warning("The original polygon does not intersect the bounding polygon!")
     return p_new
 
 def plot_polygon(p, face_color, edge_color='r'):
