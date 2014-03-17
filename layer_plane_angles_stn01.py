@@ -1,7 +1,7 @@
 """Determine the layer plane angle of all the elements in a grid.
 
 Author: Perry Roth-Johnson
-Last modified: March 13, 2014
+Last modified: March 17, 2014
 
 References:
 http://stackoverflow.com/questions/3365171/calculating-the-angle-between-two-lines-without-having-to-calculate-the-slope/3366569#3366569
@@ -22,8 +22,15 @@ from shapely.geometry import Polygon, LineString
 from descartes import PolygonPatch
 
 
+# -----------------------------------------------
+# update these parameters!
+station_num = 1
+# -----------------------------------------------
+
+stn_str = 'stn{0:02d}'.format(station_num)
 plt.close('all')
 # create a figure
+plt.figure(num='Station #{0:02d}'.format(station_num))
 ax = plt.gcf().gca()
 
 left_elemsets = [
@@ -52,7 +59,8 @@ right_elemsets = [
     ]
 
 # import the initial grid object
-g = au.AbaqusGrid('sandia_blade/mesh_stn01.abq', debug_flag=True)
+fmt_grid = 'sandia_blade/' + stn_str + '/mesh_' + stn_str + '.abq'
+g = au.AbaqusGrid(fmt_grid, debug_flag=True)
 # update the grid object with all the layer plane angles
 for elem in g.list_of_elements:    
     if elem.element_set in left_elemsets:
@@ -64,21 +72,22 @@ for elem in g.list_of_elements:
     else:
         raise Warning("Element #{0} has no element set!".format(elem.elem_num))
 # plot a small selection of elements to check the results
-# for elem in g.list_of_elements[::25]:
-#     elem.plot()
-#     print elem.elem_num, elem.element_set, elem.theta1
+for elem in g.list_of_elements[::25]:
+    elem.plot()
+    print elem.elem_num, elem.element_set, elem.theta1
 # show the plot
-# plt.xlim([-3,3])
-# plt.ylim([-3,3])
-# ax.set_aspect('equal')
-# plt.show()
+plt.xlim([-3,3])
+plt.ylim([-3,3])
+ax.set_aspect('equal')
+plt.show()
 # -----------------------------------------------------------------------------
 # read layers.csv to determine the number of layers
 layer_file = pd.read_csv('sandia_blade/layers.csv', index_col=0)
 number_of_layers = len(layer_file)
 # write the updated grid object to a VABS input file
+fmt_vabs = 'sandia_blade/' + stn_str + '/mesh_' + stn_str + '.vabs'
 f = vu.VabsInputFile(
-    vabs_filename='sandia_blade/mesh_stn01.vabs',
+    vabs_filename=fmt_vabs,
     grid=g,
     material_filename='sandia_blade/materials.csv',
     layer_filename='sandia_blade/layers.csv',

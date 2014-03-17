@@ -1,7 +1,7 @@
 """Wrapper file to run VABS on input files for a station cross-section.
 
 Author: Perry Roth-Johnson
-Last modified: March 13, 2014
+Last modified: March 17, 2014
 
 """
 
@@ -9,9 +9,15 @@ Last modified: March 13, 2014
 import os
 
 
-path_to_VABS_exe = r'D:\Programs\VABS\vabs_3-7'
-relative_path_to_VABS_input_file = r'sandia_blade\stn01'
-VABS_input_filename = 'mesh_stn01.vabs'
+# -----------------------------------------------
+# update these parameters!
+station_num = 2
+# -----------------------------------------------
+
+stn_str = 'stn{0:02d}'.format(station_num)
+path_to_VABS_exe = 'D:\\Programs\\VABS\\vabs_3-7'
+relative_path_to_VABS_input_file = 'sandia_blade\\{0}'.format(stn_str)
+VABS_input_filename = 'mesh_{0}.vabs'.format(stn_str)
 
 absolute_path_to_VABS_input_file = os.path.join(os.getcwd(), 
     relative_path_to_VABS_input_file, VABS_input_filename)

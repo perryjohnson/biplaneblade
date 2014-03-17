@@ -148,7 +148,11 @@ class VabsInputFile:
         n = str(len(str(self.grid.number_of_elements)))
         fmt = '{0:>'+n+'d}' + 5*' ' + '{1:d} {2:>7.2f}\n'
         for element in self.grid.list_of_elements:
-            self.vabs_file.write(fmt.format(element.elem_num,1,element.theta1))
+            self.vabs_file.write(fmt.format(
+                element.elem_num,
+                element.layer_num,
+                element.theta1)
+            )
         self.vabs_file.write('\n')
 
     def _write_layers(self):

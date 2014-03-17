@@ -1,7 +1,7 @@
 """A module to parse data from an ABAQUS-formatted 2D cross-section grid file.
 
 Authors: Perry Roth-Johnson, Phil Chiu
-Last updated: March 13, 2014
+Last updated: March 17, 2014
 
 """
 
@@ -293,11 +293,11 @@ class AbaqusGrid:
             if element_header_match:
                 new_element_header_found = True
                 # Extract the layer number from the element header line.
-                layer_no = line.strip().split("=")[-1].split("M")[-1]
+                layer_num = line.strip().split("=")[-1].split("M")[-1]
                 if debug_flag:
                     print 'element header found at line ' + str(
                             i+self._element_block_start+1)
-                    print 'layer #' + str(layer_no)
+                    print 'layer #' + str(layer_num)
             elif quadratic_element_match:
                 if debug_flag and new_element_header_found:
                     print 'first element: #' + line.strip().split(',')[0]
@@ -314,7 +314,8 @@ class AbaqusGrid:
                     node5 = self.list_of_nodes[int(node5_num)-1],
                     node6 = self.list_of_nodes[int(node6_num)-1],
                     node7 = self.list_of_nodes[int(node7_num)-1],
-                    node8 = self.list_of_nodes[int(node8_num)-1])
+                    node8 = self.list_of_nodes[int(node8_num)-1],
+                    layer_num = int(layer_num))
                 self.list_of_elements.append(e)
             elif linear_element_match:
                 if debug_flag and new_element_header_found:
@@ -327,7 +328,8 @@ class AbaqusGrid:
                     node1 = self.list_of_nodes[int(node1_num)-1],
                     node2 = self.list_of_nodes[int(node2_num)-1],
                     node3 = self.list_of_nodes[int(node3_num)-1],
-                    node4 = self.list_of_nodes[int(node4_num)-1])
+                    node4 = self.list_of_nodes[int(node4_num)-1],
+                    layer_num = int(layer_num))
                 self.list_of_elements.append(e)
         self.number_of_elements = len(self.list_of_elements)
 

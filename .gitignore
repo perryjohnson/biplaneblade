@@ -18,4 +18,8 @@ sandia_blade/percent_areas.csv
 sandia_blade/percent_masses.csv
 tsave*
 tghist
-
+*.ech
+*.opt
+*.v0
+*.v1S
+*.v22

@@ -30,12 +30,12 @@ class Node:
 
 class _Element:
     number_of_elements = 0
-    def __init__(self, elem_num):
+    def __init__(self, elem_num, layer_num):
         _Element.number_of_elements += 1
         self.elem_num = int(elem_num)
         self.element_set = None
         self.theta1 = None
-        self.layer_num = None
+        self.layer_num = layer_num
 
     def _plot_edge(self, ax, ob, color='b'):
         x, y = ob.xy
@@ -104,8 +104,8 @@ class _Element:
             self.theta1 += 360.0
 
 class LinearElement(_Element):
-    def __init__(self, elem_num, node1, node2, node3, node4):
-        _Element.__init__(self, elem_num)
+    def __init__(self, elem_num, node1, node2, node3, node4, layer_num):
+        _Element.__init__(self, elem_num, layer_num)
         self.node1 = node1
         self.node2 = node2
         self.node3 = node3
@@ -115,15 +115,17 @@ class LinearElement(_Element):
             node.parent_element = self
 
     def __str__(self):
-        return "Element #{0}, Nodes({1}, {2}, {3}, {4})".format(self.elem_num,
+        return """Element #{0} -----
+  Nodes({1}, {2}, {3}, {4})
+  Layer #{9}""".format(self.elem_num,
             self.node1.node_num, self.node2.node_num, self.node3.node_num,
-            self.node4.node_num)
+            self.node4.node_num, self.layer_num)
 
 
 class QuadraticElement(_Element):
     def __init__(self, elem_num, node1, node2, node3, node4, node5, node6,
-        node7, node8):
-        _Element.__init__(self, elem_num)
+        node7, node8, layer_num):
+        _Element.__init__(self, elem_num, layer_num)
         self.node1 = node1
         self.node2 = node2
         self.node3 = node3
@@ -138,7 +140,10 @@ class QuadraticElement(_Element):
             node.parent_element = self
 
     def __str__(self):
-        return "Element #{0}, Nodes({1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})".format(
+        return """Element #{0} -----
+  Nodes({1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})
+  Layer #{9}""".format(
             self.elem_num, self.node1.node_num, self.node2.node_num,
             self.node3.node_num, self.node4.node_num, self.node5.node_num,
-            self.node6.node_num, self.node7.node_num, self.node8.node_num)
+            self.node6.node_num, self.node7.node_num, self.node8.node_num,
+            self.layer_num)

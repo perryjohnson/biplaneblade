@@ -4,7 +4,7 @@ c Station #02
 c ----------------------------------------
 
 c set the name of the mesh output file
-mof mesh_stn02_abq.txt
+mof mesh_stn02.abq
 
 c set the output file type
 abaqus
@@ -3002,7 +3002,7 @@ block 1 2; 1 %j_elemAP; -1;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 171
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 180
+cure 1 2 1 2 2 1 172
 c right edge (i=2, j varies)
 cure 2 1 1 2 2 1 169
 c bottom edge (j=1, i varies)
@@ -3066,9 +3066,9 @@ c disp
 c display the mesh (filled)
 tvv
 
-interrupt
+c interrupt
 c merge all the individual block meshes into a single mesh
-merge
+c merge
 c delete redundant nodes at part boundaries
 stp 0.0001
 c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375
@@ -3077,8 +3077,8 @@ c   the command stp deletes nodes who are near each other (w/in the tolerance)
 c display the mesh (filled)
 tvv
 
-interrupt
+c interrupt
 c write the mesh to an output file
 write
 
-c exit
+exit

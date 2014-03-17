@@ -8,7 +8,7 @@ Current workflow (as of March 13, 2014)
 1. `create_stnXX_mesh.py` - write initial TrueGrid input file with boundary curves: `mesh_stnXX_start.tg`
 2. manually edit `mesh_stnXX_start.tg` to create block meshes fitted to boundary curves; save as `mesh_stnXX_finish.tg`
 3. run TrueGrid on `mesh_stnXX_finish.tg` to write ABAQUS output file: `mesh_stnXX.abq`
-4. run `layer_plane_angles.py` - write updated grid object to VABS input file: `mesh_stnXX.vabs`
+4. run `layer_plane_angles_stnXX.py` - write updated grid object to VABS input file: `mesh_stnXX.vabs`
 5. run `run_vabs.py` - use VABS to calculate mass and stiffness matrices
 6. `mesh_stnXX.vabs.K` - mass and stiffness matrices are in this file! 
 
@@ -35,19 +35,19 @@ start an IPython (qt)console with the pylab flag:
 Then, from the prompt, run this script:  
 `|> %run create_stnXX_mesh`  
 
-Usage: `layer_plane_angles.py`
+Usage: `layer_plane_angles_stnXX.py`
 -------------------------
 start an IPython (qt)console with the pylab flag:  
 `$ ipython qtconsole --pylab`  
 Then, from the prompt, run this script:  
-`|> %run layer_plane_angles`  
+`|> %run layer_plane_angles_stnXX`  
 
 List of top-level scripts
 -------------------------
 * `create_blades.py` - Create the Sandia blade and 4 biplane blades
 * `create_meshes.py` - Write initial TrueGrid files for Sandia blade stations
 * `create_stnXX_mesh.py` - Write initial TrueGrid file for Sandia station #XX
-* `layer_plane_angles.py` - Write updated grid object to VABS input file
+* `layer_plane_angles_stnXX.py` - Write updated grid object to VABS input file for station #XX
 
 List of cleanup scripts
 -----------------------
