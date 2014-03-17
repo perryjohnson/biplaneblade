@@ -778,13 +778,15 @@ class MonoplaneStation(_Station):
                 else:
                     self.plot_polygon(
                         st.TE_reinforcement.layer['uniax'].polygon, ax,
-                        face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
+                        st.TE_reinforcement.layer['uniax'].face_color,
+                        st.TE_reinforcement.layer['uniax'].edge_color,
+                        alpha=0.8)
                     try:
                         self.plot_polygon(
                             st.TE_reinforcement.layer['foam'].polygon, ax,
-                            face_color='#F366BA', edge_color='#000000',
-                            alpha=0.8)  # face color is pink
+                            st.TE_reinforcement.layer['foam'].face_color,
+                            st.TE_reinforcement.layer['foam'].edge_color,
+                            alpha=0.8)
                     except KeyError:  # foam region doesn't exist
                         pass
             if st.internal_surface_1.exists():

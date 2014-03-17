@@ -690,7 +690,7 @@ height:  {1:6.4f} (meters)
         # 6. add the uniax layer
         self.layer['uniax'] = l.Layer(polygon_uniax,
             b.dict_of_materials['uniaxial GFRP'], parent_part=self,
-            name='uniax')
+            name='uniax', face_color='#F366BA')
         assert self.layer['uniax'].polygon.geom_type == 'Polygon'
         st._list_of_layers.append(self.layer['uniax'])
         if not isnan(self.height_foam):
@@ -705,9 +705,23 @@ height:  {1:6.4f} (meters)
             polygon_foam = ac_foam.intersection(bb)
             # 5. add the foam layer
             self.layer['foam'] = l.Layer(polygon_foam,
-                b.dict_of_materials['foam'], parent_part=self, name='foam')
+                b.dict_of_materials['foam'], parent_part=self, name='foam',
+                face_color='#F366BA')
             assert self.layer['foam'].polygon.geom_type == 'Polygon'
             st._list_of_layers.append(self.layer['foam'])
+
+    def add_new_layer(self, new_name, new_polygon, material):
+        """Add a new layer to the TE reinforcement part."""
+        st = self.parent_structure
+        b = st.parent_station.parent_blade
+        if material == 'uniax':
+            m = b.dict_of_materials['uniaxial GFRP']
+        elif material == 'foam':
+            m = b.dict_of_materials['foam']
+        else:
+            raise Warning("Unrecognized material requested:", material)
+        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name, face_color='#F366BA')
+        assert self.alt_layer[new_name].polygon.geom_type == 'Polygon'
 
     def create_alternate_layers(self):
         """Create the alternate uniax and foam layers for meshing the TE reinf.
@@ -1117,7 +1131,7 @@ height:  {1:6.4f} (meters)
         st._list_of_layers.append(self.layer['resin'])
 
     def add_new_layer(self, new_name, new_polygon, material):
-        """Add a new alternate layer to the external surface part."""
+        """Add a new alternate layer to the internal surface part."""
         st = self.parent_structure
         b = st.parent_station.parent_blade
         if material == 'triax':
@@ -2249,9 +2263,14 @@ class MonoplaneStructure:
             f = open(os.path.join(stn.station_path,
                 self.truegrid_input_filename), 'a')
             for layer in additional_layers:
-                part_name = layer.parent_part.__class__.__name__
+                part_name = layer.parent_part.__class__.__name__  # part name
                 layer_name = layer.name  # layer name
-                fmt = 'c {0}, {1} ' + '-'*40 + '\n'
+                if part_name in ['ShearWeb', 'AftPanel', 'InternalSurface']:
+                    part_num = layer.parent_part.num
+                    fmt = 'c {0}{1}; {2}'.format(part_name, part_num, layer_name)
+                else:
+                    fmt = 'c {0}; {1}'.format(part_name, layer_name)
+                fmt = fmt + '-'*40 + '\n'
                 f.write(fmt.format(part_name, layer_name))
                 layer.write_layer_edges2(f)
             f.close()
