@@ -35,75 +35,52 @@ ax = plt.gcf().gca()
 
 # outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
 list_of_unflipped_elementsets = [
-    'scupper',
-    'sclower',
-    'teuniax',
     'rbtrile',
-    'rbtrite',
-    'rbtrilr',
-    'rbtriscl',
-    'rbtriur',
-    'rbtriscu',
     'esgelle',
-    'esgelte',
-    'esgellr',
-    'esgelscl',
-    'esgelur',
-    'esgelscu',
     'estrile',
-    'estrite',
-    'estrilr',
-    'estriscl',
-    'estriur',
-    'estriscu',
     'isresle',
-    'isreste',
-    'isreslr',
-    'isresscl',
-    'isresur',
-    'isresscu',
-    'istrile',
-    'istrite',
-    'istrilr',
-    'istriscl',
-    'istriur',
-    'istriscu'
+    'istrile'
     ]
 
-# # outer_edge_node_nums=[3,2], inner_edge_node_nums=[4,1]
-# list_of_flipped_elementsets = [
-#     'rbtrite',
-#     'rbtrilr',
-#     'rbtriur',
-#     'rbtriscu',
-#     'esgelte',
-#     'esgellr',
-#     'esgelur',
-#     'esgelscu',
-#     'estrite',
-#     'estrilr',
-#     'estriur',
-#     'estriscu',
-#     'isreste',
-#     'isreslr',
-#     'isresur',
-#     'isresscu',
-#     'istrite',
-#     'istrilr',
-#     'istriur',
-#     'istriscu'
-#     ]
+# outer_edge_node_nums=[3,2], inner_edge_node_nums=[4,1]
+list_of_flipped_elementsets = [
+    'teuniax',
+    'rbtrite',
+    'esgelte',
+    'estrite',
+    'isreste',
+    'istrite'
+    ]
 
-# # outer_edge_node_nums=[2,1], inner_edge_node_nums=[3,4]
-# list_of_weird_elementsets = [
-#     'scupper',
-#     'teuniax'
-# ]
+# outer_edge_node_nums=[2,1], inner_edge_node_nums=[3,4]
+list_of_rotated_elementsets = [
+    'esgellr',
+    'estrilr',
+    'isreslr',
+    'istrilr',
+    'rbtrilr',
+    'rbtriscl',
+    'esgelscl',
+    'estriscl',
+    'isresscl',
+    'istriscl',
+    'sclower'
+]
 
-# # outer_edge_node_nums=[4,3], inner_edge_node_nums=[1,2]
-# list_of_weird_elementsets2 = [
-#     'sclower'
-# ]
+# outer_edge_node_nums=[4,3], inner_edge_node_nums=[1,2]
+list_of_rotated_elementsets2 = [
+    'esgelur',
+    'estriur',
+    'isresur',
+    'istriur',
+    'rbtriur',
+    'rbtriscu',
+    'esgelscu',
+    'estriscu',
+    'isresscu',
+    'istriscu',
+    'scupper'
+]
 
 # import the initial grid object
 fmt_grid = 'sandia_blade/' + stn_str + '/mesh_' + stn_str + '.abq'
@@ -116,16 +93,17 @@ for elem in g.list_of_elements:
     elif elem.element_set in list_of_flipped_elementsets:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[3,2],
             inner_edge_node_nums=[4,1])
-    elif elem.element_set in list_of_weird_elementsets:
+    elif elem.element_set in list_of_rotated_elementsets:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,1], 
             inner_edge_node_nums=[3,4])
-    elif elem.element_set in list_of_weird_elementsets2:
+    elif elem.element_set in list_of_rotated_elementsets2:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[4,3], 
             inner_edge_node_nums=[1,2])
     else:
         raise Warning("Element #{0} has no element set!".format(elem.elem_num))
 # plot a small selection of elements to check the results
 for elem in g.list_of_elements[::25]:
+# for elem in g.list_of_elements[:150:5]:
     elem.plot(label_nodes=False)
     print elem.elem_num, elem.element_set, elem.theta1
 # show the plot
