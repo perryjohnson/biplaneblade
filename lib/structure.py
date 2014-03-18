@@ -1985,6 +1985,9 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) != 4:
+                    fmt = "More than 4 edges found in layer {0}!"
+                    raise Warning(fmt.format(layer_name))
                 start_edge_num += 4
         if self.external_surface.exists():
             f.write("c external surface " + "-"*40 + "\n")
@@ -1992,6 +1995,9 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) != 4:
+                    fmt = "More than 4 edges found in layer {0}!"
+                    raise Warning(fmt.format(layer_name))
                 start_edge_num += 4
         if self.internal_surface_1.exists():
             f.write("c internal surface " + "-"*40 + "\n")
@@ -1999,6 +2005,9 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) != 4:
+                    fmt = "More than 4 edges found in layer {0}!"
+                    raise Warning(fmt.format(layer_name))
                 start_edge_num += 4
         # if self.spar_cap.exists():
         #     f.write("c spar cap " + "-"*20 + "\n")

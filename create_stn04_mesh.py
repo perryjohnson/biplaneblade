@@ -10,7 +10,7 @@ Then, from the prompt, run this script:
 |> %run create_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: March 15, 2014
+Last updated: March 18, 2014
 
 """
 

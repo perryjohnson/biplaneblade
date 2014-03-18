@@ -70,19 +70,6 @@ def cut_plot_and_write_alt_layer(part, material, ext_label, b_polygon,
     new_layer.find_corners(b_polygon)
     plot_corners(new_layer.corners)
 
-# def find_corners(layer, bounding_polygon, tol=1.0e-08, print_flag=False):
-#     """Find the corners of a layer cut by a bounding polygon."""
-#     list_of_corners = []
-#     bounding_line = LineString(bounding_polygon.exterior)
-#     for coord in layer.polygon.exterior.coords[:-1]:
-#         pt = Point(coord[0],coord[1])
-#         # determine if this point is on the bounding_polygon
-#         if bounding_line.distance(pt) < tol:
-#             list_of_corners.append(pt)
-#             if print_flag:
-#                 print pt
-#     return list_of_corners
-
 def plot_corners(list_of_corners):
     ax = plt.gca()
     for corner in list_of_corners:

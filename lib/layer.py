@@ -173,7 +173,7 @@ class Layer:
             edge4 = np.append(a[match[3]:,:],a[1:match[0]+1,:],axis=0)
         return (edge1, edge2, edge3, edge4)
 
-    def get_edges2(self):
+    def get_edges2(self, tol=1e-08):
         """Saves a list of arrays of coords for each edge of this layer.
 
         This is an alternate version of the method get_edges().
@@ -182,6 +182,14 @@ class Layer:
         self.edges
 
         """
+        def duplicate(e):
+            """Check for edges made of duplicate corners."""
+            duplicate_flag = False
+            if len(e) == 2:
+                z = (e[0] - e[1])
+                if (abs(z[0]) < tol) and (abs(z[1]) < tol):
+                    duplicate_flag = True
+            return duplicate_flag
         p = self.polygon  # get the polygon for this layer
         # store the polygon exterior coords as a numpy array
         a = np.array(p.exterior.coords)
@@ -194,7 +202,9 @@ class Layer:
         match.sort()
         # split the polygon up at each of the corners into "edges"
         for m in range(len(match))[:-1]:
-            self.edges.append(a[match[m]:match[m+1]+1,:])
+            edge = a[match[m]:match[m+1]+1,:]
+            if not duplicate(edge):
+                self.edges.append(edge)
         # grab the last edge
         if len(a[:match[0],:]) > 0:
             # if the last edge wraps from the last element of `a`
@@ -203,7 +213,8 @@ class Layer:
         else:
             # if the last edge ends at the last element of `a`
             last_edge = a[match[-1]:,:]
-        self.edges.append(last_edge)
+        if not duplicate(last_edge):
+            self.edges.append(last_edge)
 
     def get_and_save_edges(self):
         """Identifies and saves the left, top, right, and bottom (LTRB) edges.
