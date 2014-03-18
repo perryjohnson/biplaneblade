@@ -3,7 +3,7 @@ bladedesign
 
 tool to set up structural models of [biplane] wind turbine blades
 
-Current workflow (as of March 13, 2014)
+Current workflow (as of March 18, 2014)
 ---------------------------------------
 1. `create_stnXX_mesh.py` - write initial TrueGrid input file with boundary curves: `mesh_stnXX_start.tg`
 2. manually edit `mesh_stnXX_start.tg` to create block meshes fitted to boundary curves; save as `mesh_stnXX_finish.tg`
