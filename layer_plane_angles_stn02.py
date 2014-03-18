@@ -33,65 +33,103 @@ plt.close('all')
 plt.figure(num='Station #{0:02d}'.format(station_num))
 ax = plt.gcf().gca()
 
+# outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
 list_of_unflipped_elementsets = [
-    'sclower',  # correct?
-    'rbtrile',  # correct: outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
-    'rbtriscl',  # correct: outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
-    'esgelle',  # correct: outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
-    'esgelscl',  # correct?
-    'estrile',  # correct: outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
-    'estriscl',  # correct?
-    'isresle',  # correct: outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
-    'isresscl',  # correct?
-    'istrile',  # correct: outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
-    'istriscl'  # correct?
+    'rbtrile',
+    'rbtriscl',
+    'esgelle',
+    'esgelscl',
+    'estrile',
+    'estriscl',
+    'isresle',
+    'isresscl',
+    'istrile',
+    'istriscl'
     ]
+
+# outer_edge_node_nums=[3,2], inner_edge_node_nums=[4,1]
 list_of_flipped_elementsets = [
-    'scupper',  # incorrect
-    'teuniax',  # incorrect
-    'rbtrite',  # incorrect
-    'rbtrilr',  # incorrect
-    'rbtriur',  # incorrect?
-    'rbtriscu',  # incorrect
-    'esgelte',  # incorrect?
-    'esgellr',  # incorrect?
-    'esgelur',  # incorrect?
-    'esgelscu',  # incorrect
-    'estrite',  # incorrect?
-    'estrilr',  # incorrect?
-    'estriur',  # incorrect
-    'estriscu',  # incorrect?
-    'isreste',  # incorrect?
-    'isreslr',  # incorrect?
-    'isresur',  # incorrect?
-    'isresscu',  # incorrect?
-    'istrite',  # incorrect?
-    'istrilr',  # incorrect?
-    'istriur',  # incorrect?
-    'istriscu'  # incorrect
+    'rbtrite',
+    'rbtrilr',
+    'rbtriur',
+    'rbtriscu',
+    'esgelte',
+    'esgellr',
+    'esgelur',
+    'esgelscu',
+    'estrite',
+    'estrilr',
+    'estriur',
+    'estriscu',
+    'isreste',
+    'isreslr',
+    'isresur',
+    'isresscu',
+    'istrite',
+    'istrilr',
+    'istriur',
+    'istriscu'
     ]
+
+# outer_edge_node_nums=[2,1], inner_edge_node_nums=[3,4]
+list_of_weird_elementsets = [
+    'scupper',
+    'teuniax'
+]
+
+# outer_edge_node_nums=[4,3], inner_edge_node_nums=[1,2]
+list_of_weird_elementsets2 = [
+    'sclower'
+]
 
 # import the initial grid object
 fmt_grid = 'sandia_blade/' + stn_str + '/mesh_' + stn_str + '.abq'
 g = au.AbaqusGrid(fmt_grid, debug_flag=True)
+# check that all elements have counter-clockwise orientation
+# print "  Checking that all elements have counter-clockwise orientation..."
+# for elem in g.list_of_elements:
+#     if not elem.is_ccw():
+#         fmt = "    Element #{:d} is bad! Its nodes are not oriented CCW."
+#         print fmt.format(elem.elem_num)
 # update the grid object with all the layer plane angles
-for elem in g.list_of_elements:    
+for elem in g.list_of_elements:
     if elem.element_set in list_of_unflipped_elementsets:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[1,4],
             inner_edge_node_nums=[2,3])
     elif elem.element_set in list_of_flipped_elementsets:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[3,2],
             inner_edge_node_nums=[4,1])
+    elif elem.element_set in list_of_weird_elementsets:
+        elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,1], 
+            inner_edge_node_nums=[3,4])
+    elif elem.element_set in list_of_weird_elementsets2:
+        elem.calculate_layer_plane_angle(outer_edge_node_nums=[4,3], 
+            inner_edge_node_nums=[1,2])
     else:
         raise Warning("Element #{0} has no element set!".format(elem.elem_num))
 # plot a small selection of elements to check the results
 for elem in g.list_of_elements[::25]:
-    elem.plot()
+# for elem in g.list_of_elements[:150:5]:
+    elem.plot(label_nodes=False)
     print elem.elem_num, elem.element_set, elem.theta1
 # show the plot
 plt.xlim([-3,3])
 plt.ylim([-3,3])
 ax.set_aspect('equal')
+
+plt.figure(num='Station #{0:02d}, theta1 vs. elem_num'.format(
+    station_num))
+enum=np.arange(g.number_of_elements)+1
+theta=np.zeros(g.number_of_elements)
+elemset=[]
+for i,elem in enumerate(g.list_of_elements):
+    theta[i] = elem.theta1
+    elemset.append(elem.element_set)
+plt.plot(enum,theta)
+plt.xlabel('element number [#]')
+plt.ylabel('theta1 [deg]')
+plt.grid('on')
+
 plt.show()
 # -----------------------------------------------------------------------------
 # read layers.csv to determine the number of layers
