@@ -378,6 +378,29 @@ class Layer:
                     cd_pair[0], cd_pair[1]))
             f.write(';;\n\n')
 
+    def write_alt_layer_edges2(self, f, start_edge_num):
+        """Writes the edges for this alternate layer in the file f.
+
+        This is an alternate version of the method write_alt_layer_edges()
+
+        """
+        part_name = self.parent_part.__class__.__name__  # part name
+        layer_name = self.name  # layer name
+        if part_name in ['ShearWeb', 'AftPanel', 'InternalSurface']:
+            part_num = self.parent_part.num
+            prefix = '{0}{1}; {2}'.format(part_name, part_num, layer_name)
+        else:
+            prefix = '{0}; {1}'.format(part_name, layer_name)
+        # get the edges
+        self.get_edges2()
+        for edge in self.edges:
+            f.write('curd {0} lp3\n'.format(start_edge_num))
+            start_edge_num += 1
+            for cd_pair in edge:
+                f.write('{0: .8f}  {1: .8f}  0.0\n'.format(
+                    cd_pair[0], cd_pair[1]))
+            f.write(';;\n\n')
+
     def write_layer_edges(self, f, start_edge_num, triangular_region=False):
         """Writes the edges for this layer in the file f.
 

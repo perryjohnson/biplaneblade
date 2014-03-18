@@ -1,2 +1,2 @@
 cd D:\Dropbox\ucla\research\perry\github-desktop\spardesign2\sandia_blade
-tg -i=stn02/mesh_stn02_finish.tg
+tg -i=stn03/mesh_stn03_finish.tg

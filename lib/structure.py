@@ -1844,8 +1844,9 @@ class MonoplaneStructure:
             'a')
         if interrupt_flag:
             f.write("interrupt\n")
-        f.write("c display all 3D curves\n")
+        f.write("c merge all the individual block meshes into a single mesh\n")
         f.write("merge\n")
+        f.write("c display all 3D curves\n")
         f.write("dacd\n")
         f.write("c display numbers of defined 3D curves\n")
         f.write("labels crv\n")
@@ -1854,8 +1855,6 @@ class MonoplaneStructure:
         f.write("\n")
         if interrupt_flag:
             f.write("interrupt\n")
-        f.write("c merge all the individual block meshes into a single mesh\n")
-        f.write("merge\n")
         f.write("c delete redundant nodes at part boundaries\n")
         f.write("stp 0.0001\n")
         f.write("c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375\n")
@@ -1977,6 +1976,7 @@ class MonoplaneStructure:
 
         """
         stn = self.parent_station
+        start_edge_num = 1
         f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
             'a')
         if self.root_buildup.exists():
@@ -1984,19 +1984,22 @@ class MonoplaneStructure:
             sd = sorted(self.root_buildup.alt_layer.items())
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
-                layer_obj.write_alt_layer_edges(f)
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                start_edge_num += 4
         if self.external_surface.exists():
             f.write("c external surface " + "-"*40 + "\n")
             sd = sorted(self.external_surface.alt_layer.items())
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
-                layer_obj.write_alt_layer_edges(f)
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                start_edge_num += 4
         if self.internal_surface_1.exists():
             f.write("c internal surface " + "-"*40 + "\n")
             sd = sorted(self.internal_surface_1.alt_layer.items())
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
-                layer_obj.write_alt_layer_edges(f)
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                start_edge_num += 4
         # if self.spar_cap.exists():
         #     f.write("c spar cap " + "-"*20 + "\n")
         #     for (layer_name, layer_obj) in self.spar_cap.layer.items():
@@ -2059,6 +2062,7 @@ class MonoplaneStructure:
         #         start_edge_num += len(d)
         #         self._dict_of_edge_nums.update(d)
         f.close()
+        return start_edge_num
 
     def write_block_mesh(self, dict_key_prefix, i_cells, j_cells):
         """Write the commands for creating ONE block mesh for ONE layer.
@@ -2257,7 +2261,7 @@ class MonoplaneStructure:
         """Write the TrueGrid input file in `station_path`."""
         self.write_truegrid_header()
         # self.write_all_layer_edges()
-        self.write_all_alt_layer_edges()
+        start_edge_num = self.write_all_alt_layer_edges()
         if len(additional_layers) > 0:
             stn = self.parent_station
             f = open(os.path.join(stn.station_path,
@@ -2272,7 +2276,8 @@ class MonoplaneStructure:
                     fmt = 'c {0}; {1}'.format(part_name, layer_name)
                 fmt = fmt + '-'*40 + '\n'
                 f.write(fmt.format(part_name, layer_name))
-                layer.write_layer_edges2(f)
+                layer.write_layer_edges(f, start_edge_num)
+                start_edge_num += 4
             f.close()
         # self.write_all_block_meshes()
         self.write_truegrid_footer(interrupt_flag=interrupt_flag)
