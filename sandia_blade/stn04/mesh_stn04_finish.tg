@@ -4,7 +4,7 @@ c Station #04
 c ----------------------------------------
 
 c set the name of the mesh output file
-mof mesh_stn04.abq
+mof stn04/mesh_stn04.abq
 
 c set the output file type
 abaqus
@@ -162,6 +162,7 @@ curd 8 lp3
  2.32755701  -1.60522767  0.0
  2.17666018  -1.79893182  0.0
  2.00919715  -1.97894222  0.0
+ 1.91557488  -2.06344651  0.0
 ;;
 
 c triax, lower right -----
@@ -432,6 +433,7 @@ curd 32 lp3
  2.33212574  -1.60847528  0.0
  2.18092727  -1.80256666  0.0
  2.01313078  -1.98293550  0.0
+ 1.91941508  -2.06752413  0.0
 ;;
 
 c gelcoat, lower right -----
@@ -701,6 +703,7 @@ curd 56 lp3
  2.33163624  -1.60812732  0.0
  2.18047008  -1.80217722  0.0
  2.01270932  -1.98250765  0.0
+ 1.91900363  -2.06708724  0.0
 ;;
 
 c triax, lower right -----
@@ -2291,4 +2294,4 @@ c interrupt
 c write the mesh to an output file
 write
 
-exit
+c exit

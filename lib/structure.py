@@ -1822,7 +1822,7 @@ class MonoplaneStructure:
         f.write(separator)
         f.write("\n")
         f.write("c set the name of the mesh output file\n")
-        f.write("mof mesh_stn{0:02d}.abq\n".format(stn.station_num))
+        f.write("mof stn{0:02d}/mesh_stn{0:02d}.abq\n".format(stn.station_num))
         f.write("\n")
         f.write("c set the output file type\n")
         f.write(outputfile_type + "\n")
