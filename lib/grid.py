@@ -347,11 +347,18 @@ The central node (9) is optional.
     def __str__(self):
         return """Element #{0} -----
   Nodes({1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})
-  Layer #{9}""".format(
-            self.elem_num, self.node1.node_num, self.node2.node_num,
-            self.node3.node_num, self.node4.node_num, self.node5.node_num,
-            self.node6.node_num, self.node7.node_num, self.node8.node_num,
-            self.layer_num)
+  Layer #{9}
+  element set: {10}
+  centroid: ({11:5.3f}, {12:5.3f})
+  theta1 = {13} degrees""".format(
+            self.elem_num, 
+            self.node1.node_num, self.node2.node_num, self.node3.node_num,
+              self.node4.node_num, self.node5.node_num, self.node6.node_num, 
+              self.node7.node_num, self.node8.node_num,
+            self.layer_num,
+            self.element_set,
+            self.polygon.centroid.x, self.polygon.centroid.y,
+            self.theta1)
 
     def plot(self, equal_aspect_ratio=True, plot_centroid=True,
         label_nodes=True, label_element=True, plot_outer_inner_edges=True):

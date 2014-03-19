@@ -110,7 +110,7 @@ for elem in g.list_of_elements:
         raise Warning("Element #{0} has no element set!".format(elem.elem_num))
 # plot a small selection of elements to check the results
 for elem in g.list_of_elements[::25]:
-# for elem in g.list_of_elements[:150:5]:
+# for elem in g.list_of_elements[1770:1790]:
     elem.plot(label_nodes=False)
     print elem.elem_num, elem.element_set, elem.theta1
 # show the plot

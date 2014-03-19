@@ -144,18 +144,14 @@ class AbaqusGrid:
         self._find_block_starts()
         self._parse_nodes()
         self._parse_elements(debug_flag=debug_flag)
-        self._parse_elementsets(debug_flag=debug_flag)
         # Sort list_of_elements by element number.
+        #   This MUST happen before calling self._parse_elementsets()
         self.list_of_elements.sort(key=attrgetter('elem_num'))
-        # Sort list_of_element_sets by element number.
-        # self.list_of_element_sets.sort(order='elem_num')
+        self._parse_elementsets(debug_flag=debug_flag)
         if debug_flag:
             print 'list_of_nodes[0] =', self.list_of_nodes[0]
             print 'list_of_elements[0] =', self.list_of_elements[0]
-            # print 'list_of_element_sets[0] =', self.list_of_element_sets[0]
             print 'number of nodes: ' + str(self.number_of_nodes)
-            # print '    corner nodes: ' + str(self.number_of_corner_nodes)
-            # print '    midside nodes: ' + str(self.number_of_midside_nodes)
             print 'number of elements: ' + str(self.number_of_elements)    
 
     def _read_file(self):
@@ -340,11 +336,16 @@ class AbaqusGrid:
         for line in self._abq_file[self._elementset_block_start:]:
             elementset_header_match = self._elementset_header_pattern.match(line)
             if elementset_header_match:
-                # Extract the elementset name and look up its theta1 value.
+                # Extract the elementset name
                 elementset_name = line.strip().split('=')[-1]
                 if debug_flag:
                     print 'element set: ' + line.strip().split('=')[-1]
             else:
+                # Save the elementset name to each element in the block
                 element_nums = line.strip().strip(',').split(',')
                 for elem_num in element_nums:
+                    # make sure the list of elements have been sorted
+                    #   before assigning element sets to elements
+                    if int(elem_num) != self.list_of_elements[int(elem_num)-1].elem_num:
+                        raise Warning("The element set '{0}' may be assigned to the wrong element (#{1}), instead of to the correct element (#{2}). In <grid>._parse_abaqus(), run:\n-->  <grid>.list_of_elements.sort(key=attrgetter('elem_num'))\nbefore calling:\n-->  <grid>._parse_elementsets(debug_flag=debug_flag)".format(elementset_name, self.list_of_elements[int(elem_num)-1].elem_num, int(elem_num)))
                     self.list_of_elements[int(elem_num)-1].element_set = elementset_name
