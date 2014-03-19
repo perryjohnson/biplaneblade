@@ -126,12 +126,15 @@ pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label,
 label = 'LE panel'
 
 # create the bounding polygon
+is1 = st.internal_surface_1.layer['resin']
 points_le = [
     (-3.00,-3.0),
     (-0.75,-3.0),
     (-0.75000000, -2.58336990),
-    (-0.75949119, -2.56768163),
-    (-0.75949119,  2.56768163),
+    # (-0.75994863,  -2.56986995),
+    is1.polygon.interiors[0].coords[-1],
+    is1.polygon.interiors[0].coords[-31],
+    # (-0.75994863,   2.56986995),
     (-0.75000000,  2.58336990),
     (-0.75, 3.0),
     (-3.00, 3.0)

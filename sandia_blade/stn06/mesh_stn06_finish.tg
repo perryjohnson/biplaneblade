@@ -4,7 +4,7 @@ c Station #06
 c ----------------------------------------
 
 c set the name of the mesh output file
-mof mesh_stn06.abq
+mof stn06/mesh_stn06.abq
 
 c set the output file type
 abaqus
@@ -14,6 +14,9 @@ c   assign a title to the problem
 title blade station #6
 c   build 2nd-order quadrilateral elements (with mid-side nodes)
 quadratic
+
+c write symbolic 'pbs' commands instead of absolute 'pb' commands
+cooref symbolic
 
 c ----------------------------------------
 
@@ -162,6 +165,7 @@ curd 8 lp3
  2.32758059  -1.58070476  0.0
  2.17668776  -1.77144889  0.0
  2.00922777  -1.94871701  0.0
+ 1.89716577  -2.04832496  0.0
 ;;
 
 c triax, lower aft panel 1 -----
@@ -432,6 +436,7 @@ curd 32 lp3
  2.33212574  -1.58398539  0.0
  2.18092727  -1.77511589  0.0
  2.01313078  -1.95274022  0.0
+ 1.90117904  -2.05225017  0.0
 ;;
 
 c gelcoat, lower aft panel 1 -----
@@ -701,6 +706,7 @@ curd 56 lp3
  2.33163876  -1.58363389  0.0
  2.18047303  -1.77472300  0.0
  2.01271260  -1.95230916  0.0
+ 1.90074904  -2.05182961  0.0
 ;;
 
 c triax, lower aft panel 1 -----
@@ -838,16 +844,11 @@ curd 72 lp3
 c internal surface ----------------------------------------
 c resin, LE panel -----
 curd 73 lp3
--0.75500000   2.57510525  0.0
--0.75949119   2.56768163  0.0
+-0.75500000   2.57658507  0.0
+-0.75994863   2.56986995  0.0
 ;;
 
 curd 74 lp3
--0.75949119   2.56768163  0.0
--0.75963397   2.56815170  0.0
--0.75975348   2.56862822  0.0
--0.75984944   2.56911004  0.0
--0.75992161   2.56959598  0.0
 -0.75994863   2.56986995  0.0
 -0.94487123   2.51331298  0.0
 -1.16746746   2.42387458  0.0
@@ -879,20 +880,15 @@ curd 74 lp3
 -1.16746746  -2.42387458  0.0
 -0.94487123  -2.51331298  0.0
 -0.75994863  -2.56986995  0.0
--0.75992161  -2.56959598  0.0
--0.75984944  -2.56911004  0.0
--0.75975348  -2.56862822  0.0
--0.75963397  -2.56815170  0.0
--0.75949119  -2.56768163  0.0
 ;;
 
 curd 75 lp3
--0.75949119  -2.56768163  0.0
--0.75500000  -2.57510525  0.0
+-0.75994863  -2.56986995  0.0
+-0.75500000  -2.57658507  0.0
 ;;
 
 curd 76 lp3
--0.75500000  -2.57510525  0.0
+-0.75500000  -2.57658507  0.0
 -0.75500000  -2.57661207  0.0
 -0.94653750  -2.51803199  0.0
 -1.16953016  -2.42843430  0.0
@@ -1210,11 +1206,11 @@ curd 97 lp3
 
 curd 98 lp3
 -0.75000000   2.58336990  0.0
--0.75500000   2.57510525  0.0
+-0.75500000   2.57658507  0.0
 ;;
 
 curd 99 lp3
--0.75500000   2.57510525  0.0
+-0.75500000   2.57658507  0.0
 -0.75500000   2.57661207  0.0
 -0.94653750   2.51803199  0.0
 -1.16953016   2.42843430  0.0
@@ -1246,11 +1242,11 @@ curd 99 lp3
 -1.16953016  -2.42843430  0.0
 -0.94653750  -2.51803199  0.0
 -0.75500000  -2.57661207  0.0
--0.75500000  -2.57510525  0.0
+-0.75500000  -2.57658507  0.0
 ;;
 
 curd 100 lp3
--0.75500000  -2.57510525  0.0
+-0.75500000  -2.57658507  0.0
 -0.75000000  -2.58336990  0.0
 ;;
 
@@ -1746,26 +1742,142 @@ c c right edge (i=2, j varies)
 c cure 2 1 1 2 2 1 _
 c c top edge (j=2, i varies)
 c cure 1 2 1 2 2 1 _
-c c assign the material to be uniax (material #_)
+c c assign the material to be _ (material #_)
 c mate _
 c c name this set of elements
 c eset 0 0 1 0 0 1 = _
 c esetc _
 
+c LE Panel ----------------------------------------------
+
+c foam -----
+c make a block mesh for: LE panel, foam
+block 1 2; 1 %l_elemLE; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 141
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 142
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 143
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 144
+c make block boundary (master #1) on top edge of mesh
+bb
+c   region
+    0 2 1  c  i-min j-min k-min   (0 denotes extreme min)
+    0 2 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    1;     c  assign this interface to be #1
+c make block boundary (master #1) on bottom edge of mesh
+bb
+c   region
+    0 1 1  c  i-min j-min k-min   (0 denotes extreme min)
+    0 1 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    2;     c  assign this interface to be #2
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = lepanel
+esetc lepanel  LE_Panel; foam
+
+c aft panel 1 ---------------------------------------------
+
+c foam, upper -----
+c make a block mesh for: aft panel 1, foam, upper
+block 1 %l_elemAP; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 133
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 134
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 135
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 136
+c make block boundary (master #3) on left edge of mesh
+bb
+c   region
+    1 0 1  c  i-min j-min k-min   (0 denotes extreme min)
+    1 0 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    3;     c  assign this interface to be #3
+c make block boundary (master #5) on right edge of mesh
+bb
+c   region
+    2 0 1  c  i-min j-min k-min   (0 denotes extreme min)
+    2 0 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    5;     c  assign this interface to be #5
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = ap1upper
+esetc ap1upper  AftPanel1; foam; upper
+
+c foam, lower -----
+c make a block mesh for: aft panel 1, foam, lower
+block 1 %l_elemAP; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 137
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 138
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 139
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 140
+c make block boundary (master #4) on left edge of mesh
+bb
+c   region
+    1 0 1  c  i-min j-min k-min   (0 denotes extreme min)
+    1 0 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    4;     c  assign this interface to be #4
+    c make block boundary (master #6) on right edge of mesh
+bb
+c   region
+    2 0 1  c  i-min j-min k-min   (0 denotes extreme min)
+    2 0 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    6;     c  assign this interface to be #6
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = ap1lower
+esetc ap1lower  AftPanel1; foam; lower
+
 c spar cap ----------------------------------------
 
 c upper -----
 c make a block mesh for: spar cap, uniax, upper
-block 1 %l_elemSP; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 %l_elemSP; 1 2 3; -1;
+-0.1 0.1; -0.1 0.0 0.1; 0;
+c make block boundary (slave #1) on left edge of mesh
+bb
+c   region
+    1 2 1  c  i-min j-min k-min   (0 denotes extreme min)
+    1 3 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    1;     c  assign this interface to be #1
+c make block boundary (slave #3) on right edge of mesh
+bb
+c   region
+    2 2 1  c  i-min j-min k-min   (0 denotes extreme min)
+    2 3 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    3;     c  assign this interface to be #3
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 121
+cure 1 1 1 1 3 1 121
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 122
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 123
+cure 2 1 1 2 3 1 123
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 124
+cure 1 3 1 2 3 1 124
+c interpolate multiple regions as one region
+hyr 0 0 1 0 0 1
 c assign the material to be uniax (material #1)
 mate 1
 c name this set of elements
@@ -1774,16 +1886,32 @@ esetc scupper  SparCap; uniax; upper
 
 c lower -----
 c make a block mesh for: spar cap, uniax, lower
-block 1 %l_elemSP; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 %l_elemSP; 1 2 3; -1;
+-0.1 0.1; -0.1 0.0 0.1; 0;
+c make block boundary (slave #2) on left edge of mesh
+bb
+c   region
+    1 1 1  c  i-min j-min k-min   (0 denotes extreme min)
+    1 2 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    2;     c  assign this interface to be #2
+c make block boundary (slave #4) on right edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min   (0 denotes extreme min)
+    2 2 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    4;     c  assign this interface to be #4
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 125
+cure 1 1 1 1 3 1 125
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 126
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 127
+cure 2 1 1 2 3 1 127
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 128
+cure 1 3 1 2 3 1 128
+c interpolate multiple regions as one region
+hyr 0 0 1 0 0 1
 c assign the material to be uniax (material #1)
 mate 1
 c name this set of elements
@@ -1794,26 +1922,41 @@ c TE reinforcement -------------------------------------
 
 c uniax -----
 c make a block mesh for: TE reinforcement, uniax
-block 1 2; 1 %l_elemTE; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 2 3; 1 %l_elemTE; -1;
+-0.1 0.0 0.1; -0.1 0.1; 0;
+c make block boundary (slave #5) on top edge of mesh
+bb
+c   region
+    2 2 1  c  i-min j-min k-min   (0 denotes extreme min)
+    3 2 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    5;     c  assign this interface to be #5
+c make block boundary (slave #6) on bottom edge of mesh
+bb
+c   region
+    2 1 1  c  i-min j-min k-min   (0 denotes extreme min)
+    3 1 1  c  i-max j-max k-max   (0 denotes extreme max)
+c   interface
+    6;     c  assign this interface to be #6
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 129
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 130
+cure 1 1 1 3 1 1 130
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 131
+cure 3 1 1 3 2 1 131
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 132
+cure 1 2 1 3 2 1 132
+c linear interpolation
+lin 0 0 1 0 0 1
+c manually move nodes to fix interior vertices
+mb 2 1 1 2 2 1 y -0.01
+mb 2 1 1 2 2 1 y -1.0
+pb 2 1 1 2 1 1 xyz 1.84700 -1.95731 0.000000e+00
 c assign the material to be uniax (material #1)
 mate 1
 c name this set of elements
 eset 0 0 1 0 0 1 = teuniax
 esetc teuniax  TE_Reinforcement; uniax
-
-c !!!! TNT !!!!
-c add AftPanel1; upper
-c add AftPanel1; lower
-c add LE_Panel; foam
 
 c root buildup -------------------------------------------
 
@@ -2150,13 +2293,13 @@ c make a block mesh for: internal surface, resin, LE
 block 1 2; 1 %l_elemLE; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 73
+cure 1 1 1 1 2 1 76
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 74
+cure 1 2 1 2 2 1 73
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 75
+cure 2 1 1 2 2 1 74
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 76
+cure 1 1 1 2 1 1 75
 c assign the material to be resin (material #6)
 mate 6
 c name this set of elements
