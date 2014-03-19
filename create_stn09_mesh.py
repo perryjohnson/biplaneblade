@@ -216,8 +216,8 @@ label = 'above shear web 1'
 # create the bounding polygon
 points_asw1 = [
     (-0.75, 2.7),
-    (-0.75, 2.4),
-    (-0.836, 2.4),
+    (-0.75, 1.0),
+    (-0.836, 1.0),
     (-0.836, 2.7)
     ]
 bounding_polygon = Polygon(points_asw1)
@@ -237,8 +237,8 @@ label = 'below shear web 1'
 # create the bounding polygon
 points_bsw1 = [
     (-0.75, -2.7),
-    (-0.75, -2.4),
-    (-0.836, -2.4),
+    (-0.75, -1.0),
+    (-0.836, -1.0),
     (-0.836, -2.7)
     ]
 bounding_polygon = Polygon(points_bsw1)
@@ -258,8 +258,8 @@ label = 'above shear web 2'
 # create the bounding polygon
 points_asw2 = [
     (0.75, 2.7),
-    (0.75, 2.4),
-    (0.836, 2.4),
+    (0.75, 1.0),
+    (0.836, 1.0),
     (0.836, 2.7)
     ]
 bounding_polygon = Polygon(points_asw2)
@@ -279,8 +279,8 @@ label = 'below shear web 2'
 # create the bounding polygon
 points_bsw2 = [
     (0.75, -2.7),
-    (0.75, -2.4),
-    (0.836, -2.4),
+    (0.75, -1.0),
+    (0.836, -1.0),
     (0.836, -2.7)
     ]
 bounding_polygon = Polygon(points_bsw2)
