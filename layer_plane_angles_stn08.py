@@ -24,7 +24,7 @@ from descartes import PolygonPatch
 
 # -----------------------------------------------
 # update these parameters!
-station_num = 7
+station_num = 8
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
