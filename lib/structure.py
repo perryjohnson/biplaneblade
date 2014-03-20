@@ -1981,7 +1981,8 @@ class MonoplaneStructure:
                 self._dict_of_edge_nums.update(d)
         f.close()
 
-    def write_all_alt_layer_edges(self, alt_TE_reinforcement=False):
+    def write_all_alt_layer_edges(self, alt_TE_reinforcement=False,
+        soft_warning=False):
         """Write the coordinates of all layer edges to `station_path`.
 
         This file is formatted as a TrueGrid input file (*.tg).
@@ -2039,7 +2040,10 @@ class MonoplaneStructure:
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
                 if len(layer_obj.edges) != 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface3; {0}'!"
-                    raise Warning(fmt.format(layer_name))
+                    if soft_warning:
+                        print "***Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
                 start_edge_num += 4
         if self.internal_surface_4.exists():
             f.write("c internal surface 4 " + "-"*40 + "\n")
@@ -2318,11 +2322,13 @@ class MonoplaneStructure:
                         i_cells=2,
                         j_cells=30)
 
-    def write_truegrid_inputfile(self, interrupt_flag=False, additional_layers=[]):
+    def write_truegrid_inputfile(self, interrupt_flag=False,
+        additional_layers=[], soft_warning=False):
         """Write the TrueGrid input file in `station_path`."""
         self.write_truegrid_header()
         # self.write_all_layer_edges()
-        start_edge_num = self.write_all_alt_layer_edges()
+        start_edge_num = self.write_all_alt_layer_edges(
+            soft_warning=soft_warning)
         if len(additional_layers) > 0:
             stn = self.parent_station
             f = open(os.path.join(stn.station_path,
