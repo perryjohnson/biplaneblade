@@ -209,7 +209,7 @@ class Layer:
         if len(a[:match[0],:]) > 0:
             # if the last edge wraps from the last element of `a`
             #   to the first element of `a`
-            last_edge = np.vstack((a[match[-1]:-1,:], a[:match[0],:]))
+            last_edge = np.vstack((a[match[-1]:-1,:], a[:match[0]+1,:]))
         else:
             # if the last edge ends at the last element of `a`
             last_edge = a[match[-1]:,:]
@@ -389,7 +389,7 @@ class Layer:
                     cd_pair[0], cd_pair[1]))
             f.write(';;\n\n')
 
-    def write_alt_layer_edges2(self, f, start_edge_num):
+    def write_alt_layer_edges2(self, f, start_edge_num, tol=1e-07):
         """Writes the edges for this alternate layer in the file f.
 
         This is an alternate version of the method write_alt_layer_edges()
@@ -404,6 +404,17 @@ class Layer:
             prefix = '{0}; {1}'.format(part_name, layer_name)
         # get the edges
         self.get_edges2()
+        if len(self.edges) > 4:
+            # look for small edges and throw them out
+            bad_edge = None
+            for i,edge in enumerate(self.edges):
+                if len(edge) == 2:
+                    b = edge[0]-edge[1]
+                    if (b[0] < tol) and (b[1] < tol):
+                        bad_edge = i
+            if bad_edge is not None:
+                self.edges.pop(bad_edge)
+                print "*** Warning: In '{0},' a small edge was found and thrown out!".format(prefix)
         for edge in self.edges:
             f.write('curd {0} lp3\n'.format(start_edge_num))
             start_edge_num += 1

@@ -15,6 +15,18 @@ title blade station #9
 c   build 2nd-order quadrilateral elements (with mid-side nodes)
 quadratic
 
+c write symbolic 'pbs' commands instead of absolute 'pb' commands
+cooref symbolic
+
+c ----------------------------------------
+
+c set some global parameters
+para t_elem 4;      c num of elements across laminate thickness
+para l_elemLE 120;  c num of elements along leading edge
+para l_elemSP 30;   c num of elements along spar cap
+para l_elemAP 30;   c num of elements along aft panel
+para l_elemTE 80;   c num of elements along trailing edge
+
 c ----------------------------------------
 
 c root buildup ----------------------------------------
@@ -189,6 +201,7 @@ curd 8 lp3
  2.49432175  -1.53882240  0.0
  2.37026356  -1.66473058  0.0
  2.23984640  -1.78157396  0.0
+ 2.13198600  -1.86721826  0.0
 ;;
 
 c triax, above shear web 1 -----
@@ -607,6 +620,7 @@ curd 48 lp3
  2.49844036  -1.54262124  0.0
  2.37413020  -1.66878514  0.0
  2.24345914  -1.78585599  0.0
+ 2.13198600  -1.87436892  0.0
 ;;
 
 c gelcoat, above shear web 1 -----
@@ -1024,6 +1038,7 @@ curd 88 lp3
  2.49799908  -1.54221422  0.0
  2.37371592  -1.66835073  0.0
  2.24307206  -1.78539720  0.0
+ 2.13198600  -1.87360278  0.0
 ;;
 
 c triax, above shear web 1 -----

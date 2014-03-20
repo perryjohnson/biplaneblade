@@ -1833,6 +1833,18 @@ class MonoplaneStructure:
         f.write("c   build 2nd-order quadrilateral elements (with mid-side nodes)\n")
         f.write("quadratic\n")
         f.write("\n")
+        f.write("c write symbolic 'pbs' commands instead of absolute 'pb' commands\n")
+        f.write("cooref symbolic\n")
+        f.write("\n")
+        f.write(separator)
+        f.write("\n")
+        f.write("c set some global parameters\n")
+        f.write("para t_elem 4;      c num of elements across laminate thickness\n")
+        f.write("para l_elemLE 120;  c num of elements along leading edge\n")
+        f.write("para l_elemSP 30;   c num of elements along spar cap\n")
+        f.write("para l_elemAP 30;   c num of elements along aft panel\n")
+        f.write("para l_elemTE 80;   c num of elements along trailing edge\n")
+        f.write("\n")
         f.write(separator)
         f.write("\n")
         f.close()
@@ -1969,7 +1981,7 @@ class MonoplaneStructure:
                 self._dict_of_edge_nums.update(d)
         f.close()
 
-    def write_all_alt_layer_edges(self):
+    def write_all_alt_layer_edges(self, alt_TE_reinforcement=False):
         """Write the coordinates of all layer edges to `station_path`.
 
         This file is formatted as a TrueGrid input file (*.tg).
@@ -2000,13 +2012,53 @@ class MonoplaneStructure:
                     raise Warning(fmt.format(layer_name))
                 start_edge_num += 4
         if self.internal_surface_1.exists():
-            f.write("c internal surface " + "-"*40 + "\n")
+            f.write("c internal surface 1 " + "-"*40 + "\n")
             sd = sorted(self.internal_surface_1.alt_layer.items())
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
                 if len(layer_obj.edges) != 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface1; {0}'!"
+                    raise Warning(fmt.format(layer_name))
+                start_edge_num += 4
+        if self.internal_surface_2.exists():
+            f.write("c internal surface 2 " + "-"*40 + "\n")
+            sd = sorted(self.internal_surface_2.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) != 4:
+                    fmt = "More than 4 edges found in layer 'InternalSurface2; {0}'!"
+                    raise Warning(fmt.format(layer_name))
+                start_edge_num += 4
+        if self.internal_surface_3.exists():
+            f.write("c internal surface 3 " + "-"*40 + "\n")
+            sd = sorted(self.internal_surface_3.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) != 4:
+                    fmt = "More than 4 edges found in layer 'InternalSurface3; {0}'!"
+                    raise Warning(fmt.format(layer_name))
+                start_edge_num += 4
+        if self.internal_surface_4.exists():
+            f.write("c internal surface 4 " + "-"*40 + "\n")
+            sd = sorted(self.internal_surface_4.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) != 4:
+                    fmt = "More than 4 edges found in layer 'InternalSurface4; {0}'!"
+                    raise Warning(fmt.format(layer_name))
+                start_edge_num += 4
+        if self.TE_reinforcement.exists() and alt_TE_reinforcement:
+            f.write("c TE reinforcement " + "-"*40 + "\n")
+            sd = sorted(self.TE_reinforcement.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) != 4:
+                    fmt = "More than 4 edges found in layer 'TE_Reinforcement; {0}'!"
                     raise Warning(fmt.format(layer_name))
                 start_edge_num += 4
         # if self.spar_cap.exists():

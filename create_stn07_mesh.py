@@ -76,10 +76,11 @@ pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'triax', label,
 label = 'lower spar cap'
 
 # create the bounding polygon
+is2 = st.internal_surface_2.layer['resin']
 points_lsc = [
     (-0.75,-points_usc[0][1]),
-    (-0.74,-points_usc[1][1]),
-    ( 0.74,-points_usc[2][1]),
+    is2.polygon.interiors[0].coords[0],
+    is2.polygon.interiors[0].coords[8],
     ( 0.75,-points_usc[3][1]),
     ( 0.75,-3.0),
     (-0.75,-3.0)
@@ -103,13 +104,14 @@ pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'triax', label,
 label = 'TE reinforcement'
 
 # create the bounding polygon
+ter = st.TE_reinforcement.layer['uniax']
 points_te = [
-    (1.90179200,   1.94579835),
+    ter.polygon.exterior.coords[-11],
     (1.95, 2.0),
     (3.0, 2.0),
     (3.0,-2.0),
     (1.95,-2.0),
-    (1.90179200,  -1.94579835)
+    ter.polygon.exterior.coords[10]
     ]
 bounding_polygon = Polygon(points_te)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
