@@ -2586,8 +2586,8 @@ pbs 3 2 1 3 2 1 xy 242.1  c top edge, right middle node
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
-eset 0 0 1 0 0 1 = rbtrbsw1
-esetc rbtrbsw1  RootBuildup; triax; below shear web 2
+eset 0 0 1 0 0 1 = rbtrbsw2
+esetc rbtrbsw2  RootBuildup; triax; below shear web 2
 
 c triax, lower aft panel 1 -----
 c make a block mesh for: root buildup, triax, lower aft panel 1
