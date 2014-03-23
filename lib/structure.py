@@ -1,7 +1,7 @@
 """A module for organizing structural part data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: October 11, 2013
+Last updated: March 21, 2014
 
 The different kinds of parts, listed from outside to inside, are:
     external surface (gelcoat, triax)
@@ -1998,9 +1998,20 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
-                if len(layer_obj.edges) != 4:
+                if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'RootBuildup; {0}'!"
-                    raise Warning(fmt.format(layer_name))
+                    if soft_warning:
+                        print "***Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'RootBuildup; {0}'!"
+                    print "***Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'RootBuildup; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
                 start_edge_num += 4
         if self.external_surface.exists():
             f.write("c external surface " + "-"*40 + "\n")
@@ -2008,9 +2019,20 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
-                if len(layer_obj.edges) != 4:
+                if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'ExternalSurface; {0}'!"
-                    raise Warning(fmt.format(layer_name))
+                    if soft_warning:
+                        print "***Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'ExternalSurface; {0}'!"
+                    print "***Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'ExternalSurface; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
                 start_edge_num += 4
         if self.internal_surface_1.exists():
             f.write("c internal surface 1 " + "-"*40 + "\n")
@@ -2018,9 +2040,20 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
-                if len(layer_obj.edges) != 4:
+                if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface1; {0}'!"
-                    raise Warning(fmt.format(layer_name))
+                    if soft_warning:
+                        print "***Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface1; {0}'!"
+                    print "***Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface1; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
                 start_edge_num += 4
         if self.internal_surface_2.exists():
             f.write("c internal surface 2 " + "-"*40 + "\n")
@@ -2028,9 +2061,20 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
-                if len(layer_obj.edges) != 4:
+                if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface2; {0}'!"
-                    raise Warning(fmt.format(layer_name))
+                    if soft_warning:
+                        print "***Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface2; {0}'!"
+                    print "***Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface2; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
                 start_edge_num += 4
         if self.internal_surface_3.exists():
             f.write("c internal surface 3 " + "-"*40 + "\n")
@@ -2038,12 +2082,20 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
-                if len(layer_obj.edges) != 4:
+                if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface3; {0}'!"
                     if soft_warning:
                         print "***Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface3; {0}'!"
+                    print "***Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface3; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
                 start_edge_num += 4
         if self.internal_surface_4.exists():
             f.write("c internal surface 4 " + "-"*40 + "\n")
@@ -2051,9 +2103,20 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
-                if len(layer_obj.edges) != 4:
+                if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface4; {0}'!"
-                    raise Warning(fmt.format(layer_name))
+                    if soft_warning:
+                        print "***Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface4; {0}'!"
+                    print "***Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface4; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
                 start_edge_num += 4
         if self.TE_reinforcement.exists() and alt_TE_reinforcement:
             f.write("c TE reinforcement " + "-"*40 + "\n")
@@ -2061,9 +2124,20 @@ class MonoplaneStructure:
             for (layer_name, layer_obj) in sd:
                 f.write("c " + layer_name + " " + "-"*5 + "\n")
                 layer_obj.write_alt_layer_edges2(f, start_edge_num)
-                if len(layer_obj.edges) != 4:
+                if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'TE_Reinforcement; {0}'!"
-                    raise Warning(fmt.format(layer_name))
+                    if soft_warning:
+                        print "***Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'TE_Reinforcement; {0}'!"
+                    print "***Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'TE_Reinforcement; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
                 start_edge_num += 4
         # if self.spar_cap.exists():
         #     f.write("c spar cap " + "-"*20 + "\n")
@@ -2323,11 +2397,11 @@ class MonoplaneStructure:
                         j_cells=30)
 
     def write_truegrid_inputfile(self, interrupt_flag=False,
-        additional_layers=[], soft_warning=False):
+        additional_layers=[], alt_TE_reinforcement=False, soft_warning=False):
         """Write the TrueGrid input file in `station_path`."""
         self.write_truegrid_header()
         # self.write_all_layer_edges()
-        start_edge_num = self.write_all_alt_layer_edges(
+        start_edge_num = self.write_all_alt_layer_edges(alt_TE_reinforcement=alt_TE_reinforcement,
             soft_warning=soft_warning)
         if len(additional_layers) > 0:
             stn = self.parent_station

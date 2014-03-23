@@ -22,10 +22,12 @@ c ----------------------------------------
 
 c set some global parameters
 para t_elem 4;      c num of elements across laminate thickness
+para t_elemSW 4;    c num of elements across shear web thickness
 para l_elemLE 120;  c num of elements along leading edge
 para l_elemSP 30;   c num of elements along spar cap
-para l_elemAP 30;   c num of elements along aft panel
+para l_elemAP 26;   c num of elements along aft panel
 para l_elemTE 80;   c num of elements along trailing edge
+para l_elemSW 100;  c num of elements along shear web
 
 c ----------------------------------------
 

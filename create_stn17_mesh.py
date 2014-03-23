@@ -754,4 +754,5 @@ st.write_truegrid_inputfile(
         st.shear_web_3.layer['foam'],
         st.shear_web_3.layer['biax, right']
     ],
+    alt_TE_reinforcement=True,
     soft_warning=False)

@@ -49,10 +49,11 @@ st = station.structure
 label = 'upper spar cap'
 
 # create the bounding polygon
+is2 = st.internal_surface_2.layer['resin']
 points_usc = [
     (-0.75, 2.26509618),
     (-0.74, 2.25715046),
-    ( 0.74, 2.29719931),
+    is2.polygon.interiors[0].coords[11],
     ( 0.75, 2.30577725),
     ( 0.75, 2.6),
     (-0.75, 2.6)

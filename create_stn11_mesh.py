@@ -103,13 +103,14 @@ pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'triax', label,
 label = 'TE reinforcement'
 
 # create the bounding polygon
+is3 = st.internal_surface_3.layer['resin']
 points_te = [
     (3.8,-2.0),
     (2.58339700, -2.6),          # TE_Reinforcement_foam.txt
     (2.58339700,  -1.40409979),  # TE_Reinforcement_foam.txt
     (2.59334086,  -1.38461963),  # InternalSurface3_resin.txt
     (3.0, 0.0),
-    (2.59333441,   1.41206211),  # InternalSurface3_resin.txt
+    is3.polygon.interiors[0].coords[73],
     (2.58339700,   1.43169225),  # TE_Reinforcement_foam.txt
     (2.58339700, 2.6),           # TE_Reinforcement_foam.txt
     (3.8, 2.0)
