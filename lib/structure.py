@@ -2001,14 +2001,14 @@ class MonoplaneStructure:
                 if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'RootBuildup; {0}'!"
                     if soft_warning:
-                        print "***Warning: " + fmt.format(layer_name)
+                        print "*** Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
                 elif len(layer_obj.edges) == 4:
                     pass
                 elif len(layer_obj.edges) == 3:
                     fmt2 = "Only 3 edges found in layer 'RootBuildup; {0}'!"
-                    print "***Warning: " + fmt2.format(layer_name)
+                    print "*** Warning: " + fmt2.format(layer_name)
                 else:
                     fmt3 = "Layer 'RootBuildup; {0}' does not have 3 or 4 edges!"
                     raise Warning(fmt3.format(layer_name))
@@ -2022,14 +2022,14 @@ class MonoplaneStructure:
                 if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'ExternalSurface; {0}'!"
                     if soft_warning:
-                        print "***Warning: " + fmt.format(layer_name)
+                        print "*** Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
                 elif len(layer_obj.edges) == 4:
                     pass
                 elif len(layer_obj.edges) == 3:
                     fmt2 = "Only 3 edges found in layer 'ExternalSurface; {0}'!"
-                    print "***Warning: " + fmt2.format(layer_name)
+                    print "*** Warning: " + fmt2.format(layer_name)
                 else:
                     fmt3 = "Layer 'ExternalSurface; {0}' does not have 3 or 4 edges!"
                     raise Warning(fmt3.format(layer_name))
@@ -2043,14 +2043,14 @@ class MonoplaneStructure:
                 if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface1; {0}'!"
                     if soft_warning:
-                        print "***Warning: " + fmt.format(layer_name)
+                        print "*** Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
                 elif len(layer_obj.edges) == 4:
                     pass
                 elif len(layer_obj.edges) == 3:
                     fmt2 = "Only 3 edges found in layer 'InternalSurface1; {0}'!"
-                    print "***Warning: " + fmt2.format(layer_name)
+                    print "*** Warning: " + fmt2.format(layer_name)
                 else:
                     fmt3 = "Layer 'InternalSurface1; {0}' does not have 3 or 4 edges!"
                     raise Warning(fmt3.format(layer_name))
@@ -2064,14 +2064,14 @@ class MonoplaneStructure:
                 if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface2; {0}'!"
                     if soft_warning:
-                        print "***Warning: " + fmt.format(layer_name)
+                        print "*** Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
                 elif len(layer_obj.edges) == 4:
                     pass
                 elif len(layer_obj.edges) == 3:
                     fmt2 = "Only 3 edges found in layer 'InternalSurface2; {0}'!"
-                    print "***Warning: " + fmt2.format(layer_name)
+                    print "*** Warning: " + fmt2.format(layer_name)
                 else:
                     fmt3 = "Layer 'InternalSurface2; {0}' does not have 3 or 4 edges!"
                     raise Warning(fmt3.format(layer_name))
@@ -2085,14 +2085,14 @@ class MonoplaneStructure:
                 if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface3; {0}'!"
                     if soft_warning:
-                        print "***Warning: " + fmt.format(layer_name)
+                        print "*** Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
                 elif len(layer_obj.edges) == 4:
                     pass
                 elif len(layer_obj.edges) == 3:
                     fmt2 = "Only 3 edges found in layer 'InternalSurface3; {0}'!"
-                    print "***Warning: " + fmt2.format(layer_name)
+                    print "*** Warning: " + fmt2.format(layer_name)
                 else:
                     fmt3 = "Layer 'InternalSurface3; {0}' does not have 3 or 4 edges!"
                     raise Warning(fmt3.format(layer_name))
@@ -2106,14 +2106,14 @@ class MonoplaneStructure:
                 if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'InternalSurface4; {0}'!"
                     if soft_warning:
-                        print "***Warning: " + fmt.format(layer_name)
+                        print "*** Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
                 elif len(layer_obj.edges) == 4:
                     pass
                 elif len(layer_obj.edges) == 3:
                     fmt2 = "Only 3 edges found in layer 'InternalSurface4; {0}'!"
-                    print "***Warning: " + fmt2.format(layer_name)
+                    print "*** Warning: " + fmt2.format(layer_name)
                 else:
                     fmt3 = "Layer 'InternalSurface4; {0}' does not have 3 or 4 edges!"
                     raise Warning(fmt3.format(layer_name))
@@ -2127,14 +2127,14 @@ class MonoplaneStructure:
                 if len(layer_obj.edges) > 4:
                     fmt = "More than 4 edges found in layer 'TE_Reinforcement; {0}'!"
                     if soft_warning:
-                        print "***Warning: " + fmt.format(layer_name)
+                        print "*** Warning: " + fmt.format(layer_name)
                     else:
                         raise Warning(fmt.format(layer_name))
                 elif len(layer_obj.edges) == 4:
                     pass
                 elif len(layer_obj.edges) == 3:
                     fmt2 = "Only 3 edges found in layer 'TE_Reinforcement; {0}'!"
-                    print "***Warning: " + fmt2.format(layer_name)
+                    print "*** Warning: " + fmt2.format(layer_name)
                 else:
                     fmt3 = "Layer 'TE_Reinforcement; {0}' does not have 3 or 4 edges!"
                     raise Warning(fmt3.format(layer_name))

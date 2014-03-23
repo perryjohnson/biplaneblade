@@ -10,7 +10,7 @@ Then, from the prompt, run this script:
 |> %run create_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: March 17, 2014
+Last updated: March 23, 2014
 
 """
 
@@ -24,7 +24,7 @@ from shapely.geometry import Polygon
 
 
 # SET THESE PARAMETERS -----------------
-station_num = 17
+station_num = 18
 # --------------------------------------
 plt.close('all')
 
@@ -54,10 +54,10 @@ is2 = st.internal_surface_2.layer['resin']
 points_usc = [
     (-0.75, usc.left[0][1]),              # SparCap_upper.txt
     is2.polygon.interiors[0].coords[-2],  # InternalSurface2_resin.txt
-    ( 0.74, 1.03530366),                  # InternalSurface2_resin.txt
+    ( 0.74, 0.89812764),                  # InternalSurface2_resin.txt
     ( 0.75, usc.right[1][1]),             # SparCap_upper.txt
-    ( 0.75, 1.8),
-    (-0.75, 1.8)
+    ( 0.75, 1.3),
+    (-0.75, 1.3)
     ]
 bounding_polygon = Polygon(points_usc)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -78,10 +78,10 @@ label = 'lower spar cap'
 # create the bounding polygon
 lsc = st.spar_cap.layer['lower']
 points_lsc = [
-    (-0.75,-1.9),
-    ( 0.75,-1.9),
-    ( 0.75000000,  lsc.right[0][1]),      # SparCap_lower.txt
-    (0.74000000,  -1.06550534),          # InternalSurface2_resin.txt
+    (-0.75,-1.6),
+    ( 0.75,-1.6),
+    (0.75000000,  lsc.right[0][1]),      # SparCap_lower.txt
+    (0.74000000,  -0.98881226),          # InternalSurface2_resin.txt
     is2.polygon.interiors[0].coords[-1],  # InternalSurface2_resin.txt
     (-0.75000000,  lsc.left[1][1])        # SparCap_lower.txt
     ]
@@ -106,9 +106,9 @@ ter = st.TE_reinforcement.layer['foam']
 points_teu1 = [
     (ter.top[0][0], 0.35),              # TE_Reinforcement_foam.txt
     tuple(ter.top[0]),                  # TE_Reinforcement_foam.txt
-    (3.71, 0.18),
-    (3.91964530,   0.12466663),         # InternalSurface4_resin.txt
-    (3.91964530,   0.35)                # InternalSurface4_resin.txt
+    (3.64, 0.16),
+    (3.80339848,   0.12895125),         # InternalSurface4_resin.txt
+    (3.80339848,   0.35)                # InternalSurface4_resin.txt
     ]
 bounding_polygon = Polygon(points_teu1)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -134,10 +134,10 @@ label = 'TE reinforcement, lower 1'
 points_tel1 = [
     (ter.bottom[0][0], -0.1),              # TE_Reinforcement_foam.txt
     tuple(ter.bottom[1]),                  # TE_Reinforcement_foam.txt
-    (3.71, 0.09),
-    (3.8, 0.12),
-    (3.91964530,   0.12466663),         # InternalSurface4_resin.txt
-    (3.91964530,   -0.1)                # InternalSurface4_resin.txt
+    (3.65, 0.11),
+    (3.7, 0.12),
+    points_teu1[-2],         # InternalSurface4_resin.txt
+    (points_teu1[-1][0],   -0.1)                # InternalSurface4_resin.txt
     ]
 bounding_polygon = Polygon(points_tel1)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -163,8 +163,8 @@ label = 'TE reinforcement, upper 2'
 points_teu2 = [
     points_teu1[-1],
     points_teu1[-2],
-    (3.96697377,   0.12058056),    # InternalSurface4_triax.txt
-    (3.96697377,   0.35) # InternalSurface4_triax.txt
+    (3.84865423,   0.12645368),    # InternalSurface4_triax.txt
+    (3.84865423,   0.35) # InternalSurface4_triax.txt
     ]
 bounding_polygon = Polygon(points_teu2)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -264,10 +264,10 @@ es = st.external_surface.layer['gelcoat']
 points_teu4 = [
     points_teu3[-1],
     points_teu3[-2],
-    (4.71227000,   0.005),  # TE_Reinforcement_uniax.txt
-    (4.71227000,   0.02052196),  # TE_Reinforcement_uniax.txt
+    (4.65942400,   0.003),  # TE_Reinforcement_uniax.txt
+    (4.65942400,   0.01758013),  # TE_Reinforcement_uniax.txt
     es.polygon.exterior.coords[-2],
-    (4.71227000,   0.35) # TE_Reinforcement_uniax.txt
+    (4.65942400,   0.35) # TE_Reinforcement_uniax.txt
     ]
 bounding_polygon = Polygon(points_teu4)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -288,7 +288,7 @@ points_tel4 = [
     (points_teu4[0][0], -0.1),
     points_teu4[1],
     points_teu4[2],
-    (4.71227000,  -0.01761200),   # TE_Reinforcement_uniax.txt
+    (4.65942400,  -0.01440373),   # TE_Reinforcement_uniax.txt
     es.polygon.exterior.coords[-1],
     (points_teu4[2][0], -0.1)
     ]
@@ -310,15 +310,15 @@ label = 'LE panel'
 lep = st.LE_panel.layer['foam']
 is1 = st.internal_surface_1.layer['resin']
 points_le = [
-    (-3.00,-2.0),
-    (-0.836,-2.0),
+    (-3.00,-1.6),
+    (-0.836,-1.6),
     tuple(lep.bottom[0]),  # LE_Panel_foam.txt
-    is1.polygon.interiors[0].coords[0],  # InternalSurface1_resin.txt
+    is1.polygon.interiors[0].coords[-2],  # InternalSurface1_resin.txt
     (-1.5, 0.0),
-    is1.polygon.interiors[0].coords[1],  # InternalSurface1_resin.txt
+    is1.polygon.interiors[0].coords[-1],  # InternalSurface1_resin.txt
     tuple(lep.top[1]),  # LE_Panel_foam.txt
-    (-0.836, 2.0),
-    (-3.00, 2.0)
+    (-0.836, 1.3),
+    (-3.00, 1.3)
     ]
 bounding_polygon = Polygon(points_le)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -339,12 +339,12 @@ label = 'upper aft panel 1'
 ap1u = st.aft_panel_1.layer['upper']
 is3 = st.internal_surface_3.layer['resin']
 points_ap1u = [
-    (0.836, 1.8),
-    (ap1u.right[1][0], 1.8),              # AftPanel1_upper.txt
+    (0.836, 1.3),
+    (ap1u.right[1][0], 1.3),              # AftPanel1_upper.txt
     tuple(ap1u.right[1]),                 # AftPanel1_upper.txt
-    (2.42654667,   0.65698556),           # InternalSurface3_resin.txt
-    (1.2, 0.8),
-    is3.polygon.interiors[0].coords[-2],  # InternalSurface3_resin.txt
+    is3.polygon.interiors[0].coords[-1],  # InternalSurface3_resin.txt
+    (1.2, 0.5),
+    (0.84600000,   0.95568319),           # InternalSurface3_resin.txt
     tuple(ap1u.left[0])                   # AftPanel1_upper.txt
     ]
 bounding_polygon = Polygon(points_ap1u)
@@ -365,12 +365,12 @@ label = 'lower aft panel 1'
 # create the bounding polygon
 ap1l = st.aft_panel_1.layer['lower']
 points_ap1l = [
-    (0.836, -1.8),
-    (ap1l.right[0][0], -1.8),             # AftPanel1_lower.txt
+    (0.836, -1.6),
+    (ap1l.right[0][0], -1.6),             # AftPanel1_lower.txt
     tuple(ap1l.right[0]),                 # AftPanel1_lower.txt
-    (2.42654667,  -0.41348357),           # InternalSurface3_resin.txt
-    (1.2, -0.8),
-    is3.polygon.interiors[0].coords[-1],  # InternalSurface3_resin.txt
+    (2.35558711,  -0.39025883),           # InternalSurface3_resin.txt
+    (1.2, -0.3),
+    (0.84600000,  -1.02814653),  # InternalSurface3_resin.txt
     tuple(ap1l.left[1])                   # AftPanel1_lower.txt
     ]
 bounding_polygon = Polygon(points_ap1l)
@@ -393,12 +393,12 @@ ap2u = st.aft_panel_2.layer['upper']
 is4 = st.internal_surface_4.layer['resin']
 sw3br = st.shear_web_3.layer['biax, right']
 points_ap2u = [
-    (sw3br.right[0][0], 1.4),
-    (ap2u.right[1][0], 1.4),              # AftPanel2_upper.txt
+    (sw3br.right[0][0], 1.3),
+    (ap2u.right[1][0], 1.3),              # AftPanel2_upper.txt
     tuple(ap2u.right[1]),                 # AftPanel2_upper.txt
-    (3.70787000,   0.25303068),           # InternalSurface4_resin.txt
-    (3.0, 0.3),
-    is4.polygon.interiors[0].coords[-2],  # InternalSurface4_resin.txt
+    (3.65502400,   0.23368491),           # InternalSurface4_resin.txt
+    (3.0, 0.2),
+    (2.46158711,   0.57115948),  # InternalSurface4_resin.txt
     tuple(ap2u.left[0])                   # AftPanel2_upper.txt
     ]
 bounding_polygon = Polygon(points_ap2u)
@@ -421,12 +421,12 @@ ap2l = st.aft_panel_2.layer['lower']
 is4 = st.internal_surface_4.layer['resin']
 sw3br = st.shear_web_3.layer['biax, right']
 points_ap2l = [
-    (sw3br.right[0][0], -1.4),
-    (ap2l.right[0][0], -1.4),             # AftPanel2_lower.txt
+    (sw3br.right[0][0], -1.6),
+    (ap2l.right[0][0], -1.6),             # AftPanel2_lower.txt
     tuple(ap2l.right[0]),                 # AftPanel2_lower.txt
-    (3.70787000,   0.02559952),           # InternalSurface4_resin.txt
-    (3.0, 0.0),
-    is4.polygon.interiors[0].coords[-1],  # InternalSurface4_resin.txt
+    (3.65502400,   0.04031627),           # InternalSurface4_resin.txt
+    (3.0, 0.1),
+    (2.46158711,  -0.34760317),  # InternalSurface4_resin.txt
     tuple(ap2l.left[1])                   # AftPanel2_lower.txt
     ]
 bounding_polygon = Polygon(points_ap2l)
@@ -447,8 +447,8 @@ label = 'above shear web 1'
 # create the bounding polygon
 points_asw1 = [
     (-0.75, 2.1),
-    (-0.75, 1.0),
-    (-0.836, 1.0),
+    (-0.75, 0.1),
+    (-0.836, 0.1),
     (-0.836, 2.1)
     ]
 bounding_polygon = Polygon(points_asw1)
@@ -466,8 +466,8 @@ label = 'below shear web 1'
 # create the bounding polygon
 points_bsw1 = [
     (-0.75, -2.1),
-    (-0.75, -1.0),
-    (-0.836, -1.0),
+    (-0.75, -0.1),
+    (-0.836, -0.1),
     (-0.836, -2.1)
     ]
 bounding_polygon = Polygon(points_bsw1)
@@ -485,8 +485,8 @@ label = 'above shear web 2'
 # create the bounding polygon
 points_asw2 = [
     (0.75, 2.1),
-    (0.75, 1.0),
-    (0.836, 1.0),
+    (0.75, 0.1),
+    (0.836, 0.1),
     (0.836, 2.1)
     ]
 bounding_polygon = Polygon(points_asw2)
@@ -504,8 +504,8 @@ label = 'below shear web 2'
 # create the bounding polygon
 points_bsw2 = [
     (0.75, -2.1),
-    (0.75, -1.0),
-    (0.836, -1.0),
+    (0.75, -0.1),
+    (0.836, -0.1),
     (0.836, -2.1)
     ]
 bounding_polygon = Polygon(points_bsw2)
