@@ -166,6 +166,7 @@ is4t = st.internal_surface_4.layer['triax']
 points_teu2 = [
     points_teu1[-1],
     points_teu1[-2],
+    is4t.polygon.interiors[0].coords[284-112],  # InternalSurface4_triax.txt
     is4t.polygon.exterior.coords[20-3],  # InternalSurface4_triax.txt
     (is4t.polygon.exterior.coords[20-3][0],   0.35) # InternalSurface4_triax.txt
     ]
@@ -194,7 +195,8 @@ points_tel2 = [
     (points_teu2[0][0], -0.1),
     points_teu2[1],
     points_teu2[2],
-    (points_teu2[2][0], -0.1)
+    points_teu2[3],
+    (points_teu2[3][0], -0.1)
     ]
 bounding_polygon = Polygon(points_tel2)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')

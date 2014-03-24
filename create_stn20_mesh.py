@@ -162,11 +162,13 @@ pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label,
 label = 'TE reinforcement, upper 2'
 
 # create the bounding polygon
+is4t = st.internal_surface_4.layer['triax']
 points_teu2 = [
     points_teu1[-1],
     points_teu1[-2],
-    (3.80864073,   0.09800872),    # InternalSurface4_triax.txt
-    (3.80864073,   0.35) # InternalSurface4_triax.txt
+    is4t.polygon.interiors[0].coords[201-77],  # InternalSurface4_triax.txt
+    is4t.polygon.exterior.coords[17-3],  # InternalSurface4_triax.txt
+    (is4t.polygon.exterior.coords[17-3][0], 0.35)  # InternalSurface4_triax.txt
     ]
 bounding_polygon = Polygon(points_teu2)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -193,7 +195,8 @@ points_tel2 = [
     (points_teu2[0][0], -0.1),
     points_teu2[1],
     points_teu2[2],
-    (points_teu2[2][0], -0.1)
+    points_teu2[3],
+    (points_teu2[3][0], -0.1)
     ]
 bounding_polygon = Polygon(points_tel2)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
