@@ -139,7 +139,6 @@ ap1l = st.aft_panel_1.layer['lower']
 points_tel1 = [
     (ter.bottom[0][0], -0.1),              # TE_Reinforcement_foam.txt
     tuple(ter.bottom[1]),                  # TE_Reinforcement_foam.txt
-    ter.bottom[1],
     (1.25, -0.02),
     points_teu1[-3],
     points_teu1[-2],         # InternalSurface3_resin.txt

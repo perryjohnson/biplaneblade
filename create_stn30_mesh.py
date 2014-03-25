@@ -129,324 +129,323 @@ pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
 pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
     bounding_polygon)
 
-# # TE reinforcement, lower 1 ------------------------------------------------
-# label = 'TE reinforcement, lower 1'
+# TE reinforcement, lower 1 ------------------------------------------------
+label = 'TE reinforcement, lower 1'
 
-# # create the bounding polygon
-# points_tel1 = [
-#     (ter.bottom[0][0], -0.1),              # TE_Reinforcement_foam.txt
-#     tuple(ter.bottom[1]),                  # TE_Reinforcement_foam.txt
-#     ter.bottom[1],
-#     (1.25, -0.02),
-#     points_teu1[-3],
-#     points_teu1[-2],         # InternalSurface3_resin.txt
-#     (points_teu1[-1][0],   -0.1)                # InternalSurface3_resin.txt
-#     ]
-# bounding_polygon = Polygon(points_tel1)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points_tel1 = [
+    (ter.bottom[0][0], -0.1),              # TE_Reinforcement_foam.txt
+    tuple(ter.bottom[1]),                  # TE_Reinforcement_foam.txt
+    is3.polygon.interiors[0].coords[-1],
+    points_teu1[-3],
+    points_teu1[-2],         # InternalSurface3_resin.txt
+    (points_teu1[-1][0],   -0.1)                # InternalSurface3_resin.txt
+    ]
+bounding_polygon = Polygon(points_tel1)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
+    bounding_polygon)
 
-# # TE reinforcement, upper 2 ------------------------------------------------
-# label = 'TE reinforcement, upper 2'
+# TE reinforcement, upper 2 ------------------------------------------------
+label = 'TE reinforcement, upper 2'
 
-# # create the bounding polygon
-# is3t = st.internal_surface_3.layer['triax']
-# points_teu2 = [
-#     points_teu1[-1],
-#     points_teu1[-2],
-#     is3t.polygon.interiors[0].coords[253-105],  # InternalSurface3_triax.txt
-#     is3t.polygon.exterior.coords[26-3],  # InternalSurface3_triax.txt
-#     (is3t.polygon.exterior.coords[26-3][0],   0.35) # InternalSurface3_triax.txt
-#     ]
-# bounding_polygon = Polygon(points_teu2)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+is3t = st.internal_surface_3.layer['triax']
+points_teu2 = [
+    points_teu1[-1],
+    points_teu1[-2],
+    is3t.polygon.interiors[0].coords[220-94],  # InternalSurface3_triax.txt
+    is3t.polygon.exterior.coords[22-3],  # InternalSurface3_triax.txt
+    (is3t.polygon.exterior.coords[22-3][0],   0.35) # InternalSurface3_triax.txt
+    ]
+bounding_polygon = Polygon(points_teu2)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
+    bounding_polygon)
 
-# # TE reinforcement, lower 2 ------------------------------------------------
-# label = 'TE reinforcement, lower 2'
+# TE reinforcement, lower 2 ------------------------------------------------
+label = 'TE reinforcement, lower 2'
 
-# # create the bounding polygon
-# points_tel2 = [
-#     (points_teu2[0][0], -0.1),
-#     points_teu2[1],
-#     points_teu2[2],
-#     points_teu2[3],
-#     (points_teu2[3][0], -0.1)
-#     ]
-# bounding_polygon = Polygon(points_tel2)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points_tel2 = [
+    (points_teu2[0][0], -0.1),
+    points_teu2[1],
+    points_teu2[2],
+    points_teu2[3],
+    (points_teu2[3][0], -0.1)
+    ]
+bounding_polygon = Polygon(points_tel2)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
+    bounding_polygon)
 
-# # TE reinforcement, upper 3 ------------------------------------------------
-# label = 'TE reinforcement, upper 3'
+# TE reinforcement, upper 3 ------------------------------------------------
+label = 'TE reinforcement, upper 3'
 
-# # create the bounding polygon
-# teru = st.TE_reinforcement.layer['uniax']
-# est = st.external_surface.layer['triax']
-# esg = st.external_surface.layer['gelcoat']
-# points_teu3 = [
-#     points_teu2[-1],
-#     points_teu2[-2],
-#     ter.polygon.exterior.coords[0],
-#     teru.polygon.exterior.coords[0],
-#     (est.polygon.exterior.coords[-1][0], 0.0038),
-#     est.polygon.exterior.coords[-2],
-#     esg.polygon.exterior.coords[-2],
-#     (esg.polygon.exterior.coords[-2][0], 0.35)
-#     ]
-# bounding_polygon = Polygon(points_teu3)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+teru = st.TE_reinforcement.layer['uniax']
+est = st.external_surface.layer['triax']
+esg = st.external_surface.layer['gelcoat']
+points_teu3 = [
+    points_teu2[-1],
+    points_teu2[-2],
+    ter.polygon.exterior.coords[0],
+    teru.polygon.exterior.coords[0],
+    (est.polygon.exterior.coords[-1][0], 0.003),
+    est.polygon.exterior.coords[-2],
+    esg.polygon.exterior.coords[-2],
+    (esg.polygon.exterior.coords[-2][0], 0.35)
+    ]
+bounding_polygon = Polygon(points_teu3)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
+    bounding_polygon)
 
-# # TE reinforcement, lower 3 ------------------------------------------------
-# label = 'TE reinforcement, lower 3'
+# TE reinforcement, lower 3 ------------------------------------------------
+label = 'TE reinforcement, lower 3'
 
-# # create the bounding polygon
-# points_tel3 = [
-#     (points_teu3[0][0], -0.1),
-#     points_teu3[1],
-#     points_teu3[2],
-#     points_teu3[3],
-#     points_teu3[4],
-#     est.polygon.exterior.coords[-1],
-#     esg.polygon.exterior.coords[-1],
-#     (points_teu3[4][0], -0.1)
-#     ]
-# bounding_polygon = Polygon(points_tel3)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points_tel3 = [
+    (points_teu3[0][0], -0.1),
+    points_teu3[1],
+    points_teu3[2],
+    points_teu3[3],
+    points_teu3[4],
+    est.polygon.exterior.coords[-1],
+    esg.polygon.exterior.coords[-1],
+    (points_teu3[4][0], -0.1)
+    ]
+bounding_polygon = Polygon(points_tel3)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'foam', label,
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.TE_reinforcement, 'uniax', label, 
+    bounding_polygon)
 
-# # LE panel -----------------------------------------------------------------
-# label = 'LE panel'
+# LE panel -----------------------------------------------------------------
+label = 'LE panel'
 
-# # create the bounding polygon
-# lep = st.LE_panel.layer['foam']
-# is1 = st.internal_surface_1.layer['resin']
-# points_le = [
-#     (-3.00,-1.6),
-#     (-0.836,-1.6),
-#     tuple(lep.bottom[0]),  # LE_Panel_foam.txt
-#     is1.polygon.interiors[0].coords[-2],  # InternalSurface1_resin.txt
-#     (-1.0, 0.0),
-#     is1.polygon.interiors[0].coords[-1],  # InternalSurface1_resin.txt
-#     tuple(lep.top[1]),  # LE_Panel_foam.txt
-#     (-0.836, 1.3),
-#     (-3.00, 1.3)
-#     ]
-# bounding_polygon = Polygon(points_le)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
+# create the bounding polygon
+lep = st.LE_panel.layer['foam']
+is1 = st.internal_surface_1.layer['resin']
+points_le = [
+    (-1.2,-0.2),
+    (-0.836,-0.2),
+    tuple(lep.bottom[0]),  # LE_Panel_foam.txt
+    is1.polygon.interiors[0].coords[0],  # InternalSurface1_resin.txt
+    (-1.0, 0.0),
+    is1.polygon.interiors[0].coords[1],  # InternalSurface1_resin.txt
+    tuple(lep.top[1]),  # LE_Panel_foam.txt
+    (-0.836, 0.3),
+    (-1.2, 0.3)
+    ]
+bounding_polygon = Polygon(points_le)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
-# # above shear web 1 ----------------------------------------------------------
-# label = 'above shear web 1'
+# above shear web 1 ----------------------------------------------------------
+label = 'above shear web 1'
 
-# # create the bounding polygon
-# points_asw1 = [
-#     (-0.75, 2.1),
-#     (-0.75, 0.1),
-#     (-0.836, 0.1),
-#     (-0.836, 2.1)
-#     ]
-# bounding_polygon = Polygon(points_asw1)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points_asw1 = [
+    (-0.75, 2.1),
+    (-0.75, 0.1),
+    (-0.836, 0.1),
+    (-0.836, 2.1)
+    ]
+bounding_polygon = Polygon(points_asw1)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
 
-# # below shear web 1 ----------------------------------------------------------
-# label = 'below shear web 1'
+# below shear web 1 ----------------------------------------------------------
+label = 'below shear web 1'
 
-# # create the bounding polygon
-# points_bsw1 = [
-#     (-0.75, -2.1),
-#     (-0.75, 0.0),
-#     (-0.836, 0.0),
-#     (-0.836, -2.1)
-#     ]
-# bounding_polygon = Polygon(points_bsw1)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points_bsw1 = [
+    (-0.75, -2.1),
+    (-0.75, 0.0),
+    (-0.836, 0.0),
+    (-0.836, -2.1)
+    ]
+bounding_polygon = Polygon(points_bsw1)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
 
-# # above shear web 2 ----------------------------------------------------------
-# label = 'above shear web 2'
+# above shear web 2 ----------------------------------------------------------
+label = 'above shear web 2'
 
-# # create the bounding polygon
-# points_asw2 = [
-#     (0.75, 2.1),
-#     (0.75, 0.1),
-#     (0.836, 0.1),
-#     (0.836, 2.1)
-#     ]
-# bounding_polygon = Polygon(points_asw2)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points_asw2 = [
+    (0.75, 2.1),
+    (0.75, 0.1),
+    (0.836, 0.1),
+    (0.836, 2.1)
+    ]
+bounding_polygon = Polygon(points_asw2)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
 
-# # below shear web 2 ----------------------------------------------------------
-# label = 'below shear web 2'
+# below shear web 2 ----------------------------------------------------------
+label = 'below shear web 2'
 
-# # create the bounding polygon
-# points_bsw2 = [
-#     (0.75, -2.1),
-#     (0.75, 0.0),
-#     (0.836, 0.0),
-#     (0.836, -2.1)
-#     ]
-# bounding_polygon = Polygon(points_bsw2)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points_bsw2 = [
+    (0.75, -2.1),
+    (0.75, 0.0),
+    (0.836, 0.0),
+    (0.836, -2.1)
+    ]
+bounding_polygon = Polygon(points_bsw2)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
 
-# # left of shear web 1 -------------------------------------------------------
-# label = 'left of shear web 1'
+# left of shear web 1 -------------------------------------------------------
+label = 'left of shear web 1'
 
-# # create the bounding polygon
-# points_lsw1 = points_le[2:-2]
-# bounding_polygon = Polygon(points_lsw1)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
+# create the bounding polygon
+points_lsw1 = points_le[2:-2]
+bounding_polygon = Polygon(points_lsw1)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
 
-# # right of shear web 1 -------------------------------------------------------
-# label = 'right of shear web 1'
+# right of shear web 1 -------------------------------------------------------
+label = 'right of shear web 1'
 
-# # create the bounding polygon
-# points_rsw1 = [
-#     points_usc[0],
-#     points_usc[1],
-#     (0.0, 0.0),
-#     points_lsc[-2],
-#     points_lsc[-1]
-#     ]
-# bounding_polygon = Polygon(points_rsw1)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'triax', label, 
-#     bounding_polygon)
+# create the bounding polygon
+points_rsw1 = [
+    points_usc[0],
+    points_usc[1],
+    (0.0, 0.0),
+    points_lsc[-2],
+    points_lsc[-1]
+    ]
+bounding_polygon = Polygon(points_rsw1)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'triax', label, 
+    bounding_polygon)
 
-# # left of shear web 2 -------------------------------------------------------
-# label = 'left of shear web 2'
+# left of shear web 2 -------------------------------------------------------
+label = 'left of shear web 2'
 
-# # create the bounding polygon
-# points_lsw2 = [
-#     points_usc[3],
-#     points_usc[2],
-#     (0.0, 0.0),
-#     points_lsc[3],
-#     points_lsc[2]
-#     ]
-# bounding_polygon = Polygon(points_lsw2)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'triax', label, 
-#     bounding_polygon)
+# create the bounding polygon
+points_lsw2 = [
+    points_usc[3],
+    points_usc[2],
+    (0.0, 0.0),
+    points_lsc[3],
+    points_lsc[2]
+    ]
+bounding_polygon = Polygon(points_lsw2)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_2, 'triax', label, 
+    bounding_polygon)
 
-# # right of shear web 2 -------------------------------------------------------
-# label = 'right of shear web 2'
+# right of shear web 2 -------------------------------------------------------
+label = 'right of shear web 2'
 
-# # create the bounding polygon
-# points_rsw2 = [
-#     points_ap1u[-1],
-#     points_ap1u[-2],
-#     (1.2, 0.15),
-#     points_ap1l[-2],
-#     points_ap1l[-1]
-#     ]
-# bounding_polygon = Polygon(points_rsw2)
-# pu.plot_polygon(bounding_polygon, 'None', '#000000')
-# # cut the new layer polygons
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
-#     bounding_polygon)
-# pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
-#     bounding_polygon)
+# create the bounding polygon
+points_rsw2 = [
+    points_teu1[1],
+    points_teu1[2],
+    (1.0, 0.1),
+    points_tel1[2],
+    points_tel1[1]
+    ]
+bounding_polygon = Polygon(points_rsw2)
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
+# cut the new layer polygons
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'resin', label, 
+    bounding_polygon)
+pu.cut_plot_and_write_alt_layer(st.internal_surface_3, 'triax', label, 
+    bounding_polygon)
 
 
 
