@@ -503,6 +503,7 @@ st.write_truegrid_inputfile(
         st.spar_cap.layer['upper'],
         st.spar_cap.layer['lower'],
         st.TE_reinforcement.layer['uniax'],
+        st.TE_reinforcement.layer['foam'],
         st.aft_panel_1.layer['upper'],
         st.aft_panel_1.layer['lower'],
         st.aft_panel_2.layer['upper'],

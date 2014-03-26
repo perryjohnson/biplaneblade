@@ -1,7 +1,25 @@
 """Determine the layer plane angle of all the elements in a grid.
 
 Author: Perry Roth-Johnson
-Last modified: March 18, 2014
+Last modified: March 26, 2014
+
+Usage:
+1. Look through the mesh_stn11.abq file and find all the element set names.
+   (Find all the lines that start with "*ELSET".)
+2. Enter each of the element set names in one of the four lists below:
+     (1) list_of_LE_elementsets
+     (2) list_of_TE_elementsets
+     (3) list_of_lower_elementsets
+     (4) list_of_upper_elementsets
+3. Run this script. Visually inspect the plot to make sure each of the element
+   sets are in the correct list. (The blue edge should be facing outward,
+   relative to the airfoil centerpoint. The magenta edge should be facing 
+   inward.) If you find an element that is oriented incorrectly, note the
+   element number, and look up it's element set name from the printout in the
+   IPython terminal. Then, move that element set name to a different list in
+   this script.
+4. Repeat step 3 until your visual inspection suggests that all the edges (and
+   layer plane angles) are being assigned correctly.
 
 References:
 http://stackoverflow.com/questions/3365171/calculating-the-angle-between-two-lines-without-having-to-calculate-the-slope/3366569#3366569
@@ -24,7 +42,7 @@ from descartes import PolygonPatch
 
 # -----------------------------------------------
 # update these parameters!
-station_num = 9
+station_num = 11
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
@@ -55,6 +73,7 @@ list_of_LE_elementsets = [
 # outer_edge_node_nums=[3,2], inner_edge_node_nums=[4,1]
 list_of_TE_elementsets = [
     'teuniax',
+    'tefoam',
     'rbtrite',
     'esgelte',
     'estrite',
@@ -140,7 +159,7 @@ for elem in g.list_of_elements[::15]:
     elem.plot(label_nodes=False)
     print elem.elem_num, elem.element_set, elem.theta1
 # show the plot
-plt.xlim([-3,3.5])
+plt.xlim([-3,4])
 plt.ylim([-3,3])
 ax.set_aspect('equal')
 print ' ------------------------'
