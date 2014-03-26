@@ -36,10 +36,10 @@ ax = plt.gcf().gca()
 # element sets on the leading edge
 # outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
 list_of_LE_elementsets = [
+    'lepanel',
     'rbtrile',
     'esgelle',
     'estrile',
-    'lepanel',
     'is1rsle',
     'is1trile',
     'sw1biaxl',
@@ -63,9 +63,6 @@ list_of_TE_elementsets = [
     'sw2biaxl',
     'sw2foam',
     'sw2biaxr',
-    'rbtrasw2',
-    'esglasw2',
-    'estrasw2',
     'is2rlsw2',
     'is2tlsw2',
     'is3rrsw2',
@@ -75,44 +72,47 @@ list_of_TE_elementsets = [
 # element sets on the lower surface
 # outer_edge_node_nums=[2,1], inner_edge_node_nums=[3,4]
 list_of_lower_elementsets = [
+    'ap1lower',
     'esgllap1',
     'estrlap1',
     'rbtrlap1',
+    'is3rlap1',
+    'is3tlap1',
+    'sclower',
     'rbtriscl',
     'esgelscl',
     'estriscl',
-    'sclower',
-    'ap1lower',
     'is2rsscl',
     'is2trscl',
-    'is3rlap1',
-    'is3tlap1',
     'rbtrbsw1',
     'esglbsw1',
     'estrbsw1',
     'esglbsw2',
     'estrbsw2',
+    'rbtrbsw2',
     'esgelscu',
-    'is2trscu',
-    'rbtrbsw2'
+    'is2trscu'
 ]
 
 # element sets on the upper surface
 # outer_edge_node_nums=[4,3], inner_edge_node_nums=[1,2]
 list_of_upper_elementsets = [
+    'ap1upper',
     'esgluap1',
     'estruap1',
     'rbtruap1',
-    'rbtriscu',
-    'estriscu',
-    'scupper',
-    'ap1upper',
     'is3ruap1',
     'is3tuap1',
-    'rbtrasw1',
     'esglasw1',
-    'is2rsscu',
-    'estrasw1'
+    'estrasw1',
+    'rbtrasw1',
+    'esglasw2',
+    'estrasw2',
+    'rbtrasw2',
+    'scupper',
+    'rbtriscu',
+    'estriscu',
+    'is2rsscu'
 ]
 
 # import the initial grid object
@@ -140,7 +140,7 @@ for elem in g.list_of_elements[::25]:
     elem.plot(label_nodes=False)
     print elem.elem_num, elem.element_set, elem.theta1
 # show the plot
-plt.xlim([-3,3])
+plt.xlim([-3,3.5])
 plt.ylim([-3,3])
 ax.set_aspect('equal')
 print ' ------------------------'
