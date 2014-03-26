@@ -1,5 +1,4 @@
 *.pyc
-sandia_blade/stn16
 biplane_flap-asym_no-stagger/stn*
 biplane_flap-asym_stagger/stn*
 biplane_flap-sym_no-stagger/stn*
