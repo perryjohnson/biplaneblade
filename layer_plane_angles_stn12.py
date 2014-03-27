@@ -41,13 +41,6 @@ from shapely.geometry import Polygon, LineString
 from descartes import PolygonPatch
 
 
-
-# !!! Plot the bounding curves underneath each of these elements !!!
-# ... It'll prolly make visual inspection easier.
-
-
-
-
 # -----------------------------------------------
 # update these parameters!
 station_num = 12
