@@ -2925,9 +2925,8 @@ pbs 2 2 1 2 2 1 y 258.1  c LE panel, bottom
 c interpolate interior nodes along right biax/spar cap interface
 res 3 4 1 4 6 1 j 1.0
 res 3 1 1 4 3 1 j 1.0
-interrupt
-c !!! TNT: add in a "res ... j 1.0" command on the i=1,2 edges to match up with internal surface 1?
-interrupt
+c interpolate interior nodes along left biax/internal surface 1 interface
+res 1 2 1 2 5 1 j 1.0
 c assign the default material to be biax (material #2)
 mate 2
 c reassign the middle region material to foam (material #4)
