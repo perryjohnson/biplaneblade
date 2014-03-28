@@ -1,7 +1,7 @@
 """Create entities for a 2D unstructured grid.
 
 Author: Perry Roth-Johnson
-Last modified: March 13, 2014
+Last modified: March 27, 2014
 
 """
 
@@ -51,7 +51,6 @@ class _Element:
 
     def calculate_layer_plane_angle(self, outer_edge_node_nums=[1,4],
         inner_edge_node_nums=[2,3], plot_edges=True, plot_angle=True):
-        
         # get Node objects on edges and save as non-public attributes
         self._outer_edge_node0 = self.nodes[outer_edge_node_nums[0]-1]
         self._outer_edge_node1 = self.nodes[outer_edge_node_nums[1]-1]
@@ -69,8 +68,8 @@ class _Element:
         if self.theta1 < 0.0:
             self.theta1 += 360.0
 
-class LinearElement(_Element):
-    """A linear quadrilateral element with four nodes.
+class QuadrilateralLinearElement(_Element):
+    """A quadrilateral linear element with four nodes.
 
 The VABS quadrilateral element node numbering scheme is shown below:
     4-------3
@@ -86,6 +85,12 @@ The VABS quadrilateral element node numbering scheme is shown below:
         self.node2 = node2
         self.node3 = node3
         self.node4 = node4
+        # assign node_num=0 for nodes that are not present
+        self.node5 = Node(0, 0.0, 0.0)
+        self.node6 = Node(0, 0.0, 0.0)
+        self.node7 = Node(0, 0.0, 0.0)
+        self.node8 = Node(0, 0.0, 0.0)
+        self.node9 = Node(0, 0.0, 0.0)
         self.nodes = (self.node1,self.node2,self.node3,self.node4)
         for node in self.nodes:
             node.parent_element = self
@@ -269,8 +274,8 @@ elem1.is_ccw(print_flag=True)
                                                            self.node4.node_num)
 
 
-class QuadraticElement(_Element):
-    """A quadratic quadrilateral element with eight nodes.
+class QuadrilateralQuadraticElement(_Element):
+    """A quadrilateral quadratic element with eight nodes.
 
 The VABS quadrilateral element node numbering scheme is shown below:
     4---7---3
@@ -338,11 +343,12 @@ The central node (9) is optional.
             self.node6 = node6
             self.node7 = node7
             self.node8 = node8
+        # assign node_num=0 for nodes that are not present
+        self.node9 = Node(0, 0.0, 0.0)
         self.nodes = (self.node1,self.node2,self.node3,self.node4,self.node5,
             self.node6,self.node7,self.node8)
         for node in self.nodes:
             node.parent_element = self
-        
 
     def __str__(self):
         return """Element #{0} -----
@@ -398,3 +404,163 @@ The central node (9) is optional.
             ax = plt.gcf().gca()
             self._plot_edge(ax, outer_edge, color='b')
             self._plot_edge(ax, inner_edge, color='m')
+
+
+class TriangularLinearElement(_Element):
+    """A triangular lienar element with three nodes.
+
+The VABS triangular element node numbering scheme is shown below:
+        3
+       / \
+      /   \  
+     /     \
+    1-------2
+
+    """
+    def __init__(self, elem_num, node1, node2, node3, layer_num):
+        _Element.__init__(self, elem_num, layer_num)
+        # create a polygon representation
+        p = Polygon([
+            node1.coords, 
+            node2.coords, 
+            node3.coords
+            ])
+        self.polygon = p
+        self.node1 = node1
+        self.node2 = node2
+        self.node3 = node3
+        # assign node_num=0 for nodes that are not present
+        self.node4 = Node(0, 0.0, 0.0)
+        self.node5 = Node(0, 0.0, 0.0)
+        self.node6 = Node(0, 0.0, 0.0)
+        self.node7 = Node(0, 0.0, 0.0)
+        self.node8 = Node(0, 0.0, 0.0)
+        self.node9 = Node(0, 0.0, 0.0)
+        self.nodes = (self.node1,self.node2,self.node3)
+        for node in self.nodes:
+            node.parent_element = self
+        
+    def __str__(self):
+        return """Element #{0} -----
+  Nodes({1}, {2}, {3})
+  Layer #{4}
+  element set: {5}
+  centroid: ({6:5.3f}, {7:5.3f})
+  theta1 = {8} degrees""".format(
+            self.elem_num, 
+            self.node1.node_num, self.node2.node_num, self.node3.node_num,
+            self.layer_num,
+            self.element_set,
+            self.polygon.centroid.x, self.polygon.centroid.y,
+            self.theta1)
+
+    # def plot(self):
+    # !!! FILL IN !!!
+
+
+class TriangularQuadraticElement(_Element):
+    """A triangular quadratic element with six nodes.
+
+The VABS triangular element node numbering scheme is shown below:
+        3
+       / \
+      7   6  
+     /     \
+    1---5---2
+
+    """
+    def __init__(self, elem_num, node1, node2, node3, node5, node6, node7,
+        layer_num):
+        _Element.__init__(self, elem_num, layer_num)
+        # create a polygon representation
+        p = Polygon([
+            node1.coords, 
+            node5.coords, 
+            node2.coords, 
+            node6.coords, 
+            node3.coords,
+            node7.coords
+            ])
+        self.polygon = p
+        self.node1 = node1
+        self.node2 = node2
+        self.node3 = node3
+        self.node5 = node5
+        self.node6 = node6
+        self.node7 = node7
+        # assign node_num=0 for nodes that are not present
+        self.node4 = Node(0, 0.0, 0.0)
+        self.node8 = Node(0, 0.0, 0.0)
+        self.node9 = Node(0, 0.0, 0.0)
+        self.nodes = (self.node1,self.node2,self.node3,self.node5,self.node6,
+            self.node7)
+        for node in self.nodes:
+            node.parent_element = self
+        
+    def __str__(self):
+        return """Element #{0} -----
+  Nodes({1}, {2}, {3}, {4}, {5}, {6})
+  Layer #{7}
+  element set: {8}
+  centroid: ({9:5.3f}, {10:5.3f})
+  theta1 = {11} degrees""".format(
+            self.elem_num, 
+            self.node1.node_num, self.node2.node_num, self.node3.node_num,
+              self.node5.node_num, self.node6.node_num, self.node7.node_num,
+            self.layer_num,
+            self.element_set,
+            self.polygon.centroid.x, self.polygon.centroid.y,
+            self.theta1)
+
+    def plot(self, equal_aspect_ratio=True, plot_centroid=True,
+        label_nodes=True, label_element=True, plot_outer_edge=True):
+        """Plot this element."""
+        (cx,cy) = self.polygon.centroid.coords.xy
+        cx=cx[0]
+        cy=cy[0]
+        patch = PolygonPatch(self.polygon, fc='r', ec=None, alpha=0.5)
+        ax = plt.gcf().gca()
+        ax.add_patch(patch)
+        if equal_aspect_ratio:
+            ax.set_aspect('equal')
+        if plot_centroid:
+            ax.scatter(cx, cy, s=50, c='m')
+        if label_nodes:
+            for i,node in enumerate(self.nodes):
+                ax.scatter(node.x2,node.x3,s=30)
+                if i < 3:
+                    fmt_n = '({0}) {1}'.format(i+1, node.node_num)
+                else:
+                    fmt_n = '({0}) {1}'.format(i+2, node.node_num)
+                ax.text(node.x2,node.x3,fmt_n)
+        if label_element:
+            if self.theta1 is None:
+                # only plot the element number
+                ax.text(cx, cy, str(self.elem_num))
+            else:
+                # plot both the element number and the layer plane angle
+                fmt1 = '({0}) '.format(self.elem_num)
+                fmt2 = r'{0:3.0f}$^\circ$'.format(self.theta1)
+                fmt=fmt1+fmt2
+                ax.text(cx, cy, fmt)
+        if plot_outer_edge:
+            # create LineString objects along edge
+            outer_edge = LineString([self._outer_edge_node0.coords,
+                self._outer_edge_node1.coords])
+            # plot the edge
+            ax = plt.gcf().gca()
+            self._plot_edge(ax, outer_edge, color='b')
+
+    def calculate_layer_plane_angle(self, outer_edge_node_nums=[2,3],
+        plot_edges=True, plot_angle=True):
+        # get Node objects on edges and save as non-public attributes
+        self._outer_edge_node0 = self.nodes[outer_edge_node_nums[0]-1]
+        self._outer_edge_node1 = self.nodes[outer_edge_node_nums[1]-1]
+        # calculate the angles of the edges
+        outer_angle = np.arctan2(
+            self._outer_edge_node1.x3 - self._outer_edge_node0.x3,
+            self._outer_edge_node1.x2 - self._outer_edge_node0.x2)
+        # calc the layer plane angle by taking the outer angle
+        self.theta1 = np.degrees(outer_angle)
+        if self.theta1 < 0.0:
+            self.theta1 += 360.0

@@ -140,8 +140,7 @@ class VabsInputFile:
                                             element.node6.node_num,
                                             element.node7.node_num,
                                             element.node8.node_num,
-                                            0))
-                                            # element['node9']))
+                                            element.node9.node_num))
         self.vabs_file.write('\n')
 
     def _write_element_layers(self):

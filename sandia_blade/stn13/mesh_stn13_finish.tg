@@ -21,7 +21,6 @@ cooref symbolic
 c ----------------------------------------
 
 c set some global parameters
-para t_elemRB 2;    c num of nodes across root buildup thickness
 para t_elemSW 4;    c num of nodes across shear web thickness
 para t_elemSC 3;    c num of nodes across spar cap thickness
 para l_elemLE 120;  c num of nodes along leading edge
@@ -3380,7 +3379,7 @@ esetc estrite  ExternalSurface; triax; TE reinforcement
 
 c triax, above shear web 1 -----
 c make a block mesh for: external surface, triax, above shear web 1
-block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 %t_elemRB; -1;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
 -0.835 -0.83 -0.753 -0.75; 1.741 1.759; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 68
@@ -3403,7 +3402,7 @@ esetc estrasw1  ExternalSurface; triax; above shear web 1
 
 c triax, above shear web 2 -----
 c make a block mesh for: external surface, triax, above shear web 2
-block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 %t_elemRB; -1;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
 -0.1 -0.05 0.05 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 72
@@ -3426,7 +3425,7 @@ esetc estrasw2  ExternalSurface; triax; above shear web 2
 
 c triax, above shear web 3 -----
 c make a block mesh for: external surface, triax, above shear web 3
-block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 %t_elemRB; -1;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
 -0.1 -0.05 0.05 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 76
@@ -3449,7 +3448,7 @@ esetc estrasw3  ExternalSurface; triax; above shear web 3
 
 c triax, below shear web 1 -----
 c make a block mesh for: external surface, triax, below shear web 1
-block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 %t_elemRB; -1;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
 -0.1 -0.05 0.05 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 78
@@ -3472,7 +3471,7 @@ esetc estrbsw1  ExternalSurface; triax; below shear web 1
 
 c triax, below shear web 2 -----
 c make a block mesh for: external surface, triax, below shear web 2
-block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 %t_elemRB; -1;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
 0.75 0.753 0.833 0.836; -1.796 -1.777; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 82
@@ -3495,7 +3494,7 @@ esetc estrbsw2  ExternalSurface; triax; below shear web 2
 
 c triax, below shear web 3 -----
 c make a block mesh for: external surface, triax, below shear web 3
-block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 %t_elemRB; -1;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
 %sw3_x2 [%sw3_x2+0.003] [%sw3_x2+0.083] [%sw3_x2+0.086]; -1.26 -1.22; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 86
