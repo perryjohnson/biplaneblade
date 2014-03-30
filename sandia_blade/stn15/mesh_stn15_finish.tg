@@ -4251,12 +4251,6 @@ c name this set of elements
 eset 0 0 1 0 0 1 = estrile
 esetc estrile  ExternalSurface; triax; LE panel
 
-
-
-
-
-
-
 c triax, TE reinforcement, lower -----
 c make a block mesh for: external surface, triax, TE reinforcement, lower
 block 1 %l_elemTE; 1 2; -1;
@@ -5239,4 +5233,4 @@ c interrupt
 c write the mesh to an output file
 write
 
-c exit
+exit
