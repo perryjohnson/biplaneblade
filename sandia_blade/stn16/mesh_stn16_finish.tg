@@ -30,7 +30,7 @@ para l_elemA2 20;         c num of nodes along aft panel
 para l_elemTE 8;          c num of nodes along trailing edge
 para l_elemSW 100;        c num of nodes along shear web
 para l_elmSW3 40;         c num of nodes along shear web
-para sw3_x2 2.541725658;  c x2-coordinate of shear web 3
+para sw3_x2 2.520150219;  c x2-coordinate of shear web 3
 
 c ----------------------------------------
 
@@ -6013,4 +6013,4 @@ c interrupt
 c write the mesh to an output file
 write
 
-c exit
+exit
