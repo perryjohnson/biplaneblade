@@ -45,6 +45,8 @@ from descartes import PolygonPatch
 # update these parameters!
 station_num = 17
 skip_num = 25   # plot every 'skip_num' elements (larger values plot faster)
+TE_reinf_foam_u_tri_elem_num = 3904  # num of tri elem in TE reinf foam upper 3
+TE_reinf_foam_l_tri_elem_num = 3891  # num of tri elem in TE reinf foam lower 3
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
@@ -213,8 +215,8 @@ g = au.AbaqusGrid(fmt_grid, debug_flag=True, soft_warning=False,
     auto_parse=True)
 
 # manually assign two triangular elements into new element sets
-g.list_of_elements[3887-1].element_set = 'tefoaml3_tri'
-g.list_of_elements[3900-1].element_set = 'tefoamu3_tri'
+g.list_of_elements[TE_reinf_foam_u_tri_elem_num-1].element_set = 'tefoamu3_tri'
+g.list_of_elements[TE_reinf_foam_l_tri_elem_num-1].element_set = 'tefoaml3_tri'
 
 # update the grid object with all the layer plane angles
 for elem in g.list_of_elements:
@@ -245,12 +247,10 @@ for elem in g.list_of_elements[3873:3939:2]:
     elem.plot(label_nodes=False)
     print elem.elem_num, elem.element_set, elem.theta1
 
-g.list_of_elements[3887-1].plot()
-g.list_of_elements[3900-1].plot()
-g.list_of_elements[3701-1].plot()
-g.list_of_elements[3702-1].plot()
-g.list_of_elements[3708-1].plot()
-g.list_of_elements[3707-1].plot()
+g.list_of_elements[TE_reinf_foam_u_tri_elem_num-1].plot()
+g.list_of_elements[TE_reinf_foam_u_tri_elem_num-2].plot()
+g.list_of_elements[TE_reinf_foam_l_tri_elem_num-1].plot()
+g.list_of_elements[TE_reinf_foam_l_tri_elem_num-2].plot()
 
 # show the plot
 plt.xlim([-3,5])

@@ -5724,16 +5724,18 @@ c TE reinforcement -------------------------------------
 
 c foam -----
 c make a block mesh for: TE reinforcement, foam, lower 1
-block 1 %l_elmTE1; 1 2; -1;
-3.60 4.49; -0.277 0.015; 0;
+block 1 %l_elmTE1; 1 2 3; -1;
+3.59 3.95; 0.00 0.031 0.096; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 306
+curs 1 1 1 1 3 1 306
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 307
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 308
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 305
+cure 2 1 1 2 3 1 308
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 305
+c manually align left nodes to lower aft panel 2
+pbs 1 2 1 1 2 1 y 383.1
 c assign the material to be foam (material #4)
 mate 4
 c name this set of elements
@@ -5741,16 +5743,18 @@ eset 0 0 1 0 0 1 = tefoaml1
 esetc tefoaml1  TE_Reinforcement; foam, lower 1
 
 c make a block mesh for: TE reinforcement, foam, lower 2
-block 1 2; 1 2; -1;
-3.60 4.49; -0.277 0.015; 0;
+block 1 2; 1 2 3; -1;
+3.95 4.01; 0.055 0.075 0.100; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 310
+cure 1 1 1 1 3 1 310
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 311
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 312
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 309
+curs 2 1 1 2 3 1 312
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 309
+c move the right middle node up to the right top node
+q 2 2 1 2 3 1
 c assign the material to be foam (material #4)
 mate 4
 c name this set of elements
@@ -5775,16 +5779,18 @@ eset 0 0 1 0 0 1 = tefoaml3
 esetc tefoaml3  TE_Reinforcement; foam, lower 3
 
 c make a block mesh for: TE reinforcement, foam, upper 1
-block 1 %l_elmTE1; 1 2; -1;
-3.60 4.49; -0.277 0.015; 0;
+block 1 %l_elmTE1; 1 2 3; -1;
+3.59 3.95; 0.116 0.224 0.256; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 318
+curs 1 1 1 1 3 1 318
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 319
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 320
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 317
+cure 2 1 1 2 3 1 320
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 317
+c manually align left nodes to lower aft panel 2
+pbs 1 2 1 1 2 1 y 379.2
 c assign the material to be foam (material #4)
 mate 4
 c name this set of elements
@@ -5792,16 +5798,18 @@ eset 0 0 1 0 0 1 = tefoamu1
 esetc tefoamu1  TE_Reinforcement; foam, upper 1
 
 c make a block mesh for: TE reinforcement, foam, upper 2
-block 1 2; 1 2; -1;
-3.60 4.49; -0.277 0.015; 0;
+block 1 2; 1 2 3; -1;
+3.95 4.01; 0.100 0.135 0.157; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 322
+cure 1 1 1 1 3 1 322
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 323
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 324
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 321
+curs 2 1 1 2 3 1 324
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 321
+c move the right middle node down to the right bottom node
+q 2 2 1 2 1 1
 c assign the material to be foam (material #4)
 mate 4
 c name this set of elements
@@ -5962,46 +5970,6 @@ c name this set of elements
 eset 0 0 1 0 0 1 = teuniu4
 esetc teuniu4  TE_Reinforcement; uniax, upper 4
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 c --------------------------------------------------------------------
 
 c interrupt
@@ -6014,7 +5982,7 @@ labels crv
 c display the mesh (wireframe)
 disp
 
-interrupt
+c interrupt
 c delete redundant nodes at part boundaries
 stp 0.0001
 c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375
@@ -6023,7 +5991,7 @@ c   the command stp deletes nodes who are near each other (w/in the tolerance)
 c display the mesh (filled)
 tvv
 
-interrupt
+c interrupt
 c write the mesh to an output file
 write
 

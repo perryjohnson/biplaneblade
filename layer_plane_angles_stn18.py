@@ -45,8 +45,8 @@ from descartes import PolygonPatch
 # update these parameters!
 station_num = 18
 skip_num = 25   # plot every 'skip_num' elements (larger values plot faster)
-TE_reinf_foam_u_tri_elem_num = 3888  # num of tri elem in TE reinf foam upper 3
-TE_reinf_foam_l_tri_elem_num = 3877  # num of tri elem in TE reinf foam lower 3
+TE_reinf_foam_u_tri_elem_num = 3892  # num of tri elem in TE reinf foam upper 3
+TE_reinf_foam_l_tri_elem_num = 3881  # num of tri elem in TE reinf foam lower 3
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)

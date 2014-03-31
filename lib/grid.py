@@ -1,7 +1,7 @@
 """Create entities for a 2D unstructured grid.
 
 Author: Perry Roth-Johnson
-Last modified: March 27, 2014
+Last modified: March 31, 2014
 
 """
 
@@ -470,7 +470,7 @@ The VABS triangular element node numbering scheme is shown below:
 
     """
     def __init__(self, elem_num, node1, node2, node3, node5, node6, node7,
-        layer_num):
+        layer_num, autocorrect=True):
         _Element.__init__(self, elem_num, layer_num)
         # create a polygon representation
         p = Polygon([
@@ -481,13 +481,41 @@ The VABS triangular element node numbering scheme is shown below:
             node3.coords,
             node7.coords
             ])
-        self.polygon = p
-        self.node1 = node1
-        self.node2 = node2
-        self.node3 = node3
-        self.node5 = node5
-        self.node6 = node6
-        self.node7 = node7
+        if autocorrect:
+            p_ccw = orient(p)
+            self.polygon = p_ccw
+            # find each node that matches each polygon point
+            node_list = []
+            for point in p_ccw.exterior.coords[:-1]:
+                if point == node1.coords:
+                    node_list.append(node1)
+                elif point == node2.coords:
+                    node_list.append(node2)
+                elif point == node3.coords:
+                    node_list.append(node3)
+                elif point == node5.coords:
+                    node_list.append(node5)
+                elif point == node6.coords:
+                    node_list.append(node6)
+                elif point == node7.coords:
+                    node_list.append(node7)
+                else:
+                    raise Warning("No point match found!")
+            # assign the nodes in a proper CCW-orientation
+            self.node1 = node_list[0]
+            self.node5 = node_list[1]
+            self.node2 = node_list[2]
+            self.node6 = node_list[3]
+            self.node3 = node_list[4]
+            self.node7 = node_list[5]
+        else:
+            self.polygon = p
+            self.node1 = node1
+            self.node2 = node2
+            self.node3 = node3
+            self.node5 = node5
+            self.node6 = node6
+            self.node7 = node7
         # assign node_num=0 for nodes that are not present
         self.node4 = Node(0, 0.0, 0.0)
         self.node8 = Node(0, 0.0, 0.0)

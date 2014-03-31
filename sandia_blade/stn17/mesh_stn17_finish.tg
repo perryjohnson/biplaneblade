@@ -5309,7 +5309,7 @@ esetc is3rlap1  InternalSurface3; resin; lower aft panel 1
 
 c resin, right of shear web 2 -----
 c make a block mesh for: internal surface 3, resin, right of shear web 2
-block 1 2; 1 %l_elemSW; -1;
+block 1 2; 1 [%l_elemSW+2]; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 225
@@ -5381,7 +5381,7 @@ esetc is3tlap1  InternalSurface3; triax; lower aft panel 1
 
 c triax, right of shear web 2 -----
 c make a block mesh for: internal surface 3, triax, right of shear web 2
-block 1 2; 1 %l_elemSW; -1;
+block 1 2; 1 [%l_elemSW+2]; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 241
