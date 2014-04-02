@@ -1,14 +1,13 @@
-"""A module to translate data from an AbaqusGrid object (from TrueGrid) into a 
-VABS input file.
+"""A module to write input files and read output files for VABS.
 
-Functions to update
--------------------
-self._write_element_layers()
-self._write_layers()
-self._write_materials()
+Use the class VabsInputFile to translate data from an AbaqusGrid object (from
+TrueGrid) into a VABS input file.
+
+Use the class VabsOutputFile to read mass and stiffness matrices from a VABS
+output file.
 
 Author: Perry Roth-Johnson
-Last updated: March 12, 2014
+Last updated: April 1, 2014
 
 """
 
@@ -197,3 +196,72 @@ class VabsInputFile:
                 self.vabs_file.write(line)
             else:
                 raise Warning("The material type {0} is undefined!".format(material['type']))
+
+
+class VabsOutputFile:
+    def __init__(self, vabs_filename):
+        self.vabs_filename = vabs_filename
+        # open the output file
+        vof = open(self.vabs_filename, 'r')
+        # read the VABS output file into memory
+        self.vabs_file = vof.readlines()
+        # close the output file
+        vof.close()
+        # initialize empty stiffness (K) and mass (M) matrices
+        self.K = np.zeros((6,6))
+        self.M = np.zeros((6,6))
+        # extract the stiffness and mass matrices
+        self.extract_stiffness_matrix()
+        self.extract_mass_matrix()
+
+    def __str__(self):
+        (K_55, K_66, K_44, K_11, M_11, M_55, M_66) = self.get_key_properties()
+        fmt1 = 'K_55      K_66      K_44      K_11      M_11      M_55      M_66\n'
+        fmt2 = '--------  '*6 + '--------\n'
+        fmt3 = '{0:8.2e}  {1:8.2e}  {2:8.2e}  {3:8.2e}  {4:8.2e}  {5:8.2e}  {6:8.2e}'
+        fmt = fmt1 + fmt2 + fmt3.format(K_55, K_66, K_44, K_11, M_11, M_55, M_66)
+        return fmt
+
+    def extract_stiffness_matrix(self):
+        """Save the Timoshenko stiffness matrix from the VABS output file."""
+        # find the index of the header line for the VABS stiffness matrix
+        for i, line in enumerate(self.vabs_file):
+            if line == ' Timoshenko Stiffness Matrix (1-extension; 2,3-shear, 4-twist; 5,6-bending)\n':
+                vabs_index = i
+        # extract the VABS stiffness matrix
+        stiffness_matrix_lines = self.vabs_file[vabs_index+3:vabs_index+3+6]
+        for i, line in enumerate(stiffness_matrix_lines):
+            for j, coeff in enumerate(line.strip().split()):
+                self.K[i,j] = coeff
+
+    def extract_mass_matrix(self):
+        """Save the mass matrix from the VABS output file."""
+        # find the index of the header line for the VABS mass matrix
+        for i, line in enumerate(self.vabs_file):
+            if line == ' The 6X6 Mass Matrix\n':
+                vabs_index = i
+        # extract the VABS mass matrix
+        mass_matrix_lines = self.vabs_file[vabs_index+3:vabs_index+3+6]
+        for i, line in enumerate(mass_matrix_lines):
+            for j, coeff in enumerate(line.strip().split()):
+                self.M[i,j] = coeff
+
+    def get_key_properties(self):
+        """Returns 7 important entries of the stiffness and mass matrices.
+
+These 7 entries are reported in Griffith & Resor 2011:
+flp_stff  edge_stff  tor_stff  axial_stff  mass_den  flp_iner  edge_iner
+
+where the equivalent VABS outputs are:
+K_55      K_66       K_44      K_11        M_11      M_55      M_66
+
+        """
+        K_55 = self.K[4,4]
+        K_66 = self.K[5,5]
+        K_44 = self.K[3,3]
+        K_11 = self.K[0,0]
+        M_11 = self.M[0,0]
+        M_55 = self.M[4,4]
+        M_66 = self.M[5,5]
+        return (K_55, K_66, K_44, K_11, M_11, M_55, M_66)
+
