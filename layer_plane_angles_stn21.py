@@ -240,11 +240,8 @@ for elem in g.list_of_elements:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[3,2],
             inner_edge_node_nums=[4,1])
     elif elem.element_set in list_of_lower_elementsets:
-        try:
-            elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,1], 
-                inner_edge_node_nums=[3,4])
-        except TypeError:
-            raise Warning("Element #{0} does not have an inner edge defined!".format(elem.elem_num))
+        elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,1], 
+            inner_edge_node_nums=[3,4])
     elif elem.element_set in list_of_upper_elementsets:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[4,3], 
             inner_edge_node_nums=[1,2])

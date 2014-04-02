@@ -1,7 +1,7 @@
 """Determine the layer plane angle of all the elements in a grid.
 
 Author: Perry Roth-Johnson
-Last modified: April 1, 2014
+Last modified: April 2, 2014
 
 Usage:
 1. Look through the mesh_stn11.abq file and find all the element set names.
@@ -45,8 +45,12 @@ from descartes import PolygonPatch
 # update these parameters!
 station_num = 22
 skip_num = 25   # plot every 'skip_num' elements (larger values plot faster)
-TE_reinf_foam_u3_tri_elem_num = 5246  # num of tri elem in TE reinf foam upper 3
-TE_reinf_foam_l3_tri_elem_num = 5187  # num of tri elem in TE reinf foam lower 3
+IS4_resin_u2_tri_elem_num = 4826  # num of tri elem in IS4 resin upper 2
+IS4_resin_l2_tri_elem_num = 4776  # num of tri elem in IS4 resin lower 2
+IS4_triax_u2_tri_elem_num = 5039  # num of tri elem in IS4 triax upper 2
+IS4_triax_l2_tri_elem_num = 4986  # num of tri elem in IS4 triax lower 2
+TE_reinf_foam_u3_tri_elem_num = 5266  # num of tri elem in TE reinf foam upper 3
+TE_reinf_foam_l3_tri_elem_num = 5206  # num of tri elem in TE reinf foam lower 3
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
@@ -153,7 +157,8 @@ list_of_lower_elementsets = [
     'is4rtel1',
     'is4ttel1',
     'is4ttel2',
-    'tefoaml3'
+    'tefoaml3',
+    'is4rtel2'
 ]
 
 # element sets on the upper surface
@@ -191,13 +196,15 @@ list_of_upper_elementsets = [
     'is4rteu1',
     'is4tteu1',
     'is4tteu2',
-    'tefoamu3'
+    'tefoamu3',
+    'is4rteu2'
 ]
 
 # element sets of triangular elements on the lower surface
 # outer_edge_node_nums=[2,1]
 list_of_tri_lower_elementsets = [
-    'is4rtel2',
+    'is4rtel2_tri',
+    'is4ttel2_tri',
     'tefoaml3_tri',
     'tefoaml2_tri'
 ]
@@ -205,7 +212,8 @@ list_of_tri_lower_elementsets = [
 # element sets of triangular elements on the upper surface
 # outer_edge_node_nums=[3,2]
 list_of_tri_upper_elementsets = [
-    'is4rteu2',
+    'is4rteu2_tri',
+    'is4tteu2_tri',
     'tefoamu3_tri',
     'tefoamu2_tri'
 ]
@@ -216,6 +224,10 @@ g = au.AbaqusGrid(fmt_grid, debug_flag=True, soft_warning=False,
     auto_parse=True)
 
 # manually assign two triangular elements into new element sets
+g.list_of_elements[IS4_resin_u2_tri_elem_num-1].element_set = 'is4rteu2_tri'
+g.list_of_elements[IS4_resin_l2_tri_elem_num-1].element_set = 'is4rtel2_tri'
+g.list_of_elements[IS4_triax_u2_tri_elem_num-1].element_set = 'is4tteu2_tri'
+g.list_of_elements[IS4_triax_l2_tri_elem_num-1].element_set = 'is4ttel2_tri'
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-1].element_set = 'tefoamu3_tri'
 g.list_of_elements[TE_reinf_foam_l3_tri_elem_num-1].element_set = 'tefoaml3_tri'
 
@@ -247,6 +259,16 @@ for elem in g.list_of_elements[::skip_num]:
 # for elem in g.list_of_elements[3696:3928:2]:
 #     elem.plot(label_nodes=False)
 #     print elem.elem_num, elem.element_set, elem.theta1
+
+g.list_of_elements[IS4_resin_u2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_resin_u2_tri_elem_num-2].plot()
+g.list_of_elements[IS4_resin_l2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_resin_l2_tri_elem_num-2].plot()
+
+g.list_of_elements[IS4_triax_u2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_triax_u2_tri_elem_num-2].plot()
+g.list_of_elements[IS4_triax_l2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_triax_l2_tri_elem_num-2].plot()
 
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-1].plot()
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-2].plot()

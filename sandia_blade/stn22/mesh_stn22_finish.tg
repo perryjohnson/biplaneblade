@@ -28,7 +28,7 @@ para l_elemSC 60;         c num of nodes along spar cap
 para l_elemA1 40;         c num of nodes along aft panel
 para l_elemA2 40;         c num of nodes along aft panel
 para l_elmTE1 48;         c num of nodes along trailing edge, segment 1
-para l_elmTE2 6;          c num of nodes along trailing edge, segment 2
+para l_elmTE2 7;          c num of nodes along trailing edge, segment 2
 para l_elmTE3 8;          c num of nodes along trailing edge, segment 3
 para l_elmTE4 2;          c num of nodes along trailing edge, segment 4
 para l_elemSW 70;         c num of nodes along shear web
@@ -5709,7 +5709,7 @@ esetc is4rtel1  InternalSurface4; resin; TE reinforcement, lower 1
 
 c resin, TE reinforcement, lower 2 -----
 c make a block mesh for: internal surface 4, resin, TE reinforcement, lower 2
-block 1 %l_elmTE2; 1 2; -1;
+block 1 [%l_elmTE2-3]; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 254
@@ -5745,7 +5745,7 @@ esetc is4rteu1  InternalSurface4; resin; TE reinforcement, upper 1
 
 c resin, TE reinforcement, upper 2 -----
 c make a block mesh for: internal surface 4, resin, TE reinforcement, upper 2
-block 1 %l_elmTE2; 1 2; -1;
+block 1 [%l_elmTE2-3]; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 263
@@ -5835,16 +5835,16 @@ esetc is4ttel1  InternalSurface4; triax; TE reinforcement, lower 1
 
 c triax, TE reinforcement, lower 2 -----
 c make a block mesh for: internal surface 4, triax, TE reinforcement, lower 2
-block 1 %l_elmTE2; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 [%l_elmTE2-3] %l_elmTE2; 1 2; -1;
+-0.1 0.0 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 282
-c top edge (j=2, i varies)
+c top left edge (j=2, i=1-2)
 cure 1 2 1 2 2 1 283
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 284
+c top right edge (j=2, i=2-3)
+cure 2 2 1 3 2 1 284
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 281
+cure 1 1 1 3 1 1 281
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5871,15 +5871,15 @@ esetc is4tteu1  InternalSurface4; triax; TE reinforcement, upper 1
 
 c triax, TE reinforcement, upper 2 -----
 c make a block mesh for: internal surface 4, triax, TE reinforcement, upper 2
-block 1 %l_elmTE2; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 [%l_elmTE2-3] %l_elmTE2; 1 2; -1;
+-0.1 0.0 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 292
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 289
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 290
-c bottom edge (j=1, i varies)
+cure 1 2 1 3 2 1 289
+c bottom right edge (j=1, i=2-3)
+cure 2 1 1 3 1 1 290
+c bottom left edge (j=1, i=1-2)
 cure 1 1 1 2 1 1 291
 c assign the material to be triax (material #3)
 mate 3
