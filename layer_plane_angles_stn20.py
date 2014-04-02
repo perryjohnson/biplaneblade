@@ -45,8 +45,10 @@ from descartes import PolygonPatch
 # update these parameters!
 station_num = 20
 skip_num = 25   # plot every 'skip_num' elements (larger values plot faster)
-TE_reinf_foam_u3_tri_elem_num = 4888  # num of tri elem in TE reinf foam upper 3
-TE_reinf_foam_l3_tri_elem_num = 4870  # num of tri elem in TE reinf foam lower 3
+IS4_triax_u2_tri_elem_num = 4747  # num of tri elem in IS4 triax upper 2
+IS4_triax_l2_tri_elem_num = 4734  # num of tri elem in IS4 triax lower 2
+TE_reinf_foam_u3_tri_elem_num = 4890  # num of tri elem in TE reinf foam upper 3
+TE_reinf_foam_l3_tri_elem_num = 4872  # num of tri elem in TE reinf foam lower 3
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
@@ -199,7 +201,7 @@ list_of_upper_elementsets = [
 list_of_tri_lower_elementsets = [
     'is4rtel2',
     'tefoaml3_tri',
-    'tefoaml2_tri'
+    'is4ttel2_tri'
 ]
 
 # element sets of triangular elements on the upper surface
@@ -207,7 +209,7 @@ list_of_tri_lower_elementsets = [
 list_of_tri_upper_elementsets = [
     'is4rteu2',
     'tefoamu3_tri',
-    'tefoamu2_tri'
+    'is4tteu2_tri'
 ]
 
 # import the initial grid object
@@ -216,6 +218,8 @@ g = au.AbaqusGrid(fmt_grid, debug_flag=True, soft_warning=False,
     auto_parse=True)
 
 # manually assign two triangular elements into new element sets
+g.list_of_elements[IS4_triax_u2_tri_elem_num-1].element_set = 'is4tteu2_tri'
+g.list_of_elements[IS4_triax_l2_tri_elem_num-1].element_set = 'is4ttel2_tri'
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-1].element_set = 'tefoamu3_tri'
 g.list_of_elements[TE_reinf_foam_l3_tri_elem_num-1].element_set = 'tefoaml3_tri'
 
@@ -248,10 +252,18 @@ for elem in g.list_of_elements[::skip_num]:
 #     elem.plot(label_nodes=False)
 #     print elem.elem_num, elem.element_set, elem.theta1
 
+g.list_of_elements[IS4_triax_u2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_triax_u2_tri_elem_num-2].plot()
+g.list_of_elements[IS4_triax_l2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_triax_l2_tri_elem_num-2].plot()
+
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-1].plot()
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-2].plot()
 g.list_of_elements[TE_reinf_foam_l3_tri_elem_num-1].plot()
 g.list_of_elements[TE_reinf_foam_l3_tri_elem_num-2].plot()
+
+g.list_of_elements[4614-1].plot()
+g.list_of_elements[4602-1].plot()
 
 # show the plot
 plt.xlim([-3,5])

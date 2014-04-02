@@ -45,8 +45,12 @@ from descartes import PolygonPatch
 # update these parameters!
 station_num = 21
 skip_num = 25   # plot every 'skip_num' elements (larger values plot faster)
-TE_reinf_foam_u3_tri_elem_num = 5022  # num of tri elem in TE reinf foam upper 3
-TE_reinf_foam_l3_tri_elem_num = 4987  # num of tri elem in TE reinf foam lower 3
+IS4_resin_u2_tri_elem_num = 4698  # num of tri elem in IS4 resin upper 2
+IS4_resin_l2_tri_elem_num = 4672  # num of tri elem in IS4 resin lower 2
+IS4_triax_u2_tri_elem_num = 4863  # num of tri elem in IS4 triax upper 2
+IS4_triax_l2_tri_elem_num = 4834  # num of tri elem in IS4 triax lower 2
+TE_reinf_foam_u3_tri_elem_num = 5042  # num of tri elem in TE reinf foam upper 3
+TE_reinf_foam_l3_tri_elem_num = 5006  # num of tri elem in TE reinf foam lower 3
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
@@ -153,7 +157,8 @@ list_of_lower_elementsets = [
     'is4rtel1',
     'is4ttel1',
     'is4ttel2',
-    'tefoaml3'
+    'tefoaml3',
+    'is4rtel2'
 ]
 
 # element sets on the upper surface
@@ -191,13 +196,15 @@ list_of_upper_elementsets = [
     'is4rteu1',
     'is4tteu1',
     'is4tteu2',
-    'tefoamu3'
+    'tefoamu3',
+    'is4rteu2'
 ]
 
 # element sets of triangular elements on the lower surface
 # outer_edge_node_nums=[2,1]
 list_of_tri_lower_elementsets = [
-    'is4rtel2',
+    'is4rtel2_tri',
+    'is4ttel2_tri',
     'tefoaml3_tri',
     'tefoaml2_tri'
 ]
@@ -205,7 +212,8 @@ list_of_tri_lower_elementsets = [
 # element sets of triangular elements on the upper surface
 # outer_edge_node_nums=[3,2]
 list_of_tri_upper_elementsets = [
-    'is4rteu2',
+    'is4rteu2_tri',
+    'is4tteu2_tri',
     'tefoamu3_tri',
     'tefoamu2_tri'
 ]
@@ -216,6 +224,10 @@ g = au.AbaqusGrid(fmt_grid, debug_flag=True, soft_warning=False,
     auto_parse=True)
 
 # manually assign two triangular elements into new element sets
+g.list_of_elements[IS4_resin_u2_tri_elem_num-1].element_set = 'is4rteu2_tri'
+g.list_of_elements[IS4_resin_l2_tri_elem_num-1].element_set = 'is4rtel2_tri'
+g.list_of_elements[IS4_triax_u2_tri_elem_num-1].element_set = 'is4tteu2_tri'
+g.list_of_elements[IS4_triax_l2_tri_elem_num-1].element_set = 'is4ttel2_tri'
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-1].element_set = 'tefoamu3_tri'
 g.list_of_elements[TE_reinf_foam_l3_tri_elem_num-1].element_set = 'tefoaml3_tri'
 
@@ -228,8 +240,11 @@ for elem in g.list_of_elements:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[3,2],
             inner_edge_node_nums=[4,1])
     elif elem.element_set in list_of_lower_elementsets:
-        elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,1], 
-            inner_edge_node_nums=[3,4])
+        try:
+            elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,1], 
+                inner_edge_node_nums=[3,4])
+        except TypeError:
+            raise Warning("Element #{0} does not have an inner edge defined!".format(elem.elem_num))
     elif elem.element_set in list_of_upper_elementsets:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[4,3], 
             inner_edge_node_nums=[1,2])
@@ -247,6 +262,16 @@ for elem in g.list_of_elements[::skip_num]:
 # for elem in g.list_of_elements[3696:3928:2]:
 #     elem.plot(label_nodes=False)
 #     print elem.elem_num, elem.element_set, elem.theta1
+
+g.list_of_elements[IS4_resin_u2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_resin_u2_tri_elem_num-2].plot()
+g.list_of_elements[IS4_resin_l2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_resin_l2_tri_elem_num-2].plot()
+
+g.list_of_elements[IS4_triax_u2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_triax_u2_tri_elem_num-2].plot()
+g.list_of_elements[IS4_triax_l2_tri_elem_num-1].plot()
+g.list_of_elements[IS4_triax_l2_tri_elem_num-2].plot()
 
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-1].plot()
 g.list_of_elements[TE_reinf_foam_u3_tri_elem_num-2].plot()

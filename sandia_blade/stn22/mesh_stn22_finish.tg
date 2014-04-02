@@ -4561,7 +4561,7 @@ esetc esgltel1  ExternalSurface; gelcoat; TE reinforcement, lower 1
 
 c gelcoat, TE reinforcement, lower 2 -----
 c make a block mesh for: external surface, gelcoat, TE reinforcement, lower 2
-block 1 2; 1 2; -1;
+block 1 %l_elmTE2; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 10
@@ -4633,7 +4633,7 @@ esetc esglteu1  ExternalSurface; gelcoat; TE reinforcement, upper 1
 
 c gelcoat, TE reinforcement, upper 2 -----
 c make a block mesh for: external surface, gelcoat, TE reinforcement, upper 2
-block 1 2; 1 2; -1;
+block 1 %l_elmTE2; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 28
@@ -4951,7 +4951,7 @@ esetc estrtel1  ExternalSurface; triax; TE reinforcement, lower 1
 
 c triax, TE reinforcement, lower 2 -----
 c make a block mesh for: external surface, triax, TE reinforcement, lower 2
-block 1 2; 1 2; -1;
+block 1 %l_elmTE2; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 94
@@ -5023,7 +5023,7 @@ esetc estrteu1  ExternalSurface; triax; TE reinforcement, upper 1
 
 c triax, TE reinforcement, upper 2 -----
 c make a block mesh for: external surface, triax, TE reinforcement, upper 2
-block 1 2; 1 2; -1;
+block 1 %l_elmTE2; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 112
