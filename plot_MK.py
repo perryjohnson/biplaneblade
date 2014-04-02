@@ -98,7 +98,7 @@ axarr[1,1].legend()
 axarr[1,1].grid('on', axis='x')
 
 plt.tight_layout()
-plt.savefig('all_stiffnesses.png')
+plt.savefig('sandia_blade/Sandia_vs_VABS_stiffness_props.png')
 
 # mass properties -------------------------------------------------------------
 f2, axarr2 = plt.subplots(2,2, figsize=(12,8))
@@ -140,6 +140,6 @@ axarr2[0,1].legend()
 axarr2[0,1].grid('on', axis='x')
 
 plt.tight_layout()
-plt.savefig('all_masses.png')
+plt.savefig('sandia_blade/Sandia_vs_VABS_mass_props.png')
 
 plt.show()
