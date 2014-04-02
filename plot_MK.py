@@ -1,26 +1,31 @@
 """Plot the mass and stiffness data from Sandia and VABS.
 
-Author: Perry Roth-Johnson
-Last modified: April 2, 2014
+First, data from mass and stiffness matrices for the Sandia blade are written
+to the file 'sandia_blade/blade_props_from_VABS.csv'
+
+Then, these data are plotted against published data from Griffith & Resor 2011.
 
 Usage
 -----
 Open an IPython terminal and type:
 |> %run plot_MK
 
+Author: Perry Roth-Johnson
+Last modified: April 2, 2014
+
 """
 
+import lib.blade as bl
+reload(bl)
 import pandas as pd
 import matplotlib.pyplot as plt
 
-v=pd.DataFrame.from_csv('blade_props_from_VABS.csv')
-s=pd.DataFrame.from_csv('blade_props_from_Sandia.csv')
 
 def rel_err(vabs_data, sandia_data):
     """Calculate the percent relative error."""
     return ((vabs_data-sandia_data)/sandia_data)*100.0
 
-def prep_rel_err_plot(axis,ymin=-10,ymax=100):
+def prep_rel_err_plot(axis,ymin=-20,ymax=100):
     """Prepare a relative error plot."""
     axis2 = axis.twinx()
     axis2.set_ylabel('relative error [%]', color='m')
@@ -30,7 +35,14 @@ def prep_rel_err_plot(axis,ymin=-10,ymax=100):
     axis2.grid('on')
     return axis2
 
+# write all the mass and stiffness matrices from VABS to a csv file -----------
+m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
+    rotate_airfoil_coords=False)
+m.writecsv_mass_and_stiffness_props()
 
+# plot VABS and Sandia datasets against one another ---------------------------
+v=pd.DataFrame.from_csv('sandia_blade/blade_props_from_VABS.csv')
+s=pd.DataFrame.from_csv('sandia_blade/blade_props_from_Sandia.csv')
 plt.close('all')
 
 # stiffness properties --------------------------------------------------------

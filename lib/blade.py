@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade definition.
 
 Author: Perry Roth-Johnson
-Last updated: October 11, 2013
+Last updated: April 2, 2014
 
 """
 
@@ -20,6 +20,8 @@ import material as mt
 reload(mt)
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import vabs_utils as vu
+reload(vu)
 from mayavi import mlab
 
 
@@ -1351,6 +1353,52 @@ class MonoplaneBlade(_Blade):
         if stn_nums:
             self.plot_station_nums()
         self.show_plot()
+
+    def writecsv_mass_and_stiffness_props(self, base_filename='mesh_stn',
+        ext='.vabs.K', props_filename='blade_props_from_VABS.csv',
+        debug_flag=False):
+        """Write mass and stiffness properties of all stations to CSV file."""
+        list_of_dicts = []
+        for station in self.list_of_stations:
+            sn = '{0:02d}'.format(station.station_num)
+            vabs_filename = base_filename + sn + ext
+            vabs_path = os.path.join(station.station_path, vabs_filename)
+            span_coord = self._df['x1'][station.station_num]
+            span_frac = span_coord/self._df['x1'][self.number_of_stations]
+            try:
+                vof = vu.VabsOutputFile(vabs_path)
+                props = vof.get_key_properties()
+                d = {'K_55, EI_flap'  : props[0],
+                     'K_66, EI_edge'  : props[1],
+                     'K_44, GJ_twist' : props[2],
+                     'K_11, EA_axial' : props[3],
+                     'M_11, mu_mass'  : props[4],
+                     'M_55, i22_flap' : props[5],
+                     'M_66, i33_edge' : props[6],
+                     'Blade Spanwise Coordinate' : span_coord,
+                     'Blade Span Fraction' : span_frac
+                    }
+                if debug_flag:
+                    print 'Station #{0}'.format(sn)
+                    print vof
+                    print ''
+            except IOError:
+                d = {'Blade Spanwise Coordinate' : span_coord,
+                     'Blade Span Fraction' : span_frac
+                    }
+            list_of_dicts.append(d)
+        self.mk = pd.DataFrame(list_of_dicts, index=range(1,len(list_of_dicts)+1))
+        csvpath = os.path.join(self.blade_path, props_filename)
+        self.mk.to_csv(csvpath, index_label='Blade Station Number', cols=[
+            'Blade Span Fraction',
+            'Blade Spanwise Coordinate',
+            'K_55, EI_flap',
+            'K_66, EI_edge',
+            'K_44, GJ_twist',
+            'K_11, EA_axial',
+            'M_11, mu_mass',
+            'M_55, i22_flap',
+            'M_66, i33_edge'])
 
 
 class BiplaneBlade(_Blade):
