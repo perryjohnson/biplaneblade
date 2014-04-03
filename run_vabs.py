@@ -11,7 +11,7 @@ import os
 
 # -----------------------------------------------
 # update these parameters!
-station_num = 25
+station_num = 26
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
