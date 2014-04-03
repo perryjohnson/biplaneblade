@@ -3425,18 +3425,21 @@ c aft panel 1 ---------------------------------------------
 
 c foam, upper -----
 c make a block mesh for: aft panel 1, foam, upper
-block 1 %l_elemA1; 1 4; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 %l_elemA1; 1 2 3 4; -1;
+0.836 2.136; 0.213 0.260 0.271 0.569; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 281
+cure 1 1 1 1 4 1 281
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 282
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 283
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 284
+curs 2 1 1 2 4 1 283
+c top edge (j=4, i varies)
+cure 1 4 1 2 4 1 284
 c interpolate interior nodes
 lin 0 0 1 0 0 1
+c align right nodes with TE reinforcement, foam, upper 1
+pbs 2 2 1 2 2 1 y 238.1
+pbs 2 3 1 2 3 1 y 238.2
 c assign the material to be foam (material #4)
 mate 4
 c name this set of elements
@@ -3445,18 +3448,21 @@ esetc ap1upper  AftPanel1; foam; upper
 
 c foam, lower -----
 c make a block mesh for: aft panel 1, foam, lower
-block 1 %l_elemA1; 1 4; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 %l_elemA1; 1 2 3 4; -1;
+0.836 2.136; -0.220 -0.014 -0.0044 0.042; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 285
+cure 1 1 1 1 4 1 285
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 286
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 287
-c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 288
+curs 2 1 1 2 4 1 287
+c top edge (j=4, i varies)
+cure 1 4 1 2 4 1 288
 c interpolate interior nodes
 lin 0 0 1 0 0 1
+c align right nodes with TE reinforcement, foam, lower 1
+pbs 2 2 1 2 2 1 y 226.1
+pbs 2 3 1 2 3 1 y 226.2
 c assign the material to be foam (material #4)
 mate 4
 c name this set of elements
