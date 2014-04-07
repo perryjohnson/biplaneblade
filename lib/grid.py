@@ -582,7 +582,7 @@ The VABS triangular element node numbering scheme is shown below:
     def calculate_layer_plane_angle(self, outer_edge_node_nums=[2,3],
         inner_edge_node_nums=None, plot_edges=True, plot_angle=True):
         if inner_edge_node_nums is not None:
-            raise Warning("Element #{0} does not have an inner edge defined!".format(elem.elem_num))
+            raise Warning("Element #{0} does not have an inner edge defined!".format(self.elem_num))
         # get Node objects on edges and save as non-public attributes
         self._outer_edge_node0 = self.nodes[outer_edge_node_nums[0]-1]
         self._outer_edge_node1 = self.nodes[outer_edge_node_nums[1]-1]
