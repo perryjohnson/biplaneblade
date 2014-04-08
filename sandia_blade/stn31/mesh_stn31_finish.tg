@@ -21,11 +21,12 @@ cooref symbolic
 c ----------------------------------------
 
 c set some global parameters
-para t_elem 4;      c num of elements across laminate thickness
-para l_elemLE 120;  c num of elements along leading edge
-para l_elemSP 30;   c num of elements along spar cap
-para l_elemAP 30;   c num of elements along aft panel
-para l_elemTE 80;   c num of elements along trailing edge
+para t_elemSC 3;          c num of nodes across spar cap thickness
+para l_elemLE 60;         c num of nodes along leading edge
+para l_elemSC 120;        c num of nodes along spar cap
+para l_elmTE1 80;         c num of nodes along trailing edge, segment 1
+para l_elmTE2 7;          c num of nodes along trailing edge, segment 2
+para l_elmTE3 20;         c num of nodes along trailing edge, segment 3
 
 c ----------------------------------------
 
@@ -2705,7 +2706,894 @@ curd 188 lp3
 -0.63050000   0.17522141  0.0
 ;;
 
-interrupt
+c --------------------------------------------------------------------
+
+c c make a block mesh for: _
+c block 1 _; 1 _; -1;
+c -0.1 0.1; -0.1 0.1; 0;
+c c left edge (i=1, j varies)
+c cure 1 1 1 1 2 1 _
+c c bottom edge (j=1, i varies)
+c cure 1 1 1 2 1 1 _
+c c right edge (i=2, j varies)
+c cure 2 1 1 2 2 1 _
+c c top edge (j=2, i varies)
+c cure 1 2 1 2 2 1 _
+c c assign the material to be _ (material #_)
+c mate _
+c c name this set of elements
+c eset 0 0 1 0 0 1 = _
+c esetc _
+
+c spar cap ----------------------------------------
+
+c upper -----
+c make a block mesh for: spar cap, uniax, upper
+block 1 %l_elemSC; 1 2 %t_elemSC; -1;
+-0.630 0.630; 0.175 0.206 0.210; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 3 1 177
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 178
+c right edge (i=2, j varies)
+curs 2 1 1 2 3 1 179
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 180
+c interpolate interior nodes
+lin 0 0 1 0 0 1
+c move right nodes to line up with TE reinforcement uniax
+pbs 2 2 1 2 2 1 y 166.1
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = scupper
+esetc scupper  SparCap; uniax; upper
+
+c lower -----
+c make a block mesh for: spar cap, uniax, lower
+block 1 %l_elemSC; 1 2 %t_elemSC; -1;
+-0.630 0.630; -0.061 -0.057 -0.056; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 3 1 181
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 182
+c right edge (i=2, j varies)
+curs 2 1 1 2 3 1 183
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 184
+c interpolate interior nodes
+lin 0 0 1 0 0 1
+c move right nodes to line up with TE reinforcement uniax
+pbs 2 2 1 2 2 1 y 154.2
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = sclower
+esetc sclower  SparCap; uniax; lower
+
+c LE Panel ----------------------------------------------
+
+c foam -----
+c make a block mesh for: LE panel, foam
+block 1 3; 1 [%l_elemLE/2] %l_elemLE; -1;
+-2.59 -2.53; -1.13 0.0 0.92; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 3 1 185
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 186
+c right edge (i=2, j varies)
+cure 2 1 1 2 3 1 187
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 188
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = lepanel
+esetc lepanel  LE_Panel; foam
+
+c TE reinforcement ----------------------------------------
+
+c foam -----
+c make a block mesh for: TE reinforcement, foam, lower 1
+block 1 %l_elmTE1; 1 2 3; -1;
+0.630 1.224; -0.0568 -0.0558 0.0291; 0;
+c left edge (i=1, j varies)
+curs 1 1 1 1 3 1 130
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 129
+c right edge (i=2, j varies)
+cure 2 1 1 2 3 1 132
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 131
+c interpolate interior nodes
+lin 0 0 1 0 0 1
+c move left nodes to line up with spar cap
+pbs 1 2 1 1 2 1 y 183.1
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = tefoaml1
+esetc tefoaml1  TE_Reinforcement; foam, lower 1
+
+c make a block mesh for: TE reinforcement, foam, lower 2
+block 1 %l_elmTE2; 1 3; -1;
+3.95 4.01; 0.055 0.075; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 134
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 133
+c right edge (i=2, j varies)
+curs 2 1 1 2 2 1 136
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 135
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = tefoaml2
+esetc tefoaml2  TE_Reinforcement; foam, lower 2
+
+c make a block mesh for: TE reinforcement, foam, lower 3
+block 1 [%l_elmTE3-12]; 1 3; -1;
+2.90 3.06; 0.036 0.047; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 138
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 137
+c right edge (i=2, j varies)
+c ~skip~
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 139
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = tefoaml3
+esetc tefoaml3  TE_Reinforcement; foam, lower 3
+
+c make a block mesh for: TE reinforcement, foam, upper 1
+block 1 %l_elmTE1; 1 2 3; -1;
+0.630 1.224; 0.0495 0.205 0.206; 0;
+c left edge (i=1, j varies)
+curs 1 1 1 1 3 1 142
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 141
+c right edge (i=2, j varies)
+cure 2 1 1 2 3 1 144
+c top edge (j=3, i varies)
+cure 1 3 1 2 3 1 143
+c interpolate interior nodes
+lin 0 0 1 0 0 1
+c move left nodes to line up with spar cap
+pbs 1 2 1 1 2 1 y 179.2
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = tefoamu1
+esetc tefoamu1  TE_Reinforcement; foam, upper 1
+
+c make a block mesh for: TE reinforcement, foam, upper 2
+block 1 %l_elmTE2; 1 3; -1;
+3.95 4.01; 0.100 0.125; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 146
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 145
+c right edge (i=2, j varies)
+curs 2 1 1 2 2 1 148
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 147
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = tefoamu2
+esetc tefoamu2  TE_Reinforcement; foam, upper 2
+
+c make a block mesh for: TE reinforcement, foam, upper 3
+block 1 [%l_elmTE3-12]; 1 3; -1;
+2.90 3.06; 0.018 0.057; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 151
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 150
+c right edge (i=2, j varies)
+c ~skip~
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 149
+c assign the material to be foam (material #4)
+mate 4
+c name this set of elements
+eset 0 0 1 0 0 1 = tefoamu3
+esetc tefoamu3  TE_Reinforcement; foam, upper 3
+
+c uniax -----
+c make a block mesh for: TE reinforcement, uniax, lower 1
+block 1 %l_elmTE1; 1 2; -1;
+3.60 4.49; -0.277 0.015; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 154
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 153
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 156
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 155
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = teunil1
+esetc teunil1  TE_Reinforcement; uniax, lower 1
+
+c make a block mesh for: TE reinforcement, uniax, lower 2
+block 1 %l_elmTE2; 1 2; -1;
+3.60 4.49; -0.277 0.015; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 158
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 157
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 160
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 159
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = teunil2
+esetc teunil2  TE_Reinforcement; uniax, lower 2
+
+c make a block mesh for: TE reinforcement, uniax, lower 3
+block 1 [%l_elmTE3-12] [%l_elmTE3-5]; 1 2; -1;
+2.90 3.06 3.126; 0.007 0.036; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 162
+c bottom edge (j=1, i varies)
+cure 1 1 1 3 1 1 161
+c top right edge (j=2, i=2-3)
+cure 2 2 1 3 2 1 164
+c top left edge (j=2, i=1-2)
+cure 1 2 1 2 2 1 163
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = teunil3
+esetc teunil3  TE_Reinforcement; uniax, lower 3
+
+c make a block mesh for: TE reinforcement, uniax, upper 1
+block 1 %l_elmTE1; 1 2; -1;
+3.60 4.49; -0.277 0.015; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 166
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 165
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 168
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 167
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = teuniu1
+esetc teuniu1  TE_Reinforcement; uniax, upper 1
+
+c make a block mesh for: TE reinforcement, uniax, upper 2
+block 1 %l_elmTE2; 1 2; -1;
+3.60 4.49; -0.277 0.015; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 170
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 169
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 172
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 171
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = teuniu2
+esetc teuniu2  TE_Reinforcement; uniax, upper 2
+
+c make a block mesh for: TE reinforcement, uniax, upper 3
+block 1 [%l_elmTE3-12] [%l_elmTE3-5]; 1 2; -1;
+2.90 3.06 3.126; 0.007 0.061; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 174
+c bottom left edge (j=1, i=1-2)
+cure 1 1 1 2 1 1 173
+c bottom right edge (j=1, i=2-3)
+cure 2 1 1 3 1 1 176
+c top edge (j=2, i varies)
+cure 1 2 1 3 2 1 175
+c assign the material to be uniax (material #1)
+mate 1
+c name this set of elements
+eset 0 0 1 0 0 1 = teuniu3
+esetc teuniu3  TE_Reinforcement; uniax, upper 3
+
+c external surface ----------------------------------------
+
+c gelcoat, LE panel -----
+c make a block mesh for: external surface, gelcoat, LE panel
+block 1 2; 1 %l_elemLE; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 1
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 2
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 3
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 4
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgelle
+esetc esgelle  ExternalSurface; gelcoat; LE panel
+
+c gelcoat, TE reinforcement, lower 1 -----
+c make a block mesh for: external surface, gelcoat, TE reinforcement, lower 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 6
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 7
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 8
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 5
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgltel1
+esetc esgltel1  ExternalSurface; gelcoat; TE reinforcement, lower 1
+
+c gelcoat, TE reinforcement, lower 2 -----
+c make a block mesh for: external surface, gelcoat, TE reinforcement, lower 2
+block 1 %l_elmTE2; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 10
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 11
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 12
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 9
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgltel2
+esetc esgltel2  ExternalSurface; gelcoat; TE reinforcement, lower 2
+
+c gelcoat, TE reinforcement, lower 3 -----
+c make a block mesh for: external surface, gelcoat, TE reinforcement, lower 3
+block 1 %l_elmTE3; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 14
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 15
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 16
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 13
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgltel3
+esetc esgltel3  ExternalSurface; gelcoat; TE reinforcement, lower 3
+
+c gelcoat, TE reinforcement, upper 1 -----
+c make a block mesh for: external surface, gelcoat, TE reinforcement, upper 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 20
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 17
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 18
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 19
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esglteu1
+esetc esglteu1  ExternalSurface; gelcoat; TE reinforcement, upper 1
+
+c gelcoat, TE reinforcement, upper 2 -----
+c make a block mesh for: external surface, gelcoat, TE reinforcement, upper 2
+block 1 %l_elmTE2; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 24
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 21
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 22
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 23
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esglteu2
+esetc esglteu2  ExternalSurface; gelcoat; TE reinforcement, upper 2
+
+c gelcoat, TE reinforcement, upper 3 -----
+c make a block mesh for: external surface, gelcoat, TE reinforcement, upper 3
+block 1 %l_elmTE3; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 28
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 25
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 26
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 27
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esglteu3
+esetc esglteu3  ExternalSurface; gelcoat; TE reinforcement, upper 3
+
+c gelcoat, lower spar cap -----
+c make a block mesh for: external surface, gelcoat, lower spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 30
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 31
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 32
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 29
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgelscl
+esetc esgelscl  ExternalSurface; gelcoat; lower spar cap
+
+c gelcoat, upper spar cap -----
+c make a block mesh for: external surface, gelcoat, upper spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 36
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 33
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 34
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 35
+c assign the material to be gelcoat (material #5)
+mate 5
+c name this set of elements
+eset 0 0 1 0 0 1 = esgelscu
+esetc esgelscu  ExternalSurface; gelcoat; upper spar cap
+
+c triax, LE panel -----
+c make a block mesh for: external surface, triax, LE panel
+block 1 2; 1 %l_elemLE; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 37
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 38
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 39
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 40
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrile
+esetc estrile  ExternalSurface; triax; LE panel
+
+c triax, TE reinforcement, lower 1 -----
+c make a block mesh for: external surface, triax, TE reinforcement, lower 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 42
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 43
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 44
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 41
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrtel1
+esetc estrtel1  ExternalSurface; triax; TE reinforcement, lower 1
+
+c triax, TE reinforcement, lower 2 -----
+c make a block mesh for: external surface, triax, TE reinforcement, lower 2
+block 1 %l_elmTE2; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 46
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 47
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 48
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 45
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrtel2
+esetc estrtel2  ExternalSurface; triax; TE reinforcement, lower 2
+
+c triax, TE reinforcement, lower 3 -----
+c make a block mesh for: external surface, triax, TE reinforcement, lower 3
+block 1 [%l_elmTE3-5] %l_elmTE3; 1 2; -1;
+2.907 3.126 3.136; 0.00075 0.3236; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 48
+c top left edge (j=2, i=1-2)
+cure 1 2 1 2 2 1 50
+c top right edge (j=2, i=2-3)
+cure 2 2 1 3 2 1 51
+c right edge (i=3, j varies)
+cure 3 1 1 3 2 1 52
+c bottom edge (j=1, i varies)
+cure 1 1 1 3 1 1 49
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrtel3
+esetc estrtel3  ExternalSurface; triax; TE reinforcement, lower 3
+
+c triax, TE reinforcement, upper 1 -----
+c make a block mesh for: external surface, triax, TE reinforcement, upper 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 56
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 53
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 54
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 55
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrteu1
+esetc estrteu1  ExternalSurface; triax; TE reinforcement, upper 1
+
+c triax, TE reinforcement, upper 2 -----
+c make a block mesh for: external surface, triax, TE reinforcement, upper 2
+block 1 %l_elmTE2; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 60
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 57
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 58
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 59
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrteu2
+esetc estrteu2  ExternalSurface; triax; TE reinforcement, upper 2
+
+c triax, TE reinforcement, upper 3 -----
+c make a block mesh for: external surface, triax, TE reinforcement, upper 3
+block 1 [%l_elmTE3-5] %l_elmTE3; 1 2; -1;
+2.907 3.126 3.136; 0.0053 0.0662; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 58
+c top edge (j=2, i varies)
+cure 1 2 1 3 2 1 61
+c right edge (i=3, j varies)
+cure 3 1 1 3 2 1 62
+c bottom left edge (j=1, i=1-2)
+cure 1 1 1 2 1 1 64
+c bottom right edge (j=1, i=2-3)
+cure 2 1 1 3 1 1 63
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estrteu3
+esetc estrteu3  ExternalSurface; triax; TE reinforcement, upper 3
+
+c triax, lower spar cap -----
+c make a block mesh for: external surface, triax, lower spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 66
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 67
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 68
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 65
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estriscl
+esetc estriscl  ExternalSurface; triax; lower spar cap
+
+c triax, upper spar cap -----
+c make a block mesh for: external surface, triax, upper spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 72
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 69
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 70
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 71
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = estriscu
+esetc estriscu  ExternalSurface; triax; upper spar cap
+
+c internal surface 1 ----------------------------------------
+
+c resin, LE panel -----
+c make a block mesh for: internal surface 1, resin, LE panel
+block 1 2; 1 %l_elemLE; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 73
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 74
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 75
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 76
+c assign the material to be resin (material #6)
+mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = is1rsle
+esetc is1rsle  InternalSurface1; resin; LE panel
+
+c resin, TE reinforcement, lower 1 -----
+c make a block mesh for: internal surface 3, resin, TE reinforcement, lower 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 78
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 79
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 80
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 77
+c assign the material to be resin (material #6)
+mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = is3rtel1
+esetc is3rtel1  InternalSurface3; resin; TE reinforcement, lower 1
+
+c resin, TE reinforcement, lower 2 -----
+c make a block mesh for: internal surface 3, resin, TE reinforcement, lower 2
+block 1 [%l_elmTE2-3]; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 82
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 83
+c right edge (i=2, j varies)
+c ~skip~
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 81
+c assign the material to be resin (material #6)
+mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = is3rtel2
+esetc is3rtel2  InternalSurface3; resin; TE reinforcement, lower 2
+
+c resin, TE reinforcement, upper 1 -----
+c make a block mesh for: internal surface 3, resin, TE reinforcement, upper 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 88
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 85
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 86
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 87
+c assign the material to be resin (material #6)
+mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = is3rteu1
+esetc is3rteu1  InternalSurface3; resin; TE reinforcement, upper 1
+
+c resin, TE reinforcement, upper 2 -----
+c make a block mesh for: internal surface 3, resin, TE reinforcement, upper 2
+block 1 [%l_elmTE2-3]; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 91
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 89
+c right edge (i=2, j varies)
+c ~skip~
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 90
+c assign the material to be resin (material #6)
+mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = is3rteu2
+esetc is3rteu2  InternalSurface3; resin; TE reinforcement, upper 2
+
+c resin, lower spar cap -----
+c make a block mesh for: internal surface 2, resin, lower spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 94
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 95
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 96
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 93
+c assign the material to be resin (material #6)
+mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = is2rsscl
+esetc is2rsscl  InternalSurface2; resin; lower spar cap
+
+c resin, upper spar cap -----
+c make a block mesh for: internal surface 2, resin, upper spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 99
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 100
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 97
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 98
+c assign the material to be resin (material #6)
+mate 6
+c name this set of elements
+eset 0 0 1 0 0 1 = is2rsscu
+esetc is2rsscu  InternalSurface2; resin; upper spar cap
+
+c triax, LE panel -----
+c make a block mesh for: internal surface 1, triax, LE panel
+block 1 2; 1 %l_elemLE; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 101
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 102
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 103
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 104
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = is1trile
+esetc is1trile  InternalSurface1; triax; LE panel
+
+c triax, TE reinforcement, lower 1 -----
+c make a block mesh for: internal surface 3, triax, TE reinforcement, lower 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 106
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 107
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 108
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 105
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = is3ttel1
+esetc is3ttel1  InternalSurface3; triax; TE reinforcement, lower 1
+
+c triax, TE reinforcement, lower 2 -----
+c make a block mesh for: internal surface 3, triax, TE reinforcement, lower 2
+block 1 [%l_elmTE2-3] %l_elmTE2; 1 2; -1;
+-0.1 0.0 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 110
+c top left edge (j=2, i=1-2)
+cure 1 2 1 2 2 1 111
+c top right edge (j=2, i=2-3)
+cure 2 2 1 3 2 1 112
+c bottom edge (j=1, i varies)
+cure 1 1 1 3 1 1 109
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = is3ttel2
+esetc is3ttel2  InternalSurface3; triax; TE reinforcement, lower 2
+
+c triax, TE reinforcement, upper 1 -----
+c make a block mesh for: internal surface 3, triax, TE reinforcement, upper 1
+block 1 %l_elmTE1; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 116
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 113
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 114
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 115
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = is3tteu1
+esetc is3tteu1  InternalSurface3; triax; TE reinforcement, upper 1
+
+c triax, TE reinforcement, upper 2 -----
+c make a block mesh for: internal surface 3, triax, TE reinforcement, upper 2
+block 1 [%l_elmTE2-3] %l_elmTE2; 1 2; -1;
+-0.1 0.0 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 120
+c top edge (j=2, i varies)
+cure 1 2 1 3 2 1 117
+c bottom right edge (j=1, i=2-3)
+cure 2 1 1 3 1 1 118
+c bottom left edge (j=1, i=1-2)
+cure 1 1 1 2 1 1 119
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = is3tteu2
+esetc is3tteu2  InternalSurface3; triax; TE reinforcement, upper 2
+
+c triax, lower spar cap -----
+c make a block mesh for: internal surface 2, triax, lower spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 122
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 123
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 124
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 121
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = is2trscl
+esetc is2trscl  InternalSurface2; triax; lower spar cap
+
+c triax, upper spar cap -----
+c make a block mesh for: internal surface 2, triax, upper spar cap
+block 1 %l_elemSC; 1 2; -1;
+-0.1 0.1; -0.1 0.1; 0;
+c left edge (i=1, j varies)
+cure 1 1 1 1 2 1 128
+c top edge (j=2, i varies)
+cure 1 2 1 2 2 1 125
+c right edge (i=2, j varies)
+cure 2 1 1 2 2 1 126
+c bottom edge (j=1, i varies)
+cure 1 1 1 2 1 1 127
+c assign the material to be triax (material #3)
+mate 3
+c name this set of elements
+eset 0 0 1 0 0 1 = is2trscu
+esetc is2trscu  InternalSurface2; triax; upper spar cap
+
+c --------------------------------------------------------------------
+
+c interrupt
 c merge all the individual block meshes into a single mesh
 merge
 c display all 3D curves
@@ -2715,7 +3603,7 @@ labels crv
 c display the mesh (wireframe)
 disp
 
-interrupt
+c interrupt
 c delete redundant nodes at part boundaries
 stp 0.0001
 c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375
@@ -2724,7 +3612,7 @@ c   the command stp deletes nodes who are near each other (w/in the tolerance)
 c display the mesh (filled)
 tvv
 
-interrupt
+c interrupt
 c write the mesh to an output file
 write
 

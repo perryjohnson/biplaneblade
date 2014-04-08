@@ -25,7 +25,6 @@ para t_elemSW 4;          c num of nodes across shear web thickness
 para t_elemSC 2;          c num of nodes across spar cap thickness
 para l_elemLE 60;         c num of nodes along leading edge
 para l_elemSC 120;        c num of nodes along spar cap
-para l_elemA1 60;         c num of nodes along aft panel
 para l_elmTE1 80;         c num of nodes along trailing edge, segment 1
 para l_elmTE2 7;          c num of nodes along trailing edge, segment 2
 para l_elmTE3 20;         c num of nodes along trailing edge, segment 3
@@ -4464,4 +4463,4 @@ c interrupt
 c write the mesh to an output file
 write
 
-c exit
+exit
