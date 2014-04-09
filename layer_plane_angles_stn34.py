@@ -45,14 +45,12 @@ from descartes import PolygonPatch
 # update these parameters!
 station_num = 34
 skip_num = 25   # plot every 'skip_num' elements (larger values plot faster)
-IS3_resin_u2_tri_elem_num = 1911  # num of tri elem in IS3 resin upper 2
-IS3_resin_l2_tri_elem_num = 1869  # num of tri elem in IS3 resin lower 2
-IS3_triax_u2_tri_elem_num = 2298  # num of tri elem in IS3 triax upper 2
-IS3_triax_l2_tri_elem_num = 2253  # num of tri elem in IS3 triax lower 2
-TEr_foam_u3_tri_elem_num = [806,798]  # num of tri elem in TE reinf foam upper 3
-TEr_foam_l3_tri_elem_num = [700,692]  # num of tri elem in TE reinf foam lower 3
-TEr_uniax_u3_tri_elem_num = 918  # num of tri elem in TE reinf uniax upper 3
-TEr_uniax_l3_tri_elem_num = 862  # num of tri elem in TE reinf uniax lower 3
+ES_triax_upper_tri_elem_num = [251,237,223,510,478,446]  # num of tri elems in upper external surface (triax)
+ES_triax_lower_tri_elem_num = [209,195,181,387,355,323]  # num of tri elems in lower external surface (triax)
+IS_triax_upper_tri_elem_num = [764,754]  # num of tri elems in upper internal surface (triax)
+IS_triax_lower_tri_elem_num = [755,745]  # num of tri elems in lower internal surface (triax)
+IS_resin_upper_tri_elem_num = [698,688]  # num of tri elems in upper internal surface (resin) at LE
+IS_resin_lower_tri_elem_num = [693,683]  # num of tri elems in lower internal surface (resin) at LE
 # -----------------------------------------------
 
 stn_str = 'stn{0:02d}'.format(station_num)
@@ -79,11 +77,6 @@ ax = plt.gcf().gca()
 # element sets on the leading edge
 # outer_edge_node_nums=[1,4], inner_edge_node_nums=[2,3]
 list_of_LE_elementsets = [
-    'lepanel',
-    'esgelle',
-    'estrile',
-    'is1rsle',
-    'is1trile'
     ]
 
 # element sets on the trailing edge
@@ -94,71 +87,59 @@ list_of_TE_elementsets = [
 # element sets on the lower surface
 # outer_edge_node_nums=[2,1], inner_edge_node_nums=[3,4]
 list_of_lower_elementsets = [
-    'is3rtel1',
-    'is3rtel2',
-    'is3ttel1',
-    'is3ttel2',
-    'sclower',
-    'esgelscl',
-    'estriscl',
-    'is2rsscl',
-    'is2trscl',
-    'esgltel1',
-    'esgltel2',
-    'esgltel3',
-    'estrtel1',
-    'estrtel2',
-    'estrtel3',
-    'teunil1',
-    'teunil2',
-    'teunil3',
-    'tefoaml1',
-    'tefoaml2',
-    'tefoaml3'
+    'esgellel',
+    'esgelal1',
+    'esgelal2',
+    'esgelfl1',
+    'esglower',
+    'estrilel',
+    'estrial1',
+    'estrial2',
+    'estrifl1',
+    'estlower',
+    'isresal1',
+    'isresfl1',
+    'isrlower',
+    'istlower',
+    'istrial1',
+    'istrifl1'
 ]
 
 # element sets on the upper surface
 # outer_edge_node_nums=[4,3], inner_edge_node_nums=[1,2]
 list_of_upper_elementsets = [
-    'is3rteu1',
-    'is3rteu2',
-    'is3tteu1',
-    'is3tteu2',
-    'scupper',
-    'estriscu',
-    'esgelscu',
-    'is2rsscu',
-    'is2trscu',
-    'esglteu1',
-    'esglteu2',
-    'esglteu3',
-    'estrteu1',
-    'estrteu2',
-    'estrteu3',
-    'tefoamu1',
-    'tefoamu2',
-    'tefoamu3',
-    'teuniu1',
-    'teuniu2',
-    'teuniu3'
+    'esgelleu',
+    'esgelau1',
+    'esgelau2',
+    'esgelfu1',
+    'esgupper',
+    'estrileu',
+    'estriau1',
+    'estriau2',
+    'estrifu1',
+    'estupper',
+    'isresau1',
+    'isresfu1',
+    'isrupper',
+    'istupper',
+    'istriau1',
+    'istrifu1'
 ]
 
 # element sets of triangular elements on the lower surface
 # outer_edge_node_nums=[2,1]
 list_of_tri_lower_elementsets = [
-    'is3rtel2_tri',
-    'is3ttel2_tri',
-    'teunil3_tri',
-    'tefoaml3_tri'
+    'estril_tri',
+    'istril_tri',
+    'isresl_tri'
 ]
 
 # element sets of triangular elements on the upper surface
 # outer_edge_node_nums=[3,2]
 list_of_tri_upper_elementsets = [
-    'is3rteu2_tri',
-    'is3tteu2_tri',
-    'teuniu3_tri',
-    'tefoamu3_tri'
+    'estriu_tri',
+    'istriu_tri',
+    'isresu_tri'
 ]
 
 # import the initial grid object
@@ -167,16 +148,18 @@ g = au.AbaqusGrid(fmt_grid, debug_flag=True, soft_warning=False,
     auto_parse=True)
 
 # manually assign triangular elements into new element sets
-g.list_of_elements[IS3_resin_u2_tri_elem_num-1].element_set = 'is3rteu2_tri'
-g.list_of_elements[IS3_resin_l2_tri_elem_num-1].element_set = 'is3rtel2_tri'
-g.list_of_elements[IS3_triax_u2_tri_elem_num-1].element_set = 'is3tteu2_tri'
-g.list_of_elements[IS3_triax_l2_tri_elem_num-1].element_set = 'is3ttel2_tri'
-g.list_of_elements[TEr_foam_u3_tri_elem_num[0]-1].element_set  = 'tefoamu3_tri'
-g.list_of_elements[TEr_foam_u3_tri_elem_num[1]-1].element_set  = 'tefoamu3_tri'
-g.list_of_elements[TEr_foam_l3_tri_elem_num[0]-1].element_set  = 'tefoaml3_tri'
-g.list_of_elements[TEr_foam_l3_tri_elem_num[1]-1].element_set  = 'tefoaml3_tri'
-g.list_of_elements[TEr_uniax_u3_tri_elem_num-1].element_set = 'teuniu3_tri'
-g.list_of_elements[TEr_uniax_l3_tri_elem_num-1].element_set = 'teunil3_tri'
+for num in ES_triax_upper_tri_elem_num:
+    g.list_of_elements[num-1].element_set = 'estriu_tri'
+for num in ES_triax_lower_tri_elem_num:
+    g.list_of_elements[num-1].element_set = 'estril_tri'
+for num in IS_triax_upper_tri_elem_num:
+    g.list_of_elements[num-1].element_set = 'istriu_tri'
+for num in IS_triax_lower_tri_elem_num:
+    g.list_of_elements[num-1].element_set = 'istril_tri'
+for num in IS_resin_upper_tri_elem_num:
+    g.list_of_elements[num-1].element_set = 'isresu_tri'
+for num in IS_resin_lower_tri_elem_num:
+    g.list_of_elements[num-1].element_set = 'isresl_tri'
 
 # update the grid object with all the layer plane angles
 for elem in g.list_of_elements:
@@ -196,37 +179,40 @@ for elem in g.list_of_elements:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,1])
     elif elem.element_set in list_of_tri_upper_elementsets:
         elem.calculate_layer_plane_angle(outer_edge_node_nums=[3,2])
-    elif elem.element_set in list_of_tri_lower2_elementsets:
-        elem.calculate_layer_plane_angle(outer_edge_node_nums=[3,1])
-    elif elem.element_set in list_of_tri_upper2_elementsets:
-        elem.calculate_layer_plane_angle(outer_edge_node_nums=[2,3])
     else:
         raise Warning("Element #{0} has no element set!".format(elem.elem_num))
+# manually correct the theta1 values of some elements at the LE
+g.list_of_elements[223-1].theta1 = g.list_of_elements[224-1].theta1
+g.list_of_elements[237-1].theta1 = g.list_of_elements[238-1].theta1
+g.list_of_elements[251-1].theta1 = g.list_of_elements[252-1].theta1
+
+g.list_of_elements[209-1].theta1 = g.list_of_elements[210-1].theta1
+g.list_of_elements[195-1].theta1 = g.list_of_elements[196-1].theta1
+g.list_of_elements[181-1].theta1 = g.list_of_elements[182-1].theta1
+
 # plot a small selection of elements to check the results
 for elem in g.list_of_elements[::skip_num]:
     elem.plot(label_nodes=False)
     print elem.elem_num, elem.element_set, elem.theta1
 
-g.list_of_elements[IS3_resin_u2_tri_elem_num-1].plot()
-g.list_of_elements[IS3_resin_u2_tri_elem_num-2].plot()
-g.list_of_elements[IS3_resin_l2_tri_elem_num-1].plot()
-g.list_of_elements[IS3_resin_l2_tri_elem_num-2].plot()
-g.list_of_elements[IS3_triax_u2_tri_elem_num-1].plot()
-g.list_of_elements[IS3_triax_u2_tri_elem_num-2].plot()
-g.list_of_elements[IS3_triax_l2_tri_elem_num-1].plot()
-g.list_of_elements[IS3_triax_l2_tri_elem_num-2].plot()
-g.list_of_elements[TEr_foam_u3_tri_elem_num[0]-1].plot() 
-g.list_of_elements[TEr_foam_u3_tri_elem_num[0]-2].plot() 
-g.list_of_elements[TEr_foam_l3_tri_elem_num[0]-1].plot() 
-g.list_of_elements[TEr_foam_l3_tri_elem_num[0]-2].plot() 
-g.list_of_elements[TEr_foam_u3_tri_elem_num[1]-1].plot() 
-g.list_of_elements[TEr_foam_u3_tri_elem_num[1]-2].plot() 
-g.list_of_elements[TEr_foam_l3_tri_elem_num[1]-1].plot() 
-g.list_of_elements[TEr_foam_l3_tri_elem_num[1]-2].plot() 
-g.list_of_elements[TEr_uniax_u3_tri_elem_num-1].plot()
-g.list_of_elements[TEr_uniax_u3_tri_elem_num-2].plot()
-g.list_of_elements[TEr_uniax_l3_tri_elem_num-1].plot()
-g.list_of_elements[TEr_uniax_l3_tri_elem_num-2].plot()
+for num in ES_triax_upper_tri_elem_num:
+    g.list_of_elements[num-1].plot()
+    g.list_of_elements[num-2].plot()
+for num in ES_triax_lower_tri_elem_num:
+    g.list_of_elements[num-1].plot()
+    g.list_of_elements[num-2].plot()
+for num in IS_triax_upper_tri_elem_num:
+    g.list_of_elements[num-1].plot()
+    g.list_of_elements[num-2].plot()
+for num in IS_triax_lower_tri_elem_num:
+    g.list_of_elements[num-1].plot()
+    g.list_of_elements[num-2].plot()
+for num in IS_resin_upper_tri_elem_num:
+    g.list_of_elements[num-1].plot()
+    g.list_of_elements[num-2].plot()
+for num in IS_resin_lower_tri_elem_num:
+    g.list_of_elements[num-1].plot()
+    g.list_of_elements[num-2].plot()
 
 # show the plot
 plt.xlim([-0.05,0.1])

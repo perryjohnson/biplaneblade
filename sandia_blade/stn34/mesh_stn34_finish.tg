@@ -1723,8 +1723,8 @@ cure 1 1 1 2 1 1 121
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
-eset 0 0 1 0 0 1 = isrlower
-esetc isrlower  InternalSurface1; triax; lower
+eset 0 0 1 0 0 1 = istlower
+esetc istlower  InternalSurface1; triax; lower
 
 c triax, upper -----
 c make a block mesh for: internal surface 1, triax, upper
@@ -1741,8 +1741,8 @@ cure 1 1 1 2 1 1 127
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
-eset 0 0 1 0 0 1 = isrupper
-esetc isrupper  InternalSurface1; triax; upper
+eset 0 0 1 0 0 1 = istupper
+esetc istupper  InternalSurface1; triax; upper
 
 c --------------------------------------------------------------------
 
@@ -1769,4 +1769,4 @@ c interrupt
 c write the mesh to an output file
 write
 
-c exit
+exit
