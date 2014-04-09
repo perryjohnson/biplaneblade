@@ -28,7 +28,7 @@ def rel_err(vabs_data, sandia_data):
 def prep_rel_err_plot(axis,ymin=-20,ymax=100):
     """Prepare a relative error plot."""
     axis2 = axis.twinx()
-    axis2.set_ylabel('relative error [%]', color='m')
+    axis2.set_ylabel('difference [%]', color='m')
     axis2.set_ylim([ymin,ymax])
     for tl in axis2.get_yticklabels():
         tl.set_color('m')
@@ -53,7 +53,7 @@ f, axarr = plt.subplots(2,2, figsize=(12,8))
 twin_axis00 = prep_rel_err_plot(axarr[0,0])
 twin_axis00.plot(
     s['Blade Spanwise Coordinate'], rel_err(v['K_55, EI_flap'],s['EI_flap']),
-    'm^:', mec='m', mfc='None', mew=1, label='relative error')
+    'm^:', mec='m', mfc='None', mew=1, label='difference')
 axarr[0,0].plot(s['Blade Spanwise Coordinate'],s['EI_flap'],'gx--',mfc='None',mew=1,label='Sandia (PreComp)')
 axarr[0,0].plot(v['Blade Spanwise Coordinate'],v['K_55, EI_flap'],'ko-',mfc='None',mew=1,label='UCLA (VABS)')
 axarr[0,0].set_xlabel('span [m]')
@@ -65,7 +65,7 @@ axarr[0,0].grid('on', axis='x')
 twin_axis01 = prep_rel_err_plot(axarr[0,1])
 twin_axis01.plot(
     s['Blade Spanwise Coordinate'], rel_err(v['K_66, EI_edge'],s['EI_edge']),
-    'm^:', mec='m', mfc='None', mew=1, label='relative error')
+    'm^:', mec='m', mfc='None', mew=1, label='difference')
 axarr[0,1].plot(s['Blade Spanwise Coordinate'],s['EI_edge'],'gx--',mfc='None',mew=1,label='Sandia (PreComp)')
 axarr[0,1].plot(v['Blade Spanwise Coordinate'],v['K_66, EI_edge'],'ko-',mfc='None',mew=1,label='UCLA (VABS)')
 axarr[0,1].set_xlabel('span [m]')
@@ -77,7 +77,7 @@ axarr[0,1].legend()
 twin_axis10 = prep_rel_err_plot(axarr[1,0])
 twin_axis10.plot(
     s['Blade Spanwise Coordinate'], rel_err(v['K_11, EA_axial'],s['EA_axial']),
-    'm^:', mec='m', mfc='None', mew=1, label='relative error')
+    'm^:', mec='m', mfc='None', mew=1, label='difference')
 axarr[1,0].plot(s['Blade Spanwise Coordinate'],s['EA_axial'],'gx--',mfc='None',mew=1,label='Sandia (PreComp)')
 axarr[1,0].plot(v['Blade Spanwise Coordinate'],v['K_11, EA_axial'],'ko-',mfc='None',mew=1,label='UCLA (VABS)')
 axarr[1,0].set_xlabel('span [m]')
@@ -89,7 +89,7 @@ axarr[1,0].grid('on', axis='x')
 twin_axis11 = prep_rel_err_plot(axarr[1,1])
 twin_axis11.plot(
     s['Blade Spanwise Coordinate'], rel_err(v['K_44, GJ_twist'],s['GJ_twist']),
-    'm^:', mec='m', mfc='None', mew=1, label='relative error')
+    'm^:', mec='m', mfc='None', mew=1, label='difference')
 axarr[1,1].plot(s['Blade Spanwise Coordinate'],s['GJ_twist'],'gx--',mfc='None',mew=1,label='Sandia (PreComp)')
 axarr[1,1].plot(v['Blade Spanwise Coordinate'],v['K_44, GJ_twist'],'ko-',mfc='None',mew=1,label='UCLA (VABS)')
 axarr[1,1].set_xlabel('span [m]')
@@ -107,7 +107,7 @@ f2, axarr2 = plt.subplots(2,2, figsize=(12,8))
 twin_axis2_10 = prep_rel_err_plot(axarr2[1,0])
 twin_axis2_10.plot(
     s['Blade Spanwise Coordinate'], rel_err(v['M_11, mu_mass'],s['mu_mass']),
-    'm^:', mec='m', mfc='None', mew=1, label='relative error')
+    'm^:', mec='m', mfc='None', mew=1, label='difference')
 axarr2[1,0].plot(s['Blade Spanwise Coordinate'],s['mu_mass'],'gx--',mfc='None',mew=1,label='Sandia (PreComp)')
 axarr2[1,0].plot(v['Blade Spanwise Coordinate'],v['M_11, mu_mass'],'ko-',mfc='None',mew=1,label='UCLA (VABS)')
 axarr2[1,0].set_xlabel('span [m]')
@@ -119,7 +119,7 @@ axarr2[1,0].grid('on', axis='x')
 twin_axis2_00 = prep_rel_err_plot(axarr2[0,0])
 twin_axis2_00.plot(
     s['Blade Spanwise Coordinate'], rel_err(v['M_55, i22_flap'],s['i22_flap']),
-    'm^:', mec='m', mfc='None', mew=1, label='relative error')
+    'm^:', mec='m', mfc='None', mew=1, label='difference')
 axarr2[0,0].plot(s['Blade Spanwise Coordinate'],s['i22_flap'],'gx--',mfc='None',mew=1,label='Sandia (PreComp)')
 axarr2[0,0].plot(v['Blade Spanwise Coordinate'],v['M_55, i22_flap'],'ko-',mfc='None',mew=1,label='UCLA (VABS)')
 axarr2[0,0].set_xlabel('span [m]')
@@ -131,7 +131,7 @@ axarr2[0,0].grid('on', axis='x')
 twin_axis2_01 = prep_rel_err_plot(axarr2[0,1])
 twin_axis2_01.plot(
     s['Blade Spanwise Coordinate'], rel_err(v['M_66, i33_edge'],s['i33_edge']),
-    'm^:', mec='m', mfc='None', mew=1, label='relative error')
+    'm^:', mec='m', mfc='None', mew=1, label='difference')
 axarr2[0,1].plot(s['Blade Spanwise Coordinate'],s['i33_edge'],'gx--',mfc='None',mew=1,label='Sandia (PreComp)')
 axarr2[0,1].plot(v['Blade Spanwise Coordinate'],v['M_66, i33_edge'],'ko-',mfc='None',mew=1,label='UCLA (VABS)')
 axarr2[0,1].set_xlabel('span [m]')
