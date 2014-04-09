@@ -43,7 +43,7 @@ from descartes import PolygonPatch
 
 # -----------------------------------------------
 # update these parameters!
-station_num = 33
+station_num = 34
 skip_num = 25   # plot every 'skip_num' elements (larger values plot faster)
 IS3_resin_u2_tri_elem_num = 1911  # num of tri elem in IS3 resin upper 2
 IS3_resin_l2_tri_elem_num = 1869  # num of tri elem in IS3 resin lower 2
@@ -229,8 +229,8 @@ g.list_of_elements[TEr_uniax_l3_tri_elem_num-1].plot()
 g.list_of_elements[TEr_uniax_l3_tri_elem_num-2].plot()
 
 # show the plot
-plt.xlim([-0.5,1.0])
-plt.ylim([-0.5,0.5])
+plt.xlim([-0.05,0.1])
+plt.ylim([-0.01,0.02])
 ax.set_aspect('equal')
 print ' ------------------------'
 print '  LEGEND'
