@@ -1,0 +1,127 @@
+@SHAPE_DEFINITION {
+  @SHAPE_NAME {shape_monoplaneSpar} {
+    @SHAPE_TYPE {CURVE}
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @ETA_COORDINATE {0.00000E+00} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 5.329}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {2.17628E-03} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 5.320}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {2.50272E-02} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 5.049}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {4.78781E-02} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 4.766}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {7.07291E-02} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 4.440}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {9.79325E-02} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 4.096}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {1.32753E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 3.680}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {1.51251E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 3.480}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {1.68662E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 3.285}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {1.86072E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 3.089}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {2.15452E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 2.882}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {2.44831E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 2.696}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {2.74211E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 2.498}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {3.63439E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 2.077}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {4.51578E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 1.672}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {5.39717E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 1.360}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {6.28945E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 1.138}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {6.99674E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 0.954}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {7.17084E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 0.910}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {7.70403E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 0.832}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {8.05223E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 0.796}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {8.94450E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 0.707}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {9.46681E-01} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 0.651}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+    @ETA_COORDINATE {1.00000e+00} {
+      @CURVE_NAME {CurveSquare}
+      @SCALING_FACTOR {0.0, 1.672, 0.508}
+      @ORIGIN {0.0, 0.0, 0.0}
+    }
+  }
+
+}

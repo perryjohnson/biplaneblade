@@ -11,7 +11,7 @@ Open an IPython terminal and type:
 |> %run plot_MK
 
 Author: Perry Roth-Johnson
-Last modified: April 2, 2014
+Last modified: April 9, 2014
 
 """
 

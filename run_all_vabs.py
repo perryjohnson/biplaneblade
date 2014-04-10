@@ -1,7 +1,7 @@
 """Wrapper file to run VABS on input files for a station cross-section.
 
 Author: Perry Roth-Johnson
-Last modified: April 2, 2014
+Last modified: April 9, 2014
 
 """
 
@@ -11,7 +11,7 @@ import os
 
 # -----------------------------------------------
 # update these parameters!
-list_of_station_nums = range(1,23+1)
+list_of_station_nums = range(1,34+1)
 # -----------------------------------------------
 
 for station_num in list_of_station_nums:
