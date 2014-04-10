@@ -3,7 +3,7 @@ bladedesign
 
 tool to set up structural models of [biplane] wind turbine blades
 
-Current workflow (as of April 9, 2014)
+Current workflow (as of April 10, 2014)
 ---------------------------------------
 1. `create_stnXX_mesh.py` - write initial TrueGrid input file with boundary curves: `mesh_stnXX_start.tg`
 2. manually edit `mesh_stnXX_start.tg` to create block meshes fitted to boundary curves; save as `mesh_stnXX_finish.tg`
@@ -12,10 +12,11 @@ Current workflow (as of April 9, 2014)
 5. run `run_vabs.py` - use VABS to calculate mass and stiffness matrices
 6. `mesh_stnXX.vabs.K` - mass and stiffness matrices are in this file!
 7. run `plot_MK.py` - plot VABS data vs. Sandia published data
-8. run `write_all_MK_matrices_for_DYMORE.py` - write VABS output for a DYMORE input file to `MK_matrices.txt`
-9. manually copy contents of `MK_matrices.txt` into `sandia_blade.dat`, in the `@BEAM_PROPERTY_DEFINITION` block
+8. run `write_DYMORE_input_file.py` - write VABS output for a DYMORE input file to `sandia_blade_OD.dat` and `sandia_blade_MK.dat`
+9. manually copy contents of `sandia_blade_OD.dat` and `sandia_blade_MK.dat` into `sandia_blade.dat`.
 10. run `rundymore.bat` to load the structural model
-11. double click `sandia_bladePlotSvyPNG.plt` to postprocess results in `FIGURES` directory
+11. run `plot_DYMORE_results.py` to postprocess results in `FIGURES` directory
+12. run `clean.bat` to erase all DYMORE results
 
 Usage: `create_blades.py`
 -------------------------

@@ -18,3 +18,11 @@ tghist
 *.v0
 *.v1S
 *.v22
+*.grf
+*.plt
+*.ats
+*.eig
+*.html
+*.out
+*.rcv
+*.mdt
