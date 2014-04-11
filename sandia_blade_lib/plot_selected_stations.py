@@ -1,4 +1,4 @@
-"""Write initial TrueGrid files for Sandia blade stations.
+"""Plot structural parts for selected stations in the Sandia blade.
 
 Usage
 -----
@@ -7,7 +7,7 @@ $ ipython qtconsole --pylab
 or
 $ ipython --pylab
 Then, from the prompt, run this script:
-|> %run create_meshes
+|> %run plot_selected_stations
 Once you are finished looking at the meshes, you can clean up extra files:
 |> %run clean
 (See the 'clean.py' script in this directory for details.)
