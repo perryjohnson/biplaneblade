@@ -17,7 +17,6 @@ Last updated: March 10, 2014
 
 """
 
-import os
 import matplotlib.pyplot as plt
 import numpy as np
 import lib.blade as bl
