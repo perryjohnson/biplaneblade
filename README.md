@@ -25,7 +25,7 @@ Create a beam model of the biplane blade (flapwise symmetric, no stagger configu
 
 In the end, you should have an archive of all the blade input files that looks like:
 
-* `biplane_flap-sym_no-stagger/`
+* `biplane_blade/`
   * `blade_definition.csv`
   * `materials.csv`
   * `airfoils/`
@@ -41,7 +41,7 @@ In the end, you should have an archive of all the blade input files that looks l
   * `stn02/`
   * ...
   * `stn34/`
-* `biplane_flap-sym_no-stagger_lib/`
+* `biplane_blade_lib/`
   * `plot_selected_stations.py`
   * `prep_stn01_mesh.py`
   * ...

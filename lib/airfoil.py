@@ -1,7 +1,7 @@
 """A module for organizing airfoil data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: October 11, 2013
+Last updated: April 10, 2014
 
 """
 
@@ -263,11 +263,13 @@ class BiplaneAirfoil(_Airfoil):
         self.lower_filename = filename_L
         self.lower_path = None
         self.lower_chord = chord_L
+        self.lower_coords = None      # assigned later by read_coords()
         self.lower_SW_ref_pt_fraction = SW_ref_pt_L
         self.upper_name = name_U
         self.upper_filename = filename_U
         self.upper_path = None
         self.upper_chord = chord_U
+        self.upper_coords = None      # assigned later by read_coords()
         self.upper_SW_ref_pt_fraction = SW_ref_pt_U
         self.gap_to_chord_ratio = gap_to_chord_ratio
         self.gap_fraction = gap_fraction
@@ -532,6 +534,25 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
                 raise IndexError("Leading edge index was not found!")
             self.upper_suction = self.upper_coords[self.upper_LE_index:]
             self.upper_pressure = self.upper_coords[:self.upper_LE_index+1]
+
+    def create_polygon(self):
+        """Convert the numpy array of coordinates into a polygon object.
+
+        This allows us to use offset and clipping methods in the Shapely module
+
+        """
+        l = []
+        for point in self.lower_coords:
+            x = float(point['x'])
+            y = float(point['y'])
+            l.append((x,y))
+        self.lower_polygon = Polygon(l)
+        u = []
+        for point in self.upper_coords:
+            x = float(point['x'])
+            y = float(point['y'])
+            u.append((x,y))
+        self.upper_polygon = Polygon(u)
 
     def plot_coords(self, axes, split_flag=False):
         """Plot the biplane airfoil coordinates of this station."""

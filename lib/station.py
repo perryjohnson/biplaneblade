@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: October 11, 2013
+Last updated: April 10, 2014
 
 """
 
@@ -934,9 +934,10 @@ class MonoplaneStation(_Station):
 
 class BiplaneStation(_Station):
     """Define a biplane station for a biplane wind turbine blade."""
-    def __init__(self, stn_series, blade_path):
+    def __init__(self, stn_series, blade_path, parent_blade):
         """Create a new biplane station for a biplane blade."""
         _Station.__init__(self, stn_series, blade_path)
+        self.parent_blade = parent_blade
         self.type = 'biplane'
         self.airfoil = airf.BiplaneAirfoil(
             name=stn_series['airfoil']+'_biplane',
@@ -975,8 +976,14 @@ class BiplaneStation(_Station):
             h_LE_panel=stn_series['LE panel height'],
             h_aft_panel_1=stn_series['aft panel 1 height'],
             h_aft_panel_2=stn_series['aft panel 2 height'],
-            h_int_surf_triax=stn_series['internal surface height triax'],
-            h_int_surf_resin=stn_series['internal surface height resin'],
+            h_int_surf_1_triax=stn_series['internal surface 1 height triax'],
+            h_int_surf_1_resin=stn_series['internal surface 1 height resin'],
+            h_int_surf_2_triax=stn_series['internal surface 2 height triax'],
+            h_int_surf_2_resin=stn_series['internal surface 2 height resin'],
+            h_int_surf_3_triax=stn_series['internal surface 3 height triax'],
+            h_int_surf_3_resin=stn_series['internal surface 3 height resin'],
+            h_int_surf_4_triax=stn_series['internal surface 4 height triax'],
+            h_int_surf_4_resin=stn_series['internal surface 4 height resin'],
             h_ext_surf_triax=stn_series['external surface height triax'],
             h_ext_surf_gelcoat=stn_series['external surface height gelcoat'],
             h_RB_u=stn_series['root buildup height upper'],
@@ -997,10 +1004,17 @@ class BiplaneStation(_Station):
             h_LE_panel_u=stn_series['LE panel height upper'],
             h_aft_panel_1_u=stn_series['aft panel 1 height upper'],
             h_aft_panel_2_u=stn_series['aft panel 2 height upper'],
-            h_int_surf_triax_u=stn_series['internal surface height triax upper'],
-            h_int_surf_resin_u=stn_series['internal surface height resin upper'],
+            h_int_surf_1_triax_u=stn_series['internal surface 1 height triax upper'],
+            h_int_surf_1_resin_u=stn_series['internal surface 1 height resin upper'],
+            h_int_surf_2_triax_u=stn_series['internal surface 2 height triax upper'],
+            h_int_surf_2_resin_u=stn_series['internal surface 2 height resin upper'],
+            h_int_surf_3_triax_u=stn_series['internal surface 3 height triax upper'],
+            h_int_surf_3_resin_u=stn_series['internal surface 3 height resin upper'],
+            h_int_surf_4_triax_u=stn_series['internal surface 4 height triax upper'],
+            h_int_surf_4_resin_u=stn_series['internal surface 4 height resin upper'],
             h_ext_surf_triax_u=stn_series['external surface height triax upper'],
-            h_ext_surf_gelcoat_u=stn_series['external surface height gelcoat upper'])
+            h_ext_surf_gelcoat_u=stn_series['external surface height gelcoat upper'],
+            parent_station=self)
         self.logf.write("****** LAMINATE SCHEDULE ******\n")
         self.logf.write(str(self.structure) + '\n')
         self.logf.flush()

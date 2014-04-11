@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade definition.
 
 Author: Perry Roth-Johnson
-Last updated: April 2, 2014
+Last updated: April 10, 2014
 
 """
 
@@ -1424,9 +1424,11 @@ class BiplaneBlade(_Blade):
     def create_station(self, station_num):
         """Create a new station for this blade."""
         if self._df.ix[station_num]['type'] == 'monoplane':
-            this_stn = stn.MonoplaneStation(self._df.ix[station_num], self.blade_path)
+            this_stn = stn.MonoplaneStation(self._df.ix[station_num],
+                self.blade_path, parent_blade=self)
         elif self._df.ix[station_num]['type'] == 'biplane':
-            this_stn = stn.BiplaneStation(self._df.ix[station_num], self.blade_path)
+            this_stn = stn.BiplaneStation(self._df.ix[station_num],
+                self.blade_path, parent_blade=self)
         else:
             raise ValueError("Values in the 'type' column of {0} must be either 'monoplane' or 'biplane'.".format(self.defn_filename))
         return this_stn

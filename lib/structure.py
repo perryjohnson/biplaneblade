@@ -1,7 +1,7 @@
 """A module for organizing structural part data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: March 21, 2014
+Last updated: April 10, 2014
 
 The different kinds of parts, listed from outside to inside, are:
     external surface (gelcoat, triax)
@@ -60,7 +60,8 @@ height:  {1} (meters)""".format(self.base, self.height)
         else:
             return True
     
-    def bounding_box(self, x_boundary_buffer=1.2, y_boundary_buffer=1.2):
+    def bounding_box(self, x_boundary_buffer=1.2, y_boundary_buffer=1.2,
+        airfoil=None):
         """Returns a polygon of the bounding box that contains this part.
 
         The points of the bounding box are labeled from 1 to 4 as:
@@ -80,7 +81,14 @@ height:  {1} (meters)""".format(self.base, self.height)
 
         """
         af = self.parent_structure.parent_station.airfoil
-        (minx, miny, maxx, maxy) = af.polygon.bounds
+        if airfoil is None:
+            (minx, miny, maxx, maxy) = af.polygon.bounds
+        elif airfoil == 'lower':
+            (minx, miny, maxx, maxy) = af.lower_polygon.bounds
+        elif airfoil == 'upper':
+            (minx, miny, maxx, maxy) = af.upper_polygon.bounds
+        else:
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         if self.left is not None and self.right is not None:
             # if the part has values for the attributes `left` and `right`
             pt1 = (self.left, miny*y_boundary_buffer)
@@ -114,7 +122,7 @@ height:  {1:6.4f} (meters)
 |-> height_gelcoat:  {3:6.4f} (meters)""".format(self.base, self.height,
     self.height_triax, self.height_gelcoat)
     
-    def create_layers(self):
+    def create_layers(self, airfoil=None):
         """Create the gelcoat and triax layers in the external surface.
 
         <external_surface>.layer['gelcoat'] : gelcoat layer
@@ -125,14 +133,26 @@ height:  {1:6.4f} (meters)
         # create the gelcoat layer
         af = st.parent_station.airfoil
         b = st.parent_station.parent_blade
-        op_gelcoat = af.polygon  # outer profile is the airfoil profile
+        if airfoil is None:
+            op_gelcoat = af.polygon  # outer profile is the airfoil profile
+        elif airfoil == 'lower':
+            op_gelcoat = af.lower_polygon
+        elif airfoil == 'upper':
+            op.gelcoat = af.upper_polygon
+        else:
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         ip_gelcoat = op_gelcoat.buffer(-self.height_gelcoat)
         polygon_gelcoat = op_gelcoat.difference(ip_gelcoat)
         self.layer['gelcoat'] = l.Layer(polygon_gelcoat,
             b.dict_of_materials['gelcoat'], parent_part=self,
             name='gelcoat', face_color='#5EE54C')
         assert self.layer['gelcoat'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['gelcoat'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['gelcoat'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['gelcoat'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['gelcoat'])
         # create the triax layer
         op_triax = ip_gelcoat  # outer profile is the gelcoat inner profile
         ip_triax = op_triax.buffer(-self.height_triax)
@@ -141,7 +161,12 @@ height:  {1:6.4f} (meters)
             b.dict_of_materials['triaxial GFRP'], parent_part=self,
             name='triax', face_color='#5EE54C')
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['triax'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['triax'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['triax'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['triax'])
 
     def add_new_layer(self, new_name, new_polygon, material):
         """Add a new layer to the external surface part."""
@@ -367,7 +392,7 @@ height:  {1:6.4f} (meters)
 
 class RootBuildup(Part):
     """Define triax dimensions of the root buildup."""
-    def create_layers(self):
+    def create_layers(self, airfoil=None):
         """Create the triax layer in the root buildup.
 
         <root_buildup>.layer['triax'] : triax layer (entire annulus)
@@ -377,14 +402,26 @@ class RootBuildup(Part):
         # create the triax layer
         af = st.parent_station.airfoil
         b = st.parent_station.parent_blade
-        op = af.polygon.buffer(-st.external_surface.height)
+        if airfoil is None:
+            op = af.polygon.buffer(-st.external_surface.height)
+        elif airfoil == 'lower':
+            op = af.lower_polygon.buffer(-st.lower_external_surface.height)
+        elif airfoil == 'upper':
+            op = af.upper_polygon.buffer(-st.upper_external_surface.height)
+        else:
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         ip = op.buffer(-self.height)
         p = op.difference(ip)  # this polygon is like an annulus
         self.layer['triax'] = l.Layer(p, b.dict_of_materials['triaxial GFRP'],
             parent_part=self, name='triax', face_color='#BE925A')
         # check that layer['triax'] is a Polygon
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['triax'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['triax'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['triax'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['triax'])
 
     def add_new_layer(self, new_name, new_polygon, material='triax'):
         """Add a new alternate layer to the root buildup part."""
@@ -495,7 +532,7 @@ class RootBuildup(Part):
 
 class LE_Panel(Part):
     """Define foam dimensions of the leading edge panel."""
-    def create_layers(self):
+    def create_layers(self, airfoil=None):
         """Create the foam layer in the leading edge panel.
 
         <LE_panel>.layer['foam'] : the only layer in the LE panel (foam)
@@ -506,28 +543,55 @@ class LE_Panel(Part):
         af = st.parent_station.airfoil
         b = st.parent_station.parent_blade
         # 1. get outer profile
-        if st.root_buildup.exists():
-            op = af.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
+        if airfoil is None:
+            if st.root_buildup.exists():
+                op = af.polygon.buffer(-(st.external_surface.height + 
+                    st.root_buildup.height))
+            else:
+                op = af.polygon.buffer(-st.external_surface.height)
+        elif airfoil == 'lower':
+            if st.lower_root_buildup.exists():
+                op = af.lower_polygon.buffer(
+                    -(st.lower_external_surface.height + 
+                    st.lower_root_buildup.height))
+            else:
+                op = af.lower_polygon.buffer(-st.lower_external_surface.height)
+        elif airfoil == 'upper':
+            if st.upper_root_buildup.exists():
+                op = af.upper_polygon.buffer(
+                    -(st.upper_external_surface.height + 
+                    st.upper_root_buildup.height))
+            else:
+                op = af.upper_polygon.buffer(-st.upper_external_surface.height)
         else:
-            op = af.polygon.buffer(-st.external_surface.height)
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         # 2. erode the outer profile by the part thickness
         ip = op.buffer(-self.height)
         # 3. cut out the part interior from the outer profile
         ac = op.difference(ip)
         # 4. draw a bounding box at the part edges
-        bb = self.bounding_box()
+        if airfoil is None:
+            bb = self.bounding_box()
+        elif airfoil == 'lower':
+            bb = self.bounding_box(airfoil='lower')
+        elif airfoil == 'upper':
+            bb = self.bounding_box(airfoil='upper')
         # 5. cut out the structural part
         p = ac.intersection(bb)
         self.layer['foam'] = l.Layer(p, b.dict_of_materials['foam'],
             parent_part=self, name='foam')
         assert self.layer['foam'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['foam'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['foam'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['foam'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['foam'])
 
 
 class SparCap(Part):
     """Define uniax dimensions of the lower and upper spar caps."""
-    def create_layers(self):
+    def create_layers(self, airfoil=None):
         """Create the uniax layers in the lower and upper spar caps.
 
         <spar_cap>.layer['lower'] : lower spar cap
@@ -539,17 +603,39 @@ class SparCap(Part):
         af = st.parent_station.airfoil
         b = st.parent_station.parent_blade
         # 1. get outer profile
-        if st.root_buildup.exists():
-            op = af.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
+        if airfoil is None:
+            if st.root_buildup.exists():
+                op = af.polygon.buffer(-(st.external_surface.height + 
+                    st.root_buildup.height))
+            else:
+                op = af.polygon.buffer(-st.external_surface.height)
+        elif airfoil == 'lower':
+            if st.lower_root_buildup.exists():
+                op = af.lower_polygon.buffer(
+                    -(st.lower_external_surface.height + 
+                    st.lower_root_buildup.height))
+            else:
+                op = af.lower_polygon.buffer(-st.lower_external_surface.height)
+        elif airfoil == 'upper':
+            if st.upper_root_buildup.exists():
+                op = af.upper_polygon.buffer(
+                    -(st.upper_external_surface.height + 
+                    st.upper_root_buildup.height))
+            else:
+                op = af.upper_polygon.buffer(-st.upper_external_surface.height)
         else:
-            op = af.polygon.buffer(-st.external_surface.height)
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         # 2. erode the outer profile by the part thickness
         ip = op.buffer(-self.height)
         # 3. cut out the part interior from the outer profile
         ac = op.difference(ip)
         # 4. draw a bounding box at the part edges
-        bb = self.bounding_box()
+        if airfoil is None:
+            bb = self.bounding_box()
+        elif airfoil == 'lower':
+            bb = self.bounding_box(airfoil='lower')
+        elif airfoil == 'upper':
+            bb = self.bounding_box(airfoil='upper')
         # 5. cut out the structural part
         p = ac.intersection(bb)
         # 6. find the lower spar cap
@@ -563,12 +649,22 @@ class SparCap(Part):
         self.layer['lower'] = l.Layer(pl, b.dict_of_materials['uniaxial GFRP'],
             parent_part=self, name='lower')
         assert self.layer['lower'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['lower'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['lower'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['lower'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['lower'])
         # 8. add the upper spar cap
         self.layer['upper'] = l.Layer(pu, b.dict_of_materials['uniaxial GFRP'],
             parent_part=self, name='upper')
         assert self.layer['upper'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['upper'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['upper'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['upper'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['upper'])
 
 
 class AftPanel(Part):
@@ -577,7 +673,7 @@ class AftPanel(Part):
         Part.__init__(self, parent_structure, base, height)
         self.num = num
 
-    def create_layers(self):
+    def create_layers(self, airfoil=None):
         """Create the foam layers in the lower and upper aft panels.
 
         <aft_panel>.layer['lower'] : lower aft panel
@@ -589,17 +685,39 @@ class AftPanel(Part):
         af = st.parent_station.airfoil
         b = st.parent_station.parent_blade
         # 1. get outer profile
-        if st.root_buildup.exists():
-            op = af.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
+        if airfoil is None:
+            if st.root_buildup.exists():
+                op = af.polygon.buffer(-(st.external_surface.height + 
+                    st.root_buildup.height))
+            else:
+                op = af.polygon.buffer(-st.external_surface.height)
+        elif airfoil == 'lower':
+            if st.lower_root_buildup.exists():
+                op = af.lower_polygon.buffer(
+                    -(st.lower_external_surface.height + 
+                    st.lower_root_buildup.height))
+            else:
+                op = af.lower_polygon.buffer(-st.lower_external_surface.height)
+        elif airfoil == 'upper':
+            if st.upper_root_buildup.exists():
+                op = af.upper_polygon.buffer(
+                    -(st.upper_external_surface.height + 
+                    st.upper_root_buildup.height))
+            else:
+                op = af.upper_polygon.buffer(-st.upper_external_surface.height)
         else:
-            op = af.polygon.buffer(-st.external_surface.height)
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         # 2. erode the outer profile by the part thickness
         ip = op.buffer(-self.height)
         # 3. cut out the part interior from the outer profile
         ac = op.difference(ip)
         # 4. draw a bounding box at the part edges
-        bb = self.bounding_box()
+        if airfoil is None:
+            bb = self.bounding_box()
+        elif airfoil == 'lower':
+            bb = self.bounding_box(airfoil='lower')
+        elif airfoil == 'upper':
+            bb = self.bounding_box(airfoil='upper')
         # 5. cut out the structural part
         p = ac.intersection(bb)
         # 6. find the lower aft panel
@@ -613,12 +731,22 @@ class AftPanel(Part):
         self.layer['lower'] = l.Layer(pl, b.dict_of_materials['foam'],
             parent_part=self, name='lower')
         assert self.layer['lower'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['lower'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['lower'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['lower'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['lower'])
         # 8. add the upper aft panel
         self.layer['upper'] = l.Layer(pu, b.dict_of_materials['foam'],
             parent_part=self, name='upper')
         assert self.layer['upper'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['upper'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['upper'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['upper'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['upper'])
 
 
 class TE_Reinforcement(Part):
@@ -661,7 +789,7 @@ height:  {1:6.4f} (meters)
 |-> height_foam:   {3:6.4f} (meters)""".format(self.base, self.height,
     self.height_uniax, self.height_foam)
 
-    def create_layers(self):
+    def create_layers(self, airfoil=None):
         """Create the uniax and foam layers in the TE reinforcement.
 
         The TE reinforcement is split into one OR two regions:
@@ -674,25 +802,57 @@ height:  {1:6.4f} (meters)
         af = st.parent_station.airfoil
         b = st.parent_station.parent_blade
         # 1. get outer profile
-        if st.root_buildup.exists():
-            op_uniax = af.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
+        if airfoil is None:
+            if st.root_buildup.exists():
+                op_uniax = af.polygon.buffer(-(st.external_surface.height + 
+                    st.root_buildup.height))
+            else:
+                op_uniax = af.polygon.buffer(-st.external_surface.height)
+        elif airfoil == 'lower':
+            if st.lower_root_buildup.exists():
+                op_uniax = af.lower_polygon.buffer(
+                    -(st.lower_external_surface.height + 
+                    st.lower_root_buildup.height))
+            else:
+                op_uniax = af.lower_polygon.buffer(
+                    -st.lower_external_surface.height)
+        elif airfoil == 'upper':
+            if st.upper_root_buildup.exists():
+                op_uniax = af.upper_polygon.buffer(
+                    -(st.upper_external_surface.height + 
+                    st.upper_root_buildup.height))
+            else:
+                op_uniax = af.upper_polygon.buffer(
+                    -st.upper_external_surface.height)
         else:
-            op_uniax = af.polygon.buffer(-st.external_surface.height)
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         # 2. erode the outer profile by the uniax thickness
         ip_uniax = op_uniax.buffer(-self.height_uniax)
         # 3. cut out the uniax layer from the outer profile
         ac_uniax = op_uniax.difference(ip_uniax)
         # 4. draw a bounding box at the TE reinforcement edges
-        bb = self.bounding_box()
+        if airfoil is None:
+            bb = self.bounding_box()
+        elif airfoil == 'lower':
+            bb = self.bounding_box(airfoil='lower')
+        elif airfoil == 'upper':
+            bb = self.bounding_box(airfoil='upper')
         # 5. cut out the uniax layer
         polygon_uniax = ac_uniax.intersection(bb)
         # 6. add the uniax layer
         self.layer['uniax'] = l.Layer(polygon_uniax,
             b.dict_of_materials['uniaxial GFRP'], parent_part=self,
             name='uniax', face_color='#F366BA')
-        assert self.layer['uniax'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['uniax'])
+        try:
+            assert self.layer['uniax'].polygon.geom_type == 'Polygon'
+        except AssertionError:
+            print "***WARNING: Station #{0} failed to create uniax layer of TE Reinforcement".format(self.parent_structure.parent_station.station_num)
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['uniax'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['uniax'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['uniax'])
         if not isnan(self.height_foam):
             # create the foam layer
             # 1. get outer profile
@@ -708,7 +868,12 @@ height:  {1:6.4f} (meters)
                 b.dict_of_materials['foam'], parent_part=self, name='foam',
                 face_color='#F366BA')
             assert self.layer['foam'].polygon.geom_type == 'Polygon'
-            st._list_of_layers.append(self.layer['foam'])
+            if airfoil is None:
+                st._list_of_layers.append(self.layer['foam'])
+            elif airfoil == 'lower':
+                st._list_of_lower_layers.append(self.layer['foam'])
+            elif airfoil == 'upper':
+                st._list_of_upper_layers.append(self.layer['foam'])
 
     def add_new_layer(self, new_name, new_polygon, material):
         """Add a new layer to the TE reinforcement part."""
@@ -976,7 +1141,7 @@ height:  {3} (meters)
 x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
     self.base_foam, self.height, self.x2)
 
-    def bounding_box(self, y_boundary_buffer=1.2):
+    def bounding_box(self, y_boundary_buffer=1.2, airfoil=None):
         """Returns 3 bounding boxes for the biax and foam regions of the SW.
 
         The points of each bounding box are labeled from 1 to 4 as:
@@ -987,7 +1152,14 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
 
         """
         af = self.parent_structure.parent_station.airfoil
-        (minx, miny, maxx, maxy) = af.polygon.bounds
+        if airfoil is None:
+            (minx, miny, maxx, maxy) = af.polygon.bounds
+        elif airfoil == 'lower':
+            (minx, miny, maxx, maxy) = af.lower_polygon.bounds
+        elif airfoil == 'upper':
+            (minx, miny, maxx, maxy) = af.upper_polygon.bounds
+        else:
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         # left biax bounding box
         pt1 = (self.left, miny*y_boundary_buffer)
         pt2 = (self.left+self.base_biax, miny*y_boundary_buffer)
@@ -1008,7 +1180,7 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
         right_biax_bb = Polygon([pt1, pt2, pt3, pt4])
         return (left_biax_bb, foam_bb, right_biax_bb)
     
-    def create_layers(self):
+    def create_layers(self, airfoil=None):
         """Create the biax and foam layers in this shear web.
 
         <shear_web>.layer['biax, left'] is the left biax layer
@@ -1021,13 +1193,37 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
         af = st.parent_station.airfoil
         b = st.parent_station.parent_blade
         # 1. get outer profile
-        if st.root_buildup.exists():
-            op = af.polygon.buffer(-(st.external_surface.height + 
-                st.root_buildup.height))
+        if airfoil is None:
+            if st.root_buildup.exists():
+                op = af.polygon.buffer(-(st.external_surface.height + 
+                    st.root_buildup.height))
+            else:
+                op = af.polygon.buffer(-st.external_surface.height)
+        elif airfoil == 'lower':
+            if st.lower_root_buildup.exists():
+                op = af.lower_polygon.buffer(
+                    -(st.lower_external_surface.height + 
+                    st.lower_root_buildup.height))
+            else:
+                op = af.lower_polygon.buffer(-st.lower_external_surface.height)
+        elif airfoil == 'upper':
+            if st.upper_root_buildup.exists():
+                op = af.upper_polygon.buffer(
+                    -(st.upper_external_surface.height + 
+                    st.upper_root_buildup.height))
+            else:
+                op = af.upper_polygon.buffer(-st.upper_external_surface.height)
         else:
-            op = af.polygon.buffer(-st.external_surface.height)
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         # 2. get bounding boxes for the biax and foam regions
-        (bb_left_biax, bb_foam, bb_right_biax) = self.bounding_box()
+        if airfoil is None:
+            (bb_left_biax, bb_foam, bb_right_biax) = self.bounding_box()
+        elif airfoil == 'lower':
+            (bb_left_biax, bb_foam, bb_right_biax) = self.bounding_box(
+                airfoil='lower')
+        elif airfoil == 'upper':
+            (bb_left_biax, bb_foam, bb_right_biax) = self.bounding_box(
+                airfoil='upper')
         # 3. cut out the structural parts
         p_left_biax = op.intersection(bb_left_biax)
         p_foam = op.intersection(bb_foam)
@@ -1037,18 +1233,33 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
             b.dict_of_materials['biaxial GFRP'], parent_part=self,
             name='biax, left')
         assert self.layer['biax, left'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['biax, left'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['biax, left'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['biax, left'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['biax, left'])
         # 5. add the foam layer
         self.layer['foam'] = l.Layer(p_foam, b.dict_of_materials['foam'],
             parent_part=self, name='foam')
         assert self.layer['foam'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['foam'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['foam'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['foam'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['foam'])
         # 6. add the right biax layer
         self.layer['biax, right'] = l.Layer(p_right_biax,
             b.dict_of_materials['biaxial GFRP'], parent_part=self,
             name='biax, right')
         assert self.layer['biax, right'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['biax, right'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['biax, right'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['biax, right'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['biax, right'])
 
 
 class InternalSurface(Part):
@@ -1102,7 +1313,7 @@ height:  {1:6.4f} (meters)
         loop = Polygon(good_loops[self.num-1])
         return loop
 
-    def create_layers(self, merged_polygon):
+    def create_layers(self, merged_polygon, airfoil=None):
         """Create the triax and resin layers in the internal surface.
 
         <internal_surface>.layer['triax'] : triax layer
@@ -1119,7 +1330,14 @@ height:  {1:6.4f} (meters)
             b.dict_of_materials['triaxial GFRP'], parent_part=self,
             name='triax', face_color='#999999')
         assert self.layer['triax'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['triax'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['triax'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['triax'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['triax'])
+        else:
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         # resin region
         op_resin = ip_triax
         ip_resin = op_resin.buffer(-self.height_resin)
@@ -1128,7 +1346,12 @@ height:  {1:6.4f} (meters)
             b.dict_of_materials['resin'], parent_part=self, name='resin',
             face_color='#999999')
         assert self.layer['resin'].polygon.geom_type == 'Polygon'
-        st._list_of_layers.append(self.layer['resin'])
+        if airfoil is None:
+            st._list_of_layers.append(self.layer['resin'])
+        elif airfoil == 'lower':
+            st._list_of_lower_layers.append(self.layer['resin'])
+        elif airfoil == 'upper':
+            st._list_of_upper_layers.append(self.layer['resin'])
 
     def add_new_layer(self, new_name, new_polygon, material):
         """Add a new alternate layer to the internal surface part."""
@@ -1329,10 +1552,6 @@ class MonoplaneStructure:
         if self.TE_reinforcement.exists():
             if self.parent_station.airfoil.has_sharp_TE:
                 self.TE_reinforcement.create_alternate_layers()
-        # if self.external_surface.exists():
-            # self.external_surface.create_alternate_layers()
-        # if self.internal_surface_1.exists():
-            # self.internal_surface_1.create_alternate_layers()
 
     def merge_all_polygons(self, plot_flag=False):
         """Merges all the layer polygons in this structure into one polygon.
@@ -2431,40 +2650,178 @@ class BiplaneStructure:
     def __init__(self, h_RB, b_SC, h_SC, b_SW1_biax, b_SW1_foam, x2_SW1,
                  b_SW2_biax, b_SW2_foam, x2_SW2, b_SW3_biax, b_SW3_foam,
                  x2_SW3, b_TE_reinf, h_TE_reinf_uniax, h_TE_reinf_foam,
-                 h_LE_panel, h_aft_panel_1, h_aft_panel_2, h_int_surf_triax,
-                 h_int_surf_resin, h_ext_surf_triax, h_ext_surf_gelcoat,
+                 h_LE_panel, h_aft_panel_1, h_aft_panel_2, h_int_surf_1_triax,
+                 h_int_surf_1_resin, h_int_surf_2_triax, h_int_surf_2_resin,
+                 h_int_surf_3_triax, h_int_surf_3_resin, h_int_surf_4_triax,
+                 h_int_surf_4_resin, h_ext_surf_triax, h_ext_surf_gelcoat,
                  h_RB_u, b_SC_u, h_SC_u, b_SW1_biax_u, b_SW1_foam_u, x2_SW1_u,
                  b_SW2_biax_u, b_SW2_foam_u, x2_SW2_u, b_SW3_biax_u,
                  b_SW3_foam_u, x2_SW3_u, b_TE_reinf_u, h_TE_reinf_uniax_u,
                  h_TE_reinf_foam_u, h_LE_panel_u, h_aft_panel_1_u,
-                 h_aft_panel_2_u, h_int_surf_triax_u, h_int_surf_resin_u,
-                 h_ext_surf_triax_u, h_ext_surf_gelcoat_u):
-        self.lower_root_buildup = Part(np.nan, h_RB)
-        self.lower_spar_cap = Part(b_SC, h_SC)
-        self.lower_shear_web_1 = ShearWeb(b_SW1_biax, b_SW1_foam, x2_SW1)
-        self.lower_shear_web_2 = ShearWeb(b_SW2_biax, b_SW2_foam, x2_SW2)
-        self.lower_shear_web_3 = ShearWeb(b_SW3_biax, b_SW3_foam, x2_SW3)
-        self.lower_TE_reinforcement = TE_Reinforcement(b_TE_reinf, h_TE_reinf_uniax, 
-                                                 h_TE_reinf_foam)
-        self.lower_LE_panel = Part(np.nan, h_LE_panel)
-        self.lower_aft_panel_1 = Part(np.nan, h_aft_panel_1)
-        self.lower_aft_panel_2 = Part(np.nan, h_aft_panel_2)
-        self.lower_internal_surface = InternalSurface(np.nan, h_int_surf_triax, h_int_surf_resin)
-        self.lower_external_surface = ExternalSurface(np.nan, h_ext_surf_triax, h_ext_surf_gelcoat)
-        self.upper_root_buildup = Part(np.nan, h_RB_u)
-        self.upper_spar_cap = Part(b_SC_u, h_SC_u)
-        self.upper_shear_web_1 = ShearWeb(b_SW1_biax_u, b_SW1_foam_u, x2_SW1_u)
-        self.upper_shear_web_2 = ShearWeb(b_SW2_biax_u, b_SW2_foam_u, x2_SW2_u)
-        self.upper_shear_web_3 = ShearWeb(b_SW3_biax_u, b_SW3_foam_u, x2_SW3_u)
-        self.upper_TE_reinforcement = TE_Reinforcement(b_TE_reinf_u,
-            h_TE_reinf_uniax_u, h_TE_reinf_foam_u)
-        self.upper_LE_panel = Part(np.nan, h_LE_panel_u)
-        self.upper_aft_panel_1 = Part(np.nan, h_aft_panel_1_u)
-        self.upper_aft_panel_2 = Part(np.nan, h_aft_panel_2_u)
-        self.upper_internal_surface = InternalSurface(np.nan,
-            h_int_surf_triax_u, h_int_surf_resin_u)
-        self.upper_external_surface = ExternalSurface(np.nan,
-            h_ext_surf_triax_u, h_ext_surf_gelcoat_u)
+                 h_aft_panel_2_u, h_int_surf_1_triax_u, h_int_surf_1_resin_u,
+                 h_int_surf_2_triax_u, h_int_surf_2_resin_u,
+                 h_int_surf_3_triax_u, h_int_surf_3_resin_u,
+                 h_int_surf_4_triax_u, h_int_surf_4_resin_u,
+                 h_ext_surf_triax_u, h_ext_surf_gelcoat_u, parent_station):
+        self.parent_station = parent_station
+        self._list_of_lower_layers = []
+        self._list_of_upper_layers = []
+        # self._dict_of_edge_nums = {}
+        self.truegrid_input_filename = 'mesh_stn{0:02d}_start.tg'.format(self.parent_station.station_num)
+        self.lower_root_buildup = RootBuildup(
+            parent_structure = self,
+            base = np.nan,
+            height = h_RB)
+        self.lower_spar_cap = SparCap(
+            parent_structure = self,
+            base = b_SC,
+            height = h_SC)
+        self.lower_shear_web_1 = ShearWeb(
+            num = 1,
+            parent_structure = self,
+            base_biax = b_SW1_biax,
+            base_foam = b_SW1_foam,
+            x2 = x2_SW1)
+        self.lower_shear_web_2 = ShearWeb(
+            num = 2,
+            parent_structure = self,
+            base_biax = b_SW2_biax,
+            base_foam = b_SW2_foam,
+            x2 = x2_SW2)
+        self.lower_shear_web_3 = ShearWeb(
+            num = 3,
+            parent_structure = self,
+            base_biax = b_SW3_biax,
+            base_foam = b_SW3_foam,
+            x2 = x2_SW3)
+        self.lower_TE_reinforcement = TE_Reinforcement(
+            parent_structure = self,
+            base = b_TE_reinf,
+            height_uniax = h_TE_reinf_uniax,
+            height_foam = h_TE_reinf_foam)
+        self.lower_LE_panel = LE_Panel(
+            parent_structure = self,
+            base = np.nan,
+            height = h_LE_panel)
+        self.lower_aft_panel_1 = AftPanel(
+            num = 1,
+            parent_structure = self,
+            base = np.nan,
+            height = h_aft_panel_1)
+        self.lower_aft_panel_2 = AftPanel(
+            num = 2,
+            parent_structure = self,
+            base = np.nan,
+            height = h_aft_panel_2)
+        self.lower_internal_surface_1 = InternalSurface(
+            num = 1,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_1_triax,
+            height_resin = h_int_surf_1_resin)
+        self.lower_internal_surface_2 = InternalSurface(
+            num = 2,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_2_triax,
+            height_resin = h_int_surf_2_resin)
+        self.lower_internal_surface_3 = InternalSurface(
+            num = 3,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_3_triax,
+            height_resin = h_int_surf_3_resin)
+        self.lower_internal_surface_4 = InternalSurface(
+            num = 4,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_4_triax,
+            height_resin = h_int_surf_4_resin)
+        self.lower_external_surface = ExternalSurface(
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_ext_surf_triax,
+            height_gelcoat = h_ext_surf_gelcoat)
+        self.lower_area = None
+        self.lower_mass = None
+        self.upper_root_buildup = RootBuildup(
+            parent_structure = self,
+            base = np.nan,
+            height = h_RB)
+        self.upper_spar_cap = SparCap(
+            parent_structure = self,
+            base = b_SC,
+            height = h_SC)
+        self.upper_shear_web_1 = ShearWeb(
+            num = 1,
+            parent_structure = self,
+            base_biax = b_SW1_biax,
+            base_foam = b_SW1_foam,
+            x2 = x2_SW1)
+        self.upper_shear_web_2 = ShearWeb(
+            num = 2,
+            parent_structure = self,
+            base_biax = b_SW2_biax,
+            base_foam = b_SW2_foam,
+            x2 = x2_SW2)
+        self.upper_shear_web_3 = ShearWeb(
+            num = 3,
+            parent_structure = self,
+            base_biax = b_SW3_biax,
+            base_foam = b_SW3_foam,
+            x2 = x2_SW3)
+        self.upper_TE_reinforcement = TE_Reinforcement(
+            parent_structure = self,
+            base = b_TE_reinf,
+            height_uniax = h_TE_reinf_uniax,
+            height_foam = h_TE_reinf_foam)
+        self.upper_LE_panel = LE_Panel(
+            parent_structure = self,
+            base = np.nan,
+            height = h_LE_panel)
+        self.upper_aft_panel_1 = AftPanel(
+            num = 1,
+            parent_structure = self,
+            base = np.nan,
+            height = h_aft_panel_1)
+        self.upper_aft_panel_2 = AftPanel(
+            num = 2,
+            parent_structure = self,
+            base = np.nan,
+            height = h_aft_panel_2)
+        self.upper_internal_surface_1 = InternalSurface(
+            num = 1,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_1_triax,
+            height_resin = h_int_surf_1_resin)
+        self.upper_internal_surface_2 = InternalSurface(
+            num = 2,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_2_triax,
+            height_resin = h_int_surf_2_resin)
+        self.upper_internal_surface_3 = InternalSurface(
+            num = 3,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_3_triax,
+            height_resin = h_int_surf_3_resin)
+        self.upper_internal_surface_4 = InternalSurface(
+            num = 4,
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_int_surf_4_triax,
+            height_resin = h_int_surf_4_resin)
+        self.upper_external_surface = ExternalSurface(
+            parent_structure = self,
+            base = np.nan,
+            height_triax = h_ext_surf_triax,
+            height_gelcoat = h_ext_surf_gelcoat)
+        self.upper_area = None
+        self.upper_mass = None
+        self.area = None
+        self.mass = None
 
     def __str__(self):
         """Returns a string of all the internal dimensions for this structure."""
@@ -2488,8 +2845,14 @@ class BiplaneStructure:
         s += "  " + str(self.lower_aft_panel_1) + '\n'
         s += "  --- AFT PANEL 2 ---\n"
         s += "  " + str(self.lower_aft_panel_2) + '\n'
-        s += "  --- INTERNAL SURFACE ---\n"
-        s += "  " + str(self.lower_internal_surface) + '\n'
+        s += "  --- INTERNAL SURFACE 1 ---\n"
+        s += "  " + str(self.lower_internal_surface_1) + '\n'
+        s += "  --- INTERNAL SURFACE 2 ---\n"
+        s += "  " + str(self.lower_internal_surface_2) + '\n'
+        s += "  --- INTERNAL SURFACE 3 ---\n"
+        s += "  " + str(self.lower_internal_surface_3) + '\n'
+        s += "  --- INTERNAL SURFACE 4 ---\n"
+        s += "  " + str(self.lower_internal_surface_4) + '\n'
         s += "  --- EXTERNAL SURFACE ---\n"
         s += "  " + str(self.lower_external_surface) + '\n'
         s += "****** Upper Airfoil ******\n"
@@ -2511,8 +2874,14 @@ class BiplaneStructure:
         s += "  " + str(self.upper_aft_panel_1) + '\n'
         s += "  --- AFT PANEL 2 ---\n"
         s += "  " + str(self.upper_aft_panel_2) + '\n'
-        s += "  --- INTERNAL SURFACE ---\n"
-        s += "  " + str(self.upper_internal_surface) + '\n'
+        s += "  --- INTERNAL SURFACE 1 ---\n"
+        s += "  " + str(self.upper_internal_surface_1) + '\n'
+        s += "  --- INTERNAL SURFACE 2 ---\n"
+        s += "  " + str(self.upper_internal_surface_2) + '\n'
+        s += "  --- INTERNAL SURFACE 3 ---\n"
+        s += "  " + str(self.upper_internal_surface_3) + '\n'
+        s += "  --- INTERNAL SURFACE 4 ---\n"
+        s += "  " + str(self.upper_internal_surface_4) + '\n'
         s += "  --- EXTERNAL SURFACE ---\n"
         s += "  " + str(self.upper_external_surface) + '\n'
         return s
@@ -2546,3 +2915,179 @@ class BiplaneStructure:
              'upper internal surface': self.upper_internal_surface.exists(),
              'upper external surface': self.upper_external_surface.exists()}
         return d
+
+    def create_all_layers(self):
+        """Create polygons for single material layers of each structural part."""
+        # lower layers
+        if self.lower_external_surface.exists():
+            self.lower_external_surface.create_layers(airfoil='lower')
+        if self.lower_root_buildup.exists():
+            self.lower_root_buildup.create_layers(airfoil='lower')
+        if self.lower_LE_panel.exists():
+            self.lower_LE_panel.create_layers(airfoil='lower')
+        if self.lower_spar_cap.exists():
+            self.lower_spar_cap.create_layers(airfoil='lower')
+        if self.lower_aft_panel_1.exists():
+            self.lower_aft_panel_1.create_layers(airfoil='lower')
+        if self.lower_aft_panel_2.exists():
+            self.lower_aft_panel_2.create_layers(airfoil='lower')
+        if self.lower_shear_web_1.exists():
+            self.lower_shear_web_1.create_layers(airfoil='lower')
+        if self.lower_shear_web_2.exists():
+            self.lower_shear_web_2.create_layers(airfoil='lower')
+        if self.lower_shear_web_3.exists():
+            self.lower_shear_web_3.create_layers(airfoil='lower')
+        if self.lower_TE_reinforcement.exists():
+            self.lower_TE_reinforcement.create_layers(airfoil='lower')
+        lmp = self.merge_all_polygons(airfoil='lower')
+        if self.lower_internal_surface_1.exists():
+            self.lower_internal_surface_1.create_layers(lmp, airfoil='lower')
+        if self.lower_internal_surface_2.exists():
+            self.lower_internal_surface_2.create_layers(lmp, airfoil='lower')
+        if self.lower_internal_surface_3.exists():
+            self.lower_internal_surface_3.create_layers(lmp, airfoil='lower')
+        if self.lower_internal_surface_4.exists():
+            self.lower_internal_surface_4.create_layers(lmp, airfoil='lower')
+        # upper layers
+        if self.upper_external_surface.exists():
+            self.upper_external_surface.create_layers(airfoil='upper')
+        if self.upper_root_buildup.exists():
+            self.upper_root_buildup.create_layers(airfoil='upper')
+        if self.upper_LE_panel.exists():
+            self.upper_LE_panel.create_layers(airfoil='upper')
+        if self.upper_spar_cap.exists():
+            self.upper_spar_cap.create_layers(airfoil='upper')
+        if self.upper_aft_panel_1.exists():
+            self.upper_aft_panel_1.create_layers(airfoil='upper')
+        if self.upper_aft_panel_2.exists():
+            self.upper_aft_panel_2.create_layers(airfoil='upper')
+        if self.upper_shear_web_1.exists():
+            self.upper_shear_web_1.create_layers(airfoil='upper')
+        if self.upper_shear_web_2.exists():
+            self.upper_shear_web_2.create_layers(airfoil='upper')
+        if self.upper_shear_web_3.exists():
+            self.upper_shear_web_3.create_layers(airfoil='upper')
+        if self.upper_TE_reinforcement.exists():
+            self.upper_TE_reinforcement.create_layers(airfoil='upper')
+        ump = self.merge_all_polygons(airfoil='upper')
+        if self.upper_internal_surface_1.exists():
+            self.upper_internal_surface_1.create_layers(ump, airfoil='upper')
+        if self.upper_internal_surface_2.exists():
+            self.upper_internal_surface_2.create_layers(ump, airfoil='upper')
+        if self.upper_internal_surface_3.exists():
+            self.upper_internal_surface_3.create_layers(ump, airfoil='upper')
+        if self.upper_internal_surface_4.exists():
+            self.upper_internal_surface_4.create_layers(ump, airfoil='upper')
+
+    def merge_all_polygons(self, airfoil, plot_flag=False):
+        """Merges all the layer polygons in this structure into one polygon.
+
+        NOTE: internal surface polygons are NOT merged!
+
+        """
+        stn = self.parent_station
+        if plot_flag:
+            fig, ax = plt.subplots()
+            ax.set_title("Station #{0}, {1}, {2}% span".format(stn.station_num,
+                stn.airfoil.name, stn.coords.x1))
+            ax.set_aspect('equal')
+            ax.grid('on')
+            ax.set_xlabel('x2 [meters]')
+            ax.set_ylabel('x3 [meters]')
+            patch = PolygonPatch(stn.airfoil.polygon, fc='None', ec='#999999',
+                alpha=0.8)
+            ax.add_patch(patch)
+            (minx, miny, maxx, maxy) = stn.airfoil.polygon.bounds
+            ax.set_xlim([minx*1.2,maxx*1.2])
+            ax.set_ylim([miny*1.2,maxy*1.2])
+        # merge everything
+        list_of_polygons = []
+        if airfoil is None:
+            this_list = self._list_of_layers
+        elif airfoil == 'lower':
+            this_list = self._list_of_lower_layers
+        elif airfoil == 'upper':
+            this_list = self._list_of_upper_layers
+        else:
+            raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
+        for layer in this_list:
+            list_of_polygons.append(layer.polygon)
+        try:
+            p = cascaded_union(list_of_polygons)
+        except ValueError:
+            # gather all the parts
+            p = self.external_surface.layer['gelcoat'].polygon
+            p = p.union(self.external_surface.layer['triax'].polygon)
+            if self.root_buildup.exists():
+                RB = self.root_buildup.layer['triax'].polygon
+                p = p.union(RB)
+            if self.LE_panel.exists():
+                LE = self.LE_panel.layer['foam'].polygon
+                p = p.union(LE)
+            if self.spar_cap.exists():
+                sc_l = self.spar_cap.layer['lower'].polygon
+                try:
+                    p = p.union(sc_l)
+                except TopologicalError:
+                    print " [Warning] could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                sc_u = self.spar_cap.layer['upper'].polygon
+                try:
+                    p = p.union(sc_u)
+                except TopologicalError:
+                    print " [Warning] could not merge upper spar cap in Station #{0}".format(self.parent_station.station_num)
+                    try:
+                        p = sc_u.union(p)
+                        print " ... SUCCESSFULLY merged upper spar cap on the second try!"
+                    except TopologicalError:
+                        print " ... on second try, still COULD NOT merge upper spar cap!"
+            if self.aft_panel_1.exists():
+                aft1_u = self.aft_panel_1.layer['upper'].polygon
+                aft1_l = self.aft_panel_1.layer['lower'].polygon
+                p = p.union(aft1_u)
+                p = p.union(aft1_l)
+            if self.aft_panel_2.exists():
+                aft2_u = self.aft_panel_2.layer['upper'].polygon
+                aft2_l = self.aft_panel_2.layer['lower'].polygon
+                p = p.union(aft2_u)
+                p = p.union(aft2_l)
+            if self.TE_reinforcement.exists():
+                TE_uniax = self.TE_reinforcement.layer['uniax'].polygon
+                try:
+                    p = p.union(TE_uniax)
+                except TopologicalError:
+                    print " [Warning] could not merge uniax layer of TE reinforcement in Station #{0}".format(self.parent_station.station_num)
+                    try:
+                        p = TE_uniax.union(p)
+                        print " ... SUCCESSFULLY merged uniax layer of TE reinforcement on the second try!"
+                    except TopologicalError:
+                        print " ... on second try, still COULD NOT merge uniax layer of TE reinforcement!"
+                        try:
+                            p = cascaded_union([p, TE_uniax])
+                        except ValueError:
+                            print " ... on third try, still COULD NOT merge uniax layer of TE reinforcement!"
+                try:
+                    TE_foam = self.TE_reinforcement.layer['foam'].polygon
+                    try:
+                        p = p.union(TE_foam)
+                    except TopologicalError:
+                        print " [Warning] could not merge foam layer of TE reinforcement in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                except ValueError:
+                    print " foam layer of TE reinforcement does not exist in Station #{0}".format(self.parent_station.station_num)
+            if self.shear_web_1.exists():
+                sw1 = self.shear_web_1.layer['biax, left'].polygon.union(self.shear_web_1.layer['foam'].polygon)
+                sw1 = sw1.union(self.shear_web_1.layer['biax, right'].polygon)
+                p = p.union(sw1)
+            if self.shear_web_2.exists():
+                sw2 = self.shear_web_2.layer['biax, left'].polygon.union(self.shear_web_2.layer['foam'].polygon)
+                sw2 = sw2.union(self.shear_web_2.layer['biax, right'].polygon)
+                p = p.union(sw2)
+            if self.shear_web_3.exists():
+                sw3 = self.shear_web_3.layer['biax, left'].polygon.union(self.shear_web_3.layer['foam'].polygon)
+                sw3 = sw3.union(self.shear_web_3.layer['biax, right'].polygon)
+                p = p.union(sw3)
+        if plot_flag:
+            # plot the merged polygon
+            patch2 = PolygonPatch(p, fc='#4000FF', ec = '#000000', alpha=0.8)
+            ax.add_patch(patch2)
+            plt.show()
+        return p
