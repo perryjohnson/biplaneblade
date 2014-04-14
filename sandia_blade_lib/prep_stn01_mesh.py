@@ -40,7 +40,7 @@ station.structure.save_all_layer_edges()
 station.structure.write_all_part_polygons()
 
 # plot the parts
-station.plot_parts(alternate_layers=False)
+station.plot_parts()
 
 # cut up the layer polygons to prepare for grid generation
 def cut_polygon(original, bounding):

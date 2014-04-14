@@ -1,7 +1,7 @@
 """A module for organizing airfoil data for a blade station.
 
 Author: Perry Roth-Johnson
-Last updated: April 10, 2014
+Last updated: April 14, 2014
 
 """
 
@@ -150,7 +150,7 @@ Twist:       {4:6.4f} (degrees)""".format(self.name, self.filename,
         try:
             temp_list = np.nonzero(self.coords['y']==0.0)[0]
         except AttributeError:
-            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.name, self.station_num))
+            raise AttributeError("{0} coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.name, self.parent_station.station_num))
         else:
             # drop zeros from the list (which correspond to the TE, not the LE)
             temp_list = temp_list[np.nonzero(temp_list)[0]]
@@ -206,7 +206,7 @@ Twist:       {4:6.4f} (degrees)""".format(self.name, self.filename,
         try:
             index_right = np.nonzero(self.pressure['x']>x_edge)[0][-1]
         except AttributeError:
-            raise AttributeError("Upper and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(self.name, self.station_num))
+            raise AttributeError("Upper and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(self.name, self.parent_station.station_num))
         index_left = index_right + 1
         f = ipl.interp1d(self.pressure[index_right:index_left+1][::-1]['x'],
                          self.pressure[index_right:index_left+1][::-1]['y'])
@@ -257,8 +257,10 @@ class BiplaneAirfoil(_Airfoil):
     """
     def __init__(self, name, name_L, filename_L, chord_L, SW_ref_pt_L, name_U,
         filename_U, chord_U, SW_ref_pt_U, pitch_axis, twist,
-        gap_to_chord_ratio, gap_fraction, stagger_to_chord_ratio):
+        gap_to_chord_ratio, gap_fraction, stagger_to_chord_ratio,
+        parent_station):
         _Airfoil.__init__(self, name, pitch_axis, twist)
+        self.parent_station = parent_station
         self.lower_name = name_L
         self.lower_filename = filename_L
         self.lower_path = None
@@ -279,6 +281,8 @@ class BiplaneAirfoil(_Airfoil):
         self.gap = self.gap_to_chord_ratio * chord_L
         self.stagger = self.stagger_to_chord_ratio * chord_L
         self.total_chord = self.stagger + chord_L
+        self.lower_polygon = None     # assigned later by create_polygon()
+        self.upper_polygon = None     # assigned later by create_polygon()
 
     def __str__(self):
         return """Biplane Airfoil ---
@@ -505,7 +509,7 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
             temp_list = np.nonzero(
                 self.lower_coords['y']==-(1.0-self.gap_fraction)*self.gap)[0]
         except AttributeError:
-            raise AttributeError("{0} lower coordinates for station #{1} haven't been read!\n  You need to first read in the lower coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.station_num))
+            raise AttributeError("{0} lower coordinates for station #{1} haven't been read!\n  You need to first read in the lower coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.parent_station.station_num))
         else:
             # drop zeros from the list (which correspond to the TE, not the LE)
             temp_list = temp_list[np.nonzero(temp_list)[0]]
@@ -522,7 +526,7 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
             temp_list = np.nonzero(
                 self.upper_coords['y']==self.gap_fraction*self.gap)[0]
         except AttributeError:
-            raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the upper coordinates with <Station>.airfoil.read_coords().".format(self.upper_name, self.station_num))
+            raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the upper coordinates with <Station>.airfoil.read_coords().".format(self.upper_name, self.parent_station.station_num))
         else:
             # drop zeros from the list (which correspond to the TE, not the LE)
             temp_list = temp_list[np.nonzero(temp_list)[0]]
@@ -577,11 +581,11 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
             try:
                 axes.plot(self.lower_coords['x'], self.lower_coords['y'])
             except AttributeError:
-                raise AttributeError("{0} lower coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.station_num))
+                raise AttributeError("{0} lower coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.parent_station.station_num))
             try:
                 axes.plot(self.upper_coords['x'], self.upper_coords['y'])
             except AttributeError:
-                raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.station_num))
+                raise AttributeError("{0} upper coordinates for station #{1} haven't been read!\n  You need to first read in the coordinates with <Station>.airfoil.read_coords().".format(self.lower_name, self.parent_station.station_num))
 
     def find_part_edge_coords(self, x_edge, airfoil):
         """Find the airfoil coordinates at the edges of each structural part.
@@ -614,7 +618,7 @@ Twist:                   {14:6.4f} (degrees)""".format(self.name,
         try:
             index_right = np.nonzero(pressure['x']>x_edge)[0][-1]
         except AttributeError:
-            raise AttributeError("Suction and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(name, self.station_num))
+            raise AttributeError("Suction and pressure surface {0} coordinates\n  for station #{1} haven't been read!\n  You need to first run <Station>.airfoil.split_at_LE_and_TE().".format(name, self.parent_station.station_num))
         index_left = index_right + 1
         f = ipl.interp1d(pressure[index_right:index_left+1][::-1]['x'],
                          pressure[index_right:index_left+1][::-1]['y'])

@@ -1,7 +1,12 @@
 """A module for organizing structural part data for a blade station.
 
-Author: Perry Roth-Johnson
-Last updated: April 10, 2014
+Note: to generate html documentation of this module, open a Windows cmd prompt:
+> cd path/to/lib
+> python -m pydoc -w structure
+Then, open path/to/lib/structure.html in a browser.
+Refs:
+https://docs.python.org/2.7/library/pydoc.html
+http://bytes.com/topic/python/answers/436285-how-use-pydoc
 
 The different kinds of parts, listed from outside to inside, are:
     external surface (gelcoat, triax)
@@ -18,6 +23,9 @@ The different kinds of parts, listed from outside to inside, are:
     internal surface 2 (triax, resin)
     internal surface 3 (triax, resin)
     internal surface 4 (triax, resin)
+
+Author: Perry Roth-Johnson
+Last updated: April 14, 2014
 
 """
 
@@ -138,7 +146,7 @@ height:  {1:6.4f} (meters)
         elif airfoil == 'lower':
             op_gelcoat = af.lower_polygon
         elif airfoil == 'upper':
-            op.gelcoat = af.upper_polygon
+            op_gelcoat = af.upper_polygon
         else:
             raise ValueError("Keyword `airfoil` must be None, 'lower', or 'upper'.")
         ip_gelcoat = op_gelcoat.buffer(-self.height_gelcoat)
@@ -573,14 +581,17 @@ class LE_Panel(Part):
         if airfoil is None:
             bb = self.bounding_box()
         elif airfoil == 'lower':
-            bb = self.bounding_box(airfoil='lower')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='lower')
         elif airfoil == 'upper':
-            bb = self.bounding_box(airfoil='upper')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='upper')
         # 5. cut out the structural part
         p = ac.intersection(bb)
         self.layer['foam'] = l.Layer(p, b.dict_of_materials['foam'],
-            parent_part=self, name='foam')
-        assert self.layer['foam'].polygon.geom_type == 'Polygon'
+            parent_part=self, name='foam', face_color='#00A64F')
+        try:
+            assert self.layer['foam'].polygon.geom_type == 'Polygon'
+        except AssertionError:
+            print "***WARNING: Station #{0} failed to create foam layer of LE Panel".format(self.parent_structure.parent_station.station_num)
         if airfoil is None:
             st._list_of_layers.append(self.layer['foam'])
         elif airfoil == 'lower':
@@ -633,9 +644,9 @@ class SparCap(Part):
         if airfoil is None:
             bb = self.bounding_box()
         elif airfoil == 'lower':
-            bb = self.bounding_box(airfoil='lower')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='lower')
         elif airfoil == 'upper':
-            bb = self.bounding_box(airfoil='upper')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='upper')
         # 5. cut out the structural part
         p = ac.intersection(bb)
         # 6. find the lower spar cap
@@ -647,7 +658,7 @@ class SparCap(Part):
             pu = p.geoms[0]
         # 7. add the lower spar cap
         self.layer['lower'] = l.Layer(pl, b.dict_of_materials['uniaxial GFRP'],
-            parent_part=self, name='lower')
+            parent_part=self, name='lower', face_color='#00ACEF')
         assert self.layer['lower'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['lower'])
@@ -657,7 +668,7 @@ class SparCap(Part):
             st._list_of_upper_layers.append(self.layer['lower'])
         # 8. add the upper spar cap
         self.layer['upper'] = l.Layer(pu, b.dict_of_materials['uniaxial GFRP'],
-            parent_part=self, name='upper')
+            parent_part=self, name='upper', face_color='#00ACEF')
         assert self.layer['upper'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['upper'])
@@ -715,9 +726,9 @@ class AftPanel(Part):
         if airfoil is None:
             bb = self.bounding_box()
         elif airfoil == 'lower':
-            bb = self.bounding_box(airfoil='lower')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='lower')
         elif airfoil == 'upper':
-            bb = self.bounding_box(airfoil='upper')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='upper')
         # 5. cut out the structural part
         p = ac.intersection(bb)
         # 6. find the lower aft panel
@@ -729,7 +740,7 @@ class AftPanel(Part):
             pu = p.geoms[0]
         # 7. add the lower aft panel
         self.layer['lower'] = l.Layer(pl, b.dict_of_materials['foam'],
-            parent_part=self, name='lower')
+            parent_part=self, name='lower', face_color='#F58612')
         assert self.layer['lower'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['lower'])
@@ -739,7 +750,7 @@ class AftPanel(Part):
             st._list_of_upper_layers.append(self.layer['lower'])
         # 8. add the upper aft panel
         self.layer['upper'] = l.Layer(pu, b.dict_of_materials['foam'],
-            parent_part=self, name='upper')
+            parent_part=self, name='upper', face_color='#F58612')
         assert self.layer['upper'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['upper'])
@@ -834,9 +845,9 @@ height:  {1:6.4f} (meters)
         if airfoil is None:
             bb = self.bounding_box()
         elif airfoil == 'lower':
-            bb = self.bounding_box(airfoil='lower')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='lower')
         elif airfoil == 'upper':
-            bb = self.bounding_box(airfoil='upper')
+            bb = self.bounding_box(y_boundary_buffer=1.0, airfoil='upper')
         # 5. cut out the uniax layer
         polygon_uniax = ac_uniax.intersection(bb)
         # 6. add the uniax layer
@@ -867,7 +878,10 @@ height:  {1:6.4f} (meters)
             self.layer['foam'] = l.Layer(polygon_foam,
                 b.dict_of_materials['foam'], parent_part=self, name='foam',
                 face_color='#F366BA')
-            assert self.layer['foam'].polygon.geom_type == 'Polygon'
+            try:
+                assert self.layer['foam'].polygon.geom_type == 'Polygon'
+            except AssertionError:
+                print "***WARNING: Station #{0} failed to create foam layer of TE reinforcement".format(self.parent_structure.parent_station.station_num)
             if airfoil is None:
                 st._list_of_layers.append(self.layer['foam'])
             elif airfoil == 'lower':
@@ -1220,10 +1234,10 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
             (bb_left_biax, bb_foam, bb_right_biax) = self.bounding_box()
         elif airfoil == 'lower':
             (bb_left_biax, bb_foam, bb_right_biax) = self.bounding_box(
-                airfoil='lower')
+                y_boundary_buffer=1.0, airfoil='lower')
         elif airfoil == 'upper':
             (bb_left_biax, bb_foam, bb_right_biax) = self.bounding_box(
-                airfoil='upper')
+                y_boundary_buffer=1.0, airfoil='upper')
         # 3. cut out the structural parts
         p_left_biax = op.intersection(bb_left_biax)
         p_foam = op.intersection(bb_foam)
@@ -1231,7 +1245,7 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
         # 4. add the left biax layer
         self.layer['biax, left'] = l.Layer(p_left_biax,
             b.dict_of_materials['biaxial GFRP'], parent_part=self,
-            name='biax, left')
+            name='biax, left', face_color='#FFF100')
         assert self.layer['biax, left'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['biax, left'])
@@ -1241,7 +1255,7 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
             st._list_of_upper_layers.append(self.layer['biax, left'])
         # 5. add the foam layer
         self.layer['foam'] = l.Layer(p_foam, b.dict_of_materials['foam'],
-            parent_part=self, name='foam')
+            parent_part=self, name='foam', face_color='#FFF100')
         assert self.layer['foam'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['foam'])
@@ -1252,7 +1266,7 @@ x2:      {4:6.4f} (meters)""".format(self.base, self.base_biax,
         # 6. add the right biax layer
         self.layer['biax, right'] = l.Layer(p_right_biax,
             b.dict_of_materials['biaxial GFRP'], parent_part=self,
-            name='biax, right')
+            name='biax, right', face_color='#FFF100')
         assert self.layer['biax, right'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['biax, right'])
@@ -2918,19 +2932,19 @@ class BiplaneStructure:
 
     def create_all_layers(self):
         """Create polygons for single material layers of each structural part."""
-        # lower layers
+        # lower layers --------------------------------------------------------
         if self.lower_external_surface.exists():
             self.lower_external_surface.create_layers(airfoil='lower')
         if self.lower_root_buildup.exists():
             self.lower_root_buildup.create_layers(airfoil='lower')
-        if self.lower_LE_panel.exists():
-            self.lower_LE_panel.create_layers(airfoil='lower')
         if self.lower_spar_cap.exists():
             self.lower_spar_cap.create_layers(airfoil='lower')
         if self.lower_aft_panel_1.exists():
             self.lower_aft_panel_1.create_layers(airfoil='lower')
         if self.lower_aft_panel_2.exists():
             self.lower_aft_panel_2.create_layers(airfoil='lower')
+        if self.lower_LE_panel.exists():
+            self.lower_LE_panel.create_layers(airfoil='lower')
         if self.lower_shear_web_1.exists():
             self.lower_shear_web_1.create_layers(airfoil='lower')
         if self.lower_shear_web_2.exists():
@@ -2948,19 +2962,19 @@ class BiplaneStructure:
             self.lower_internal_surface_3.create_layers(lmp, airfoil='lower')
         if self.lower_internal_surface_4.exists():
             self.lower_internal_surface_4.create_layers(lmp, airfoil='lower')
-        # upper layers
+        # upper layers --------------------------------------------------------
         if self.upper_external_surface.exists():
             self.upper_external_surface.create_layers(airfoil='upper')
         if self.upper_root_buildup.exists():
             self.upper_root_buildup.create_layers(airfoil='upper')
-        if self.upper_LE_panel.exists():
-            self.upper_LE_panel.create_layers(airfoil='upper')
         if self.upper_spar_cap.exists():
             self.upper_spar_cap.create_layers(airfoil='upper')
         if self.upper_aft_panel_1.exists():
             self.upper_aft_panel_1.create_layers(airfoil='upper')
         if self.upper_aft_panel_2.exists():
             self.upper_aft_panel_2.create_layers(airfoil='upper')
+        if self.upper_LE_panel.exists():
+            self.upper_LE_panel.create_layers(airfoil='upper')
         if self.upper_shear_web_1.exists():
             self.upper_shear_web_1.create_layers(airfoil='upper')
         if self.upper_shear_web_2.exists():
@@ -3016,75 +3030,216 @@ class BiplaneStructure:
             p = cascaded_union(list_of_polygons)
         except ValueError:
             # gather all the parts
-            p = self.external_surface.layer['gelcoat'].polygon
-            p = p.union(self.external_surface.layer['triax'].polygon)
-            if self.root_buildup.exists():
-                RB = self.root_buildup.layer['triax'].polygon
-                p = p.union(RB)
-            if self.LE_panel.exists():
-                LE = self.LE_panel.layer['foam'].polygon
-                p = p.union(LE)
-            if self.spar_cap.exists():
-                sc_l = self.spar_cap.layer['lower'].polygon
-                try:
-                    p = p.union(sc_l)
-                except TopologicalError:
-                    print " [Warning] could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
-                sc_u = self.spar_cap.layer['upper'].polygon
-                try:
-                    p = p.union(sc_u)
-                except TopologicalError:
-                    print " [Warning] could not merge upper spar cap in Station #{0}".format(self.parent_station.station_num)
+            if airfoil is None:
+                p = self.external_surface.layer['gelcoat'].polygon
+                p = p.union(self.external_surface.layer['triax'].polygon)
+                if self.root_buildup.exists():
+                    RB = self.root_buildup.layer['triax'].polygon
+                    p = p.union(RB)
+                if self.LE_panel.exists():
+                    LE = self.LE_panel.layer['foam'].polygon
+                    p = p.union(LE)
+                if self.spar_cap.exists():
+                    sc_l = self.spar_cap.layer['lower'].polygon
                     try:
-                        p = sc_u.union(p)
-                        print " ... SUCCESSFULLY merged upper spar cap on the second try!"
+                        p = p.union(sc_l)
                     except TopologicalError:
-                        print " ... on second try, still COULD NOT merge upper spar cap!"
-            if self.aft_panel_1.exists():
-                aft1_u = self.aft_panel_1.layer['upper'].polygon
-                aft1_l = self.aft_panel_1.layer['lower'].polygon
-                p = p.union(aft1_u)
-                p = p.union(aft1_l)
-            if self.aft_panel_2.exists():
-                aft2_u = self.aft_panel_2.layer['upper'].polygon
-                aft2_l = self.aft_panel_2.layer['lower'].polygon
-                p = p.union(aft2_u)
-                p = p.union(aft2_l)
-            if self.TE_reinforcement.exists():
-                TE_uniax = self.TE_reinforcement.layer['uniax'].polygon
-                try:
-                    p = p.union(TE_uniax)
-                except TopologicalError:
-                    print " [Warning] could not merge uniax layer of TE reinforcement in Station #{0}".format(self.parent_station.station_num)
+                        print " [Warning] could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                    sc_u = self.spar_cap.layer['upper'].polygon
                     try:
-                        p = TE_uniax.union(p)
-                        print " ... SUCCESSFULLY merged uniax layer of TE reinforcement on the second try!"
+                        p = p.union(sc_u)
                     except TopologicalError:
-                        print " ... on second try, still COULD NOT merge uniax layer of TE reinforcement!"
+                        print " [Warning] could not merge upper spar cap in Station #{0}".format(self.parent_station.station_num)
                         try:
-                            p = cascaded_union([p, TE_uniax])
-                        except ValueError:
-                            print " ... on third try, still COULD NOT merge uniax layer of TE reinforcement!"
-                try:
-                    TE_foam = self.TE_reinforcement.layer['foam'].polygon
+                            p = sc_u.union(p)
+                            print " ... SUCCESSFULLY merged upper spar cap on the second try!"
+                        except TopologicalError:
+                            print " ... on second try, still COULD NOT merge upper spar cap!"
+                if self.aft_panel_1.exists():
+                    aft1_u = self.aft_panel_1.layer['upper'].polygon
+                    aft1_l = self.aft_panel_1.layer['lower'].polygon
+                    p = p.union(aft1_u)
+                    p = p.union(aft1_l)
+                if self.aft_panel_2.exists():
+                    aft2_u = self.aft_panel_2.layer['upper'].polygon
+                    aft2_l = self.aft_panel_2.layer['lower'].polygon
+                    p = p.union(aft2_u)
+                    p = p.union(aft2_l)
+                if self.TE_reinforcement.exists():
+                    TE_uniax = self.TE_reinforcement.layer['uniax'].polygon
                     try:
-                        p = p.union(TE_foam)
+                        p = p.union(TE_uniax)
                     except TopologicalError:
-                        print " [Warning] could not merge foam layer of TE reinforcement in Station #{0} ... skipping!".format(self.parent_station.station_num)
-                except ValueError:
-                    print " foam layer of TE reinforcement does not exist in Station #{0}".format(self.parent_station.station_num)
-            if self.shear_web_1.exists():
-                sw1 = self.shear_web_1.layer['biax, left'].polygon.union(self.shear_web_1.layer['foam'].polygon)
-                sw1 = sw1.union(self.shear_web_1.layer['biax, right'].polygon)
-                p = p.union(sw1)
-            if self.shear_web_2.exists():
-                sw2 = self.shear_web_2.layer['biax, left'].polygon.union(self.shear_web_2.layer['foam'].polygon)
-                sw2 = sw2.union(self.shear_web_2.layer['biax, right'].polygon)
-                p = p.union(sw2)
-            if self.shear_web_3.exists():
-                sw3 = self.shear_web_3.layer['biax, left'].polygon.union(self.shear_web_3.layer['foam'].polygon)
-                sw3 = sw3.union(self.shear_web_3.layer['biax, right'].polygon)
-                p = p.union(sw3)
+                        print " [Warning] could not merge uniax layer of TE reinforcement in Station #{0}".format(self.parent_station.station_num)
+                        try:
+                            p = TE_uniax.union(p)
+                            print " ... SUCCESSFULLY merged uniax layer of TE reinforcement on the second try!"
+                        except TopologicalError:
+                            print " ... on second try, still COULD NOT merge uniax layer of TE reinforcement!"
+                            try:
+                                p = cascaded_union([p, TE_uniax])
+                            except ValueError:
+                                print " ... on third try, still COULD NOT merge uniax layer of TE reinforcement!"
+                    try:
+                        TE_foam = self.TE_reinforcement.layer['foam'].polygon
+                        try:
+                            p = p.union(TE_foam)
+                        except TopologicalError:
+                            print " [Warning] could not merge foam layer of TE reinforcement in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                    except ValueError:
+                        print " foam layer of TE reinforcement does not exist in Station #{0}".format(self.parent_station.station_num)
+                if self.shear_web_1.exists():
+                    sw1 = self.shear_web_1.layer['biax, left'].polygon.union(self.shear_web_1.layer['foam'].polygon)
+                    sw1 = sw1.union(self.shear_web_1.layer['biax, right'].polygon)
+                    p = p.union(sw1)
+                if self.shear_web_2.exists():
+                    sw2 = self.shear_web_2.layer['biax, left'].polygon.union(self.shear_web_2.layer['foam'].polygon)
+                    sw2 = sw2.union(self.shear_web_2.layer['biax, right'].polygon)
+                    p = p.union(sw2)
+                if self.shear_web_3.exists():
+                    sw3 = self.shear_web_3.layer['biax, left'].polygon.union(self.shear_web_3.layer['foam'].polygon)
+                    sw3 = sw3.union(self.shear_web_3.layer['biax, right'].polygon)
+                    p = p.union(sw3)
+            elif airfoil == 'lower':
+                p = self.lower_external_surface.layer['gelcoat'].polygon
+                p = p.union(self.lower_external_surface.layer['triax'].polygon)
+                if self.lower_root_buildup.exists():
+                    RB = self.lower_root_buildup.layer['triax'].polygon
+                    p = p.union(RB)
+                if self.lower_LE_panel.exists():
+                    LE = self.lower_LE_panel.layer['foam'].polygon
+                    p = p.union(LE)
+                if self.lower_spar_cap.exists():
+                    sc_l = self.lower_spar_cap.layer['lower'].polygon
+                    try:
+                        p = p.union(sc_l)
+                    except TopologicalError:
+                        print " [Warning] could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                    sc_u = self.lower_spar_cap.layer['upper'].polygon
+                    try:
+                        p = p.union(sc_u)
+                    except TopologicalError:
+                        print " [Warning] could not merge upper spar cap in Station #{0}".format(self.parent_station.station_num)
+                        try:
+                            p = sc_u.union(p)
+                            print " ... SUCCESSFULLY merged upper spar cap on the second try!"
+                        except TopologicalError:
+                            print " ... on second try, still COULD NOT merge upper spar cap!"
+                if self.lower_aft_panel_1.exists():
+                    aft1_u = self.lower_aft_panel_1.layer['upper'].polygon
+                    aft1_l = self.lower_aft_panel_1.layer['lower'].polygon
+                    p = p.union(aft1_u)
+                    p = p.union(aft1_l)
+                if self.lower_aft_panel_2.exists():
+                    aft2_u = self.lower_aft_panel_2.layer['upper'].polygon
+                    aft2_l = self.lower_aft_panel_2.layer['lower'].polygon
+                    p = p.union(aft2_u)
+                    p = p.union(aft2_l)
+                if self.lower_TE_reinforcement.exists():
+                    TE_uniax = self.lower_TE_reinforcement.layer['uniax'].polygon
+                    try:
+                        p = p.union(TE_uniax)
+                    except TopologicalError:
+                        print " [Warning] could not merge uniax layer of TE reinforcement in Station #{0}".format(self.parent_station.station_num)
+                        try:
+                            p = TE_uniax.union(p)
+                            print " ... SUCCESSFULLY merged uniax layer of TE reinforcement on the second try!"
+                        except TopologicalError:
+                            print " ... on second try, still COULD NOT merge uniax layer of TE reinforcement!"
+                            try:
+                                p = cascaded_union([p, TE_uniax])
+                            except ValueError:
+                                print " ... on third try, still COULD NOT merge uniax layer of TE reinforcement!"
+                    try:
+                        TE_foam = self.lower_TE_reinforcement.layer['foam'].polygon
+                        try:
+                            p = p.union(TE_foam)
+                        except TopologicalError:
+                            print " [Warning] could not merge foam layer of TE reinforcement in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                    except ValueError:
+                        print " foam layer of TE reinforcement does not exist in Station #{0}".format(self.parent_station.station_num)
+                if self.lower_shear_web_1.exists():
+                    sw1 = self.lower_shear_web_1.layer['biax, left'].polygon.union(self.lower_shear_web_1.layer['foam'].polygon)
+                    sw1 = sw1.union(self.lower_shear_web_1.layer['biax, right'].polygon)
+                    p = p.union(sw1)
+                if self.lower_shear_web_2.exists():
+                    sw2 = self.lower_shear_web_2.layer['biax, left'].polygon.union(self.lower_shear_web_2.layer['foam'].polygon)
+                    sw2 = sw2.union(self.lower_shear_web_2.layer['biax, right'].polygon)
+                    p = p.union(sw2)
+                if self.lower_shear_web_3.exists():
+                    sw3 = self.lower_shear_web_3.layer['biax, left'].polygon.union(self.lower_shear_web_3.layer['foam'].polygon)
+                    sw3 = sw3.union(self.lower_shear_web_3.layer['biax, right'].polygon)
+                    p = p.union(sw3)
+            elif airfoil == 'upper':
+                p = self.upper_external_surface.layer['gelcoat'].polygon
+                p = p.union(self.upper_external_surface.layer['triax'].polygon)
+                if self.upper_root_buildup.exists():
+                    RB = self.upper_root_buildup.layer['triax'].polygon
+                    p = p.union(RB)
+                if self.upper_LE_panel.exists():
+                    LE = self.upper_LE_panel.layer['foam'].polygon
+                    p = p.union(LE)
+                if self.upper_spar_cap.exists():
+                    sc_l = self.upper_spar_cap.layer['lower'].polygon
+                    try:
+                        p = p.union(sc_l)
+                    except TopologicalError:
+                        print " [Warning] could not merge lower spar cap in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                    sc_u = self.upper_spar_cap.layer['upper'].polygon
+                    try:
+                        p = p.union(sc_u)
+                    except TopologicalError:
+                        print " [Warning] could not merge upper spar cap in Station #{0}".format(self.parent_station.station_num)
+                        try:
+                            p = sc_u.union(p)
+                            print " ... SUCCESSFULLY merged upper spar cap on the second try!"
+                        except TopologicalError:
+                            print " ... on second try, still COULD NOT merge upper spar cap!"
+                if self.upper_aft_panel_1.exists():
+                    aft1_u = self.upper_aft_panel_1.layer['upper'].polygon
+                    aft1_l = self.upper_aft_panel_1.layer['lower'].polygon
+                    p = p.union(aft1_u)
+                    p = p.union(aft1_l)
+                if self.upper_aft_panel_2.exists():
+                    aft2_u = self.upper_aft_panel_2.layer['upper'].polygon
+                    aft2_l = self.upper_aft_panel_2.layer['lower'].polygon
+                    p = p.union(aft2_u)
+                    p = p.union(aft2_l)
+                if self.upper_TE_reinforcement.exists():
+                    TE_uniax = self.upper_TE_reinforcement.layer['uniax'].polygon
+                    try:
+                        p = p.union(TE_uniax)
+                    except TopologicalError:
+                        print " [Warning] could not merge uniax layer of TE reinforcement in Station #{0}".format(self.parent_station.station_num)
+                        try:
+                            p = TE_uniax.union(p)
+                            print " ... SUCCESSFULLY merged uniax layer of TE reinforcement on the second try!"
+                        except TopologicalError:
+                            print " ... on second try, still COULD NOT merge uniax layer of TE reinforcement!"
+                            try:
+                                p = cascaded_union([p, TE_uniax])
+                            except ValueError:
+                                print " ... on third try, still COULD NOT merge uniax layer of TE reinforcement!"
+                    try:
+                        TE_foam = self.upper_TE_reinforcement.layer['foam'].polygon
+                        try:
+                            p = p.union(TE_foam)
+                        except TopologicalError:
+                            print " [Warning] could not merge foam layer of TE reinforcement in Station #{0} ... skipping!".format(self.parent_station.station_num)
+                    except ValueError:
+                        print " foam layer of TE reinforcement does not exist in Station #{0}".format(self.parent_station.station_num)
+                if self.upper_shear_web_1.exists():
+                    sw1 = self.upper_shear_web_1.layer['biax, left'].polygon.union(self.upper_shear_web_1.layer['foam'].polygon)
+                    sw1 = sw1.union(self.upper_shear_web_1.layer['biax, right'].polygon)
+                    p = p.union(sw1)
+                if self.upper_shear_web_2.exists():
+                    sw2 = self.upper_shear_web_2.layer['biax, left'].polygon.union(self.upper_shear_web_2.layer['foam'].polygon)
+                    sw2 = sw2.union(self.upper_shear_web_2.layer['biax, right'].polygon)
+                    p = p.union(sw2)
+                if self.upper_shear_web_3.exists():
+                    sw3 = self.upper_shear_web_3.layer['biax, left'].polygon.union(self.upper_shear_web_3.layer['foam'].polygon)
+                    sw3 = sw3.union(self.upper_shear_web_3.layer['biax, right'].polygon)
+                    p = p.union(sw3)
         if plot_flag:
             # plot the merged polygon
             patch2 = PolygonPatch(p, fc='#4000FF', ec = '#000000', alpha=0.8)

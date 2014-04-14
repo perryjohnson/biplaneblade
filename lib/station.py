@@ -1,7 +1,15 @@
 """A module for organizing geometrical data for a blade station.
 
+Note: to generate html documentation of this module, open a Windows cmd prompt:
+> cd path/to/lib
+> python -m pydoc -w station
+Then, open path/to/lib/station.html in a browser.
+Refs:
+https://docs.python.org/2.7/library/pydoc.html
+http://bytes.com/topic/python/answers/436285-how-use-pydoc
+
 Author: Perry Roth-Johnson
-Last updated: April 10, 2014
+Last updated: April 14, 2014
 
 """
 
@@ -10,9 +18,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import transformation as tf
-# reload(tf)
 import coordinates as cd
-# reload(cd)
 import airfoil as airf
 reload(airf)
 import structure as struc
@@ -254,10 +260,9 @@ class _Station:
         .save_plot() : save the plot in the station path as a PNG file
         .write_all_part_polygons() : write the coordinates of all structural
             parts to `station_path`
-        .find_SW_cs_coords() : find the corners of the cross-sections for
-            each structural part (NOTE: only shear webs implemented so far)
+        .find_SW_cs_coords() : find the corners of the each shear web
+            cross-section
         .find_part_edges() : find the edges of each structural part
-        .plot_part_edges() : plot color block for each structural part region
         .plot_polygon() : plot a polygon in a matplotlib figure
         .plot_parts() : plots the structural parts in this blade station
         .structure
@@ -340,6 +345,12 @@ class _Station:
         fname = os.path.join(self.station_path, 'stn{0:02d}.png'.format(self.station_num))
         fig.savefig(fname)
 
+    def plot_polygon(self, polygon, axes, face_color=(1,0,0),
+        edge_color=(1,0,0), alpha=0.5):
+        """Plot a polygon in a matplotlib figure."""
+        patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
+        axes.add_patch(patch)
+
 
 class MonoplaneStation(_Station):
     """Define a monoplane station for a wind turbine blade."""
@@ -394,14 +405,8 @@ class MonoplaneStation(_Station):
         self.logf.flush()
         self.logf.close()
 
-    def plot_polygon(self, polygon, axes, face_color=(1,0,0),
-        edge_color=(1,0,0), alpha=0.5):
-        """Plot a polygon in a matplotlib figure."""
-        patch = PolygonPatch(polygon, fc=face_color, ec=edge_color, alpha=alpha)
-        axes.add_patch(patch)
-
     def find_SW_cs_coords(self):
-        """Find the corners of the cross-sections for each shear web.
+        """Find the corners of each shear web cross-section.
 
         Saves cross-section coordinates (in meters) as the '.cs_coords' 
         attribute (a numpy array) within each ShearWeb instance.
@@ -491,44 +496,10 @@ class MonoplaneStation(_Station):
                 st.aft_panel_2.right = np.nan
                 raise Warning("'aft panel 2, right' is undefined for station #{0}".format(self.station_num))
 
-    def plot_part_edges(self, axes):
-        """Plot color block for each structural part region.
-
-        Each color block spans the plot from top to bottom.
-
-        Uses coordinates saved as attributes within each Part instance
-        (OOP style) by <Station>.find_part_edges().
-
-        Must run <Station>.find_part_edges() first.
-
-        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
-        (This feature will not be implemented.)
-
-        """
-        st = self.structure
-        try:
-            if st.spar_cap.exists():
-                axes.axvspan(st.spar_cap.left, st.spar_cap.right, facecolor='cyan', edgecolor='cyan', alpha=0.7)
-            if st.TE_reinforcement.exists():
-                axes.axvspan(st.TE_reinforcement.left, st.TE_reinforcement.right, facecolor='pink', edgecolor='pink', alpha=0.7)
-            if st.LE_panel.exists():
-                axes.axvspan(st.LE_panel.left, st.LE_panel.right, facecolor='magenta', edgecolor='magenta', alpha=0.7)
-            if st.aft_panel_1.exists():
-                axes.axvspan(st.aft_panel_1.left, st.aft_panel_1.right, facecolor='orange', edgecolor='orange', alpha=0.7)
-            if st.aft_panel_2.exists():
-                axes.axvspan(st.aft_panel_2.left, st.aft_panel_2.right, facecolor='orange', edgecolor='orange', alpha=0.7)
-            if st.shear_web_1.exists():
-                axes.axvspan(st.shear_web_1.left, st.shear_web_1.right, facecolor='green', edgecolor='green')
-            if st.shear_web_2.exists():
-                axes.axvspan(st.shear_web_2.left, st.shear_web_2.right, facecolor='green', edgecolor='green')
-            if st.shear_web_3.exists():
-                axes.axvspan(st.shear_web_3.left, st.shear_web_3.right, facecolor='green', edgecolor='green')
-        except AttributeError:
-            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
-
-    def plot_parts(self, alternate_layers=False):
+    def plot_parts(self, ax=None):
         """Plots the structural parts in this blade station."""
-        fig, ax = plt.subplots()
+        if ax is None:
+            fig, ax = plt.subplots()
         st = self.structure
         ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
         ax.set_aspect('equal')
@@ -542,253 +513,123 @@ class MonoplaneStation(_Station):
         ax.set_ylim([miny*1.2,maxy*1.2])
         try:
             if st.external_surface.exists():
-                if alternate_layers:
-                    self.plot_polygon(
-                        st.external_surface.layer['gelcoat, upper left'].polygon, ax,
-                        st.external_surface.layer['gelcoat, upper left'].face_color,
-                        st.external_surface.layer['gelcoat, upper left'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['gelcoat, upper right'].polygon, ax,
-                        st.external_surface.layer['gelcoat, upper right'].face_color,
-                        st.external_surface.layer['gelcoat, upper right'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['gelcoat, lower left'].polygon, ax,
-                        st.external_surface.layer['gelcoat, lower left'].face_color,
-                        st.external_surface.layer['gelcoat, lower left'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['gelcoat, lower right'].polygon, ax,
-                        st.external_surface.layer['gelcoat, lower right'].face_color,
-                        st.external_surface.layer['gelcoat, lower right'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['triax, upper left'].polygon, ax,
-                        st.external_surface.layer['triax, upper left'].face_color,
-                        st.external_surface.layer['triax, upper left'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['triax, upper right'].polygon, ax,
-                        st.external_surface.layer['triax, upper right'].face_color,
-                        st.external_surface.layer['triax, upper right'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['triax, lower left'].polygon, ax,
-                        st.external_surface.layer['triax, lower left'].face_color,
-                        st.external_surface.layer['triax, lower left'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['triax, lower right'].polygon, ax,
-                        st.external_surface.layer['triax, lower right'].face_color,
-                        st.external_surface.layer['triax, lower right'].edge_color,
-                        alpha=0.8)
-                else:
-                    self.plot_polygon(
-                        st.external_surface.layer['gelcoat'].polygon, ax,
-                        st.external_surface.layer['gelcoat'].face_color,
-                        st.external_surface.layer['gelcoat'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.external_surface.layer['triax'].polygon, ax,
-                        st.external_surface.layer['triax'].face_color,
-                        st.external_surface.layer['triax'].edge_color,
-                        alpha=0.8)
-                # if not alternate_layers:
-                #     self.plot_polygon(
-                #         st.external_surface.layer['gelcoat'].polygon, ax,
-                #         face_color='#5EE54C', edge_color='#000000',
-                #         alpha=0.8)  # face color is light green
-                #     self.plot_polygon(
-                #         st.external_surface.layer['triax'].polygon, ax,
-                #         face_color='#5EE54C', edge_color='#000000',
-                #         alpha=0.8)  # face color is light green
-                # else:
-                #     if not self.airfoil.has_sharp_TE:
-                #         self.plot_polygon(
-                #             st.external_surface.layer['gelcoat, upper left'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
-                #         self.plot_polygon(
-                #             st.external_surface.layer['gelcoat, upper right'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
-                #         self.plot_polygon(
-                #             st.external_surface.layer['gelcoat, lower left'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
-                #         self.plot_polygon(
-                #             st.external_surface.layer['gelcoat, lower right'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
-                #         self.plot_polygon(
-                #             st.external_surface.layer['triax, upper left'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
-                #         self.plot_polygon(
-                #             st.external_surface.layer['triax, upper right'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
-                #         self.plot_polygon(
-                #             st.external_surface.layer['triax, lower left'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
-                #         self.plot_polygon(
-                #             st.external_surface.layer['triax, lower right'].polygon, ax,
-                #             face_color='#5EE54C', edge_color='#000000',
-                #             alpha=0.8)  # face color is light green
+                self.plot_polygon(
+                    st.external_surface.layer['gelcoat'].polygon, ax,
+                    st.external_surface.layer['gelcoat'].face_color,
+                    st.external_surface.layer['gelcoat'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.external_surface.layer['triax'].polygon, ax,
+                    st.external_surface.layer['triax'].face_color,
+                    st.external_surface.layer['triax'].edge_color,
+                    alpha=0.8)
             if st.root_buildup.exists():
-                if alternate_layers:
-                    self.plot_polygon(
-                        st.root_buildup.layer['triax, upper left'].polygon, ax,
-                        st.root_buildup.layer['triax, upper left'].face_color,
-                        st.root_buildup.layer['triax, upper left'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.root_buildup.layer['triax, upper right'].polygon, ax,
-                        st.root_buildup.layer['triax, upper right'].face_color,
-                        st.root_buildup.layer['triax, upper right'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.root_buildup.layer['triax, lower left'].polygon, ax,
-                        st.root_buildup.layer['triax, lower left'].face_color,
-                        st.root_buildup.layer['triax, lower left'].edge_color,
-                        alpha=0.8)
-                    self.plot_polygon(
-                        st.root_buildup.layer['triax, lower right'].polygon, ax,
-                        st.root_buildup.layer['triax, lower right'].face_color,
-                        st.root_buildup.layer['triax, lower right'].edge_color,
-                        alpha=0.8)
-                else:
-                    self.plot_polygon(
-                        st.root_buildup.layer['triax'].polygon, ax,
-                        st.root_buildup.layer['triax'].face_color,
-                        st.root_buildup.layer['triax'].edge_color,
-                        alpha=0.8)
+                self.plot_polygon(
+                    st.root_buildup.layer['triax'].polygon, ax,
+                    st.root_buildup.layer['triax'].face_color,
+                    st.root_buildup.layer['triax'].edge_color,
+                    alpha=0.8)
             if st.spar_cap.exists():
-                self.plot_polygon(st.spar_cap.layer['lower'].polygon,
-                    ax, face_color='#00ACEF', edge_color='#000000',
-                    alpha=0.8)  # face color is blue
-                self.plot_polygon(st.spar_cap.layer['upper'].polygon,
-                    ax, face_color='#00ACEF', edge_color='#000000',
-                    alpha=0.8)  # face color is blue
+                self.plot_polygon(
+                    st.spar_cap.layer['lower'].polygon, ax,
+                    st.spar_cap.layer['lower'].face_color,
+                    st.spar_cap.layer['lower'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.spar_cap.layer['upper'].polygon, ax,
+                    st.spar_cap.layer['upper'].face_color,
+                    st.spar_cap.layer['upper'].edge_color,
+                    alpha=0.8)
             if st.aft_panel_1.exists():
                 self.plot_polygon(
                     st.aft_panel_1.layer['lower'].polygon, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
+                    st.aft_panel_1.layer['lower'].face_color,
+                    st.aft_panel_1.layer['lower'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.aft_panel_1.layer['upper'].polygon, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
+                    st.aft_panel_1.layer['upper'].face_color,
+                    st.aft_panel_1.layer['upper'].edge_color,
+                    alpha=0.8)
             if st.aft_panel_2.exists():
                 self.plot_polygon(
                     st.aft_panel_2.layer['lower'].polygon, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
+                    st.aft_panel_2.layer['lower'].face_color,
+                    st.aft_panel_2.layer['lower'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.aft_panel_2.layer['upper'].polygon, ax,
-                    face_color='#F58612', edge_color='#000000',
-                    alpha=0.8)  # face color is orange
+                    st.aft_panel_2.layer['upper'].face_color,
+                    st.aft_panel_2.layer['upper'].edge_color,
+                    alpha=0.8)
             if st.LE_panel.exists():
-                self.plot_polygon(st.LE_panel.layer['foam'].polygon,
-                    ax, face_color='#00A64F', edge_color='#000000',
-                    alpha=0.8)  # face color is green
+                self.plot_polygon(
+                    st.LE_panel.layer['foam'].polygon, ax,
+                    st.LE_panel.layer['foam'].face_color,
+                    st.LE_panel.layer['foam'].edge_color,
+                    alpha=0.8)
             if st.shear_web_1.exists():
                 self.plot_polygon(
                     st.shear_web_1.layer['biax, left'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_1.layer['biax, left'].face_color,
+                    st.shear_web_1.layer['biax, left'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.shear_web_1.layer['foam'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_1.layer['foam'].face_color,
+                    st.shear_web_1.layer['foam'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.shear_web_1.layer['biax, right'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_1.layer['biax, right'].face_color,
+                    st.shear_web_1.layer['biax, right'].edge_color,
+                    alpha=0.8)
             if st.shear_web_2.exists():
                 self.plot_polygon(
                     st.shear_web_2.layer['biax, left'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_2.layer['biax, left'].face_color,
+                    st.shear_web_2.layer['biax, left'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.shear_web_2.layer['foam'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_2.layer['foam'].face_color,
+                    st.shear_web_2.layer['foam'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.shear_web_2.layer['biax, right'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_2.layer['biax, right'].face_color,
+                    st.shear_web_2.layer['biax, right'].edge_color,
+                    alpha=0.8)
             if st.shear_web_3.exists():
                 self.plot_polygon(
                     st.shear_web_3.layer['biax, left'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_3.layer['biax, left'].face_color,
+                    st.shear_web_3.layer['biax, left'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.shear_web_3.layer['foam'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_3.layer['foam'].face_color,
+                    st.shear_web_3.layer['foam'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.shear_web_3.layer['biax, right'].polygon, ax,
-                    face_color='#FFF100', edge_color='#000000',
-                    alpha=0.8)  # face color is yellow
+                    st.shear_web_3.layer['biax, right'].face_color,
+                    st.shear_web_3.layer['biax, right'].edge_color,
+                    alpha=0.8)
             if st.TE_reinforcement.exists():
-                if alternate_layers and self.airfoil.has_sharp_TE:
+                self.plot_polygon(
+                    st.TE_reinforcement.layer['uniax'].polygon, ax,
+                    st.TE_reinforcement.layer['uniax'].face_color,
+                    st.TE_reinforcement.layer['uniax'].edge_color,
+                    alpha=0.8)
+                try:
                     self.plot_polygon(
-                        st.TE_reinforcement.layer['uniax, upper right'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['uniax, lower right'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['uniax, upper left'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['uniax, lower left'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['uniax, upper middle'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['uniax, lower middle'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['foam, upper middle'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['foam, lower middle'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['foam, upper left'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['foam, lower left'].polygon,
-                        ax, face_color='#F366BA', edge_color='#000000',
-                        alpha=0.8)  # face color is pink
-                else:
-                    self.plot_polygon(
-                        st.TE_reinforcement.layer['uniax'].polygon, ax,
-                        st.TE_reinforcement.layer['uniax'].face_color,
-                        st.TE_reinforcement.layer['uniax'].edge_color,
+                        st.TE_reinforcement.layer['foam'].polygon, ax,
+                        st.TE_reinforcement.layer['foam'].face_color,
+                        st.TE_reinforcement.layer['foam'].edge_color,
                         alpha=0.8)
-                    try:
-                        self.plot_polygon(
-                            st.TE_reinforcement.layer['foam'].polygon, ax,
-                            st.TE_reinforcement.layer['foam'].face_color,
-                            st.TE_reinforcement.layer['foam'].edge_color,
-                            alpha=0.8)
-                    except KeyError:  # foam region doesn't exist
-                        pass
+                except KeyError:  # foam region doesn't exist
+                    pass
             if st.internal_surface_1.exists():
                 self.plot_polygon(
                     st.internal_surface_1.layer['triax'].polygon, ax,
@@ -803,133 +644,39 @@ class MonoplaneStation(_Station):
             if st.internal_surface_2.exists():
                 self.plot_polygon(
                     st.internal_surface_2.layer['triax'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_2.layer['triax'].face_color,
+                    st.internal_surface_2.layer['triax'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.internal_surface_2.layer['resin'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_2.layer['resin'].face_color,
+                    st.internal_surface_2.layer['resin'].edge_color,
+                    alpha=0.8)
             if st.internal_surface_3.exists():
                 self.plot_polygon(
                     st.internal_surface_3.layer['triax'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_3.layer['triax'].face_color,
+                    st.internal_surface_3.layer['triax'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.internal_surface_3.layer['resin'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_3.layer['resin'].face_color,
+                    st.internal_surface_3.layer['resin'].edge_color,
+                    alpha=0.8)
             if st.internal_surface_4.exists():
                 self.plot_polygon(
                     st.internal_surface_4.layer['triax'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_4.layer['triax'].face_color,
+                    st.internal_surface_4.layer['triax'].edge_color,
+                    alpha=0.8)
                 self.plot_polygon(
                     st.internal_surface_4.layer['resin'].polygon, ax,
-                    face_color='#999999', edge_color='#000000',
-                    alpha=0.8)  # face color is gray
+                    st.internal_surface_4.layer['resin'].face_color,
+                    st.internal_surface_4.layer['resin'].edge_color,
+                    alpha=0.8)
         except AttributeError:
             raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.structure.create_all_layers() first.")
         plt.show()
-        return (fig, ax)
-
-    def plot_layer_edges(self):
-        """Plots the edges of layers in this blade station."""
-        fig, ax = plt.subplots()
-        st = self.structure
-        ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
-        ax.set_aspect('equal')
-        ax.grid('on')
-        ax.set_xlabel('x2 [meters]')
-        ax.set_ylabel('x3 [meters]')
-        self.plot_polygon(self.airfoil.polygon, ax,
-            face_color='None', edge_color='#999999', alpha=0.8)
-        (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
-        ax.set_xlim([minx*1.2,maxx*1.2])
-        ax.set_ylim([miny*1.2,maxy*1.2])
-        try:
-            # if st.external_surface.exists():
-            #     st.external_surface.layer[2].plot_edges(ax)  # gelcoat, lower left
-            #     st.external_surface.layer[3].plot_edges(ax)  # gelcoat, lower right
-            #     st.external_surface.layer[4].plot_edges(ax)  # gelcoat, upper right
-            #     st.external_surface.layer[5].plot_edges(ax)  # gelcoat, upper left
-            #     st.external_surface.layer[6].plot_edges(ax)  # triax, lower left
-            #     st.external_surface.layer[7].plot_edges(ax)  # triax, lower right
-            #     st.external_surface.layer[8].plot_edges(ax)  # triax, upper right
-            #     st.external_surface.layer[9].plot_edges(ax)  # triax, upper left
-            if st.root_buildup.exists():
-                st.root_buildup.layer['triax, lower left'].plot_edges(ax)
-                st.root_buildup.layer['triax, lower right'].plot_edges(ax)
-                st.root_buildup.layer['triax, upper right'].plot_edges(ax)
-                st.root_buildup.layer['triax, upper left'].plot_edges(ax)
-            if st.spar_cap.exists():
-                st.spar_cap.layer['lower'].plot_edges(ax)
-                st.spar_cap.layer['upper'].plot_edges(ax)
-            if st.aft_panel_1.exists():
-                st.aft_panel_1.layer['lower'].plot_edges(ax)
-                st.aft_panel_1.layer['upper'].plot_edges(ax)
-            if st.aft_panel_2.exists():
-                st.aft_panel_2.layer['lower'].plot_edges(ax)
-                st.aft_panel_2.layer['upper'].plot_edges(ax)
-            if st.LE_panel.exists():
-                st.LE_panel.layer['foam'].plot_edges(ax)
-            if st.shear_web_1.exists():
-                st.shear_web_1.layer['biax, left'].plot_edges(ax)
-                st.shear_web_1.layer['foam'].plot_edges(ax)
-                st.shear_web_1.layer['biax, right'].plot_edges(ax)
-            if st.shear_web_2.exists():
-                st.shear_web_2.layer['biax, left'].plot_edges(ax)
-                st.shear_web_2.layer['foam'].plot_edges(ax)
-                st.shear_web_2.layer['biax, right'].plot_edges(ax)
-            if st.shear_web_3.exists():
-                st.shear_web_3.layer['biax, left'].plot_edges(ax)
-                st.shear_web_3.layer['foam'].plot_edges(ax)
-                st.shear_web_3.layer['biax, right'].plot_edges(ax)
-            if st.TE_reinforcement.exists():
-                st.TE_reinforcement.layer['uniax'].plot_edges(ax)
-                try:
-                    st.TE_reinforcement.layer['foam'].plot_edges(ax)
-                except KeyError:  # foam region doesn't exist
-                    pass
-            # if st.internal_surface_1.exists():
-            #     self.plot_polygon(
-            #         st.internal_surface_1.layer[0].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            #     self.plot_polygon(
-            #         st.internal_surface_1.layer[1].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            # if st.internal_surface_2.exists():
-            #     self.plot_polygon(
-            #         st.internal_surface_2.layer[0].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            #     self.plot_polygon(
-            #         st.internal_surface_2.layer[1].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            # if st.internal_surface_3.exists():
-            #     self.plot_polygon(
-            #         st.internal_surface_3.layer[0].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            #     self.plot_polygon(
-            #         st.internal_surface_3.layer[1].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            # if st.internal_surface_4.exists():
-            #     self.plot_polygon(
-            #         st.internal_surface_4.layer[0].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-            #     self.plot_polygon(
-            #         st.internal_surface_4.layer[1].polygon, ax,
-            #         face_color='#999999', edge_color='#000000',
-            #         alpha=0.8)  # face color is gray
-        except AttributeError:
-            raise AttributeError("Layer instance has no attribute 'left'.\n  Try running <station>.structure.<part>.get_and_save_edges() first.")
-        plt.show()
-        return (fig, ax)
 
 
 class BiplaneStation(_Station):
@@ -953,7 +700,8 @@ class BiplaneStation(_Station):
             twist=stn_series['twist'],
             gap_to_chord_ratio=stn_series['gap-to-chord ratio'],
             gap_fraction=stn_series['gap fraction'],
-            stagger_to_chord_ratio=stn_series['stagger-to-chord ratio'])
+            stagger_to_chord_ratio=stn_series['stagger-to-chord ratio'],
+            parent_station=self)
         self.logf = open(_Station.logfile_name, "a")
         self.logf.write("****** AIRFOIL AND CHORD PROPERTIES ******\n")
         self.logf.write(str(self.airfoil) + '\n')
@@ -1134,64 +882,8 @@ class BiplaneStation(_Station):
                 st.lower_aft_panel_2.right = np.nan
                 raise Warning("'aft panel 2, right' is undefined for station #{0}".format(self.station_num))
 
-    def plot_part_edges(self, axes):
-        """Plot color block for each structural part region.
-
-        Each color block spans the plot from top to bottom.
-
-        Uses coordinates saved as attributes within each Part instance
-        (OOP style) by <Station>.find_part_edges().
-
-        Must run <Station>.find_part_edges() first.
-
-        KNOWN BUG: this doesn't work after rotating the airfoil coordinates.
-        (This feature will not be implemented.)
-
-        """
-        st = self.structure
-        # upper airfoil
-        try:
-            if st.upper_spar_cap.exists():
-                axes.axvspan(st.upper_spar_cap.left, st.upper_spar_cap.right, ymin=0.5, facecolor='cyan', edgecolor='cyan', alpha=0.7)
-            if st.upper_TE_reinforcement.exists():
-                axes.axvspan(st.upper_TE_reinforcement.left, st.upper_TE_reinforcement.right, ymin=0.5, facecolor='pink', edgecolor='pink', alpha=0.7)
-            if st.upper_LE_panel.exists():
-                axes.axvspan(st.upper_LE_panel.left, st.upper_LE_panel.right, ymin=0.5, facecolor='magenta', edgecolor='magenta', alpha=0.7)
-            if st.upper_aft_panel_1.exists():
-                axes.axvspan(st.upper_aft_panel_1.left, st.upper_aft_panel_1.right, ymin=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
-            if st.upper_aft_panel_2.exists():
-                axes.axvspan(st.upper_aft_panel_2.left, st.upper_aft_panel_2.right, ymin=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
-            if st.upper_shear_web_1.exists():
-                axes.axvspan(st.upper_shear_web_1.left, st.upper_shear_web_1.right, ymin=0.5, facecolor='green', edgecolor='green')
-            if st.upper_shear_web_2.exists():
-                axes.axvspan(st.upper_shear_web_2.left, st.upper_shear_web_2.right, ymin=0.5, facecolor='green', edgecolor='green')
-            if st.upper_shear_web_3.exists():
-                axes.axvspan(st.upper_shear_web_3.left, st.upper_shear_web_3.right, ymin=0.5, facecolor='green', edgecolor='green')
-        except AttributeError:
-            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
-        # lower airfoil
-        try:
-            if st.lower_spar_cap.exists():
-                axes.axvspan(st.lower_spar_cap.left, st.lower_spar_cap.right, ymax=0.5, facecolor='cyan', edgecolor='cyan', alpha=0.7)
-            if st.lower_TE_reinforcement.exists():
-                axes.axvspan(st.lower_TE_reinforcement.left, st.lower_TE_reinforcement.right, ymax=0.5, facecolor='pink', edgecolor='pink', alpha=0.7)
-            if st.lower_LE_panel.exists():
-                axes.axvspan(st.lower_LE_panel.left, st.lower_LE_panel.right, ymax=0.5, facecolor='magenta', edgecolor='magenta', alpha=0.7)
-            if st.lower_aft_panel_1.exists():
-                axes.axvspan(st.lower_aft_panel_1.left, st.lower_aft_panel_1.right, ymax=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
-            if st.lower_aft_panel_2.exists():
-                axes.axvspan(st.lower_aft_panel_2.left, st.lower_aft_panel_2.right, ymax=0.5, facecolor='orange', edgecolor='orange', alpha=0.7)
-            if st.lower_shear_web_1.exists():
-                axes.axvspan(st.lower_shear_web_1.left, st.lower_shear_web_1.right, ymax=0.5, facecolor='green', edgecolor='green')
-            if st.lower_shear_web_2.exists():
-                axes.axvspan(st.lower_shear_web_2.left, st.lower_shear_web_2.right, ymax=0.5, facecolor='green', edgecolor='green')
-            if st.lower_shear_web_3.exists():
-                axes.axvspan(st.lower_shear_web_3.left, st.lower_shear_web_3.right, ymax=0.5, facecolor='green', edgecolor='green')
-        except AttributeError:
-            raise AttributeError("Part edges (.left and .right) have not been defined yet!\n  Try running <Station>.find_part_edges() first.")
-
     def find_SW_cs_coords(self):
-        """Find the corners of the cross-sections for each shear web.
+        """Find the corners of each shear web cross-section.
 
         Saves cross-section coordinates (in meters) as the '.cs_coords' 
         attribute (a numpy array) within each ShearWeb instance.
@@ -1199,6 +891,7 @@ class BiplaneStation(_Station):
         """
         st = self.structure
         af = self.airfoil
+        # lower airfoil
         if st.lower_shear_web_1.exists():
             ((x1,y1),(x4,y4)) = af.find_part_edge_coords(st.lower_shear_web_1.left, airfoil='lower')
             ((x2,y2),(x3,y3)) = af.find_part_edge_coords(st.lower_shear_web_1.right, airfoil='lower')
@@ -1242,3 +935,366 @@ class BiplaneStation(_Station):
                                                  [x2,y2],  # 2 (lower right)
                                                  [x3,y3],  # 3 (upper right)
                                                  [x4,y4]]) # 4 (upper left)
+
+    def plot_parts(self, ax=None):
+        """Plots the structural parts in this blade station."""
+        if ax is None:
+            fig, ax = plt.subplots()
+        st = self.structure
+        ax.set_title("Station #{0}, {1}, {2}% span".format(self.station_num, self.airfoil.name, self.coords.x1))
+        ax.set_aspect('equal')
+        ax.grid('on')
+        ax.set_xlabel('x2 [meters]')
+        ax.set_ylabel('x3 [meters]')
+        if self.type == 'monoplane':
+            self.plot_polygon(self.airfoil.polygon, ax,
+                face_color='None', edge_color='#999999', alpha=0.8)
+            (minx, miny, maxx, maxy) = self.airfoil.polygon.bounds
+        elif self.type == 'biplane':
+            self.plot_polygon(self.airfoil.lower_polygon, ax,
+                face_color='None', edge_color='#999999', alpha=0.8)
+            self.plot_polygon(self.airfoil.upper_polygon, ax,
+                face_color='None', edge_color='#999999', alpha=0.8)
+            (lminx, lminy, lmaxx, lmaxy) = self.airfoil.lower_polygon.bounds
+            (uminx, uminy, umaxx, umaxy) = self.airfoil.upper_polygon.bounds
+            (minx, miny, maxx, maxy) = (
+                min(lminx,uminx),
+                min(lminy,uminy),
+                max(lmaxx,umaxx),
+                max(lmaxy,umaxy)
+                )
+        else:
+            raise ValueError("<station>.type must be 'monoplane' or 'biplane'")
+        ax.set_xlim([minx*1.2,maxx*1.2])
+        ax.set_ylim([miny*1.2,maxy*1.2])
+        try:
+            # lower airfoil ---------------------------------------------------
+            if st.lower_external_surface.exists():
+                self.plot_polygon(
+                    st.lower_external_surface.layer['gelcoat'].polygon, ax,
+                    st.lower_external_surface.layer['gelcoat'].face_color,
+                    st.lower_external_surface.layer['gelcoat'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_external_surface.layer['triax'].polygon, ax,
+                    st.lower_external_surface.layer['triax'].face_color,
+                    st.lower_external_surface.layer['triax'].edge_color,
+                    alpha=0.8)
+            if st.lower_root_buildup.exists():
+                self.plot_polygon(
+                    st.lower_root_buildup.layer['triax'].polygon, ax,
+                    st.lower_root_buildup.layer['triax'].face_color,
+                    st.lower_root_buildup.layer['triax'].edge_color,
+                    alpha=0.8)
+            if st.lower_spar_cap.exists():
+                self.plot_polygon(
+                    st.lower_spar_cap.layer['lower'].polygon, ax,
+                    st.lower_spar_cap.layer['lower'].face_color,
+                    st.lower_spar_cap.layer['lower'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_spar_cap.layer['upper'].polygon, ax,
+                    st.lower_spar_cap.layer['upper'].face_color,
+                    st.lower_spar_cap.layer['upper'].edge_color,
+                    alpha=0.8)
+            if st.lower_aft_panel_1.exists():
+                self.plot_polygon(
+                    st.lower_aft_panel_1.layer['lower'].polygon, ax,
+                    st.lower_aft_panel_1.layer['lower'].face_color,
+                    st.lower_aft_panel_1.layer['lower'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_aft_panel_1.layer['upper'].polygon, ax,
+                    st.lower_aft_panel_1.layer['upper'].face_color,
+                    st.lower_aft_panel_1.layer['upper'].edge_color,
+                    alpha=0.8)
+            if st.lower_aft_panel_2.exists():
+                self.plot_polygon(
+                    st.lower_aft_panel_2.layer['lower'].polygon, ax,
+                    st.lower_aft_panel_2.layer['lower'].face_color,
+                    st.lower_aft_panel_2.layer['lower'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_aft_panel_2.layer['upper'].polygon, ax,
+                    st.lower_aft_panel_2.layer['upper'].face_color,
+                    st.lower_aft_panel_2.layer['upper'].edge_color,
+                    alpha=0.8)
+            if st.lower_LE_panel.exists():
+                self.plot_polygon(
+                    st.lower_LE_panel.layer['foam'].polygon, ax,
+                    st.lower_LE_panel.layer['foam'].face_color,
+                    st.lower_LE_panel.layer['foam'].edge_color,
+                    alpha=0.8)
+            if st.lower_shear_web_1.exists():
+                self.plot_polygon(
+                    st.lower_shear_web_1.layer['biax, left'].polygon, ax,
+                    st.lower_shear_web_1.layer['biax, left'].face_color,
+                    st.lower_shear_web_1.layer['biax, left'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_shear_web_1.layer['foam'].polygon, ax,
+                    st.lower_shear_web_1.layer['foam'].face_color,
+                    st.lower_shear_web_1.layer['foam'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_shear_web_1.layer['biax, right'].polygon, ax,
+                    st.lower_shear_web_1.layer['biax, right'].face_color,
+                    st.lower_shear_web_1.layer['biax, right'].edge_color,
+                    alpha=0.8)
+            if st.lower_shear_web_2.exists():
+                self.plot_polygon(
+                    st.lower_shear_web_2.layer['biax, left'].polygon, ax,
+                    st.lower_shear_web_2.layer['biax, left'].face_color,
+                    st.lower_shear_web_2.layer['biax, left'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_shear_web_2.layer['foam'].polygon, ax,
+                    st.lower_shear_web_2.layer['foam'].face_color,
+                    st.lower_shear_web_2.layer['foam'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_shear_web_2.layer['biax, right'].polygon, ax,
+                    st.lower_shear_web_2.layer['biax, right'].face_color,
+                    st.lower_shear_web_2.layer['biax, right'].edge_color,
+                    alpha=0.8)
+            if st.lower_shear_web_3.exists():
+                self.plot_polygon(
+                    st.lower_shear_web_3.layer['biax, left'].polygon, ax,
+                    st.lower_shear_web_3.layer['biax, left'].face_color,
+                    st.lower_shear_web_3.layer['biax, left'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_shear_web_3.layer['foam'].polygon, ax,
+                    st.lower_shear_web_3.layer['foam'].face_color,
+                    st.lower_shear_web_3.layer['foam'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_shear_web_3.layer['biax, right'].polygon, ax,
+                    st.lower_shear_web_3.layer['biax, right'].face_color,
+                    st.lower_shear_web_3.layer['biax, right'].edge_color,
+                    alpha=0.8)
+            if st.lower_TE_reinforcement.exists():
+                self.plot_polygon(
+                    st.lower_TE_reinforcement.layer['uniax'].polygon, ax,
+                    st.lower_TE_reinforcement.layer['uniax'].face_color,
+                    st.lower_TE_reinforcement.layer['uniax'].edge_color,
+                    alpha=0.8)
+                try:
+                    self.plot_polygon(
+                        st.lower_TE_reinforcement.layer['foam'].polygon, ax,
+                        st.lower_TE_reinforcement.layer['foam'].face_color,
+                        st.lower_TE_reinforcement.layer['foam'].edge_color,
+                        alpha=0.8)
+                except KeyError:  # foam region doesn't exist
+                    pass
+            if st.lower_internal_surface_1.exists():
+                self.plot_polygon(
+                    st.lower_internal_surface_1.layer['triax'].polygon, ax,
+                    st.lower_internal_surface_1.layer['triax'].face_color,
+                    st.lower_internal_surface_1.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_internal_surface_1.layer['resin'].polygon, ax,
+                    st.lower_internal_surface_1.layer['resin'].face_color,
+                    st.lower_internal_surface_1.layer['resin'].edge_color,
+                    alpha=0.8)
+            if st.lower_internal_surface_2.exists():
+                self.plot_polygon(
+                    st.lower_internal_surface_2.layer['triax'].polygon, ax,
+                    st.lower_internal_surface_2.layer['triax'].face_color,
+                    st.lower_internal_surface_2.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_internal_surface_2.layer['resin'].polygon, ax,
+                    st.lower_internal_surface_2.layer['resin'].face_color,
+                    st.lower_internal_surface_2.layer['resin'].edge_color,
+                    alpha=0.8)
+            if st.lower_internal_surface_3.exists():
+                self.plot_polygon(
+                    st.lower_internal_surface_3.layer['triax'].polygon, ax,
+                    st.lower_internal_surface_3.layer['triax'].face_color,
+                    st.lower_internal_surface_3.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_internal_surface_3.layer['resin'].polygon, ax,
+                    st.lower_internal_surface_3.layer['resin'].face_color,
+                    st.lower_internal_surface_3.layer['resin'].edge_color,
+                    alpha=0.8)
+            if st.lower_internal_surface_4.exists():
+                self.plot_polygon(
+                    st.lower_internal_surface_4.layer['triax'].polygon, ax,
+                    st.lower_internal_surface_4.layer['triax'].face_color,
+                    st.lower_internal_surface_4.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.lower_internal_surface_4.layer['resin'].polygon, ax,
+                    st.lower_internal_surface_4.layer['resin'].face_color,
+                    st.lower_internal_surface_4.layer['resin'].edge_color,
+                    alpha=0.8)
+            # upper airfoil ---------------------------------------------------
+            if st.upper_external_surface.exists():
+                self.plot_polygon(
+                    st.upper_external_surface.layer['gelcoat'].polygon, ax,
+                    st.upper_external_surface.layer['gelcoat'].face_color,
+                    st.upper_external_surface.layer['gelcoat'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_external_surface.layer['triax'].polygon, ax,
+                    st.upper_external_surface.layer['triax'].face_color,
+                    st.upper_external_surface.layer['triax'].edge_color,
+                    alpha=0.8)
+            if st.upper_root_buildup.exists():
+                self.plot_polygon(
+                    st.upper_root_buildup.layer['triax'].polygon, ax,
+                    st.upper_root_buildup.layer['triax'].face_color,
+                    st.upper_root_buildup.layer['triax'].edge_color,
+                    alpha=0.8)
+            if st.upper_spar_cap.exists():
+                self.plot_polygon(
+                    st.upper_spar_cap.layer['lower'].polygon, ax,
+                    st.upper_spar_cap.layer['lower'].face_color,
+                    st.upper_spar_cap.layer['lower'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_spar_cap.layer['upper'].polygon, ax,
+                    st.upper_spar_cap.layer['upper'].face_color,
+                    st.upper_spar_cap.layer['upper'].edge_color,
+                    alpha=0.8)
+            if st.upper_aft_panel_1.exists():
+                self.plot_polygon(
+                    st.upper_aft_panel_1.layer['lower'].polygon, ax,
+                    st.upper_aft_panel_1.layer['lower'].face_color,
+                    st.upper_aft_panel_1.layer['lower'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_aft_panel_1.layer['upper'].polygon, ax,
+                    st.upper_aft_panel_1.layer['upper'].face_color,
+                    st.upper_aft_panel_1.layer['upper'].edge_color,
+                    alpha=0.8)
+            if st.upper_aft_panel_2.exists():
+                self.plot_polygon(
+                    st.upper_aft_panel_2.layer['lower'].polygon, ax,
+                    st.upper_aft_panel_2.layer['lower'].face_color,
+                    st.upper_aft_panel_2.layer['lower'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_aft_panel_2.layer['upper'].polygon, ax,
+                    st.upper_aft_panel_2.layer['upper'].face_color,
+                    st.upper_aft_panel_2.layer['upper'].edge_color,
+                    alpha=0.8)
+            if st.upper_LE_panel.exists():
+                self.plot_polygon(
+                    st.upper_LE_panel.layer['foam'].polygon, ax,
+                    st.upper_LE_panel.layer['foam'].face_color,
+                    st.upper_LE_panel.layer['foam'].edge_color,
+                    alpha=0.8)
+            if st.upper_shear_web_1.exists():
+                self.plot_polygon(
+                    st.upper_shear_web_1.layer['biax, left'].polygon, ax,
+                    st.upper_shear_web_1.layer['biax, left'].face_color,
+                    st.upper_shear_web_1.layer['biax, left'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_shear_web_1.layer['foam'].polygon, ax,
+                    st.upper_shear_web_1.layer['foam'].face_color,
+                    st.upper_shear_web_1.layer['foam'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_shear_web_1.layer['biax, right'].polygon, ax,
+                    st.upper_shear_web_1.layer['biax, right'].face_color,
+                    st.upper_shear_web_1.layer['biax, right'].edge_color,
+                    alpha=0.8)
+            if st.upper_shear_web_2.exists():
+                self.plot_polygon(
+                    st.upper_shear_web_2.layer['biax, left'].polygon, ax,
+                    st.upper_shear_web_2.layer['biax, left'].face_color,
+                    st.upper_shear_web_2.layer['biax, left'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_shear_web_2.layer['foam'].polygon, ax,
+                    st.upper_shear_web_2.layer['foam'].face_color,
+                    st.upper_shear_web_2.layer['foam'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_shear_web_2.layer['biax, right'].polygon, ax,
+                    st.upper_shear_web_2.layer['biax, right'].face_color,
+                    st.upper_shear_web_2.layer['biax, right'].edge_color,
+                    alpha=0.8)
+            if st.upper_shear_web_3.exists():
+                self.plot_polygon(
+                    st.upper_shear_web_3.layer['biax, left'].polygon, ax,
+                    st.upper_shear_web_3.layer['biax, left'].face_color,
+                    st.upper_shear_web_3.layer['biax, left'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_shear_web_3.layer['foam'].polygon, ax,
+                    st.upper_shear_web_3.layer['foam'].face_color,
+                    st.upper_shear_web_3.layer['foam'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_shear_web_3.layer['biax, right'].polygon, ax,
+                    st.upper_shear_web_3.layer['biax, right'].face_color,
+                    st.upper_shear_web_3.layer['biax, right'].edge_color,
+                    alpha=0.8)
+            if st.upper_TE_reinforcement.exists():
+                self.plot_polygon(
+                    st.upper_TE_reinforcement.layer['uniax'].polygon, ax,
+                    st.upper_TE_reinforcement.layer['uniax'].face_color,
+                    st.upper_TE_reinforcement.layer['uniax'].edge_color,
+                    alpha=0.8)
+                try:
+                    self.plot_polygon(
+                        st.upper_TE_reinforcement.layer['foam'].polygon, ax,
+                        st.upper_TE_reinforcement.layer['foam'].face_color,
+                        st.upper_TE_reinforcement.layer['foam'].edge_color,
+                        alpha=0.8)
+                except KeyError:  # foam region doesn't exist
+                    pass
+            if st.upper_internal_surface_1.exists():
+                self.plot_polygon(
+                    st.upper_internal_surface_1.layer['triax'].polygon, ax,
+                    st.upper_internal_surface_1.layer['triax'].face_color,
+                    st.upper_internal_surface_1.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_internal_surface_1.layer['resin'].polygon, ax,
+                    st.upper_internal_surface_1.layer['resin'].face_color,
+                    st.upper_internal_surface_1.layer['resin'].edge_color,
+                    alpha=0.8)
+            if st.upper_internal_surface_2.exists():
+                self.plot_polygon(
+                    st.upper_internal_surface_2.layer['triax'].polygon, ax,
+                    st.upper_internal_surface_2.layer['triax'].face_color,
+                    st.upper_internal_surface_2.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_internal_surface_2.layer['resin'].polygon, ax,
+                    st.upper_internal_surface_2.layer['resin'].face_color,
+                    st.upper_internal_surface_2.layer['resin'].edge_color,
+                    alpha=0.8)
+            if st.upper_internal_surface_3.exists():
+                self.plot_polygon(
+                    st.upper_internal_surface_3.layer['triax'].polygon, ax,
+                    st.upper_internal_surface_3.layer['triax'].face_color,
+                    st.upper_internal_surface_3.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_internal_surface_3.layer['resin'].polygon, ax,
+                    st.upper_internal_surface_3.layer['resin'].face_color,
+                    st.upper_internal_surface_3.layer['resin'].edge_color,
+                    alpha=0.8)
+            if st.upper_internal_surface_4.exists():
+                self.plot_polygon(
+                    st.upper_internal_surface_4.layer['triax'].polygon, ax,
+                    st.upper_internal_surface_4.layer['triax'].face_color,
+                    st.upper_internal_surface_4.layer['triax'].edge_color,
+                    alpha=0.8)
+                self.plot_polygon(
+                    st.upper_internal_surface_4.layer['resin'].polygon, ax,
+                    st.upper_internal_surface_4.layer['resin'].face_color,
+                    st.upper_internal_surface_4.layer['resin'].edge_color,
+                    alpha=0.8)
+        except AttributeError:
+            raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.structure.create_all_layers() first.")
+        plt.show()
+        
