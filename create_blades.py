@@ -46,6 +46,7 @@ if biplane_flap_sym_no_stagger_flag:
     # pre-process the airfoil coordinates
     for station in b1.list_of_stations:
         station.airfoil.create_polygon()
+        station.find_SW_cs_coords()
         # station.structure.create_all_layers()
         # station.structure.write_all_part_polygons()
 

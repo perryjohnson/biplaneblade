@@ -1,7 +1,7 @@
 """A module for organizing geometrical data for a blade definition.
 
 Author: Perry Roth-Johnson
-Last updated: April 10, 2014
+Last updated: April 13, 2014
 
 """
 
