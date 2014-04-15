@@ -7,13 +7,13 @@ $ ipython qtconsole --pylab
 or
 $ ipython --pylab
 Then, from the prompt, run this script:
-|> %run plot_selected_stations
+|> %run biplane_blade_lib/plot_selected_stations
 Once you are finished looking at the meshes, you can clean up extra files:
 |> %run clean
 (See the 'clean.py' script in this directory for details.)
 
 Author: Perry Roth-Johnson
-Last updated: March 10, 2014
+Last updated: April 14, 2014
 
 """
 
@@ -38,7 +38,7 @@ for station in b1.list_of_stations:
     # station.structure.write_truegrid_inputfile(interrupt_flag=True)
     # station.structure.write_all_part_polygons()
 
-b1.plot_selected_cross_sections()
+b1.plot_selected_cross_sections(selected_stations=[1,7,11,13,16,22,25,29,32,34,36,39])
 
 # for station in m.list_of_stations:
 #     station.plot_parts(alternate_layers=False)
