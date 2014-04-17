@@ -91,8 +91,7 @@ x1 <np.array>: x1-coordinates of all 24 spar stations
 
 plt.close('all')
 # load the Sandia blade into memory
-m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
-    rotate_airfoil_coords=True)
+m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
 # x1 coordinates of all 24 spar stations
 x1_stn = np.array([
      0.0,

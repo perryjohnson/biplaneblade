@@ -24,7 +24,7 @@ Once you are finished looking at the blades, you can clean up extra files:
 (See the 'clean.py' script in this directory for details.)
 
 Author: Perry Roth-Johnson
-Last updated: April 10, 2014
+Last updated: April 17, 2014
 
 """
 
@@ -34,7 +34,7 @@ reload(bl)
 
 
 biplane_flap_sym_no_stagger_flag = True
-sandia_flag = False
+sandia_flag = True
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
 if biplane_flap_sym_no_stagger_flag:
@@ -47,8 +47,8 @@ if biplane_flap_sym_no_stagger_flag:
     for station in b1.list_of_stations:
         print station.station_num
         station.airfoil.create_polygon()
-        # station.structure.create_all_layers()
-        # station.structure.write_all_part_polygons()
+        station.structure.create_all_layers()
+        station.structure.write_all_part_polygons()
 
     # make a 3D visualization of the entire blade with Mayavi's mlab
     for station in b1.list_of_stations:
@@ -57,8 +57,7 @@ if biplane_flap_sym_no_stagger_flag:
 
 # --- sandia blade ------------------------------------------------------------
 if sandia_flag:
-    m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
-        rotate_airfoil_coords=False)
+    m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
 
     # pre-process the airfoil coordinates
     for station in m.list_of_stations:

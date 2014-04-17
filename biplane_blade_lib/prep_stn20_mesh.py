@@ -12,7 +12,7 @@ or
 |> import sandia_blade_lib/prep_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: April 14, 2014
+Last updated: April 17, 2014
 
 """
 
@@ -32,8 +32,7 @@ plt.close('all')
 # load the biplane blade
 b1 = bl.BiplaneBlade(
     'biplane blade, flapwise symmetric, no stagger, rj/R=0.452, g/c=1.25',
-    'biplane_blade',
-    rotate_airfoil_coords=False)
+    'biplane_blade')
 
 # pre-process the station dimensions
 station = b1.list_of_stations[station_num-1]

@@ -22,8 +22,7 @@ import lib.dymore_utils as du
 
 
 # load the Sandia blade
-m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
-    rotate_airfoil_coords=False)
+m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
 
 # orientation distribution ----------------------------------------------------
 # open a new file

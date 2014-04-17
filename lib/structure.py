@@ -588,10 +588,7 @@ class LE_Panel(Part):
         p = ac.intersection(bb)
         self.layer['foam'] = l.Layer(p, b.dict_of_materials['foam'],
             parent_part=self, name='foam', face_color='#00A64F')
-        try:
-            assert self.layer['foam'].polygon.geom_type == 'Polygon'
-        except AssertionError:
-            print "***WARNING: Station #{0} failed to create foam layer of LE Panel".format(self.parent_structure.parent_station.station_num)
+        assert self.layer['foam'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['foam'])
         elif airfoil == 'lower':
@@ -854,10 +851,7 @@ height:  {1:6.4f} (meters)
         self.layer['uniax'] = l.Layer(polygon_uniax,
             b.dict_of_materials['uniaxial GFRP'], parent_part=self,
             name='uniax', face_color='#F366BA')
-        try:
-            assert self.layer['uniax'].polygon.geom_type == 'Polygon'
-        except AssertionError:
-            print "***WARNING: Station #{0} failed to create uniax layer of TE Reinforcement".format(self.parent_structure.parent_station.station_num)
+        assert self.layer['uniax'].polygon.geom_type == 'Polygon'
         if airfoil is None:
             st._list_of_layers.append(self.layer['uniax'])
         elif airfoil == 'lower':
@@ -878,10 +872,7 @@ height:  {1:6.4f} (meters)
             self.layer['foam'] = l.Layer(polygon_foam,
                 b.dict_of_materials['foam'], parent_part=self, name='foam',
                 face_color='#F366BA')
-            try:
-                assert self.layer['foam'].polygon.geom_type == 'Polygon'
-            except AssertionError:
-                print "***WARNING: Station #{0} failed to create foam layer of TE reinforcement".format(self.parent_structure.parent_station.station_num)
+            assert self.layer['foam'].polygon.geom_type == 'Polygon'
             if airfoil is None:
                 st._list_of_layers.append(self.layer['foam'])
             elif airfoil == 'lower':
@@ -995,11 +986,8 @@ height:  {1:6.4f} (meters)
             self.layer['uniax, '+label] = l.Layer(u_new,
                 b.dict_of_materials['uniaxial GFRP'], parent_part=self,
                 name=('uniax, '+label))
-            try:
-                # check that the layer just created is a polygon
-                assert self.layer['uniax, '+label].polygon.geom_type == 'Polygon'
-            except AssertionError:
-                raise Warning("At Station #{0}, created a layer named '{1}', but it has <layer>.polygon.geom_type={2}, not .geom_type='Polygon'".format(st.parent_station.station_num, ('uniax, '+label), self.layer['uniax, '+label].polygon.geom_type))
+            # check that the layer just created is a polygon
+            assert self.layer['uniax, '+label].polygon.geom_type == 'Polygon'
             # no need to append these polygons to <station>._list_of_layers
             # split up foam region into alternate layers
             if not label.endswith('right'):
@@ -1025,11 +1013,8 @@ height:  {1:6.4f} (meters)
                 self.layer['foam, '+label] = l.Layer(f_new,
                     b.dict_of_materials['foam'], parent_part=self,
                     name=('foam, '+label))
-                try:
-                    # check that the layer just created is a polygon
-                    assert self.layer['foam, '+label].polygon.geom_type == 'Polygon'
-                except AssertionError:
-                    raise Warning("At Station #{0}, created a layer named '{1}', but it has <layer>.polygon.geom_type={2}, not .geom_type='Polygon'".format(st.parent_station.station_num, ('foam, '+label), self.layer['foam, '+label].polygon.geom_type))
+                # check that the layer just created is a polygon
+                assert self.layer['foam, '+label].polygon.geom_type == 'Polygon'
                 # no need to append these polygons to <station>._list_of_layers
 
     def alternate_bounding_boxes(self, x_boundary_buffer=1.2,
@@ -1895,7 +1880,6 @@ class MonoplaneStructure:
 
     def write_all_part_polygons(self):
         """Write the coordinates of all structural parts to `station_path`s."""
-        stn = self.parent_station
         if self.external_surface.exists():
             self.external_surface.layer['gelcoat'].write_polygon_edges()
             self.external_surface.layer['triax'].write_polygon_edges()
@@ -2931,6 +2915,7 @@ class BiplaneStructure:
         return d
 
     def create_all_layers(self):
+        # fix !!!
         """Create polygons for single material layers of each structural part."""
         # lower layers --------------------------------------------------------
         if self.lower_external_surface.exists():
@@ -3247,54 +3232,101 @@ class BiplaneStructure:
             plt.show()
         return p
 
-    # !!! add this here?? needs to be updated from monoplane version to biplane version !!!
-    # def write_all_part_polygons(self):
-    #     """Write the coordinates of all structural parts to `station_path`s."""
-    #     stn = self.parent_station
-    #     if self.external_surface.exists():
-    #         self.external_surface.layer['gelcoat'].write_polygon_edges()
-    #         self.external_surface.layer['triax'].write_polygon_edges()
-    #     if self.root_buildup.exists():
-    #         self.root_buildup.layer['triax'].write_polygon_edges()
-    #     if self.spar_cap.exists():
-    #         self.spar_cap.layer['lower'].write_polygon_edges()
-    #         self.spar_cap.layer['upper'].write_polygon_edges()
-    #     if self.aft_panel_1.exists():
-    #         self.aft_panel_1.layer['lower'].write_polygon_edges()
-    #         self.aft_panel_1.layer['upper'].write_polygon_edges()
-    #     if self.aft_panel_2.exists():
-    #         self.aft_panel_2.layer['lower'].write_polygon_edges()
-    #         self.aft_panel_2.layer['upper'].write_polygon_edges()
-    #     if self.LE_panel.exists():
-    #         self.LE_panel.layer['foam'].write_polygon_edges()
-    #     if self.shear_web_1.exists():
-    #         self.shear_web_1.layer['biax, left'].write_polygon_edges()
-    #         self.shear_web_1.layer['foam'].write_polygon_edges()
-    #         self.shear_web_1.layer['biax, right'].write_polygon_edges()
-    #     if self.shear_web_2.exists():
-    #         self.shear_web_2.layer['biax, left'].write_polygon_edges()
-    #         self.shear_web_2.layer['foam'].write_polygon_edges()
-    #         self.shear_web_2.layer['biax, right'].write_polygon_edges()
-    #     if self.shear_web_3.exists():
-    #         self.shear_web_3.layer['biax, left'].write_polygon_edges()
-    #         self.shear_web_3.layer['foam'].write_polygon_edges()
-    #         self.shear_web_3.layer['biax, right'].write_polygon_edges()
-    #     if self.TE_reinforcement.exists():
-    #         self.TE_reinforcement.layer['uniax'].write_polygon_edges()
-    #         try:
-    #             self.TE_reinforcement.layer['foam'].write_polygon_edges()
-    #         except KeyError:
-    #             # the foam layer doesn't exist
-    #             pass
-    #     if self.internal_surface_1.exists():
-    #         self.internal_surface_1.layer['triax'].write_polygon_edges()
-    #         self.internal_surface_1.layer['resin'].write_polygon_edges()
-    #     if self.internal_surface_2.exists():
-    #         self.internal_surface_2.layer['triax'].write_polygon_edges()
-    #         self.internal_surface_2.layer['resin'].write_polygon_edges()
-    #     if self.internal_surface_3.exists():
-    #         self.internal_surface_3.layer['triax'].write_polygon_edges()
-    #         self.internal_surface_3.layer['resin'].write_polygon_edges()
-    #     if self.internal_surface_4.exists():
-    #         self.internal_surface_4.layer['triax'].write_polygon_edges()
-    #         self.internal_surface_4.layer['resin'].write_polygon_edges()
+    def write_all_part_polygons(self):
+        """Write the coordinates of all structural parts to `station_path`s."""
+        # lower layers --------------------------------------------------------
+        if self.lower_external_surface.exists():
+            self.lower_external_surface.layer['gelcoat'].write_polygon_edges()
+            self.lower_external_surface.layer['triax'].write_polygon_edges()
+        if self.lower_root_buildup.exists():
+            self.lower_root_buildup.layer['triax'].write_polygon_edges()
+        if self.lower_spar_cap.exists():
+            self.lower_spar_cap.layer['lower'].write_polygon_edges()
+            self.lower_spar_cap.layer['upper'].write_polygon_edges()
+        if self.lower_aft_panel_1.exists():
+            self.lower_aft_panel_1.layer['lower'].write_polygon_edges()
+            self.lower_aft_panel_1.layer['upper'].write_polygon_edges()
+        if self.lower_aft_panel_2.exists():
+            self.lower_aft_panel_2.layer['lower'].write_polygon_edges()
+            self.lower_aft_panel_2.layer['upper'].write_polygon_edges()
+        if self.lower_LE_panel.exists():
+            self.lower_LE_panel.layer['foam'].write_polygon_edges()
+        if self.lower_shear_web_1.exists():
+            self.lower_shear_web_1.layer['biax, left'].write_polygon_edges()
+            self.lower_shear_web_1.layer['foam'].write_polygon_edges()
+            self.lower_shear_web_1.layer['biax, right'].write_polygon_edges()
+        if self.lower_shear_web_2.exists():
+            self.lower_shear_web_2.layer['biax, left'].write_polygon_edges()
+            self.lower_shear_web_2.layer['foam'].write_polygon_edges()
+            self.lower_shear_web_2.layer['biax, right'].write_polygon_edges()
+        if self.lower_shear_web_3.exists():
+            self.lower_shear_web_3.layer['biax, left'].write_polygon_edges()
+            self.lower_shear_web_3.layer['foam'].write_polygon_edges()
+            self.lower_shear_web_3.layer['biax, right'].write_polygon_edges()
+        if self.lower_TE_reinforcement.exists():
+            self.lower_TE_reinforcement.layer['uniax'].write_polygon_edges()
+            try:
+                self.lower_TE_reinforcement.layer['foam'].write_polygon_edges()
+            except KeyError:
+                # the foam layer doesn't exist
+                pass
+        if self.lower_internal_surface_1.exists():
+            self.lower_internal_surface_1.layer['triax'].write_polygon_edges()
+            self.lower_internal_surface_1.layer['resin'].write_polygon_edges()
+        if self.lower_internal_surface_2.exists():
+            self.lower_internal_surface_2.layer['triax'].write_polygon_edges()
+            self.lower_internal_surface_2.layer['resin'].write_polygon_edges()
+        if self.lower_internal_surface_3.exists():
+            self.lower_internal_surface_3.layer['triax'].write_polygon_edges()
+            self.lower_internal_surface_3.layer['resin'].write_polygon_edges()
+        if self.lower_internal_surface_4.exists():
+            self.lower_internal_surface_4.layer['triax'].write_polygon_edges()
+            self.lower_internal_surface_4.layer['resin'].write_polygon_edges()
+        # upper layers --------------------------------------------------------
+        if self.upper_external_surface.exists():
+            self.upper_external_surface.layer['gelcoat'].write_polygon_edges()
+            self.upper_external_surface.layer['triax'].write_polygon_edges()
+        if self.upper_root_buildup.exists():
+            self.upper_root_buildup.layer['triax'].write_polygon_edges()
+        if self.upper_spar_cap.exists():
+            self.upper_spar_cap.layer['lower'].write_polygon_edges()
+            self.upper_spar_cap.layer['upper'].write_polygon_edges()
+        if self.upper_aft_panel_1.exists():
+            self.upper_aft_panel_1.layer['lower'].write_polygon_edges()
+            self.upper_aft_panel_1.layer['upper'].write_polygon_edges()
+        if self.upper_aft_panel_2.exists():
+            self.upper_aft_panel_2.layer['lower'].write_polygon_edges()
+            self.upper_aft_panel_2.layer['upper'].write_polygon_edges()
+        if self.upper_LE_panel.exists():
+            self.upper_LE_panel.layer['foam'].write_polygon_edges()
+        if self.upper_shear_web_1.exists():
+            self.upper_shear_web_1.layer['biax, left'].write_polygon_edges()
+            self.upper_shear_web_1.layer['foam'].write_polygon_edges()
+            self.upper_shear_web_1.layer['biax, right'].write_polygon_edges()
+        if self.upper_shear_web_2.exists():
+            self.upper_shear_web_2.layer['biax, left'].write_polygon_edges()
+            self.upper_shear_web_2.layer['foam'].write_polygon_edges()
+            self.upper_shear_web_2.layer['biax, right'].write_polygon_edges()
+        if self.upper_shear_web_3.exists():
+            self.upper_shear_web_3.layer['biax, left'].write_polygon_edges()
+            self.upper_shear_web_3.layer['foam'].write_polygon_edges()
+            self.upper_shear_web_3.layer['biax, right'].write_polygon_edges()
+        if self.upper_TE_reinforcement.exists():
+            self.upper_TE_reinforcement.layer['uniax'].write_polygon_edges()
+            try:
+                self.upper_TE_reinforcement.layer['foam'].write_polygon_edges()
+            except KeyError:
+                # the foam layer doesn't exist
+                pass
+        if self.upper_internal_surface_1.exists():
+            self.upper_internal_surface_1.layer['triax'].write_polygon_edges()
+            self.upper_internal_surface_1.layer['resin'].write_polygon_edges()
+        if self.upper_internal_surface_2.exists():
+            self.upper_internal_surface_2.layer['triax'].write_polygon_edges()
+            self.upper_internal_surface_2.layer['resin'].write_polygon_edges()
+        if self.upper_internal_surface_3.exists():
+            self.upper_internal_surface_3.layer['triax'].write_polygon_edges()
+            self.upper_internal_surface_3.layer['resin'].write_polygon_edges()
+        if self.upper_internal_surface_4.exists():
+            self.upper_internal_surface_4.layer['triax'].write_polygon_edges()
+            self.upper_internal_surface_4.layer['resin'].write_polygon_edges()

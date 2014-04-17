@@ -36,8 +36,7 @@ def prep_rel_diff_plot(axis,ymin=-100,ymax=100):
     return axis2
 
 # write all the mass and stiffness matrices from VABS to a csv file -----------
-m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
-    rotate_airfoil_coords=False)
+m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
 m.writecsv_mass_and_stiffness_props()
 
 # plot VABS and Sandia datasets against one another ---------------------------

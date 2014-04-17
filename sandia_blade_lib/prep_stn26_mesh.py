@@ -29,8 +29,7 @@ station_num = 26
 plt.close('all')
 
 # load the Sandia blade
-m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
-    rotate_airfoil_coords=False)
+m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
 
 # pre-process the station dimensions
 station = m.list_of_stations[station_num-1]

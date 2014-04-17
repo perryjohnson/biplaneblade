@@ -23,8 +23,7 @@ import lib.blade as bl
 reload(bl)
 
 # load the sandia blade
-m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade',
-    rotate_airfoil_coords=False)
+m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
 
 # pre-process the airfoil coordinates
 for station in m.list_of_stations:

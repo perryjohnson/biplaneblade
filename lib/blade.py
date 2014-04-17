@@ -50,8 +50,7 @@ class _Blade:
     """
     logfile_name = 'blade.log'
     def __init__(self, name, blade_path, defn_filename='blade_definition.csv',
-        airfoils_path='airfoils', matl_filename='materials.csv',
-        rotate_airfoil_coords=True):
+        airfoils_path='airfoils', matl_filename='materials.csv'):
         """Create a new wind turbine blade.
 
         Parameters
@@ -127,8 +126,6 @@ class _Blade:
                     station.airfoil.read_coords()
                     station.airfoil.scale_and_translate_coords()
                     station.airfoil.split_at_LE_and_TE()
-                    if rotate_airfoil_coords:
-                        station.airfoil.rotate_coords()
                     station.find_part_edges()
             material_import_success = self.import_material_properties()
             if material_import_success:
@@ -1189,11 +1186,10 @@ class MonoplaneBlade(_Blade):
 class BiplaneBlade(_Blade):
     """Define a biplane wind turbine blade."""
     def __init__(self, name, blade_path, defn_filename='blade_definition.csv',
-        airfoils_path='airfoils', matl_filename='materials.csv',
-        rotate_airfoil_coords=True):
+        airfoils_path='airfoils', matl_filename='materials.csv'):
         """Create a new biplane wind turbine blade."""
         _Blade.__init__(self, name, blade_path, defn_filename, airfoils_path,
-            matl_filename, rotate_airfoil_coords)
+            matl_filename)
         (self.root_joint_station,
             self.midblade_joint_station) = self.assign_joint_stations()
         print " Root joint found at station #{0}".format(
