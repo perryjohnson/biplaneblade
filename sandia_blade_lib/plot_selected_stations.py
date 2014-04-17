@@ -7,13 +7,13 @@ $ ipython qtconsole --pylab
 or
 $ ipython --pylab
 Then, from the prompt, run this script:
-|> %run plot_selected_stations
+|> %run sandia_blade_lib/plot_selected_stations
 Once you are finished looking at the meshes, you can clean up extra files:
 |> %run clean
 (See the 'clean.py' script in this directory for details.)
 
 Author: Perry Roth-Johnson
-Last updated: March 10, 2014
+Last updated: April 14, 2014
 
 """
 

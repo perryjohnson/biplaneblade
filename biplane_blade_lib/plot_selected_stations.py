@@ -29,4 +29,4 @@ for station in b1.list_of_stations:
     station.airfoil.create_polygon()
     station.structure.create_all_layers()
 
-b1.plot_selected_cross_sections()
+b1.plot_selected_cross_sections(selected_stations=[1,7,11,13,16,22,25,29,32,34,36,39])
