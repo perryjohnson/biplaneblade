@@ -34,7 +34,7 @@ reload(bl)
 
 
 biplane_flap_sym_no_stagger_flag = True
-sandia_flag = True
+sandia_flag = False
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
 if biplane_flap_sym_no_stagger_flag:

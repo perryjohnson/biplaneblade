@@ -1,0 +1,90 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module vabs_utils</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>vabs_utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/vabs_utils.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\vabs_utils.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;to&nbsp;write&nbsp;input&nbsp;files&nbsp;and&nbsp;read&nbsp;output&nbsp;files&nbsp;for&nbsp;VABS.<br>
+&nbsp;<br>
+Use&nbsp;the&nbsp;class&nbsp;<a href="#VabsInputFile">VabsInputFile</a>&nbsp;to&nbsp;translate&nbsp;data&nbsp;from&nbsp;an&nbsp;AbaqusGrid&nbsp;object&nbsp;(from<br>
+TrueGrid)&nbsp;into&nbsp;a&nbsp;VABS&nbsp;input&nbsp;file.<br>
+&nbsp;<br>
+Use&nbsp;the&nbsp;class&nbsp;<a href="#VabsOutputFile">VabsOutputFile</a>&nbsp;to&nbsp;read&nbsp;mass&nbsp;and&nbsp;stiffness&nbsp;matrices&nbsp;from&nbsp;a&nbsp;VABS<br>
+output&nbsp;file.<br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;updated:&nbsp;April&nbsp;1,&nbsp;2014</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="abaqus_utils2.html">abaqus_utils2</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="vabs_utils.html#VabsInputFile">VabsInputFile</a>
+</font></dt><dt><font face="helvetica, arial"><a href="vabs_utils.html#VabsOutputFile">VabsOutputFile</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="VabsInputFile">class <strong>VabsInputFile</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;<a href="#VabsInputFile">VabsInputFile</a>&nbsp;class&nbsp;contains&nbsp;methods&nbsp;for&nbsp;translating&nbsp;data&nbsp;from&nbsp;an<br>
+AbaqusGrid&nbsp;object&nbsp;(from&nbsp;TrueGrid)&nbsp;into&nbsp;a&nbsp;VABS&nbsp;input&nbsp;file.<br>
+&nbsp;<br>
+Usage:<br>
+import&nbsp;lib.vabs_utils&nbsp;as&nbsp;vu<br>
+f&nbsp;=&nbsp;vu.<a href="#VabsInputFile">VabsInputFile</a>(<br>
+vabs_filename='sandia_blade/mesh_stn01.vabs',<br>
+grid=g,<br>
+material_filename='sandia_blade/materials.csv',<br>
+layer_filename='sandia_blade/layers.csv',<br>
+debug_flag=True)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="VabsInputFile-__init__"><strong>__init__</strong></a>(self, vabs_filename, grid, material_filename, layer_filename, debug_flag<font color="#909090">=False</font>, flags<font color="#909090">={'Timoshenko': 1, 'Vlasov': 0, 'curve': 0, 'format': 1, 'k1': 0, 'k2': 0, 'k3': 0, 'oblique': 0, 'recover': 0, 'thermal': 0, ...}</font>)</dt></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="VabsOutputFile">class <strong>VabsOutputFile</strong></a></font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="VabsOutputFile-__init__"><strong>__init__</strong></a>(self, vabs_filename)</dt></dl>
+
+<dl><dt><a name="VabsOutputFile-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="VabsOutputFile-extract_mass_matrix"><strong>extract_mass_matrix</strong></a>(self)</dt><dd><tt>Save&nbsp;the&nbsp;mass&nbsp;matrix&nbsp;from&nbsp;the&nbsp;VABS&nbsp;output&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="VabsOutputFile-extract_stiffness_matrix"><strong>extract_stiffness_matrix</strong></a>(self)</dt><dd><tt>Save&nbsp;the&nbsp;Timoshenko&nbsp;stiffness&nbsp;matrix&nbsp;from&nbsp;the&nbsp;VABS&nbsp;output&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="VabsOutputFile-get_key_properties"><strong>get_key_properties</strong></a>(self)</dt><dd><tt>Returns&nbsp;7&nbsp;important&nbsp;entries&nbsp;of&nbsp;the&nbsp;stiffness&nbsp;and&nbsp;mass&nbsp;matrices.<br>
+&nbsp;<br>
+These&nbsp;7&nbsp;entries&nbsp;are&nbsp;reported&nbsp;in&nbsp;Griffith&nbsp;&amp;&nbsp;Resor&nbsp;2011:<br>
+flp_stff&nbsp;&nbsp;edge_stff&nbsp;&nbsp;tor_stff&nbsp;&nbsp;axial_stff&nbsp;&nbsp;mass_den&nbsp;&nbsp;flp_iner&nbsp;&nbsp;edge_iner<br>
+&nbsp;<br>
+where&nbsp;the&nbsp;equivalent&nbsp;VABS&nbsp;outputs&nbsp;are:<br>
+K_55&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K_66&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K_44&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K_11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;M_11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;M_55&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;M_66</tt></dd></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

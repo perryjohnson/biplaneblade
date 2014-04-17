@@ -1,0 +1,223 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module grid</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>grid</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/grid.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\grid.py</a></font></td></tr></table>
+    <p><tt>Create&nbsp;entities&nbsp;for&nbsp;a&nbsp;2D&nbsp;unstructured&nbsp;grid.<br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;modified:&nbsp;April&nbsp;2,&nbsp;2014</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="grid.html#Node">Node</a>
+</font></dt><dt><font face="helvetica, arial"><a href="grid.html#_Element">_Element</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="grid.html#QuadrilateralLinearElement">QuadrilateralLinearElement</a>
+</font></dt><dt><font face="helvetica, arial"><a href="grid.html#QuadrilateralQuadraticElement">QuadrilateralQuadraticElement</a>
+</font></dt><dt><font face="helvetica, arial"><a href="grid.html#TriangularLinearElement">TriangularLinearElement</a>
+</font></dt><dt><font face="helvetica, arial"><a href="grid.html#TriangularQuadraticElement">TriangularQuadraticElement</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Node">class <strong>Node</strong></a></font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Node-__init__"><strong>__init__</strong></a>(self, node_num, x2, x3)</dt></dl>
+
+<dl><dt><a name="Node-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>number_of_nodes</strong> = 0</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="QuadrilateralLinearElement">class <strong>QuadrilateralLinearElement</strong></a>(<a href="grid.html#_Element">_Element</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;quadrilateral&nbsp;linear&nbsp;element&nbsp;with&nbsp;four&nbsp;nodes.<br>
+&nbsp;<br>
+The&nbsp;VABS&nbsp;quadrilateral&nbsp;element&nbsp;node&nbsp;numbering&nbsp;scheme&nbsp;is&nbsp;shown&nbsp;below:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4-------3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1-------2<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="QuadrilateralLinearElement-__init__"><strong>__init__</strong></a>(self, elem_num, node1, node2, node3, node4, layer_num)</dt></dl>
+
+<dl><dt><a name="QuadrilateralLinearElement-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="QuadrilateralLinearElement-is_ccw"><strong>is_ccw</strong></a>(self, print_flag<font color="#909090">=False</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;boolean&nbsp;True&nbsp;if&nbsp;the&nbsp;nodes&nbsp;of&nbsp;this&nbsp;element&nbsp;are&nbsp;arranged&nbsp;counter-<br>
+clockwise;&nbsp;False&nbsp;otherwise.<br>
+&nbsp;<br>
+Usage:<br>
+from&nbsp;vabs_objects&nbsp;import&nbsp;*<br>
+a&nbsp;=&nbsp;<a href="#Node">Node</a>(0,0)<br>
+b&nbsp;=&nbsp;<a href="#Node">Node</a>(1,0)<br>
+c&nbsp;=&nbsp;<a href="#Node">Node</a>(1,1)<br>
+d&nbsp;=&nbsp;<a href="#Node">Node</a>(0,1)<br>
+matl&nbsp;=&nbsp;IsotropicMaterial(name='Foam',&nbsp;rho=0.20E+03,&nbsp;E=0.256E+09,&nbsp;nu=0.3)<br>
+L1&nbsp;=&nbsp;Layer(matl,&nbsp;45.3)<br>
+elem1&nbsp;=&nbsp;LinearQuadElement(L1,&nbsp;270,&nbsp;a,&nbsp;b,&nbsp;c,&nbsp;d)<br>
+elem1.<a href="#QuadrilateralLinearElement-is_ccw">is_ccw</a>()</tt></dd></dl>
+
+<dl><dt><a name="QuadrilateralLinearElement-plot"><strong>plot</strong></a>(self, equal_aspect_ratio<font color="#909090">=True</font>, plot_centroid<font color="#909090">=True</font>, label_nodes<font color="#909090">=True</font>, label_element<font color="#909090">=True</font>, plot_outer_inner_edges<font color="#909090">=True</font>)</dt><dd><tt>Plot&nbsp;this&nbsp;element.</tt></dd></dl>
+
+<dl><dt><a name="QuadrilateralLinearElement-reorder_nodes"><strong>reorder_nodes</strong></a>(self, print_flag<font color="#909090">=False</font>)</dt><dd><tt>Reorients&nbsp;the&nbsp;nodes&nbsp;from&nbsp;a&nbsp;clockwise&nbsp;orientation&nbsp;to&nbsp;a&nbsp;counter-clockwise<br>
+orientation,&nbsp;or&nbsp;vice-versa.<br>
+&nbsp;<br>
+Note:&nbsp;if&nbsp;the&nbsp;nodes&nbsp;are&nbsp;not&nbsp;oriented&nbsp;clockwise,&nbsp;this&nbsp;method&nbsp;will&nbsp;not&nbsp;fix&nbsp;the<br>
+nodes&nbsp;to&nbsp;have&nbsp;counter-clockwise&nbsp;orientation!<br>
+&nbsp;<br>
+Usage:<br>
+from&nbsp;vabs_objects&nbsp;import&nbsp;*<br>
+a&nbsp;=&nbsp;<a href="#Node">Node</a>(0,0)<br>
+b&nbsp;=&nbsp;<a href="#Node">Node</a>(1,0)<br>
+c&nbsp;=&nbsp;<a href="#Node">Node</a>(1,1)<br>
+d&nbsp;=&nbsp;<a href="#Node">Node</a>(0,1)<br>
+matl&nbsp;=&nbsp;IsotropicMaterial(name='Foam',&nbsp;rho=0.20E+03,&nbsp;E=0.256E+09,&nbsp;nu=0.3)<br>
+L1&nbsp;=&nbsp;Layer(matl,&nbsp;45.3)<br>
+elem1&nbsp;=&nbsp;LinearQuadElement(L1,&nbsp;270,&nbsp;a,&nbsp;d,&nbsp;c,&nbsp;b)<br>
+elem1.<a href="#QuadrilateralLinearElement-is_ccw">is_ccw</a>(print_flag=True)<br>
+elem1.<a href="#QuadrilateralLinearElement-reorder_nodes">reorder_nodes</a>(print_flag=True)<br>
+elem1.<a href="#QuadrilateralLinearElement-is_ccw">is_ccw</a>(print_flag=True)<br>
+elem1.<a href="#QuadrilateralLinearElement-reorder_nodes">reorder_nodes</a>(print_flag=True)<br>
+elem1.<a href="#QuadrilateralLinearElement-is_ccw">is_ccw</a>(print_flag=True)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><a name="QuadrilateralLinearElement-calculate_layer_plane_angle"><strong>calculate_layer_plane_angle</strong></a>(self, outer_edge_node_nums<font color="#909090">=[1, 4]</font>, inner_edge_node_nums<font color="#909090">=[2, 3]</font>, plot_edges<font color="#909090">=True</font>, plot_angle<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="QuadrilateralLinearElement-swap_nodes"><strong>swap_nodes</strong></a>(self, nodeA, nodeB)</dt></dl>
+
+<hr>
+Data and other attributes inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><strong>number_of_elements</strong> = 0</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="QuadrilateralQuadraticElement">class <strong>QuadrilateralQuadraticElement</strong></a>(<a href="grid.html#_Element">_Element</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;quadrilateral&nbsp;quadratic&nbsp;element&nbsp;with&nbsp;eight&nbsp;nodes.<br>
+&nbsp;<br>
+The&nbsp;VABS&nbsp;quadrilateral&nbsp;element&nbsp;node&nbsp;numbering&nbsp;scheme&nbsp;is&nbsp;shown&nbsp;below:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4---7---3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1---5---2<br>
+The&nbsp;central&nbsp;node&nbsp;(9)&nbsp;is&nbsp;optional.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="QuadrilateralQuadraticElement-__init__"><strong>__init__</strong></a>(self, elem_num, node1, node2, node3, node4, node5, node6, node7, node8, layer_num, autocorrect<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="QuadrilateralQuadraticElement-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="QuadrilateralQuadraticElement-plot"><strong>plot</strong></a>(self, equal_aspect_ratio<font color="#909090">=True</font>, plot_centroid<font color="#909090">=True</font>, label_nodes<font color="#909090">=True</font>, label_element<font color="#909090">=True</font>, plot_outer_inner_edges<font color="#909090">=True</font>)</dt><dd><tt>Plot&nbsp;this&nbsp;element.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><a name="QuadrilateralQuadraticElement-calculate_layer_plane_angle"><strong>calculate_layer_plane_angle</strong></a>(self, outer_edge_node_nums<font color="#909090">=[1, 4]</font>, inner_edge_node_nums<font color="#909090">=[2, 3]</font>, plot_edges<font color="#909090">=True</font>, plot_angle<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="QuadrilateralQuadraticElement-swap_nodes"><strong>swap_nodes</strong></a>(self, nodeA, nodeB)</dt></dl>
+
+<hr>
+Data and other attributes inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><strong>number_of_elements</strong> = 0</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TriangularLinearElement">class <strong>TriangularLinearElement</strong></a>(<a href="grid.html#_Element">_Element</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;triangular&nbsp;lienar&nbsp;element&nbsp;with&nbsp;three&nbsp;nodes.<br>
+&nbsp;<br>
+The&nbsp;VABS&nbsp;triangular&nbsp;element&nbsp;node&nbsp;numbering&nbsp;scheme&nbsp;is&nbsp;shown&nbsp;below:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;\&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1-------2<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TriangularLinearElement-__init__"><strong>__init__</strong></a>(self, elem_num, node1, node2, node3, layer_num)</dt></dl>
+
+<dl><dt><a name="TriangularLinearElement-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<hr>
+Methods inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><a name="TriangularLinearElement-calculate_layer_plane_angle"><strong>calculate_layer_plane_angle</strong></a>(self, outer_edge_node_nums<font color="#909090">=[1, 4]</font>, inner_edge_node_nums<font color="#909090">=[2, 3]</font>, plot_edges<font color="#909090">=True</font>, plot_angle<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="TriangularLinearElement-swap_nodes"><strong>swap_nodes</strong></a>(self, nodeA, nodeB)</dt></dl>
+
+<hr>
+Data and other attributes inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><strong>number_of_elements</strong> = 0</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TriangularQuadraticElement">class <strong>TriangularQuadraticElement</strong></a>(<a href="grid.html#_Element">_Element</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;triangular&nbsp;quadratic&nbsp;element&nbsp;with&nbsp;six&nbsp;nodes.<br>
+&nbsp;<br>
+The&nbsp;VABS&nbsp;triangular&nbsp;element&nbsp;node&nbsp;numbering&nbsp;scheme&nbsp;is&nbsp;shown&nbsp;below:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1---5---2<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TriangularQuadraticElement-__init__"><strong>__init__</strong></a>(self, elem_num, node1, node2, node3, node5, node6, node7, layer_num, autocorrect<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="TriangularQuadraticElement-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TriangularQuadraticElement-calculate_layer_plane_angle"><strong>calculate_layer_plane_angle</strong></a>(self, outer_edge_node_nums<font color="#909090">=[2, 3]</font>, inner_edge_node_nums<font color="#909090">=None</font>, plot_edges<font color="#909090">=True</font>, plot_angle<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="TriangularQuadraticElement-plot"><strong>plot</strong></a>(self, equal_aspect_ratio<font color="#909090">=True</font>, plot_centroid<font color="#909090">=True</font>, label_nodes<font color="#909090">=True</font>, label_element<font color="#909090">=True</font>, plot_outer_edge<font color="#909090">=True</font>)</dt><dd><tt>Plot&nbsp;this&nbsp;element.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><a name="TriangularQuadraticElement-swap_nodes"><strong>swap_nodes</strong></a>(self, nodeA, nodeB)</dt></dl>
+
+<hr>
+Data and other attributes inherited from <a href="grid.html#_Element">_Element</a>:<br>
+<dl><dt><strong>number_of_elements</strong> = 0</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

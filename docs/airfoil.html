@@ -1,0 +1,280 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module airfoil</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>airfoil</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/airfoil.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\airfoil.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;for&nbsp;organizing&nbsp;airfoil&nbsp;data&nbsp;for&nbsp;a&nbsp;blade&nbsp;station.<br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;updated:&nbsp;April&nbsp;14,&nbsp;2014</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="scipy.interpolate.html">scipy.interpolate</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="transformation.html">transformation</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="airfoil.html#_Airfoil">_Airfoil</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="airfoil.html#BiplaneAirfoil">BiplaneAirfoil</a>
+</font></dt><dt><font face="helvetica, arial"><a href="airfoil.html#MonoplaneAirfoil">MonoplaneAirfoil</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BiplaneAirfoil">class <strong>BiplaneAirfoil</strong></a>(<a href="airfoil.html#_Airfoil">_Airfoil</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;a&nbsp;biplane&nbsp;airfoil&nbsp;(external&nbsp;dimensions).<br>
+&nbsp;<br>
+<a href="#BiplaneAirfoil">BiplaneAirfoil</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;.name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.pitch_axis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.twist<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.lower_name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.lower_filename<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.lower_path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.lower_chord<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.lower_SW_ref_pt_fraction<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.upper_name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.upper_filename<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.upper_path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.upper_chord<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.upper_SW_ref_pt_fraction<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.gap_to_chord_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.gap_fraction<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.stagger_to_chord_ratio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.gap<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.stagger<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.total_chord<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BiplaneAirfoil-__init__"><strong>__init__</strong></a>(self, name, name_L, filename_L, chord_L, SW_ref_pt_L, name_U, filename_U, chord_U, SW_ref_pt_U, pitch_axis, twist, gap_to_chord_ratio, gap_fraction, stagger_to_chord_ratio, parent_station)</dt></dl>
+
+<dl><dt><a name="BiplaneAirfoil-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="BiplaneAirfoil-create_polygon"><strong>create_polygon</strong></a>(self)</dt><dd><tt>Convert&nbsp;the&nbsp;numpy&nbsp;array&nbsp;of&nbsp;coordinates&nbsp;into&nbsp;a&nbsp;polygon&nbsp;object.<br>
+&nbsp;<br>
+This&nbsp;allows&nbsp;us&nbsp;to&nbsp;use&nbsp;offset&nbsp;and&nbsp;clipping&nbsp;methods&nbsp;in&nbsp;the&nbsp;Shapely&nbsp;module</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-find_part_edge_coords"><strong>find_part_edge_coords</strong></a>(self, x_edge, airfoil)</dt><dd><tt>Find&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;at&nbsp;the&nbsp;edges&nbsp;of&nbsp;each&nbsp;structural&nbsp;part.<br>
+&nbsp;<br>
+Returns&nbsp;two&nbsp;coordinate&nbsp;pairs&nbsp;as&nbsp;tuples,&nbsp;one&nbsp;coordinate&nbsp;pair&nbsp;for&nbsp;the<br>
+pressure&nbsp;surface&nbsp;(x_edge,&nbsp;y_edge_pressure),&nbsp;and&nbsp;another&nbsp;for&nbsp;the&nbsp;suction<br>
+surface&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;(x_edge,&nbsp;y_edge_suction).<br>
+&nbsp;<br>
+Must&nbsp;run&nbsp;&lt;Station&gt;.airfoil.<a href="#BiplaneAirfoil-split_at_LE_and_TE">split_at_LE_and_TE</a>()&nbsp;first.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_edge&nbsp;:&nbsp;float,&nbsp;the&nbsp;x-coordinate&nbsp;of&nbsp;the&nbsp;part&nbsp;edge<br>
+airfoil&nbsp;:&nbsp;str,&nbsp;('lower'&nbsp;or&nbsp;'upper')&nbsp;desired&nbsp;airfoil&nbsp;to&nbsp;find&nbsp;part&nbsp;edge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(x,y)&nbsp;coordinates&nbsp;on</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-plot_coords"><strong>plot_coords</strong></a>(self, axes, split_flag<font color="#909090">=False</font>)</dt><dd><tt>Plot&nbsp;the&nbsp;biplane&nbsp;airfoil&nbsp;coordinates&nbsp;of&nbsp;this&nbsp;station.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-read_coords"><strong>read_coords</strong></a>(self, comment_char<font color="#909090">='#'</font>)</dt><dd><tt>Read&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;into&nbsp;memory&nbsp;from&nbsp;a&nbsp;file&nbsp;in&nbsp;station_path.<br>
+&nbsp;<br>
+Creates&nbsp;a&nbsp;new&nbsp;attribute&nbsp;for&nbsp;this&nbsp;station:&nbsp;&lt;Station&gt;.airfoil.coords,<br>
+which&nbsp;is&nbsp;a&nbsp;numpy&nbsp;array&nbsp;of&nbsp;airfoil&nbsp;coordinates.<br>
+&nbsp;<br>
+Note<br>
+----<br>
+If&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;is&nbsp;a&nbsp;thin&nbsp;feature,&nbsp;it&nbsp;must&nbsp;have&nbsp;a<br>
+finite&nbsp;thickness.&nbsp;Check&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;files&nbsp;to&nbsp;make&nbsp;sure&nbsp;this<br>
+is&nbsp;true.<br>
+&nbsp;<br>
+For&nbsp;"airfoils"&nbsp;with&nbsp;thick&nbsp;trailing&nbsp;edges&nbsp;(transition,&nbsp;ellipse,&nbsp;or<br>
+cylinder),&nbsp;it&nbsp;is&nbsp;okay&nbsp;to&nbsp;have&nbsp;a&nbsp;trailing&nbsp;edge&nbsp;with&nbsp;zero&nbsp;thickness.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-rotate_coords"><strong>rotate_coords</strong></a>(self)</dt><dd><tt>Rotate&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;wrt&nbsp;the&nbsp;local&nbsp;twist&nbsp;angle.<br>
+&nbsp;<br>
+Must&nbsp;run&nbsp;&lt;Airfoil&gt;.<a href="#BiplaneAirfoil-read_coords">read_coords</a>()&nbsp;and&nbsp;&lt;Airfoil&gt;.<a href="#BiplaneAirfoil-scale_coords">scale_coords</a>()&nbsp;first.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-scale_and_translate_coords"><strong>scale_and_translate_coords</strong></a>(self)</dt><dd><tt>Scale&nbsp;and&nbsp;translate&nbsp;the&nbsp;biplane&nbsp;airfoil&nbsp;coords.<br>
+&nbsp;<br>
+First,&nbsp;scale&nbsp;up&nbsp;the&nbsp;upper&nbsp;and&nbsp;lower&nbsp;airfoils&nbsp;by&nbsp;their&nbsp;chord&nbsp;lengths.<br>
+Second,&nbsp;translate&nbsp;the&nbsp;upper&nbsp;and&nbsp;lower&nbsp;airfoils&nbsp;apart&nbsp;by&nbsp;a&nbsp;gap,&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pitch&nbsp;axis&nbsp;at&nbsp;the&nbsp;gap&nbsp;fraction.<br>
+Third,&nbsp;translate&nbsp;the&nbsp;lower&nbsp;airfoil&nbsp;aft&nbsp;by&nbsp;the&nbsp;stagger<br>
+Fourth,&nbsp;translate&nbsp;the&nbsp;upper&nbsp;and&nbsp;lower&nbsp;airfoils&nbsp;forward&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(pitch&nbsp;axis&nbsp;fraction)*(total&nbsp;chord)</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-scale_coords"><strong>scale_coords</strong></a>(self, upper_factor, lower_factor)</dt><dd><tt>Scale&nbsp;the&nbsp;biplane&nbsp;airfoil&nbsp;coordinates&nbsp;by&nbsp;scale&nbsp;factors.<br>
+&nbsp;<br>
+Must&nbsp;run&nbsp;&lt;Airfoil&gt;.<a href="#BiplaneAirfoil-read_coords">read_coords</a>()&nbsp;first.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+upper_factor&nbsp;:&nbsp;float,&nbsp;amount&nbsp;to&nbsp;scale&nbsp;the&nbsp;upper&nbsp;airfoil&nbsp;coords&nbsp;by<br>
+lower_factor&nbsp;:&nbsp;float,&nbsp;amount&nbsp;to&nbsp;scale&nbsp;the&nbsp;lower&nbsp;airfoil&nbsp;coords&nbsp;by<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+#&nbsp;scale&nbsp;all&nbsp;airfoils&nbsp;in&nbsp;blade&nbsp;'m'&nbsp;to&nbsp;the&nbsp;specified&nbsp;chord&nbsp;lengths<br>
+for&nbsp;station&nbsp;in&nbsp;m.list_of_stations:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.<a href="#BiplaneAirfoil-scale_coords">scale_coords</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_factor=station.airfoil.upper_chord,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_factor=station.airfoil.lower_chord)</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-split_at_LE_and_TE"><strong>split_at_LE_and_TE</strong></a>(self)</dt><dd><tt>Split&nbsp;each&nbsp;biplane&nbsp;airfoil&nbsp;curve&nbsp;into&nbsp;suction&nbsp;and&nbsp;pressure&nbsp;segments.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;run&nbsp;after&nbsp;&lt;Airfoil&gt;.<a href="#BiplaneAirfoil-scale_and_translate_coords">scale_and_translate_coords</a>().</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-translate_coords_chordwise"><strong>translate_coords_chordwise</strong></a>(self, upper_x, upper_direc, lower_x, lower_direc)</dt><dd><tt>Translate&nbsp;the&nbsp;biplane&nbsp;airfoil&nbsp;along&nbsp;the&nbsp;chordwise&nbsp;direction.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+upper_x&nbsp;:&nbsp;float,&nbsp;absolute&nbsp;amount&nbsp;to&nbsp;translate&nbsp;the&nbsp;upper&nbsp;airfoil&nbsp;coords<br>
+upper_direc&nbsp;:&nbsp;str&nbsp;(either&nbsp;'fwd'&nbsp;or&nbsp;'aft'),&nbsp;desired&nbsp;direction&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;translation<br>
+lower_x&nbsp;:&nbsp;float,&nbsp;absolute&nbsp;amount&nbsp;to&nbsp;translate&nbsp;the&nbsp;lower&nbsp;airfoil&nbsp;coords<br>
+lower_direc&nbsp;:&nbsp;str&nbsp;(either&nbsp;'fwd'&nbsp;or&nbsp;'aft'),&nbsp;desired&nbsp;direction&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;translation<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+#&nbsp;translate&nbsp;all&nbsp;airfoils&nbsp;in&nbsp;blade&nbsp;'m',&nbsp;so&nbsp;pitch&nbsp;axis&nbsp;is&nbsp;at&nbsp;origin<br>
+for&nbsp;station&nbsp;in&nbsp;m.list_of_stations:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;shift&nbsp;lower&nbsp;airfoil&nbsp;aft&nbsp;by&nbsp;stagger<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.<a href="#BiplaneAirfoil-translate_coords_chordwise">translate_coords_chordwise</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_x=0.0,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_direc=None,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_x=station.airfoil.stagger,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_direc='aft')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;shift&nbsp;BOTH&nbsp;airfoils&nbsp;forward&nbsp;by&nbsp;(pitch&nbsp;axis&nbsp;frac)*(total&nbsp;chord)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.<a href="#BiplaneAirfoil-translate_coords_chordwise">translate_coords_chordwise</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_x=station.airfoil.pitch_axis*station.airfoil.total_chord,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_direc='fwd',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_x=station.airfoil.pitch_axis*station.airfoil.total_chord,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_direc='fwd')</tt></dd></dl>
+
+<dl><dt><a name="BiplaneAirfoil-translate_coords_flapwise"><strong>translate_coords_flapwise</strong></a>(self, upper_y, upper_direc, lower_y, lower_direc)</dt><dd><tt>Translate&nbsp;the&nbsp;biplane&nbsp;airfoil&nbsp;along&nbsp;the&nbsp;flapwise&nbsp;direction.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+upper_y&nbsp;:&nbsp;float,&nbsp;absolute&nbsp;amount&nbsp;to&nbsp;translate&nbsp;the&nbsp;upper&nbsp;airfoil&nbsp;coords<br>
+upper_direc&nbsp;:&nbsp;str&nbsp;('up'&nbsp;or&nbsp;'down')&nbsp;or&nbsp;None,&nbsp;desired&nbsp;direction&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;translation<br>
+lower_y&nbsp;:&nbsp;float,&nbsp;absolute&nbsp;amount&nbsp;to&nbsp;translate&nbsp;the&nbsp;lower&nbsp;airfoil&nbsp;coords<br>
+lower_direc&nbsp;:&nbsp;str&nbsp;('up'&nbsp;or&nbsp;'down')&nbsp;or&nbsp;None,&nbsp;desired&nbsp;direction&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;translation<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+#&nbsp;translate&nbsp;all&nbsp;airfoils&nbsp;in&nbsp;blade&nbsp;'m',&nbsp;so&nbsp;upper&nbsp;and&nbsp;lower&nbsp;airfoils<br>
+#&nbsp;are&nbsp;separated&nbsp;by&nbsp;a&nbsp;gap,&nbsp;and&nbsp;pitch&nbsp;axis&nbsp;is&nbsp;at&nbsp;gap&nbsp;fraction<br>
+for&nbsp;station&nbsp;in&nbsp;m.list_of_stations:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.<a href="#BiplaneAirfoil-translate_coords_flapwise">translate_coords_flapwise</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_y=station.airfoil.gap_fraction*station.airfoil.gap,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_direc='up',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_y=(1.0-station.airfoil.gap_fraction)*station.airfoil.gap,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_direc='down')</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MonoplaneAirfoil">class <strong>MonoplaneAirfoil</strong></a>(<a href="airfoil.html#_Airfoil">_Airfoil</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;a&nbsp;monoplane&nbsp;airfoil&nbsp;(external&nbsp;dimensions).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="MonoplaneAirfoil-__init__"><strong>__init__</strong></a>(self, name, filename, chord, pitch_axis, twist, has_sharp_TE, parent_station)</dt></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-create_polygon"><strong>create_polygon</strong></a>(self)</dt><dd><tt>Convert&nbsp;the&nbsp;numpy&nbsp;array&nbsp;of&nbsp;coordinates&nbsp;into&nbsp;a&nbsp;polygon&nbsp;object.<br>
+&nbsp;<br>
+This&nbsp;allows&nbsp;us&nbsp;to&nbsp;use&nbsp;offset&nbsp;and&nbsp;clipping&nbsp;methods&nbsp;in&nbsp;the&nbsp;Shapely&nbsp;module</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-find_part_edge_coords"><strong>find_part_edge_coords</strong></a>(self, x_edge)</dt><dd><tt>Find&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;at&nbsp;the&nbsp;edges&nbsp;of&nbsp;each&nbsp;structural&nbsp;part.<br>
+&nbsp;<br>
+Returns&nbsp;two&nbsp;coordinate&nbsp;pairs&nbsp;as&nbsp;tuples,&nbsp;one&nbsp;coordinate&nbsp;pair&nbsp;for&nbsp;the<br>
+pressure&nbsp;surface&nbsp;(x_edge,&nbsp;y_edge_pressure),&nbsp;and&nbsp;another&nbsp;for&nbsp;the&nbsp;suction<br>
+surface&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;(x_edge,&nbsp;y_edge_suction).<br>
+&nbsp;<br>
+Must&nbsp;run&nbsp;&lt;Station&gt;.airfoil.<a href="#MonoplaneAirfoil-split_at_LE_and_TE">split_at_LE_and_TE</a>()&nbsp;first.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-plot_coords"><strong>plot_coords</strong></a>(self, axes, split_flag<font color="#909090">=False</font>)</dt><dd><tt>Plot&nbsp;the&nbsp;monoplane&nbsp;airfoil&nbsp;coordinates&nbsp;of&nbsp;this&nbsp;station.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-read_coords"><strong>read_coords</strong></a>(self, comment_char<font color="#909090">='#'</font>)</dt><dd><tt>Read&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;into&nbsp;memory&nbsp;from&nbsp;a&nbsp;file&nbsp;in&nbsp;station_path.<br>
+&nbsp;<br>
+Creates&nbsp;a&nbsp;new&nbsp;attribute&nbsp;for&nbsp;this&nbsp;airfoil:&nbsp;&lt;Airfoil&gt;.coords,<br>
+which&nbsp;is&nbsp;a&nbsp;numpy&nbsp;array&nbsp;of&nbsp;airfoil&nbsp;coordinates.<br>
+&nbsp;<br>
+Note<br>
+----<br>
+If&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;is&nbsp;a&nbsp;thin&nbsp;feature,&nbsp;it&nbsp;must&nbsp;have&nbsp;a<br>
+finite&nbsp;thickness.&nbsp;Check&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;files&nbsp;to&nbsp;make&nbsp;sure&nbsp;this<br>
+is&nbsp;true.<br>
+&nbsp;<br>
+For&nbsp;"airfoils"&nbsp;with&nbsp;thick&nbsp;trailing&nbsp;edges&nbsp;(transition,&nbsp;ellipse,&nbsp;or<br>
+cylinder),&nbsp;it&nbsp;is&nbsp;okay&nbsp;to&nbsp;have&nbsp;a&nbsp;trailing&nbsp;edge&nbsp;with&nbsp;zero&nbsp;thickness.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-rotate_coords"><strong>rotate_coords</strong></a>(self)</dt><dd><tt>Rotate&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;wrt&nbsp;the&nbsp;local&nbsp;twist&nbsp;angle.<br>
+&nbsp;<br>
+Must&nbsp;run&nbsp;&lt;Airfoil&gt;.<a href="#MonoplaneAirfoil-read_coords">read_coords</a>()&nbsp;and&nbsp;&lt;Airfoil&gt;.<a href="#MonoplaneAirfoil-scale_coords">scale_coords</a>()&nbsp;first.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-scale_and_translate_coords"><strong>scale_and_translate_coords</strong></a>(self)</dt><dd><tt>Scale&nbsp;and&nbsp;translate&nbsp;the&nbsp;monoplane&nbsp;airfoil&nbsp;coords.<br>
+&nbsp;<br>
+First,&nbsp;scale&nbsp;up&nbsp;the&nbsp;airfoil&nbsp;by&nbsp;the&nbsp;chord&nbsp;length.<br>
+Second,&nbsp;shift&nbsp;the&nbsp;airfoil&nbsp;forward&nbsp;by&nbsp;(pitch&nbsp;axis&nbsp;fraction)*(chord)</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-scale_coords"><strong>scale_coords</strong></a>(self, scale_factor)</dt><dd><tt>Scale&nbsp;the&nbsp;airfoil&nbsp;coordinates&nbsp;by&nbsp;a&nbsp;scale&nbsp;factor.<br>
+&nbsp;<br>
+Must&nbsp;run&nbsp;&lt;Airfoil&gt;.<a href="#MonoplaneAirfoil-read_coords">read_coords</a>()&nbsp;first.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+scale_factor&nbsp;:&nbsp;float,&nbsp;amount&nbsp;to&nbsp;scale&nbsp;the&nbsp;airfoil&nbsp;coords&nbsp;by<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+#&nbsp;scale&nbsp;all&nbsp;airfoils&nbsp;in&nbsp;blade&nbsp;'m'&nbsp;to&nbsp;the&nbsp;specified&nbsp;chord&nbsp;length<br>
+for&nbsp;station&nbsp;in&nbsp;m.list_of_stations:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.<a href="#MonoplaneAirfoil-scale_coords">scale_coords</a>(scale_factor=station.airfoil.chord)</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-split_at_LE_and_TE"><strong>split_at_LE_and_TE</strong></a>(self)</dt><dd><tt>Split&nbsp;the&nbsp;monoplane&nbsp;airfoil&nbsp;curve&nbsp;into&nbsp;suction&nbsp;and&nbsp;pressure&nbsp;segments.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;run&nbsp;after&nbsp;&lt;Airfoil&gt;.<a href="#MonoplaneAirfoil-scale_and_translate_coords">scale_and_translate_coords</a>().</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneAirfoil-translate_coords_chordwise"><strong>translate_coords_chordwise</strong></a>(self, x, direc)</dt><dd><tt>Translate&nbsp;the&nbsp;airfoil&nbsp;along&nbsp;the&nbsp;chordwise&nbsp;direction.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x&nbsp;:&nbsp;float,&nbsp;absolute&nbsp;amount&nbsp;to&nbsp;translate&nbsp;the&nbsp;airfoil&nbsp;coords&nbsp;by<br>
+direc&nbsp;:&nbsp;str&nbsp;(either&nbsp;'fwd'&nbsp;or&nbsp;'aft'),&nbsp;desired&nbsp;direction&nbsp;of&nbsp;translation<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+#&nbsp;translate&nbsp;all&nbsp;airfoils&nbsp;in&nbsp;blade&nbsp;'m',&nbsp;so&nbsp;pitch&nbsp;axis&nbsp;is&nbsp;at&nbsp;origin<br>
+for&nbsp;station&nbsp;in&nbsp;m.list_of_stations:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.<a href="#MonoplaneAirfoil-translate_coords_chordwise">translate_coords_chordwise</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=station.airfoil.pitch_axis*station.airfoil.chord,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direc='fwd')</tt></dd></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

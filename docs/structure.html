@@ -1,0 +1,749 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module structure</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>structure</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/structure.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\structure.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;for&nbsp;organizing&nbsp;structural&nbsp;part&nbsp;data&nbsp;for&nbsp;a&nbsp;blade&nbsp;station.<br>
+&nbsp;<br>
+Note:&nbsp;to&nbsp;generate&nbsp;html&nbsp;documentation&nbsp;of&nbsp;this&nbsp;module,&nbsp;open&nbsp;a&nbsp;Windows&nbsp;cmd&nbsp;prompt:<br>
+&gt;&nbsp;cd&nbsp;path/to/lib<br>
+&gt;&nbsp;python&nbsp;-m&nbsp;pydoc&nbsp;-w&nbsp;structure<br>
+Then,&nbsp;open&nbsp;path/to/lib/structure.html&nbsp;in&nbsp;a&nbsp;browser.<br>
+Refs:<br>
+https://docs.python.org/2.7/library/pydoc.html<br>
+<a href="http://bytes.com/topic/python/answers/436285-how-use-pydoc">http://bytes.com/topic/python/answers/436285-how-use-pydoc</a><br>
+&nbsp;<br>
+The&nbsp;different&nbsp;kinds&nbsp;of&nbsp;parts,&nbsp;listed&nbsp;from&nbsp;outside&nbsp;to&nbsp;inside,&nbsp;are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;external&nbsp;surface&nbsp;(gelcoat,&nbsp;triax)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;root&nbsp;buildup&nbsp;(triax)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;LE&nbsp;panel&nbsp;(foam)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spar&nbsp;caps&nbsp;(uniax)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aft&nbsp;panel&nbsp;1&nbsp;(foam)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aft&nbsp;panel&nbsp;2&nbsp;(foam)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TE&nbsp;reinforcement&nbsp;(uniax,&nbsp;foam)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shear&nbsp;web&nbsp;1&nbsp;(biax,&nbsp;foam,&nbsp;biax)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shear&nbsp;web&nbsp;2&nbsp;(biax,&nbsp;foam,&nbsp;biax)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shear&nbsp;web&nbsp;3&nbsp;(biax,&nbsp;foam,&nbsp;biax)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;internal&nbsp;surface&nbsp;1&nbsp;(triax,&nbsp;resin)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;internal&nbsp;surface&nbsp;2&nbsp;(triax,&nbsp;resin)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;internal&nbsp;surface&nbsp;3&nbsp;(triax,&nbsp;resin)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;internal&nbsp;surface&nbsp;4&nbsp;(triax,&nbsp;resin)<br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;updated:&nbsp;April&nbsp;14,&nbsp;2014</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="layer.html">layer</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="structure.html#BiplaneStructure">BiplaneStructure</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#MonoplaneStructure">MonoplaneStructure</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#Part">Part</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="structure.html#AftPanel">AftPanel</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#ExternalSurface">ExternalSurface</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#InternalSurface">InternalSurface</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#LE_Panel">LE_Panel</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#RootBuildup">RootBuildup</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#ShearWeb">ShearWeb</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#SparCap">SparCap</a>
+</font></dt><dt><font face="helvetica, arial"><a href="structure.html#TE_Reinforcement">TE_Reinforcement</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AftPanel">class <strong>AftPanel</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;foam&nbsp;dimensions&nbsp;of&nbsp;the&nbsp;lower&nbsp;and&nbsp;upper&nbsp;aft&nbsp;panels.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AftPanel-__init__"><strong>__init__</strong></a>(self, num, parent_structure, base, height)</dt></dl>
+
+<dl><dt><a name="AftPanel-create_layers"><strong>create_layers</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;foam&nbsp;layers&nbsp;in&nbsp;the&nbsp;lower&nbsp;and&nbsp;upper&nbsp;aft&nbsp;panels.<br>
+&nbsp;<br>
+&lt;aft_panel&gt;.layer['lower']&nbsp;:&nbsp;lower&nbsp;aft&nbsp;panel<br>
+&lt;aft_panel&gt;.layer['upper']&nbsp;:&nbsp;upper&nbsp;aft&nbsp;panel</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="AftPanel-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AftPanel-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;polygon&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;that&nbsp;contains&nbsp;this&nbsp;part.<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="AftPanel-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BiplaneStructure">class <strong>BiplaneStructure</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;the&nbsp;biplane&nbsp;laminate&nbsp;schedule&nbsp;(internal&nbsp;dimensions).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BiplaneStructure-__init__"><strong>__init__</strong></a>(self, h_RB, b_SC, h_SC, b_SW1_biax, b_SW1_foam, x2_SW1, b_SW2_biax, b_SW2_foam, x2_SW2, b_SW3_biax, b_SW3_foam, x2_SW3, b_TE_reinf, h_TE_reinf_uniax, h_TE_reinf_foam, h_LE_panel, h_aft_panel_1, h_aft_panel_2, h_int_surf_1_triax, h_int_surf_1_resin, h_int_surf_2_triax, h_int_surf_2_resin, h_int_surf_3_triax, h_int_surf_3_resin, h_int_surf_4_triax, h_int_surf_4_resin, h_ext_surf_triax, h_ext_surf_gelcoat, h_RB_u, b_SC_u, h_SC_u, b_SW1_biax_u, b_SW1_foam_u, x2_SW1_u, b_SW2_biax_u, b_SW2_foam_u, x2_SW2_u, b_SW3_biax_u, b_SW3_foam_u, x2_SW3_u, b_TE_reinf_u, h_TE_reinf_uniax_u, h_TE_reinf_foam_u, h_LE_panel_u, h_aft_panel_1_u, h_aft_panel_2_u, h_int_surf_1_triax_u, h_int_surf_1_resin_u, h_int_surf_2_triax_u, h_int_surf_2_resin_u, h_int_surf_3_triax_u, h_int_surf_3_resin_u, h_int_surf_4_triax_u, h_int_surf_4_resin_u, h_ext_surf_triax_u, h_ext_surf_gelcoat_u, parent_station)</dt></dl>
+
+<dl><dt><a name="BiplaneStructure-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;string&nbsp;of&nbsp;all&nbsp;the&nbsp;internal&nbsp;dimensions&nbsp;for&nbsp;this&nbsp;structure.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-create_all_layers"><strong>create_all_layers</strong></a>(self)</dt><dd><tt>Create&nbsp;polygons&nbsp;for&nbsp;single&nbsp;material&nbsp;layers&nbsp;of&nbsp;each&nbsp;structural&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-merge_all_polygons"><strong>merge_all_polygons</strong></a>(self, airfoil, plot_flag<font color="#909090">=False</font>)</dt><dd><tt>Merges&nbsp;all&nbsp;the&nbsp;layer&nbsp;polygons&nbsp;in&nbsp;this&nbsp;structure&nbsp;into&nbsp;one&nbsp;polygon.<br>
+&nbsp;<br>
+NOTE:&nbsp;internal&nbsp;surface&nbsp;polygons&nbsp;are&nbsp;NOT&nbsp;merged!</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-which_parts_exist"><strong>which_parts_exist</strong></a>(self)</dt><dd><tt>Check&nbsp;which&nbsp;structural&nbsp;parts&nbsp;exist&nbsp;at&nbsp;this&nbsp;biplane&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;booleans.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-write_all_part_polygons"><strong>write_all_part_polygons</strong></a>(self)</dt><dd><tt>Write&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;all&nbsp;structural&nbsp;parts&nbsp;to&nbsp;`station_path`s.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ExternalSurface">class <strong>ExternalSurface</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;triax&nbsp;and&nbsp;gelcoat&nbsp;dimensions&nbsp;of&nbsp;the&nbsp;external&nbsp;surface.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ExternalSurface-__init__"><strong>__init__</strong></a>(self, parent_structure, base, height_triax, height_gelcoat)</dt></dl>
+
+<dl><dt><a name="ExternalSurface-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="ExternalSurface-add_new_layer"><strong>add_new_layer</strong></a>(self, new_name, new_polygon, material)</dt><dd><tt>Add&nbsp;a&nbsp;new&nbsp;layer&nbsp;to&nbsp;the&nbsp;external&nbsp;surface&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="ExternalSurface-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>)</dt><dd><tt>Returns&nbsp;list&nbsp;of&nbsp;4&nbsp;polygons&nbsp;for&nbsp;bounding&nbsp;boxes&nbsp;in&nbsp;each&nbsp;quadrant.<br>
+&nbsp;<br>
+The&nbsp;bounding&nbsp;boxes&nbsp;will&nbsp;be&nbsp;used&nbsp;to&nbsp;split&nbsp;the&nbsp;root&nbsp;buildup&nbsp;into&nbsp;4&nbsp;curved<br>
+polygons.<br>
+&nbsp;<br>
+bb[0]&nbsp;:&nbsp;lower&nbsp;left&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_min*1.2,&nbsp;y_min*1.2)<br>
+bb[1]&nbsp;:&nbsp;lower&nbsp;right&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_max*1.2,&nbsp;y_min*1.2)<br>
+bb[2]&nbsp;:&nbsp;upper&nbsp;right&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_max*1.2,&nbsp;y_max*1.2)<br>
+bb[3]&nbsp;:&nbsp;upper&nbsp;left&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_min*1.2,&nbsp;y_max*1.2)<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;each&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="ExternalSurface-create_alternate_layers"><strong>create_alternate_layers</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;alternate&nbsp;layers&nbsp;for&nbsp;meshing&nbsp;the&nbsp;external&nbsp;surface.<br>
+&nbsp;<br>
+The&nbsp;alternate&nbsp;layers&nbsp;will&nbsp;be&nbsp;used&nbsp;to&nbsp;create&nbsp;meshes&nbsp;in&nbsp;TrueGrid.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;is&nbsp;smooth&nbsp;(sharp_TE=False),&nbsp;save&nbsp;8&nbsp;quadrilaterals:<br>
+-----------------------------------------------------------------------<br>
+&lt;external_surface&gt;.layer['gelcoat,&nbsp;lower&nbsp;left']&nbsp;:&nbsp;gelcoat&nbsp;layer&nbsp;(lower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;quadrant)<br>
+&lt;external_surface&gt;.layer['gelcoat,&nbsp;lower&nbsp;right']&nbsp;:&nbsp;gelcoat&nbsp;layer&nbsp;(lower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;quadrant)<br>
+&lt;external_surface&gt;.layer['gelcoat,&nbsp;upper&nbsp;right']&nbsp;:&nbsp;gelcoat&nbsp;layer&nbsp;(upper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;quadrant)<br>
+&lt;external_surface&gt;.layer['gelcoat,&nbsp;upper&nbsp;left']&nbsp;:&nbsp;gelcoat&nbsp;layer&nbsp;(upper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;quadrant)<br>
+&lt;external_surface&gt;.layer['triax,&nbsp;lower&nbsp;left']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(lower&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quadrant)<br>
+&lt;external_surface&gt;.layer['triax,&nbsp;lower&nbsp;right']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(lower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;quadrant)<br>
+&lt;external_surface&gt;.layer['triax,&nbsp;upper&nbsp;right']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(upper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;quadrant)<br>
+&lt;external_surface&gt;.layer['triax,&nbsp;upper&nbsp;left']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(upper&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quadrant)</tt></dd></dl>
+
+<dl><dt><a name="ExternalSurface-create_layers"><strong>create_layers</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;gelcoat&nbsp;and&nbsp;triax&nbsp;layers&nbsp;in&nbsp;the&nbsp;external&nbsp;surface.<br>
+&nbsp;<br>
+&lt;external_surface&gt;.layer['gelcoat']&nbsp;:&nbsp;gelcoat&nbsp;layer<br>
+&lt;external_surface&gt;.layer['triax']&nbsp;:&nbsp;triax&nbsp;layer</tt></dd></dl>
+
+<dl><dt><a name="ExternalSurface-get_and_save_edges"><strong>get_and_save_edges</strong></a>(self, which_layer)</dt><dd><tt>Identifies&nbsp;and&nbsp;saves&nbsp;the&nbsp;left,&nbsp;top,&nbsp;right,&nbsp;and&nbsp;bottom&nbsp;edges.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+which_layer&nbsp;:&nbsp;str,&nbsp;the&nbsp;desired&nbsp;layer,&nbsp;either&nbsp;'lower&nbsp;left',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'lower&nbsp;right',&nbsp;'upper&nbsp;right',&nbsp;or&nbsp;'upper&nbsp;left'<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;saves&nbsp;the&nbsp;LTRB&nbsp;edges&nbsp;as&nbsp;attributes&nbsp;within&nbsp;the&nbsp;layer&nbsp;object.<br>
+&nbsp;<br>
+self.<strong>layer</strong>[which_layer].left&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;left&nbsp;edge<br>
+self.<strong>layer</strong>[which_layer].top&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;top&nbsp;edge<br>
+self.<strong>layer</strong>[which_layer].right&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;right&nbsp;edge<br>
+self.<strong>layer</strong>[which_layer].bottom&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;bottom&nbsp;edge</tt></dd></dl>
+
+<dl><dt><a name="ExternalSurface-get_edges"><strong>get_edges</strong></a>(self, which_layer)</dt><dd><tt>Returns&nbsp;4&nbsp;arrays&nbsp;of&nbsp;coords&nbsp;for&nbsp;each&nbsp;edge&nbsp;of&nbsp;the&nbsp;chosen&nbsp;layer.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+which_layer&nbsp;:&nbsp;str,&nbsp;the&nbsp;desired&nbsp;layer,&nbsp;either&nbsp;'lower&nbsp;left',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'lower&nbsp;right',&nbsp;'upper&nbsp;right',&nbsp;or&nbsp;'upper&nbsp;left'</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="ExternalSurface-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="InternalSurface">class <strong>InternalSurface</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;triax&nbsp;and&nbsp;resin&nbsp;dimensions&nbsp;of&nbsp;the&nbsp;internal&nbsp;surface.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="InternalSurface-__init__"><strong>__init__</strong></a>(self, num, parent_structure, base, height_triax, height_resin)</dt></dl>
+
+<dl><dt><a name="InternalSurface-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="InternalSurface-add_new_layer"><strong>add_new_layer</strong></a>(self, new_name, new_polygon, material)</dt><dd><tt>Add&nbsp;a&nbsp;new&nbsp;alternate&nbsp;layer&nbsp;to&nbsp;the&nbsp;internal&nbsp;surface&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="InternalSurface-create_layers"><strong>create_layers</strong></a>(self, merged_polygon, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;triax&nbsp;and&nbsp;resin&nbsp;layers&nbsp;in&nbsp;the&nbsp;internal&nbsp;surface.<br>
+&nbsp;<br>
+&lt;internal_surface&gt;.layer['triax']&nbsp;:&nbsp;triax&nbsp;layer<br>
+&lt;internal_surface&gt;.layer['resin']&nbsp;:&nbsp;resin&nbsp;layer</tt></dd></dl>
+
+<dl><dt><a name="InternalSurface-interior_loop"><strong>interior_loop</strong></a>(self, p, area_threshold<font color="#909090">=1e-05</font>, debug_flag<font color="#909090">=False</font>)</dt><dd><tt>Get&nbsp;the&nbsp;interior&nbsp;loop&nbsp;for&nbsp;this&nbsp;internal&nbsp;surface.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;polygon&nbsp;object&nbsp;of&nbsp;the&nbsp;requested&nbsp;interior&nbsp;loop.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+p&nbsp;:&nbsp;polygon,&nbsp;merged&nbsp;polygon&nbsp;for&nbsp;all&nbsp;parts&nbsp;in&nbsp;this&nbsp;station<br>
+area_threshold&nbsp;:&nbsp;float&nbsp;(default:&nbsp;10e-06),&nbsp;threshold&nbsp;value&nbsp;to&nbsp;decide&nbsp;if<br>
+&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;interior&nbsp;loop&nbsp;is&nbsp;valid&nbsp;(when&nbsp;the&nbsp;loop&nbsp;area&nbsp;&gt;&nbsp;area_threshold)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="InternalSurface-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;polygon&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;that&nbsp;contains&nbsp;this&nbsp;part.<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="InternalSurface-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="LE_Panel">class <strong>LE_Panel</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;foam&nbsp;dimensions&nbsp;of&nbsp;the&nbsp;leading&nbsp;edge&nbsp;panel.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="LE_Panel-create_layers"><strong>create_layers</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;foam&nbsp;layer&nbsp;in&nbsp;the&nbsp;leading&nbsp;edge&nbsp;panel.<br>
+&nbsp;<br>
+&lt;LE_panel&gt;.layer['foam']&nbsp;:&nbsp;the&nbsp;only&nbsp;layer&nbsp;in&nbsp;the&nbsp;LE&nbsp;panel&nbsp;(foam)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="LE_Panel-__init__"><strong>__init__</strong></a>(self, parent_structure, base, height)</dt></dl>
+
+<dl><dt><a name="LE_Panel-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="LE_Panel-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;polygon&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;that&nbsp;contains&nbsp;this&nbsp;part.<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="LE_Panel-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MonoplaneStructure">class <strong>MonoplaneStructure</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;the&nbsp;monoplane&nbsp;laminate&nbsp;schedule&nbsp;(internal&nbsp;dimensions).<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="MonoplaneStructure-__init__"><strong>__init__</strong></a>(self, h_RB, b_SC, h_SC, b_SW1_biax, b_SW1_foam, x2_SW1, b_SW2_biax, b_SW2_foam, x2_SW2, b_SW3_biax, b_SW3_foam, x2_SW3, b_TE_reinf, h_TE_reinf_uniax, h_TE_reinf_foam, h_LE_panel, h_aft_panel_1, h_aft_panel_2, h_int_surf_1_triax, h_int_surf_1_resin, h_int_surf_2_triax, h_int_surf_2_resin, h_int_surf_3_triax, h_int_surf_3_resin, h_int_surf_4_triax, h_int_surf_4_resin, h_ext_surf_triax, h_ext_surf_gelcoat, parent_station)</dt></dl>
+
+<dl><dt><a name="MonoplaneStructure-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;string&nbsp;of&nbsp;all&nbsp;the&nbsp;internal&nbsp;dimensions&nbsp;for&nbsp;this&nbsp;structure.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-calculate_all_percent_areas"><strong>calculate_all_percent_areas</strong></a>(self, print_flag<font color="#909090">=False</font>)</dt><dd><tt>Calculate&nbsp;the&nbsp;percent&nbsp;areas&nbsp;of&nbsp;all&nbsp;parts&nbsp;in&nbsp;this&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;area&nbsp;fractions&nbsp;for&nbsp;each&nbsp;structural&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-calculate_all_percent_masses"><strong>calculate_all_percent_masses</strong></a>(self, print_flag<font color="#909090">=False</font>)</dt><dd><tt>Calculate&nbsp;the&nbsp;mass&nbsp;fractions&nbsp;of&nbsp;all&nbsp;parts&nbsp;in&nbsp;this&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;mass&nbsp;(per&nbsp;unit&nbsp;length)&nbsp;fractions&nbsp;for&nbsp;each<br>
+structural&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-calculate_area"><strong>calculate_area</strong></a>(self)</dt><dd><tt>Add&nbsp;the&nbsp;area&nbsp;of&nbsp;all&nbsp;polygons&nbsp;in&nbsp;this&nbsp;station.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-calculate_mass"><strong>calculate_mass</strong></a>(self)</dt><dd><tt>Add&nbsp;the&nbsp;mass&nbsp;(per&nbsp;unit&nbsp;length)&nbsp;of&nbsp;all&nbsp;polygons&nbsp;in&nbsp;this&nbsp;station.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-create_all_alternate_layers"><strong>create_all_alternate_layers</strong></a>(self)</dt><dd><tt>Create&nbsp;alternate&nbsp;layers&nbsp;for&nbsp;meshing&nbsp;certain&nbsp;structural&nbsp;parts.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-create_all_layers"><strong>create_all_layers</strong></a>(self)</dt><dd><tt>Create&nbsp;polygons&nbsp;for&nbsp;single&nbsp;material&nbsp;layers&nbsp;of&nbsp;each&nbsp;structural&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-merge_all_polygons"><strong>merge_all_polygons</strong></a>(self, plot_flag<font color="#909090">=False</font>)</dt><dd><tt>Merges&nbsp;all&nbsp;the&nbsp;layer&nbsp;polygons&nbsp;in&nbsp;this&nbsp;structure&nbsp;into&nbsp;one&nbsp;polygon.<br>
+&nbsp;<br>
+NOTE:&nbsp;internal&nbsp;surface&nbsp;polygons&nbsp;are&nbsp;NOT&nbsp;merged!</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-save_all_alternate_layer_edges"><strong>save_all_alternate_layer_edges</strong></a>(self)</dt><dd><tt>Save&nbsp;all&nbsp;alternate&nbsp;layer&nbsp;edges&nbsp;as&nbsp;layer&nbsp;attributes.<br>
+&nbsp;<br>
+Identifies&nbsp;and&nbsp;saves&nbsp;the&nbsp;left,&nbsp;top,&nbsp;right,&nbsp;and&nbsp;bottom&nbsp;(LTRB)&nbsp;edges&nbsp;for<br>
+each&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;saves&nbsp;LTRB&nbsp;edges&nbsp;as&nbsp;attributes&nbsp;within&nbsp;each&nbsp;layer&nbsp;object.<br>
+&nbsp;<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.left&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;left&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.top&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;top&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.right&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;right&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.bottom&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;bottom&nbsp;edge<br>
+&nbsp;<br>
+Note:&nbsp;External&nbsp;and&nbsp;internal&nbsp;surfaces&nbsp;have&nbsp;not&nbsp;yet&nbsp;been&nbsp;implemented!</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-save_all_layer_edges"><strong>save_all_layer_edges</strong></a>(self)</dt><dd><tt>Save&nbsp;all&nbsp;layer&nbsp;edges&nbsp;as&nbsp;layer&nbsp;attributes.<br>
+&nbsp;<br>
+Identifies&nbsp;and&nbsp;saves&nbsp;the&nbsp;left,&nbsp;top,&nbsp;right,&nbsp;and&nbsp;bottom&nbsp;(LTRB)&nbsp;edges&nbsp;for<br>
+each&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;saves&nbsp;LTRB&nbsp;edges&nbsp;as&nbsp;attributes&nbsp;within&nbsp;each&nbsp;layer&nbsp;object.<br>
+&nbsp;<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.left&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;left&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.top&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;top&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.right&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;right&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.bottom&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;bottom&nbsp;edge<br>
+&nbsp;<br>
+Note:&nbsp;External&nbsp;and&nbsp;internal&nbsp;surfaces&nbsp;have&nbsp;not&nbsp;yet&nbsp;been&nbsp;implemented!</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-which_parts_exist"><strong>which_parts_exist</strong></a>(self)</dt><dd><tt>Check&nbsp;which&nbsp;structural&nbsp;parts&nbsp;exist&nbsp;at&nbsp;this&nbsp;monoplane&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;booleans.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_all_alt_layer_edges"><strong>write_all_alt_layer_edges</strong></a>(self, alt_TE_reinforcement<font color="#909090">=False</font>, soft_warning<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;all&nbsp;layer&nbsp;edges&nbsp;to&nbsp;`station_path`.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;is&nbsp;formatted&nbsp;as&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;(*.tg).</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_all_block_meshes"><strong>write_all_block_meshes</strong></a>(self, interrupt_flag<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;commands&nbsp;for&nbsp;creating&nbsp;all&nbsp;TrueGrid&nbsp;block&nbsp;meshes.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;is&nbsp;formatted&nbsp;as&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;(*.tg).</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_all_layer_edges"><strong>write_all_layer_edges</strong></a>(self)</dt><dd><tt>Write&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;all&nbsp;layer&nbsp;edges&nbsp;to&nbsp;`station_path`.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;is&nbsp;formatted&nbsp;as&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;(*.tg).<br>
+&nbsp;<br>
+Saves&nbsp;self.<strong>_dict_of_edge_nums</strong>,&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;edge&nbsp;names&nbsp;for&nbsp;curve&nbsp;ID<br>
+numbers.&nbsp;For&nbsp;example,&nbsp;some&nbsp;entries&nbsp;might&nbsp;look&nbsp;like:<br>
+&nbsp;<br>
+_dict_of_edge_nums['<a href="#TE_Reinforcement">TE_Reinforcement</a>;&nbsp;uniax;&nbsp;right']&nbsp;=&nbsp;5<br>
+_dict_of_edge_nums['<a href="#LE_Panel">LE_Panel</a>;&nbsp;foam;&nbsp;left']&nbsp;=&nbsp;10<br>
+_dict_of_edge_nums['ShearWeb1;&nbsp;biax,&nbsp;left;&nbsp;top']&nbsp;=&nbsp;15<br>
+_dict_of_edge_nums['AftPanel2;&nbsp;foam;&nbsp;bottom']&nbsp;=&nbsp;19<br>
+_dict_of_edge_nums['<a href="#SparCap">SparCap</a>;&nbsp;uniax;&nbsp;right']&nbsp;=&nbsp;22</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_all_part_polygons"><strong>write_all_part_polygons</strong></a>(self)</dt><dd><tt>Write&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;all&nbsp;structural&nbsp;parts&nbsp;to&nbsp;`station_path`s.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_block_mesh"><strong>write_block_mesh</strong></a>(self, dict_key_prefix, i_cells, j_cells)</dt><dd><tt>Write&nbsp;the&nbsp;commands&nbsp;for&nbsp;creating&nbsp;ONE&nbsp;block&nbsp;mesh&nbsp;for&nbsp;ONE&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;is&nbsp;formatted&nbsp;as&nbsp;a&nbsp;Truegrid&nbsp;input&nbsp;file&nbsp;(*.tg).<br>
+&nbsp;<br>
+Usage:<br>
+<a href="#MonoplaneStructure-write_block_mesh">write_block_mesh</a>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict_key_prefix='<a href="#RootBuildup">RootBuildup</a>;&nbsp;triax,&nbsp;lower&nbsp;left',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;i_cells=60,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;j_cells=2)</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_truegrid_footer"><strong>write_truegrid_footer</strong></a>(self, interrupt_flag<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;footer&nbsp;for&nbsp;the&nbsp;TrueGrid&nbsp;input&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_truegrid_header"><strong>write_truegrid_header</strong></a>(self, outputfile_type<font color="#909090">='abaqus'</font>)</dt><dd><tt>Create&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;and&nbsp;write&nbsp;the&nbsp;header.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;is&nbsp;formatted&nbsp;as&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;(*.tg).</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStructure-write_truegrid_inputfile"><strong>write_truegrid_inputfile</strong></a>(self, interrupt_flag<font color="#909090">=False</font>, additional_layers<font color="#909090">=[]</font>, alt_TE_reinforcement<font color="#909090">=False</font>, soft_warning<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;in&nbsp;`station_path`.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Part">class <strong>Part</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;the&nbsp;dimensions&nbsp;of&nbsp;a&nbsp;structural&nbsp;part.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Part-__init__"><strong>__init__</strong></a>(self, parent_structure, base, height)</dt></dl>
+
+<dl><dt><a name="Part-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Part-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;polygon&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;that&nbsp;contains&nbsp;this&nbsp;part.<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="Part-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RootBuildup">class <strong>RootBuildup</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;triax&nbsp;dimensions&nbsp;of&nbsp;the&nbsp;root&nbsp;buildup.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="RootBuildup-add_new_layer"><strong>add_new_layer</strong></a>(self, new_name, new_polygon, material<font color="#909090">='triax'</font>)</dt><dd><tt>Add&nbsp;a&nbsp;new&nbsp;alternate&nbsp;layer&nbsp;to&nbsp;the&nbsp;root&nbsp;buildup&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="RootBuildup-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>)</dt><dd><tt>Returns&nbsp;dict&nbsp;of&nbsp;4&nbsp;polygons&nbsp;for&nbsp;bounding&nbsp;boxes&nbsp;in&nbsp;each&nbsp;quadrant.<br>
+&nbsp;<br>
+The&nbsp;bounding&nbsp;boxes&nbsp;will&nbsp;be&nbsp;used&nbsp;to&nbsp;split&nbsp;the&nbsp;root&nbsp;buildup&nbsp;into&nbsp;4&nbsp;curved<br>
+polygons.<br>
+&nbsp;<br>
+bb['lower&nbsp;left']&nbsp;:&nbsp;lower&nbsp;left&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_min*1.2,&nbsp;y_min*1.2)<br>
+bb['lower&nbsp;right']&nbsp;:&nbsp;lower&nbsp;right&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_max*1.2,&nbsp;y_min*1.2)<br>
+bb['upper&nbsp;right']&nbsp;:&nbsp;upper&nbsp;right&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_max*1.2,&nbsp;y_max*1.2)<br>
+bb['upper&nbsp;left']&nbsp;:&nbsp;upper&nbsp;left&nbsp;quadrant,&nbsp;(0,0)&nbsp;to&nbsp;(x_min*1.2,&nbsp;y_max*1.2)<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;each&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="RootBuildup-create_alternate_layers"><strong>create_alternate_layers</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;alternate&nbsp;triax&nbsp;layers&nbsp;for&nbsp;meshing&nbsp;the&nbsp;root&nbsp;buildup.<br>
+&nbsp;<br>
+These&nbsp;alternate&nbsp;layers&nbsp;will&nbsp;be&nbsp;used&nbsp;to&nbsp;create&nbsp;meshes&nbsp;in&nbsp;TrueGrid.<br>
+&nbsp;<br>
+&lt;root_buildup&gt;.layer['triax,&nbsp;lower&nbsp;left']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(lower&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quadrant)<br>
+&lt;root_buildup&gt;.layer['triax,&nbsp;lower&nbsp;right']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(lower&nbsp;right<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quadrant)<br>
+&lt;root_buildup&gt;.layer['triax,&nbsp;upper&nbsp;right']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(upper&nbsp;right<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quadrant)<br>
+&lt;root_buildup&gt;.layer['triax,&nbsp;upper&nbsp;left']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(upper&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;quadrant)<br>
+&nbsp;<br>
+Note:&nbsp;This&nbsp;stores&nbsp;4&nbsp;curved&nbsp;rectangles&nbsp;:&nbsp;.layer['triax,&nbsp;lower&nbsp;left'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.layer['triax,&nbsp;lower&nbsp;right'],&nbsp;.layer['triax,&nbsp;upper&nbsp;right'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.layer['triax,&nbsp;upper&nbsp;left']</tt></dd></dl>
+
+<dl><dt><a name="RootBuildup-create_layers"><strong>create_layers</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;triax&nbsp;layer&nbsp;in&nbsp;the&nbsp;root&nbsp;buildup.<br>
+&nbsp;<br>
+&lt;root_buildup&gt;.layer['triax']&nbsp;:&nbsp;triax&nbsp;layer&nbsp;(entire&nbsp;annulus)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="RootBuildup-__init__"><strong>__init__</strong></a>(self, parent_structure, base, height)</dt></dl>
+
+<dl><dt><a name="RootBuildup-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="RootBuildup-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ShearWeb">class <strong>ShearWeb</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;the&nbsp;biax&nbsp;(skin)&nbsp;and&nbsp;foam&nbsp;(core)&nbsp;dimensions&nbsp;of&nbsp;a&nbsp;shear&nbsp;web.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+parent_structure&nbsp;:&nbsp;Structure&nbsp;object,&nbsp;the&nbsp;parent&nbsp;structure&nbsp;of&nbsp;this&nbsp;shear&nbsp;web<br>
+base_biax&nbsp;:&nbsp;float,&nbsp;base&nbsp;of&nbsp;biax&nbsp;material&nbsp;in&nbsp;shear&nbsp;web<br>
+base_foam&nbsp;:&nbsp;float,&nbsp;base&nbsp;of&nbsp;foam&nbsp;material&nbsp;in&nbsp;shear&nbsp;web<br>
+x2&nbsp;:&nbsp;float,&nbsp;chordwise&nbsp;distance&nbsp;from&nbsp;pitch&nbsp;axis&nbsp;to&nbsp;edge&nbsp;of&nbsp;shear&nbsp;web<br>
+height&nbsp;:&nbsp;NaN&nbsp;(DO&nbsp;NOT&nbsp;SPECIFY),&nbsp;height&nbsp;of&nbsp;shear&nbsp;web<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ShearWeb-__init__"><strong>__init__</strong></a>(self, num, parent_structure, base_biax, base_foam, x2, height<font color="#909090">=nan</font>)</dt></dl>
+
+<dl><dt><a name="ShearWeb-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="ShearWeb-bounding_box"><strong>bounding_box</strong></a>(self, y_boundary_buffer<font color="#909090">=1.2</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;3&nbsp;bounding&nbsp;boxes&nbsp;for&nbsp;the&nbsp;biax&nbsp;and&nbsp;foam&nbsp;regions&nbsp;of&nbsp;the&nbsp;SW.<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;each&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2</tt></dd></dl>
+
+<dl><dt><a name="ShearWeb-create_layers"><strong>create_layers</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;biax&nbsp;and&nbsp;foam&nbsp;layers&nbsp;in&nbsp;this&nbsp;shear&nbsp;web.<br>
+&nbsp;<br>
+&lt;shear_web&gt;.layer['biax,&nbsp;left']&nbsp;is&nbsp;the&nbsp;left&nbsp;biax&nbsp;layer<br>
+&lt;shear_web&gt;.layer['foam']&nbsp;is&nbsp;the&nbsp;foam&nbsp;layer<br>
+&lt;shear_web&gt;.layer['biax,&nbsp;right']&nbsp;is&nbsp;the&nbsp;right&nbsp;biax&nbsp;layer</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="ShearWeb-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SparCap">class <strong>SparCap</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;uniax&nbsp;dimensions&nbsp;of&nbsp;the&nbsp;lower&nbsp;and&nbsp;upper&nbsp;spar&nbsp;caps.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SparCap-create_layers"><strong>create_layers</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;uniax&nbsp;layers&nbsp;in&nbsp;the&nbsp;lower&nbsp;and&nbsp;upper&nbsp;spar&nbsp;caps.<br>
+&nbsp;<br>
+&lt;spar_cap&gt;.layer['lower']&nbsp;:&nbsp;lower&nbsp;spar&nbsp;cap<br>
+&lt;spar_cap&gt;.layer['upper']&nbsp;:&nbsp;upper&nbsp;spar&nbsp;cap</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="SparCap-__init__"><strong>__init__</strong></a>(self, parent_structure, base, height)</dt></dl>
+
+<dl><dt><a name="SparCap-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SparCap-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;polygon&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;that&nbsp;contains&nbsp;this&nbsp;part.<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="SparCap-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TE_Reinforcement">class <strong>TE_Reinforcement</strong></a>(<a href="structure.html#Part">Part</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;uniax&nbsp;and&nbsp;foam&nbsp;dimensions&nbsp;of&nbsp;a&nbsp;trailing&nbsp;edge&nbsp;reinforcement.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TE_Reinforcement-__init__"><strong>__init__</strong></a>(self, parent_structure, base, height_uniax, height_foam)</dt></dl>
+
+<dl><dt><a name="TE_Reinforcement-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="TE_Reinforcement-add_new_layer"><strong>add_new_layer</strong></a>(self, new_name, new_polygon, material)</dt><dd><tt>Add&nbsp;a&nbsp;new&nbsp;layer&nbsp;to&nbsp;the&nbsp;TE&nbsp;reinforcement&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="TE_Reinforcement-alternate_bounding_boxes"><strong>alternate_bounding_boxes</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>)</dt><dd><tt>Returns&nbsp;dict&nbsp;of&nbsp;polygons&nbsp;for&nbsp;bounding&nbsp;boxes&nbsp;for&nbsp;alternate&nbsp;layers.<br>
+&nbsp;<br>
+The&nbsp;bounding&nbsp;boxes&nbsp;will&nbsp;be&nbsp;used&nbsp;to&nbsp;split&nbsp;the&nbsp;TE&nbsp;reinforcement&nbsp;into<br>
+several&nbsp;quadrilateral&nbsp;and&nbsp;triangular&nbsp;regions&nbsp;for&nbsp;meshing.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;is&nbsp;called&nbsp;by&nbsp;<a href="#TE_Reinforcement-create_alternate_layers">create_alternate_layers</a>().<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;foam&nbsp;region&nbsp;exists,&nbsp;6&nbsp;bounding&nbsp;boxes&nbsp;are&nbsp;returned:<br>
+bb['upper&nbsp;left']<br>
+bb['upper&nbsp;middle']<br>
+bb['upper&nbsp;right']<br>
+bb['lower&nbsp;left']<br>
+bb['lower&nbsp;middle']<br>
+bb['lower&nbsp;right']<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;foam&nbsp;region&nbsp;doesn't&nbsp;exist,&nbsp;4&nbsp;bounding&nbsp;boxes&nbsp;are&nbsp;returned:<br>
+bb['upper&nbsp;left']<br>
+bb['upper&nbsp;right']<br>
+bb['lower&nbsp;left']<br>
+bb['lower&nbsp;right']<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;each&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+self.<strong>left_vertex</strong>&nbsp;:&nbsp;np.array,&nbsp;coordinates&nbsp;at&nbsp;the&nbsp;midpoint&nbsp;of&nbsp;the&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;edge&nbsp;of&nbsp;the&nbsp;TE&nbsp;reinforcement.&nbsp;This&nbsp;coordinate&nbsp;does&nbsp;not&nbsp;sit&nbsp;on&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TE&nbsp;reinforcement,&nbsp;it&nbsp;lies&nbsp;between&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;"legs"&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TE&nbsp;reinforcement.&nbsp;It&nbsp;help&nbsp;us&nbsp;draw&nbsp;the&nbsp;upper&nbsp;left&nbsp;and&nbsp;lower&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bounding&nbsp;boxes.<br>
+self.<strong>foam_left_vertex</strong>&nbsp;:&nbsp;np.array,&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;sharp&nbsp;corner&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;left&nbsp;edge&nbsp;of&nbsp;the&nbsp;foam&nbsp;region.&nbsp;If&nbsp;the&nbsp;foam&nbsp;region&nbsp;doesn't&nbsp;exist,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;foam_left_vertex=None.<br>
+self.<strong>uniax_left_vertex</strong>&nbsp;:&nbsp;np.array,&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;sharp&nbsp;corner&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;left&nbsp;edge&nbsp;of&nbsp;the&nbsp;uniax&nbsp;region.<br>
+self.<strong>uniax_right_vertex</strong>&nbsp;:&nbsp;np.array,&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;middle&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;blunt&nbsp;TE&nbsp;along&nbsp;the&nbsp;right&nbsp;edge&nbsp;of&nbsp;the&nbsp;uniax&nbsp;region.</tt></dd></dl>
+
+<dl><dt><a name="TE_Reinforcement-create_alternate_layers"><strong>create_alternate_layers</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;alternate&nbsp;uniax&nbsp;and&nbsp;foam&nbsp;layers&nbsp;for&nbsp;meshing&nbsp;the&nbsp;TE&nbsp;reinf.<br>
+&nbsp;<br>
+These&nbsp;alternate&nbsp;layers&nbsp;will&nbsp;be&nbsp;used&nbsp;to&nbsp;create&nbsp;meshes&nbsp;in&nbsp;TrueGrid.<br>
+&nbsp;<br>
+&lt;TE_reinforcement&gt;.layer['uniax,&nbsp;upper&nbsp;left']&nbsp;:&nbsp;uniax&nbsp;layer&nbsp;(upper&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['uniax,&nbsp;upper&nbsp;middle']&nbsp;:&nbsp;uniax&nbsp;layer&nbsp;(upper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;middle&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['uniax,&nbsp;upper&nbsp;right']&nbsp;:&nbsp;uniax&nbsp;layer&nbsp;(upper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['uniax,&nbsp;lower&nbsp;left']&nbsp;:&nbsp;uniax&nbsp;layer&nbsp;(lower&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['uniax,&nbsp;lower&nbsp;middle']&nbsp;:&nbsp;uniax&nbsp;layer&nbsp;(lower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;middle&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['uniax,&nbsp;lower&nbsp;right']&nbsp;:&nbsp;uniax&nbsp;layer&nbsp;(lower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['foam,&nbsp;upper&nbsp;left']&nbsp;:&nbsp;foam&nbsp;layer&nbsp;(upper&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['foam,&nbsp;upper&nbsp;middle']&nbsp;:&nbsp;foam&nbsp;layer&nbsp;(upper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;middle&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['foam,&nbsp;lower&nbsp;left']&nbsp;:&nbsp;foam&nbsp;layer&nbsp;(lower&nbsp;left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;block)<br>
+&lt;TE_reinforcement&gt;.layer['foam,&nbsp;lower&nbsp;middle']&nbsp;:&nbsp;foam&nbsp;layer&nbsp;(lower<br>
+&nbsp;&nbsp;&nbsp;&nbsp;middle&nbsp;block)<br>
+&nbsp;<br>
+Note:&nbsp;This&nbsp;stores&nbsp;8&nbsp;quadrilaterals&nbsp;and&nbsp;2&nbsp;triangles:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;8&nbsp;quadrilaterals&nbsp;:&nbsp;.layer['uniax,&nbsp;upper&nbsp;left'],&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.layer['uniax,&nbsp;upper&nbsp;middle'],&nbsp;.layer['uniax,&nbsp;upper&nbsp;right'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.layer['uniax,&nbsp;lower&nbsp;left'],&nbsp;.layer['uniax,&nbsp;lower&nbsp;middle'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.layer['uniax,&nbsp;lower&nbsp;right'],&nbsp;.layer['foam,&nbsp;upper&nbsp;left'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.layer['foam,&nbsp;lower&nbsp;left']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;triangles&nbsp;:&nbsp;.layer['foam,&nbsp;upper&nbsp;right'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.layer['foam,&nbsp;lower&nbsp;right']</tt></dd></dl>
+
+<dl><dt><a name="TE_Reinforcement-create_layers"><strong>create_layers</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Create&nbsp;the&nbsp;uniax&nbsp;and&nbsp;foam&nbsp;layers&nbsp;in&nbsp;the&nbsp;TE&nbsp;reinforcement.<br>
+&nbsp;<br>
+The&nbsp;TE&nbsp;reinforcement&nbsp;is&nbsp;split&nbsp;into&nbsp;one&nbsp;OR&nbsp;two&nbsp;regions:<br>
+&lt;TE_reinforcement&gt;.layer['uniax']&nbsp;:&nbsp;uniax&nbsp;layer<br>
+&lt;TE_reinforcement&gt;.layer['foam']&nbsp;:&nbsp;foam&nbsp;layer&nbsp;(optional)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="structure.html#Part">Part</a>:<br>
+<dl><dt><a name="TE_Reinforcement-bounding_box"><strong>bounding_box</strong></a>(self, x_boundary_buffer<font color="#909090">=1.2</font>, y_boundary_buffer<font color="#909090">=1.2</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;polygon&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;that&nbsp;contains&nbsp;this&nbsp;part.<br>
+&nbsp;<br>
+The&nbsp;points&nbsp;of&nbsp;the&nbsp;bounding&nbsp;box&nbsp;are&nbsp;labeled&nbsp;from&nbsp;1&nbsp;to&nbsp;4&nbsp;as:<br>
+&nbsp;<br>
+4---3<br>
+|&nbsp;&nbsp;&nbsp;|<br>
+1---2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minx&nbsp;and&nbsp;maxx&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;past&nbsp;the&nbsp;left&nbsp;and&nbsp;right&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon<br>
+y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;to&nbsp;multiply&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;miny&nbsp;and&nbsp;maxy&nbsp;bound&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon,&nbsp;to&nbsp;stretch&nbsp;the&nbsp;bounding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;box&nbsp;above&nbsp;and&nbsp;below&nbsp;the&nbsp;top&nbsp;and&nbsp;bottom&nbsp;edges&nbsp;of&nbsp;the&nbsp;airfoil&nbsp;polygon</tt></dd></dl>
+
+<dl><dt><a name="TE_Reinforcement-exists"><strong>exists</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;a&nbsp;structural&nbsp;part&nbsp;exists&nbsp;at&nbsp;this&nbsp;station.</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-isnan"><strong>isnan</strong></a>(...)</dt><dd><tt><a href="#-isnan">isnan</a>(x)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Check&nbsp;if&nbsp;float&nbsp;x&nbsp;is&nbsp;not&nbsp;a&nbsp;number&nbsp;(NaN).</tt></dd></dl>
+</td></tr></table>
+</body></html>

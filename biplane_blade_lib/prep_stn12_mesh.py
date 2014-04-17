@@ -7,9 +7,9 @@ $ ipython qtconsole --pylab
 or
 $ ipython --pylab
 Then, from the prompt, run this script:
-|> %run sandia_blade_lib/prep_stnXX_mesh.py
+|> %run biplane_blade_lib/prep_stnXX_mesh.py
 or
-|> import sandia_blade_lib/prep_stnXX_mesh
+|> import biplane_blade_lib/prep_stnXX_mesh
 
 Author: Perry Roth-Johnson
 Last updated: April 17, 2014

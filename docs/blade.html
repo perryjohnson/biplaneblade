@@ -1,0 +1,540 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module blade</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>blade</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/blade.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\blade.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;for&nbsp;organizing&nbsp;geometrical&nbsp;data&nbsp;for&nbsp;a&nbsp;blade&nbsp;definition.<br>
+&nbsp;<br>
+Note:&nbsp;to&nbsp;generate&nbsp;html&nbsp;documentation&nbsp;of&nbsp;this&nbsp;module,&nbsp;open&nbsp;a&nbsp;Windows&nbsp;cmd&nbsp;prompt:<br>
+&gt;&nbsp;cd&nbsp;path/to/lib<br>
+&gt;&nbsp;python&nbsp;-m&nbsp;pydoc&nbsp;-w&nbsp;blade<br>
+Then,&nbsp;open&nbsp;path/to/lib/blade.html&nbsp;in&nbsp;a&nbsp;browser.<br>
+Refs:<br>
+https://docs.python.org/2.7/library/pydoc.html<br>
+<a href="http://bytes.com/topic/python/answers/436285-how-use-pydoc">http://bytes.com/topic/python/answers/436285-how-use-pydoc</a><br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;updated:&nbsp;April&nbsp;14,&nbsp;2014</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="matplotlib.colors.html">matplotlib.colors</a><br>
+<a href="datetime.html">datetime</a><br>
+<a href="scipy.integrate.html">scipy.integrate</a><br>
+<a href="mayavi.mlab.html">mayavi.mlab</a><br>
+</td><td width="25%" valign=top><a href="material.html">material</a><br>
+<a href="numpy.html">numpy</a><br>
+<a href="os.html">os</a><br>
+<a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top><a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+<a href="shutil.html">shutil</a><br>
+<a href="station.html">station</a><br>
+<a href="transformation.html">transformation</a><br>
+</td><td width="25%" valign=top><a href="vabs_utils.html">vabs_utils</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="blade.html#_Blade">_Blade</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="blade.html#BiplaneBlade">BiplaneBlade</a>
+</font></dt><dt><font face="helvetica, arial"><a href="blade.html#MonoplaneBlade">MonoplaneBlade</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BiplaneBlade">class <strong>BiplaneBlade</strong></a>(<a href="blade.html#_Blade">_Blade</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;a&nbsp;biplane&nbsp;wind&nbsp;turbine&nbsp;blade.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BiplaneBlade-__init__"><strong>__init__</strong></a>(self, name, blade_path, defn_filename<font color="#909090">='blade_definition.csv'</font>, airfoils_path<font color="#909090">='airfoils'</font>, matl_filename<font color="#909090">='materials.csv'</font>)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;biplane&nbsp;wind&nbsp;turbine&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-assign_joint_stations"><strong>assign_joint_stations</strong></a>(self)</dt><dd><tt>Identify&nbsp;and&nbsp;mark&nbsp;the&nbsp;root&nbsp;and&nbsp;mid-blade&nbsp;joint&nbsp;stations.<br>
+&nbsp;<br>
+Creates&nbsp;a&nbsp;'&lt;_Station&gt;.joint'&nbsp;attribute,&nbsp;which&nbsp;is&nbsp;'root',<br>
+'midblade',&nbsp;or&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-copy_airfoil_coords"><strong>copy_airfoil_coords</strong></a>(self, station)</dt><dd><tt>Copy&nbsp;airfoil&nbsp;coordinates&nbsp;from&nbsp;airfoils_path&nbsp;into&nbsp;this&nbsp;station_path.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-create_station"><strong>create_station</strong></a>(self, station_num)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;station&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-get_LE_coords"><strong>get_LE_coords</strong></a>(self, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y,z)&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;blade&nbsp;leading&nbsp;edge.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-get_SW_cross_section_coords"><strong>get_SW_cross_section_coords</strong></a>(self, sw_num, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y,z)&nbsp;coordinates&nbsp;for&nbsp;shear&nbsp;web&nbsp;#1,&nbsp;#2,&nbsp;or&nbsp;#3.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+sw_num&nbsp;=&nbsp;int,&nbsp;(1,&nbsp;2,&nbsp;or&nbsp;3)&nbsp;selects&nbsp;the&nbsp;desired&nbsp;shear&nbsp;web</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-get_SW_cross_section_coords_at_joint"><strong>get_SW_cross_section_coords_at_joint</strong></a>(self, joint, sw_num, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;(x,y,z)&nbsp;coordinates&nbsp;for&nbsp;shear&nbsp;web&nbsp;#1,&nbsp;#2,&nbsp;or&nbsp;#3&nbsp;at&nbsp;joints.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+joint&nbsp;:&nbsp;str,&nbsp;('root'&nbsp;or&nbsp;'midblade')&nbsp;selects&nbsp;the&nbsp;desired&nbsp;joint<br>
+sw_num&nbsp;:&nbsp;int,&nbsp;(1,&nbsp;2,&nbsp;or&nbsp;3)&nbsp;selects&nbsp;the&nbsp;desired&nbsp;shear&nbsp;web</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-get_TE_coords"><strong>get_TE_coords</strong></a>(self, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y,z)&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;blade&nbsp;trailing&nbsp;edge.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_LE"><strong>plot_LE</strong></a>(self, lw, color<font color="#909090">='k'</font>, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;leading&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'k')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_TE"><strong>plot_TE</strong></a>(self, lw, color<font color="#909090">='k'</font>, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'k')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_all_SW_cross_sections"><strong>plot_all_SW_cross_sections</strong></a>(self, lw, color<font color="#909090">='g'</font>, twist_flag<font color="#909090">=True</font>, lower<font color="#909090">=True</font>, upper<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;all&nbsp;shear&nbsp;web&nbsp;cross-sections&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'g')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_all_SW_spanwise_lines"><strong>plot_all_SW_spanwise_lines</strong></a>(self, lw, color<font color="#909090">='g'</font>, twist_flag<font color="#909090">=True</font>, lower<font color="#909090">=True</font>, upper<font color="#909090">=True</font>, sw_list<font color="#909090">=[1, 2, 3]</font>)</dt><dd><tt>Plots&nbsp;spanwise&nbsp;lines&nbsp;for&nbsp;all&nbsp;shear&nbsp;webs&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'g')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_all_airfoils"><strong>plot_all_airfoils</strong></a>(self, lw, color<font color="#909090">='k'</font>, twist_flag<font color="#909090">=True</font>, export_flag<font color="#909090">=True</font>)</dt><dd><tt>Plot&nbsp;all&nbsp;the&nbsp;airfoils&nbsp;in&nbsp;the&nbsp;biplane&nbsp;blade&nbsp;with&nbsp;Mayavi's&nbsp;mlab.<br>
+&nbsp;<br>
+You&nbsp;must&nbsp;import&nbsp;the&nbsp;blade&nbsp;and&nbsp;its&nbsp;airfoil&nbsp;coordinates&nbsp;first.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'k')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis<br>
+export_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;write&nbsp;airfoil&nbsp;coords&nbsp;to&nbsp;a&nbsp;text&nbsp;file&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station&nbsp;path,&nbsp;which&nbsp;can&nbsp;be&nbsp;imported&nbsp;into&nbsp;SolidWorks&nbsp;as&nbsp;an&nbsp;XYZ&nbsp;curve<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+a&nbsp;=&nbsp;bl.<a href="#BiplaneBlade">BiplaneBlade</a>('biplane&nbsp;blade',&nbsp;'biplane_blade')<br>
+a.<a href="#BiplaneBlade-copy_all_airfoil_coords">copy_all_airfoil_coords</a>()<br>
+for&nbsp;station&nbsp;in&nbsp;a.list_of_stations:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.read_coords()<br>
+a.<a href="#BiplaneBlade-plot_all_airfoils">plot_all_airfoils</a>()</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_blade"><strong>plot_blade</strong></a>(self, line_width<font color="#909090">=0.08</font>, airfoils<font color="#909090">=True</font>, pitch_axis<font color="#909090">=False</font>, LE<font color="#909090">=True</font>, TE<font color="#909090">=True</font>, twist<font color="#909090">=True</font>, SW<font color="#909090">=True</font>, color_airfoils<font color="#909090">='0.1'</font>, color_pitch_axis<font color="#909090">='r'</font>, color_LE<font color="#909090">='0.1'</font>, color_TE<font color="#909090">='0.1'</font>, color_SW<font color="#909090">=(0.14453125, 0.76953125, 0.33203125)</font>, stn_nums<font color="#909090">=False</font>, export<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;a&nbsp;wireframe&nbsp;representation&nbsp;of&nbsp;the&nbsp;blade,&nbsp;with&nbsp;Mayavi&nbsp;mlab.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+line_width&nbsp;:&nbsp;float,&nbsp;line&nbsp;width&nbsp;for&nbsp;plotting<br>
+airfoils&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;airfoils&nbsp;at&nbsp;each&nbsp;blade&nbsp;station<br>
+pitch_axis&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;pitch&nbsp;axis&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+LE&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;leading&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+TE&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+twist&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;blade&nbsp;with&nbsp;twist&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+SW&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;all&nbsp;shear&nbsp;webs&nbsp;along&nbsp;the&nbsp;span<br>
+color_airfoils&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;airfoils<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;dark&nbsp;grey)<br>
+color_pitch_axis&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;pitch&nbsp;axis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;red)<br>
+color_LE&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;leading&nbsp;edge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;dark&nbsp;grey)<br>
+color_TE&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;trailing&nbsp;edge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;dark&nbsp;grey)<br>
+color_SW&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;shear&nbsp;webs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;light&nbsp;green)<br>
+stn_nums&nbsp;:&nbsp;boolean,&nbsp;plot/don't&nbsp;plot&nbsp;station&nbsp;numbers<br>
+export&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;write&nbsp;airfoil&nbsp;coords&nbsp;to&nbsp;a&nbsp;text&nbsp;file&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station&nbsp;path,&nbsp;which&nbsp;can&nbsp;be&nbsp;imported&nbsp;into&nbsp;SolidWorks&nbsp;as&nbsp;an&nbsp;XYZ&nbsp;curve</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_station_nums"><strong>plot_station_nums</strong></a>(self)</dt><dd><tt>Plots&nbsp;station&nbsp;numbers&nbsp;next&nbsp;to&nbsp;each&nbsp;cross-section.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="blade.html#_Blade">_Blade</a>:<br>
+<dl><dt><a name="BiplaneBlade-__del__"><strong>__del__</strong></a>(self)</dt><dd><tt>Delete&nbsp;a&nbsp;wind&nbsp;turbine&nbsp;blade.<br>
+&nbsp;<br>
+Also&nbsp;deletes&nbsp;all&nbsp;the&nbsp;station&nbsp;paths&nbsp;inside&nbsp;the&nbsp;blade&nbsp;path.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-calculate_all_areas"><strong>calculate_all_areas</strong></a>(self)</dt><dd><tt>Calculate&nbsp;the&nbsp;areas&nbsp;of&nbsp;all&nbsp;structural&nbsp;parts&nbsp;in&nbsp;each&nbsp;station&nbsp;of&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-calculate_all_masses"><strong>calculate_all_masses</strong></a>(self)</dt><dd><tt>Calculate&nbsp;masses&nbsp;of&nbsp;all&nbsp;structural&nbsp;parts&nbsp;in&nbsp;each&nbsp;station&nbsp;of&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-calculate_blade_mass"><strong>calculate_blade_mass</strong></a>(self, print_flag<font color="#909090">=True</font>)</dt><dd><tt>Calculate&nbsp;the&nbsp;total&nbsp;blade&nbsp;mass.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-copy_all_airfoil_coords"><strong>copy_all_airfoil_coords</strong></a>(self)</dt><dd><tt>Copy&nbsp;all&nbsp;airfoil&nbsp;coordinates&nbsp;from&nbsp;airfoils_path&nbsp;into&nbsp;each&nbsp;station_path.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-create_all_materials"><strong>create_all_materials</strong></a>(self)</dt><dd><tt>Create&nbsp;all&nbsp;materials&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-create_all_stations"><strong>create_all_stations</strong></a>(self)</dt><dd><tt>Create&nbsp;all&nbsp;stations&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-create_isotropic_material"><strong>create_isotropic_material</strong></a>(self, material_num)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;isotropic&nbsp;material&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-create_orthotropic_material"><strong>create_orthotropic_material</strong></a>(self, material_num)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;orthotropic&nbsp;material&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-create_plot"><strong>create_plot</strong></a>(self, fig_width<font color="#909090">=1000</font>, fig_height<font color="#909090">=800</font>)</dt><dd><tt>Create&nbsp;a&nbsp;plot&nbsp;for&nbsp;this&nbsp;blade.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;handle&nbsp;to&nbsp;the&nbsp;figure.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+fig_width&nbsp;:&nbsp;int,&nbsp;figure&nbsp;width&nbsp;(pixels)<br>
+fig_height&nbsp;:&nbsp;int,&nbsp;figure&nbsp;height&nbsp;(pixels)<br>
+&nbsp;<br>
+Several&nbsp;settings&nbsp;are&nbsp;applied&nbsp;by&nbsp;default&nbsp;---------<br>
+Title&nbsp;:&nbsp;[blade&nbsp;name]<br>
+Figure&nbsp;width&nbsp;:&nbsp;1000&nbsp;px<br>
+Figure&nbsp;height&nbsp;:&nbsp;800&nbsp;px</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-get_all_percent_areas"><strong>get_all_percent_areas</strong></a>(self, save_csv<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;pandas.DataFrame&nbsp;of&nbsp;percent&nbsp;areas&nbsp;for&nbsp;each&nbsp;part&nbsp;and&nbsp;station.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+save_csv&nbsp;:&nbsp;bool&nbsp;(default:&nbsp;True),&nbsp;save&nbsp;the&nbsp;DataFrame&nbsp;as&nbsp;a&nbsp;CSV&nbsp;file</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-get_all_percent_masses"><strong>get_all_percent_masses</strong></a>(self, save_csv<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;pandas.DataFrame&nbsp;of&nbsp;percent&nbsp;masses&nbsp;for&nbsp;each&nbsp;part&nbsp;and&nbsp;station.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+save_csv&nbsp;:&nbsp;bool&nbsp;(default:&nbsp;True),&nbsp;save&nbsp;the&nbsp;DataFrame&nbsp;as&nbsp;a&nbsp;CSV&nbsp;file</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-import_blade_definition"><strong>import_blade_definition</strong></a>(self)</dt><dd><tt>Import&nbsp;the&nbsp;blade&nbsp;definition&nbsp;from&nbsp;a&nbsp;CSV&nbsp;file.<br>
+&nbsp;<br>
+Returns&nbsp;True&nbsp;if&nbsp;the&nbsp;import&nbsp;was&nbsp;successful,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-import_material_properties"><strong>import_material_properties</strong></a>(self)</dt><dd><tt>Import&nbsp;the&nbsp;material&nbsp;properties&nbsp;from&nbsp;a&nbsp;CSV&nbsp;file.<br>
+&nbsp;<br>
+Returns&nbsp;True&nbsp;if&nbsp;the&nbsp;import&nbsp;was&nbsp;successful,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_chord_schedule"><strong>plot_chord_schedule</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;chord&nbsp;vs.&nbsp;span.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_mass_schedule"><strong>plot_mass_schedule</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;mass&nbsp;vs.&nbsp;span.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_percent_areas"><strong>plot_percent_areas</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;percent&nbsp;areas&nbsp;as&nbsp;a&nbsp;100%&nbsp;stacked&nbsp;bar&nbsp;plot.<br>
+&nbsp;<br>
+ref:&nbsp;<a href="http://matplotlib.org/examples/pylab_examples/bar_stacked.html">http://matplotlib.org/examples/pylab_examples/bar_stacked.html</a></tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_percent_masses"><strong>plot_percent_masses</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;percent&nbsp;masses&nbsp;as&nbsp;a&nbsp;100%&nbsp;stacked&nbsp;bar&nbsp;plot.<br>
+&nbsp;<br>
+ref:&nbsp;<a href="http://matplotlib.org/examples/pylab_examples/bar_stacked.html">http://matplotlib.org/examples/pylab_examples/bar_stacked.html</a></tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_pitch_axis"><strong>plot_pitch_axis</strong></a>(self, lw, color<font color="#909090">='r'</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;pitch&nbsp;axis&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'r')</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_selected_cross_sections"><strong>plot_selected_cross_sections</strong></a>(self, figsize<font color="#909090">=(22, 12)</font>, nrows<font color="#909090">=4</font>, ncols<font color="#909090">=3</font>, selected_stations<font color="#909090">=[1, 7, 11, 13, 16, 20, 21, 23, 26, 28, 30, 33]</font>, save_flag<font color="#909090">=True</font>, plot_parts<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;selected&nbsp;cross-sections&nbsp;of&nbsp;the&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-plot_twist_schedule"><strong>plot_twist_schedule</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;twist&nbsp;vs.&nbsp;span.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneBlade-show_plot"><strong>show_plot</strong></a>(self, azimuth<font color="#909090">=-45.0</font>, elevation<font color="#909090">=54.74</font>, distance<font color="#909090">=110.0</font>, focalpoint<font color="#909090">=[60.0, 0.85, 0.0]</font>, print_view<font color="#909090">=False</font>, axes_triad<font color="#909090">=True</font>)</dt><dd><tt>Pick&nbsp;a&nbsp;nice&nbsp;view&nbsp;and&nbsp;show&nbsp;the&nbsp;plot.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+azimuth&nbsp;:&nbsp;float,&nbsp;optional.&nbsp;The&nbsp;azimuthal&nbsp;angle&nbsp;(in&nbsp;degrees,&nbsp;0-360),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;the&nbsp;angle&nbsp;subtended&nbsp;by&nbsp;the&nbsp;position&nbsp;vector&nbsp;on&nbsp;a&nbsp;sphere&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;projected&nbsp;on&nbsp;to&nbsp;the&nbsp;x-y&nbsp;plane&nbsp;with&nbsp;the&nbsp;x-axis.<br>
+elevation&nbsp;:&nbsp;float,&nbsp;optional.&nbsp;The&nbsp;zenith&nbsp;angle&nbsp;(in&nbsp;degrees,&nbsp;0-180),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;the&nbsp;angle&nbsp;subtended&nbsp;by&nbsp;the&nbsp;position&nbsp;vector&nbsp;and&nbsp;the&nbsp;z-axis.<br>
+distance&nbsp;:&nbsp;float&nbsp;or&nbsp;'auto',&nbsp;optional.&nbsp;A&nbsp;positive&nbsp;floating&nbsp;point&nbsp;number&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;representing&nbsp;the&nbsp;distance&nbsp;from&nbsp;the&nbsp;focal&nbsp;point&nbsp;to&nbsp;place&nbsp;the&nbsp;camera.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;New&nbsp;in&nbsp;Mayavi&nbsp;3.4.0:&nbsp;if&nbsp;'auto'&nbsp;is&nbsp;passed,&nbsp;the&nbsp;distance&nbsp;is&nbsp;computed&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;have&nbsp;a&nbsp;best&nbsp;fit&nbsp;of&nbsp;objects&nbsp;in&nbsp;the&nbsp;frame.<br>
+focalpoint&nbsp;:&nbsp;array_like&nbsp;or&nbsp;'auto',&nbsp;optional.&nbsp;An&nbsp;array&nbsp;of&nbsp;3&nbsp;floating&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;point&nbsp;numbers&nbsp;representing&nbsp;the&nbsp;focal&nbsp;point&nbsp;of&nbsp;the&nbsp;camera.&nbsp;New&nbsp;in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mayavi&nbsp;3.4.0:&nbsp;if&nbsp;'auto'&nbsp;is&nbsp;passed,&nbsp;the&nbsp;focal&nbsp;point&nbsp;is&nbsp;positioned&nbsp;at<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;center&nbsp;of&nbsp;all&nbsp;objects&nbsp;in&nbsp;the&nbsp;scene.<br>
+print_view&nbsp;:&nbsp;boolean,&nbsp;print/don't&nbsp;print&nbsp;the&nbsp;view&nbsp;parameters<br>
+axes_triad&nbsp;:&nbsp;boolean,&nbsp;show/don't&nbsp;show&nbsp;a&nbsp;triad&nbsp;of&nbsp;orientation&nbsp;axes</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="blade.html#_Blade">_Blade</a>:<br>
+<dl><dt><strong>logfile_name</strong> = 'blade.log'</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MonoplaneBlade">class <strong>MonoplaneBlade</strong></a>(<a href="blade.html#_Blade">_Blade</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;a&nbsp;monoplane&nbsp;(conventional)&nbsp;wind&nbsp;turbine&nbsp;blade.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="MonoplaneBlade-copy_airfoil_coords"><strong>copy_airfoil_coords</strong></a>(self, station)</dt><dd><tt>Copy&nbsp;airfoil&nbsp;coordinates&nbsp;from&nbsp;airfoils_path&nbsp;into&nbsp;this&nbsp;station_path.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-create_station"><strong>create_station</strong></a>(self, station_num)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;station&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-get_LE_coords"><strong>get_LE_coords</strong></a>(self, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y,z)&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;blade&nbsp;leading&nbsp;edge.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-get_SW_cross_section_coords"><strong>get_SW_cross_section_coords</strong></a>(self, sw_num, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y,z)&nbsp;coordinates&nbsp;for&nbsp;shear&nbsp;web&nbsp;#1,&nbsp;#2,&nbsp;or&nbsp;#3.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+sw_num&nbsp;=&nbsp;int,&nbsp;(1,&nbsp;2,&nbsp;or&nbsp;3)&nbsp;selects&nbsp;the&nbsp;desired&nbsp;shear&nbsp;web</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-get_TE_coords"><strong>get_TE_coords</strong></a>(self, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;(x,y,z)&nbsp;coordinates&nbsp;for&nbsp;the&nbsp;blade&nbsp;trailing&nbsp;edge.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_LE"><strong>plot_LE</strong></a>(self, lw, color<font color="#909090">='k'</font>, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;leading&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'k')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_TE"><strong>plot_TE</strong></a>(self, lw, color<font color="#909090">='k'</font>, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'k')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_all_SW_cross_sections"><strong>plot_all_SW_cross_sections</strong></a>(self, lw, color<font color="#909090">='g'</font>, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;all&nbsp;shear&nbsp;web&nbsp;cross-sections&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'g')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_all_SW_spanwise_lines"><strong>plot_all_SW_spanwise_lines</strong></a>(self, lw, color<font color="#909090">='g'</font>, twist_flag<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;spanwise&nbsp;lines&nbsp;for&nbsp;all&nbsp;shear&nbsp;webs&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'g')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_all_airfoils"><strong>plot_all_airfoils</strong></a>(self, lw, color<font color="#909090">='k'</font>, twist_flag<font color="#909090">=True</font>, export_flag<font color="#909090">=True</font>)</dt><dd><tt>Plot&nbsp;all&nbsp;the&nbsp;airfoils&nbsp;in&nbsp;the&nbsp;blade&nbsp;with&nbsp;Mayavi's&nbsp;mlab.<br>
+&nbsp;<br>
+You&nbsp;must&nbsp;import&nbsp;the&nbsp;blade&nbsp;and&nbsp;its&nbsp;airfoil&nbsp;coordinates&nbsp;first.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'k')<br>
+twist_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;twist&nbsp;the&nbsp;airfoils&nbsp;about&nbsp;the&nbsp;pitch&nbsp;axis<br>
+export_flag&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;write&nbsp;airfoil&nbsp;coords&nbsp;to&nbsp;a&nbsp;text&nbsp;file&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station&nbsp;path,&nbsp;which&nbsp;can&nbsp;be&nbsp;imported&nbsp;into&nbsp;SolidWorks&nbsp;as&nbsp;an&nbsp;XYZ&nbsp;curve<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+b&nbsp;=&nbsp;bl.<a href="#MonoplaneBlade">MonoplaneBlade</a>('Sandia&nbsp;blade&nbsp;SNL100-00',&nbsp;'sandia_blade')<br>
+b.<a href="#MonoplaneBlade-copy_all_airfoil_coords">copy_all_airfoil_coords</a>()<br>
+for&nbsp;station&nbsp;in&nbsp;b.list_of_stations:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station.airfoil.read_coords()<br>
+b.<a href="#MonoplaneBlade-plot_all_airfoils">plot_all_airfoils</a>()</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_blade"><strong>plot_blade</strong></a>(self, line_width<font color="#909090">=0.08</font>, airfoils<font color="#909090">=True</font>, pitch_axis<font color="#909090">=False</font>, LE<font color="#909090">=True</font>, TE<font color="#909090">=True</font>, twist<font color="#909090">=True</font>, SW<font color="#909090">=True</font>, color_airfoils<font color="#909090">='0.1'</font>, color_pitch_axis<font color="#909090">='r'</font>, color_LE<font color="#909090">='0.1'</font>, color_TE<font color="#909090">='0.1'</font>, color_SW<font color="#909090">=(0.14453125, 0.76953125, 0.33203125)</font>, stn_nums<font color="#909090">=False</font>, export<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;a&nbsp;wireframe&nbsp;representation&nbsp;of&nbsp;the&nbsp;blade,&nbsp;with&nbsp;Mayavi&nbsp;mlab.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+line_width&nbsp;:&nbsp;float,&nbsp;line&nbsp;width&nbsp;for&nbsp;plotting<br>
+airfoils&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;airfoils&nbsp;at&nbsp;each&nbsp;blade&nbsp;station<br>
+pitch_axis&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;pitch&nbsp;axis&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+LE&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;leading&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+TE&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+twist&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;the&nbsp;blade&nbsp;with&nbsp;twist&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+SW&nbsp;:&nbsp;bool,&nbsp;plot/don't&nbsp;plot&nbsp;all&nbsp;shear&nbsp;webs&nbsp;along&nbsp;the&nbsp;span<br>
+color_airfoils&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;airfoils<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;dark&nbsp;grey)<br>
+color_pitch_axis&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;pitch&nbsp;axis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;red)<br>
+color_LE&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;leading&nbsp;edge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;dark&nbsp;grey)<br>
+color_TE&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;trailing&nbsp;edge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;dark&nbsp;grey)<br>
+color_SW&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;of&nbsp;shear&nbsp;webs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;light&nbsp;green)<br>
+stn_nums&nbsp;:&nbsp;boolean,&nbsp;plot/don't&nbsp;plot&nbsp;station&nbsp;numbers<br>
+export&nbsp;:&nbsp;bool,&nbsp;do/don't&nbsp;write&nbsp;airfoil&nbsp;coords&nbsp;to&nbsp;a&nbsp;text&nbsp;file&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;station&nbsp;path,&nbsp;which&nbsp;can&nbsp;be&nbsp;imported&nbsp;into&nbsp;SolidWorks&nbsp;as&nbsp;an&nbsp;XYZ&nbsp;curve</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_station_nums"><strong>plot_station_nums</strong></a>(self)</dt><dd><tt>Plots&nbsp;station&nbsp;numbers&nbsp;next&nbsp;to&nbsp;each&nbsp;cross-section.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-writecsv_mass_and_stiffness_props"><strong>writecsv_mass_and_stiffness_props</strong></a>(self, base_filename<font color="#909090">='mesh_stn'</font>, ext<font color="#909090">='.vabs.K'</font>, props_filename<font color="#909090">='blade_props_from_VABS.csv'</font>, debug_flag<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;mass&nbsp;and&nbsp;stiffness&nbsp;properties&nbsp;of&nbsp;all&nbsp;stations&nbsp;to&nbsp;CSV&nbsp;file.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="blade.html#_Blade">_Blade</a>:<br>
+<dl><dt><a name="MonoplaneBlade-__del__"><strong>__del__</strong></a>(self)</dt><dd><tt>Delete&nbsp;a&nbsp;wind&nbsp;turbine&nbsp;blade.<br>
+&nbsp;<br>
+Also&nbsp;deletes&nbsp;all&nbsp;the&nbsp;station&nbsp;paths&nbsp;inside&nbsp;the&nbsp;blade&nbsp;path.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-__init__"><strong>__init__</strong></a>(self, name, blade_path, defn_filename<font color="#909090">='blade_definition.csv'</font>, airfoils_path<font color="#909090">='airfoils'</font>, matl_filename<font color="#909090">='materials.csv'</font>)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;wind&nbsp;turbine&nbsp;blade.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+name&nbsp;:&nbsp;string,&nbsp;the&nbsp;name&nbsp;of&nbsp;this&nbsp;blade<br>
+blade_path&nbsp;:&nbsp;string,&nbsp;the&nbsp;local&nbsp;target&nbsp;directory&nbsp;for&nbsp;storing&nbsp;blade&nbsp;data<br>
+&nbsp;<br>
+defn_filename&nbsp;:&nbsp;str&nbsp;(for&nbsp;CSV&nbsp;file),&nbsp;the&nbsp;blade&nbsp;definition&nbsp;filename<br>
+airfoils_path&nbsp;:&nbsp;str,&nbsp;local&nbsp;directory&nbsp;that&nbsp;contains&nbsp;airfoil&nbsp;coordinates<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+.airfoils_path&nbsp;:&nbsp;str,&nbsp;local&nbsp;directory&nbsp;that&nbsp;contains&nbsp;airfoil&nbsp;coords<br>
+.blade_path&nbsp;:&nbsp;str,&nbsp;the&nbsp;local&nbsp;target&nbsp;directory&nbsp;for&nbsp;storing&nbsp;blade&nbsp;data<br>
+.defn_filename&nbsp;:&nbsp;str,&nbsp;(for&nbsp;CSV&nbsp;file),&nbsp;the&nbsp;blade&nbsp;definition&nbsp;filename<br>
+.list_of_stations&nbsp;:&nbsp;list,&nbsp;contains&nbsp;all&nbsp;the&nbsp;Stations&nbsp;of&nbsp;this&nbsp;blade<br>
+.name&nbsp;:&nbsp;str,&nbsp;the&nbsp;name&nbsp;of&nbsp;this&nbsp;blade<br>
+.number_of_stations&nbsp;:&nbsp;int,&nbsp;the&nbsp;total&nbsp;number&nbsp;of&nbsp;stations&nbsp;in&nbsp;this&nbsp;blade<br>
+.logfile_name&nbsp;:&nbsp;'blade.log',&nbsp;the&nbsp;log&nbsp;file&nbsp;for&nbsp;this&nbsp;blade<br>
+&nbsp;<br>
+Methods<br>
+-------<br>
+.<a href="#MonoplaneBlade-copy_airfoil_coords">copy_airfoil_coords</a>(station)&nbsp;:&nbsp;copy&nbsp;airfoil&nbsp;coordinates&nbsp;from&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;airfoils_path&nbsp;into&nbsp;this&nbsp;station_path<br>
+.<a href="#MonoplaneBlade-copy_all_airfoil_coords">copy_all_airfoil_coords</a>()&nbsp;:&nbsp;copy&nbsp;all&nbsp;airfoil&nbsp;coordinates&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;airfoils_path&nbsp;into&nbsp;each&nbsp;station_path<br>
+.<a href="#MonoplaneBlade-create_all_stations">create_all_stations</a>()&nbsp;:&nbsp;create&nbsp;all&nbsp;stations&nbsp;for&nbsp;this&nbsp;blade<br>
+.<a href="#MonoplaneBlade-create_plot">create_plot</a>()&nbsp;:&nbsp;create&nbsp;a&nbsp;plot&nbsp;for&nbsp;this&nbsp;blade<br>
+.<a href="#MonoplaneBlade-create_station">create_station</a>(station_num)&nbsp;:&nbsp;create&nbsp;a&nbsp;new&nbsp;station&nbsp;for&nbsp;this&nbsp;blade<br>
+.<a href="#MonoplaneBlade-get_LE_coords">get_LE_coords</a>()&nbsp;:&nbsp;list,&nbsp;returns&nbsp;(x,y,z)&nbsp;coords&nbsp;for&nbsp;the&nbsp;blade&nbsp;LE<br>
+.<a href="#MonoplaneBlade-get_SW_cross_section_coords">get_SW_cross_section_coords</a>(sw_num)&nbsp;:&nbsp;list,&nbsp;returns&nbsp;(x,y,z)&nbsp;coords&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shear&nbsp;web&nbsp;1,&nbsp;2,&nbsp;or&nbsp;3<br>
+.<a href="#MonoplaneBlade-get_TE_coords">get_TE_coords</a>()&nbsp;:&nbsp;list,&nbsp;returns&nbsp;(x,y,z)&nbsp;coords&nbsp;for&nbsp;the&nbsp;blade&nbsp;TE<br>
+.<a href="#MonoplaneBlade-import_blade_definition">import_blade_definition</a>()&nbsp;:&nbsp;import&nbsp;the&nbsp;blade&nbsp;defn&nbsp;from&nbsp;a&nbsp;CSV&nbsp;file<br>
+.<a href="#MonoplaneBlade-plot_LE">plot_LE</a>(lw)&nbsp;:&nbsp;plots&nbsp;the&nbsp;leading&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+.<a href="#MonoplaneBlade-plot_TE">plot_TE</a>(lw)&nbsp;:&nbsp;plots&nbsp;the&nbsp;trailing&nbsp;edge&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+.<a href="#MonoplaneBlade-plot_all_SW_cross_sections">plot_all_SW_cross_sections</a>(lw)&nbsp;:&nbsp;plots&nbsp;all&nbsp;shear&nbsp;web&nbsp;cross-sections<br>
+.<a href="#MonoplaneBlade-plot_all_SW_spanwise_lines">plot_all_SW_spanwise_lines</a>(lw)&nbsp;:&nbsp;plots&nbsp;spanwise&nbsp;lines&nbsp;for&nbsp;all&nbsp;SWs<br>
+.<a href="#MonoplaneBlade-plot_all_airfoils">plot_all_airfoils</a>(lw)&nbsp;:&nbsp;plot&nbsp;all&nbsp;the&nbsp;airfoils&nbsp;in&nbsp;the&nbsp;blade<br>
+.<a href="#MonoplaneBlade-plot_blade">plot_blade</a>()&nbsp;:&nbsp;plots&nbsp;a&nbsp;wirerame&nbsp;representation&nbsp;of&nbsp;the&nbsp;blade<br>
+.<a href="#MonoplaneBlade-plot_chord_schedule">plot_chord_schedule</a>()&nbsp;:&nbsp;plot&nbsp;the&nbsp;chord&nbsp;vs.&nbsp;span<br>
+.<a href="#MonoplaneBlade-plot_pitch_axis">plot_pitch_axis</a>(lw)&nbsp;:&nbsp;plots&nbsp;the&nbsp;pitch&nbsp;axis&nbsp;from&nbsp;root&nbsp;to&nbsp;tip<br>
+.<a href="#MonoplaneBlade-plot_twist_schedule">plot_twist_schedule</a>()&nbsp;:&nbsp;plot&nbsp;the&nbsp;twist&nbsp;vs.&nbsp;span<br>
+.<a href="#MonoplaneBlade-show_plot">show_plot</a>()&nbsp;:&nbsp;pick&nbsp;a&nbsp;nice&nbsp;view&nbsp;and&nbsp;show&nbsp;the&nbsp;plot<br>
+&nbsp;<br>
+Usage<br>
+-----<br>
+_Blade('Sandia&nbsp;blade&nbsp;SNL100-00',&nbsp;'sandia_blade')<br>
+_Blade('Sandia&nbsp;blade&nbsp;SNL100-00',&nbsp;'sandia_blade',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defn_filename='blade_definition.csv',&nbsp;airfoils_path='airfoils')</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-calculate_all_areas"><strong>calculate_all_areas</strong></a>(self)</dt><dd><tt>Calculate&nbsp;the&nbsp;areas&nbsp;of&nbsp;all&nbsp;structural&nbsp;parts&nbsp;in&nbsp;each&nbsp;station&nbsp;of&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-calculate_all_masses"><strong>calculate_all_masses</strong></a>(self)</dt><dd><tt>Calculate&nbsp;masses&nbsp;of&nbsp;all&nbsp;structural&nbsp;parts&nbsp;in&nbsp;each&nbsp;station&nbsp;of&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-calculate_blade_mass"><strong>calculate_blade_mass</strong></a>(self, print_flag<font color="#909090">=True</font>)</dt><dd><tt>Calculate&nbsp;the&nbsp;total&nbsp;blade&nbsp;mass.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-copy_all_airfoil_coords"><strong>copy_all_airfoil_coords</strong></a>(self)</dt><dd><tt>Copy&nbsp;all&nbsp;airfoil&nbsp;coordinates&nbsp;from&nbsp;airfoils_path&nbsp;into&nbsp;each&nbsp;station_path.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-create_all_materials"><strong>create_all_materials</strong></a>(self)</dt><dd><tt>Create&nbsp;all&nbsp;materials&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-create_all_stations"><strong>create_all_stations</strong></a>(self)</dt><dd><tt>Create&nbsp;all&nbsp;stations&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-create_isotropic_material"><strong>create_isotropic_material</strong></a>(self, material_num)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;isotropic&nbsp;material&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-create_orthotropic_material"><strong>create_orthotropic_material</strong></a>(self, material_num)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;orthotropic&nbsp;material&nbsp;for&nbsp;this&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-create_plot"><strong>create_plot</strong></a>(self, fig_width<font color="#909090">=1000</font>, fig_height<font color="#909090">=800</font>)</dt><dd><tt>Create&nbsp;a&nbsp;plot&nbsp;for&nbsp;this&nbsp;blade.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;handle&nbsp;to&nbsp;the&nbsp;figure.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+fig_width&nbsp;:&nbsp;int,&nbsp;figure&nbsp;width&nbsp;(pixels)<br>
+fig_height&nbsp;:&nbsp;int,&nbsp;figure&nbsp;height&nbsp;(pixels)<br>
+&nbsp;<br>
+Several&nbsp;settings&nbsp;are&nbsp;applied&nbsp;by&nbsp;default&nbsp;---------<br>
+Title&nbsp;:&nbsp;[blade&nbsp;name]<br>
+Figure&nbsp;width&nbsp;:&nbsp;1000&nbsp;px<br>
+Figure&nbsp;height&nbsp;:&nbsp;800&nbsp;px</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-get_all_percent_areas"><strong>get_all_percent_areas</strong></a>(self, save_csv<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;pandas.DataFrame&nbsp;of&nbsp;percent&nbsp;areas&nbsp;for&nbsp;each&nbsp;part&nbsp;and&nbsp;station.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+save_csv&nbsp;:&nbsp;bool&nbsp;(default:&nbsp;True),&nbsp;save&nbsp;the&nbsp;DataFrame&nbsp;as&nbsp;a&nbsp;CSV&nbsp;file</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-get_all_percent_masses"><strong>get_all_percent_masses</strong></a>(self, save_csv<font color="#909090">=True</font>)</dt><dd><tt>Returns&nbsp;a&nbsp;pandas.DataFrame&nbsp;of&nbsp;percent&nbsp;masses&nbsp;for&nbsp;each&nbsp;part&nbsp;and&nbsp;station.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+save_csv&nbsp;:&nbsp;bool&nbsp;(default:&nbsp;True),&nbsp;save&nbsp;the&nbsp;DataFrame&nbsp;as&nbsp;a&nbsp;CSV&nbsp;file</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-import_blade_definition"><strong>import_blade_definition</strong></a>(self)</dt><dd><tt>Import&nbsp;the&nbsp;blade&nbsp;definition&nbsp;from&nbsp;a&nbsp;CSV&nbsp;file.<br>
+&nbsp;<br>
+Returns&nbsp;True&nbsp;if&nbsp;the&nbsp;import&nbsp;was&nbsp;successful,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-import_material_properties"><strong>import_material_properties</strong></a>(self)</dt><dd><tt>Import&nbsp;the&nbsp;material&nbsp;properties&nbsp;from&nbsp;a&nbsp;CSV&nbsp;file.<br>
+&nbsp;<br>
+Returns&nbsp;True&nbsp;if&nbsp;the&nbsp;import&nbsp;was&nbsp;successful,&nbsp;False&nbsp;otherwise.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_chord_schedule"><strong>plot_chord_schedule</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;chord&nbsp;vs.&nbsp;span.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_mass_schedule"><strong>plot_mass_schedule</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;mass&nbsp;vs.&nbsp;span.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_percent_areas"><strong>plot_percent_areas</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;percent&nbsp;areas&nbsp;as&nbsp;a&nbsp;100%&nbsp;stacked&nbsp;bar&nbsp;plot.<br>
+&nbsp;<br>
+ref:&nbsp;<a href="http://matplotlib.org/examples/pylab_examples/bar_stacked.html">http://matplotlib.org/examples/pylab_examples/bar_stacked.html</a></tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_percent_masses"><strong>plot_percent_masses</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;percent&nbsp;masses&nbsp;as&nbsp;a&nbsp;100%&nbsp;stacked&nbsp;bar&nbsp;plot.<br>
+&nbsp;<br>
+ref:&nbsp;<a href="http://matplotlib.org/examples/pylab_examples/bar_stacked.html">http://matplotlib.org/examples/pylab_examples/bar_stacked.html</a></tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_pitch_axis"><strong>plot_pitch_axis</strong></a>(self, lw, color<font color="#909090">='r'</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;pitch&nbsp;axis&nbsp;from&nbsp;root&nbsp;to&nbsp;tip.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+lw&nbsp;:&nbsp;float,&nbsp;line&nbsp;width<br>
+color&nbsp;:&nbsp;str&nbsp;or&nbsp;RGB&nbsp;tuple,&nbsp;line&nbsp;color&nbsp;(default:&nbsp;'r')</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_selected_cross_sections"><strong>plot_selected_cross_sections</strong></a>(self, figsize<font color="#909090">=(22, 12)</font>, nrows<font color="#909090">=4</font>, ncols<font color="#909090">=3</font>, selected_stations<font color="#909090">=[1, 7, 11, 13, 16, 20, 21, 23, 26, 28, 30, 33]</font>, save_flag<font color="#909090">=True</font>, plot_parts<font color="#909090">=True</font>)</dt><dd><tt>Plots&nbsp;selected&nbsp;cross-sections&nbsp;of&nbsp;the&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-plot_twist_schedule"><strong>plot_twist_schedule</strong></a>(self)</dt><dd><tt>Plot&nbsp;the&nbsp;twist&nbsp;vs.&nbsp;span.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneBlade-show_plot"><strong>show_plot</strong></a>(self, azimuth<font color="#909090">=-45.0</font>, elevation<font color="#909090">=54.74</font>, distance<font color="#909090">=110.0</font>, focalpoint<font color="#909090">=[60.0, 0.85, 0.0]</font>, print_view<font color="#909090">=False</font>, axes_triad<font color="#909090">=True</font>)</dt><dd><tt>Pick&nbsp;a&nbsp;nice&nbsp;view&nbsp;and&nbsp;show&nbsp;the&nbsp;plot.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+azimuth&nbsp;:&nbsp;float,&nbsp;optional.&nbsp;The&nbsp;azimuthal&nbsp;angle&nbsp;(in&nbsp;degrees,&nbsp;0-360),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;the&nbsp;angle&nbsp;subtended&nbsp;by&nbsp;the&nbsp;position&nbsp;vector&nbsp;on&nbsp;a&nbsp;sphere&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;projected&nbsp;on&nbsp;to&nbsp;the&nbsp;x-y&nbsp;plane&nbsp;with&nbsp;the&nbsp;x-axis.<br>
+elevation&nbsp;:&nbsp;float,&nbsp;optional.&nbsp;The&nbsp;zenith&nbsp;angle&nbsp;(in&nbsp;degrees,&nbsp;0-180),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;i.e.&nbsp;the&nbsp;angle&nbsp;subtended&nbsp;by&nbsp;the&nbsp;position&nbsp;vector&nbsp;and&nbsp;the&nbsp;z-axis.<br>
+distance&nbsp;:&nbsp;float&nbsp;or&nbsp;'auto',&nbsp;optional.&nbsp;A&nbsp;positive&nbsp;floating&nbsp;point&nbsp;number&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;representing&nbsp;the&nbsp;distance&nbsp;from&nbsp;the&nbsp;focal&nbsp;point&nbsp;to&nbsp;place&nbsp;the&nbsp;camera.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;New&nbsp;in&nbsp;Mayavi&nbsp;3.4.0:&nbsp;if&nbsp;'auto'&nbsp;is&nbsp;passed,&nbsp;the&nbsp;distance&nbsp;is&nbsp;computed&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;have&nbsp;a&nbsp;best&nbsp;fit&nbsp;of&nbsp;objects&nbsp;in&nbsp;the&nbsp;frame.<br>
+focalpoint&nbsp;:&nbsp;array_like&nbsp;or&nbsp;'auto',&nbsp;optional.&nbsp;An&nbsp;array&nbsp;of&nbsp;3&nbsp;floating&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;point&nbsp;numbers&nbsp;representing&nbsp;the&nbsp;focal&nbsp;point&nbsp;of&nbsp;the&nbsp;camera.&nbsp;New&nbsp;in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mayavi&nbsp;3.4.0:&nbsp;if&nbsp;'auto'&nbsp;is&nbsp;passed,&nbsp;the&nbsp;focal&nbsp;point&nbsp;is&nbsp;positioned&nbsp;at<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;center&nbsp;of&nbsp;all&nbsp;objects&nbsp;in&nbsp;the&nbsp;scene.<br>
+print_view&nbsp;:&nbsp;boolean,&nbsp;print/don't&nbsp;print&nbsp;the&nbsp;view&nbsp;parameters<br>
+axes_triad&nbsp;:&nbsp;boolean,&nbsp;show/don't&nbsp;show&nbsp;a&nbsp;triad&nbsp;of&nbsp;orientation&nbsp;axes</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="blade.html#_Blade">_Blade</a>:<br>
+<dl><dt><strong>logfile_name</strong> = 'blade.log'</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

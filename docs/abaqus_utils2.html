@@ -1,0 +1,136 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module abaqus_utils2</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>abaqus_utils2</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/abaqus_utils2.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\abaqus_utils2.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;to&nbsp;parse&nbsp;data&nbsp;from&nbsp;an&nbsp;ABAQUS-formatted&nbsp;2D&nbsp;cross-section&nbsp;grid&nbsp;file.<br>
+&nbsp;<br>
+Authors:&nbsp;Perry&nbsp;Roth-Johnson,&nbsp;Phil&nbsp;Chiu<br>
+Last&nbsp;updated:&nbsp;March&nbsp;27,&nbsp;2014</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="grid.html">grid</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="re.html">re</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="abaqus_utils2.html#AbaqusGrid">AbaqusGrid</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AbaqusGrid">class <strong>AbaqusGrid</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;<a href="#AbaqusGrid">AbaqusGrid</a>&nbsp;class&nbsp;contains&nbsp;methods&nbsp;for&nbsp;parsing&nbsp;an&nbsp;ABAQUS-formatted<br>
+2D&nbsp;grid&nbsp;file&nbsp;(cross-section&nbsp;grid).<br>
+&nbsp;<br>
+Usage:<br>
+import&nbsp;lib.abaqus_utils2&nbsp;as&nbsp;au<br>
+g&nbsp;=&nbsp;au.<a href="#AbaqusGrid">AbaqusGrid</a>('cs_abq.txt')<br>
+g.number_of_nodes<br>
+g.list_of_nodes<br>
+g.list_of_nodes[0].node_num<br>
+g.list_of_nodes[0].x2<br>
+g.list_of_nodes[0].x3<br>
+g.number_of_elements<br>
+g.list_of_elements<br>
+&nbsp;<br>
+Initialization:<br>
+<a href="#AbaqusGrid">AbaqusGrid</a>(filename,&nbsp;debug_flag=False)<br>
+&nbsp;&nbsp;filename&nbsp;-&nbsp;A&nbsp;string&nbsp;for&nbsp;the&nbsp;full&nbsp;path&nbsp;of&nbsp;the&nbsp;ABAQUS-formatted&nbsp;grid&nbsp;file.<br>
+&nbsp;&nbsp;debug_flag&nbsp;-&nbsp;Optional&nbsp;boolean&nbsp;to&nbsp;print&nbsp;intermediate&nbsp;results&nbsp;to&nbsp;the&nbsp;screen.<br>
+&nbsp;<br>
+Public&nbsp;attributes:<br>
+filename&nbsp;-&nbsp;A&nbsp;string&nbsp;for&nbsp;the&nbsp;full&nbsp;path&nbsp;of&nbsp;the&nbsp;ABAQUS-formatted&nbsp;grid&nbsp;file.<br>
+list_of_nodes&nbsp;-&nbsp;A&nbsp;list&nbsp;of&nbsp;gr.Node&nbsp;objects,&nbsp;with&nbsp;attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node_num:&nbsp;A&nbsp;unique&nbsp;integer&nbsp;that&nbsp;labels&nbsp;this&nbsp;node.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x2:&nbsp;A&nbsp;float&nbsp;for&nbsp;the&nbsp;x2-coordinate&nbsp;of&nbsp;this&nbsp;node.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x3:&nbsp;A&nbsp;float&nbsp;for&nbsp;the&nbsp;x3-coordinate&nbsp;of&nbsp;this&nbsp;node.<br>
+list_of_elements&nbsp;-&nbsp;A&nbsp;list&nbsp;of&nbsp;gr._Element&nbsp;objects&nbsp;that&nbsp;stores&nbsp;element<br>
+&nbsp;&nbsp;&nbsp;&nbsp;connectivity.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;the&nbsp;element&nbsp;is&nbsp;linear&nbsp;(4-noded),&nbsp;the&nbsp;list&nbsp;is&nbsp;populated&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gr.QuadrilateralLinearElement&nbsp;objects,&nbsp;with&nbsp;attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layer_no:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;layer&nbsp;associated&nbsp;with&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elem_num:&nbsp;An&nbsp;integer&nbsp;that&nbsp;represents&nbsp;this&nbsp;unique&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4-------3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;The&nbsp;VABS&nbsp;linear&nbsp;quadrilateral<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;element&nbsp;node&nbsp;numbering&nbsp;scheme.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1-------2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node1:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;bottom&nbsp;left&nbsp;corner<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node2:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;bottom&nbsp;right<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corner&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node3:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;top&nbsp;right&nbsp;corner<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node4:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;top&nbsp;left&nbsp;corner&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;the&nbsp;element&nbsp;is&nbsp;quadratic&nbsp;(8-noded),&nbsp;the&nbsp;list&nbsp;is&nbsp;populated&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gr.QuadrilateralQuadraticElement&nbsp;objects,&nbsp;with&nbsp;attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layer_no:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;layer&nbsp;associated&nbsp;with&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elem_num:&nbsp;An&nbsp;integer&nbsp;that&nbsp;represents&nbsp;this&nbsp;unique&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4---7---3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;The&nbsp;VABS&nbsp;quadratic&nbsp;quadrilateral<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;element&nbsp;node&nbsp;numbering&nbsp;scheme.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1---5---2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node1:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;bottom&nbsp;left&nbsp;corner<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node2:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;bottom&nbsp;right<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corner&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node3:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;top&nbsp;right&nbsp;corner<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node4:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;top&nbsp;left&nbsp;corner&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node5:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;midpoint&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom&nbsp;side&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node6:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;midpoint&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;side&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node7:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;midpoint&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top&nbsp;side&nbsp;of&nbsp;this&nbsp;element.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node8:&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;unique&nbsp;node&nbsp;located&nbsp;at&nbsp;the&nbsp;midpoint&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;side&nbsp;of&nbsp;this&nbsp;element.<br>
+list_of_element_sets&nbsp;-&nbsp;A&nbsp;structured&nbsp;array&nbsp;that&nbsp;stores&nbsp;element&nbsp;orientation&nbsp;angles&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;columns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;theta1:&nbsp;The&nbsp;orientation&nbsp;(in&nbsp;degrees)&nbsp;of&nbsp;this&nbsp;element.&nbsp;Sometimes&nbsp;this&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;also&nbsp;referred&nbsp;to&nbsp;as&nbsp;the&nbsp;"layer&nbsp;plane&nbsp;angle."<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Consider&nbsp;the&nbsp;box&nbsp;cross-section&nbsp;below:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;theta1&nbsp;=&nbsp;0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;---------------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;(top&nbsp;wall)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;theta1&nbsp;=&nbsp;90&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;theta1&nbsp;=&nbsp;270<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(left&nbsp;wall)&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(right&nbsp;wall)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;(bottom&nbsp;wall)&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;---------------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;theta1&nbsp;=&nbsp;180<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;elem_num:&nbsp;An&nbsp;integer&nbsp;that&nbsp;represents&nbsp;a&nbsp;unique&nbsp;element.<br>
+number_of_nodes&nbsp;-&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;number&nbsp;of&nbsp;nodes&nbsp;in&nbsp;the&nbsp;grid.<br>
+number_of_elements&nbsp;-&nbsp;An&nbsp;integer&nbsp;for&nbsp;the&nbsp;number&nbsp;of&nbsp;elements&nbsp;in&nbsp;the&nbsp;grid.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AbaqusGrid-__init__"><strong>__init__</strong></a>(self, filename, debug_flag<font color="#909090">=False</font>, soft_warning<font color="#909090">=False</font>, auto_parse<font color="#909090">=True</font>)</dt></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>
