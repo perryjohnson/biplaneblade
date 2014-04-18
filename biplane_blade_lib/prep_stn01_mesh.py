@@ -1,5 +1,9 @@
 """Write initial TrueGrid files for one Sandia blade station.
 
+NOTE: this script does not work yet ...
+... I'm moving on to mesh the biplane stations (10-24) first.
+-PRJ, April 17, 2014
+
 Usage
 -----
 start an IPython (qt)console with the pylab flag:
@@ -7,12 +11,12 @@ $ ipython qtconsole --pylab
 or
 $ ipython --pylab
 Then, from the prompt, run this script:
-|> %run sandia_blade_lib/prep_stnXX_mesh.py
+|> %run biplane_blade_lib/prep_stnXX_mesh.py
 or
-|> import sandia_blade_lib/prep_stnXX_mesh
+|> import biplane_blade_lib/prep_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: April 10, 2014
+Last updated: April 17, 2014
 
 """
 
@@ -29,11 +33,13 @@ station_num = 1
 # --------------------------------------
 plt.close('all')
 
-# load the Sandia blade
-m = bl.MonoplaneBlade('Sandia blade SNL100-00', 'sandia_blade')
+# load the biplane blade
+b1 = bl.BiplaneBlade(
+    'biplane blade, flapwise symmetric, no stagger, rj/R=0.452, g/c=1.25',
+    'biplane_blade')
 
 # pre-process the station dimensions
-station = m.list_of_stations[station_num-1]
+station = b1.list_of_stations[station_num-1]
 station.airfoil.create_polygon()
 station.structure.create_all_layers()
 station.structure.save_all_layer_edges()
@@ -69,108 +75,108 @@ def cut_plot_and_write_alt_layer(part, material, ext_label, b_polygon):
 # access the structure for this station
 st = station.structure
 
-# # upper right -----------------------------------------------------------
-# label = 'upper right'
+# upper right -----------------------------------------------------------
+label = 'upper right'
 
-# # create the bounding polygon
-# points = [
-#     (0.0, 0.0),
-#     (3.0, 0.0),
-#     (3.0, 3.0),
-#     (0.0, 3.0)
-#     ]
-# bounding_polygon = Polygon(points)
-# plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points = [
+    (0.0, 0.0),
+    (3.0, 0.0),
+    (3.0, 3.0),
+    (0.0, 3.0)
+    ]
+bounding_polygon = Polygon(points)
+plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
 
-# # lower right -----------------------------------------------------------
-# label = 'lower right'
+# lower right -----------------------------------------------------------
+label = 'lower right'
 
-# # create the bounding polygon
-# points = [
-#     (0.0, 0.0),
-#     (3.0, 0.0),
-#     (3.0,-3.0),
-#     (0.0,-3.0)
-#     ]
-# bounding_polygon = Polygon(points)
-# plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points = [
+    (0.0, 0.0),
+    (3.0, 0.0),
+    (3.0,-3.0),
+    (0.0,-3.0)
+    ]
+bounding_polygon = Polygon(points)
+plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
 
-# # lower left -----------------------------------------------------------
-# label = 'lower left'
+# lower left -----------------------------------------------------------
+label = 'lower left'
 
-# # create the bounding polygon
-# points = [
-#     ( 0.0, 0.0),
-#     (-3.0, 0.0),
-#     (-3.0,-3.0),
-#     ( 0.0,-3.0)
-#     ]
-# bounding_polygon = Polygon(points)
-# plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points = [
+    ( 0.0, 0.0),
+    (-3.0, 0.0),
+    (-3.0,-3.0),
+    ( 0.0,-3.0)
+    ]
+bounding_polygon = Polygon(points)
+plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
 
-# # lower right -----------------------------------------------------------
-# label = 'upper left'
+# lower right -----------------------------------------------------------
+label = 'upper left'
 
-# # create the bounding polygon
-# points = [
-#     ( 0.0, 0.0),
-#     (-3.0, 0.0),
-#     (-3.0, 3.0),
-#     ( 0.0, 3.0)
-#     ]
-# bounding_polygon = Polygon(points)
-# plot_polygon(bounding_polygon, 'None', '#000000')
+# create the bounding polygon
+points = [
+    ( 0.0, 0.0),
+    (-3.0, 0.0),
+    (-3.0, 3.0),
+    ( 0.0, 3.0)
+    ]
+bounding_polygon = Polygon(points)
+plot_polygon(bounding_polygon, 'None', '#000000')
 
-# # cut the new layer polygons
-# cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
-#     bounding_polygon)
-# cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
-#     bounding_polygon)
+# cut the new layer polygons
+cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+    bounding_polygon)
+cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+    bounding_polygon)
 
-# # show the plot
-# plt.show()
+# show the plot
+plt.show()
 
-# # write the TrueGrid input file for mesh generation ---------------------------
-# st.write_truegrid_inputfile(interrupt_flag=True)
+# write the TrueGrid input file for mesh generation ---------------------------
+st.write_truegrid_inputfile(interrupt_flag=True)

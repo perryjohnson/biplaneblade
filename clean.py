@@ -24,8 +24,5 @@ def clean_blade_path(blade_path):
                 shutil.rmtree(item)
                 print " [Deleted path] {0}".format(item)
 
-clean_blade_path('sandia_blade')
-clean_blade_path('biplane_flap-sym_no-stagger')
-clean_blade_path('biplane_flap-sym_stagger')
-clean_blade_path('biplane_flap-asym_no-stagger')
-clean_blade_path('biplane_flap-asym_stagger')
+# clean_blade_path('sandia_blade')
+clean_blade_path('biplane_blade')

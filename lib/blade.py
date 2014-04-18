@@ -579,6 +579,7 @@ class _Blade:
         """
         pa = self.get_all_percent_areas()
         plt.figure(figsize=(22,12))
+        plt.title(self.name)
         ind = np.arange(self.number_of_stations)  # the x locations for each blade station
         width = 0.45                           # the width of the bars
         p1 = plt.bar(ind, pa['external surface (gelcoat)'], width, color='#5EE54C')

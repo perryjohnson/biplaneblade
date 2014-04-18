@@ -1,7 +1,7 @@
-"""Plot geometric properties of different blades on the same plot.
+"""Plot properties of different blades on the same plot.
 
 Author: Perry Roth-Johnson
-Last updated: August 9, 2013
+Last updated: April 17, 2014
 
 """
 
@@ -93,4 +93,22 @@ def plot_gap_to_chord_schedule(list_of_blades):
     plt.xlim((0,100))
     plt.legend()
     plt.grid('on')
+    plt.show()
+
+def plot_mass_schedule(blade1,blade2):
+    """Plot the mass vs. span."""
+    blade1.calculate_all_masses()
+    masses1 = []
+    for station in blade1.list_of_stations:
+        masses1.append(station.structure.mass)
+    blade2.calculate_all_masses()
+    masses2 = []
+    for station in blade2.list_of_stations:
+        masses2.append(station.structure.mass)
+    plt.figure(figsize=(12,8))
+    plt.plot(blade1._df['x1'],masses1,'bo-',label=blade1.name)
+    plt.plot(blade2._df['x1'],masses2,'rx-',label=blade2.name)
+    plt.xlabel('span, x1 [m]')
+    plt.ylabel('mass [kg/m]')
+    plt.legend()
     plt.show()

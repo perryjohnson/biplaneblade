@@ -34,7 +34,7 @@ reload(bl)
 
 
 biplane_flap_sym_no_stagger_flag = True
-sandia_flag = False
+sandia_flag = True
 
 # --- biplane blade, flapwise symmetric, no stagger----------------------------
 if biplane_flap_sym_no_stagger_flag:
@@ -79,5 +79,3 @@ if sandia_flag:
     for station in m.list_of_stations:
         station.find_SW_cs_coords()
     m.plot_blade(stn_nums=True, twist=True, export=False)
-
-
