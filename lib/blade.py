@@ -720,7 +720,12 @@ class _Blade:
                 pa['internal surfaces (triax)']))
         plt.ylabel('percent mass (per unit length)')
         plt.xlabel('blade station')
-        plt.xticks(ind+width/2.0, ('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34'))
+        a = range(1,self.number_of_stations+1)
+        a_str = []
+        for num in a:
+            a_str.append(str(num))
+        a_str = tuple(a_str)
+        plt.xticks(ind+width/2.0, a_str)
         plt.yticks( np.arange(0.0,1.1,0.1), ('0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'))
         plt.ylim([0.0,1.0])
         plt.xlim([-width/2.0, self.number_of_stations-0.5+width/2.0])
