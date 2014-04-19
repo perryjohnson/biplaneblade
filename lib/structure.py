@@ -3642,3 +3642,158 @@ class BiplaneStructure:
             d['internal surface 4 (triax)'] = dl['internal surface 4 (triax)'] + du['internal surface 4 (triax)']
             d['internal surface 4 (resin)'] = dl['internal surface 4 (resin)'] + du['internal surface 4 (resin)']
         return d
+
+    def calculate_all_percent_masses(self):
+        """Calculate the percent masses of all parts in this station.
+
+        Returns a dictionary of mass fractions for each structural part.
+
+        """
+        # lower airfoil -------------------------------------------------------
+        dl = {}  # dictionary for lower airfoils
+        if self.lower_external_surface.exists():
+            dl['external surface (gelcoat)'] = self.lower_external_surface.layer['gelcoat'].mass_fraction()
+            dl['external surface (triax)'] = self.lower_external_surface.layer['triax'].mass_fraction()
+        if self.lower_root_buildup.exists():
+            dl['root buildup'] = self.lower_root_buildup.layer['triax'].mass_fraction()
+        if self.lower_spar_cap.exists():
+            dl['spar cap (lower)'] = self.lower_spar_cap.layer['lower'].mass_fraction()
+            dl['spar cap (upper)'] = self.lower_spar_cap.layer['upper'].mass_fraction()
+        if self.lower_aft_panel_1.exists():
+            dl['aft panel 1 (lower)'] = self.lower_aft_panel_1.layer['lower'].mass_fraction()
+            dl['aft panel 1 (upper)'] = self.lower_aft_panel_1.layer['upper'].mass_fraction()
+        if self.lower_aft_panel_2.exists():
+            dl['aft panel 2 (lower)'] = self.lower_aft_panel_2.layer['lower'].mass_fraction()
+            dl['aft panel 2 (upper)'] = self.lower_aft_panel_2.layer['upper'].mass_fraction()
+        if self.lower_LE_panel.exists():
+            dl['LE panel'] = self.lower_LE_panel.layer['foam'].mass_fraction()
+        if self.lower_shear_web_1.exists():
+            dl['shear web 1 (left biax)'] = self.lower_shear_web_1.layer['biax, left'].mass_fraction()
+            dl['shear web 1 (foam)'] = self.lower_shear_web_1.layer['foam'].mass_fraction()
+            dl['shear web 1 (right biax)'] = self.lower_shear_web_1.layer['biax, right'].mass_fraction()
+        if self.lower_shear_web_2.exists():
+            dl['shear web 2 (left biax)'] = self.lower_shear_web_2.layer['biax, left'].mass_fraction()
+            dl['shear web 2 (foam)'] = self.lower_shear_web_2.layer['foam'].mass_fraction()
+            dl['shear web 2 (right biax)'] = self.lower_shear_web_2.layer['biax, right'].mass_fraction()
+        if self.lower_shear_web_3.exists():
+            dl['shear web 3 (left biax)'] = self.lower_shear_web_3.layer['biax, left'].mass_fraction()
+            dl['shear web 3 (foam)'] = self.lower_shear_web_3.layer['foam'].mass_fraction()
+            dl['shear web 3 (right biax)'] = self.lower_shear_web_3.layer['biax, right'].mass_fraction()
+        if self.lower_TE_reinforcement.exists():
+            dl['TE reinforcement (uniax)'] = self.lower_TE_reinforcement.layer['uniax'].mass_fraction()
+            try:
+                dl['TE reinforcement (foam)'] = self.lower_TE_reinforcement.layer['foam'].mass_fraction()
+            except KeyError:
+                # the foam layer doesn't exist in TE reinf at this station
+                dl['TE reinforcement (foam)'] = 0.0
+        if self.lower_internal_surface_1.exists():
+            dl['internal surface 1 (triax)'] = self.lower_internal_surface_1.layer['triax'].mass_fraction()
+            dl['internal surface 1 (resin)'] = self.lower_internal_surface_1.layer['resin'].mass_fraction()
+        if self.lower_internal_surface_2.exists():
+            dl['internal surface 2 (triax)'] = self.lower_internal_surface_2.layer['triax'].mass_fraction()
+            dl['internal surface 2 (resin)'] = self.lower_internal_surface_2.layer['resin'].mass_fraction()
+        if self.lower_internal_surface_3.exists():
+            dl['internal surface 3 (triax)'] = self.lower_internal_surface_3.layer['triax'].mass_fraction()
+            dl['internal surface 3 (resin)'] = self.lower_internal_surface_3.layer['resin'].mass_fraction()
+        if self.lower_internal_surface_4.exists():
+            dl['internal surface 4 (triax)'] = self.lower_internal_surface_4.layer['triax'].mass_fraction()
+            dl['internal surface 4 (resin)'] = self.lower_internal_surface_4.layer['resin'].mass_fraction()
+        # upper airfoil -------------------------------------------------------
+        du = {}  # dictionary for upper airfoils
+        if self.lower_external_surface.exists():
+            du['external surface (gelcoat)'] = self.lower_external_surface.layer['gelcoat'].mass_fraction()
+            du['external surface (triax)'] = self.lower_external_surface.layer['triax'].mass_fraction()
+        if self.lower_root_buildup.exists():
+            du['root buildup'] = self.lower_root_buildup.layer['triax'].mass_fraction()
+        if self.lower_spar_cap.exists():
+            du['spar cap (lower)'] = self.lower_spar_cap.layer['lower'].mass_fraction()
+            du['spar cap (upper)'] = self.lower_spar_cap.layer['upper'].mass_fraction()
+        if self.lower_aft_panel_1.exists():
+            du['aft panel 1 (lower)'] = self.lower_aft_panel_1.layer['lower'].mass_fraction()
+            du['aft panel 1 (upper)'] = self.lower_aft_panel_1.layer['upper'].mass_fraction()
+        if self.lower_aft_panel_2.exists():
+            du['aft panel 2 (lower)'] = self.lower_aft_panel_2.layer['lower'].mass_fraction()
+            du['aft panel 2 (upper)'] = self.lower_aft_panel_2.layer['upper'].mass_fraction()
+        if self.lower_LE_panel.exists():
+            du['LE panel'] = self.lower_LE_panel.layer['foam'].mass_fraction()
+        if self.lower_shear_web_1.exists():
+            du['shear web 1 (left biax)'] = self.lower_shear_web_1.layer['biax, left'].mass_fraction()
+            du['shear web 1 (foam)'] = self.lower_shear_web_1.layer['foam'].mass_fraction()
+            du['shear web 1 (right biax)'] = self.lower_shear_web_1.layer['biax, right'].mass_fraction()
+        if self.lower_shear_web_2.exists():
+            du['shear web 2 (left biax)'] = self.lower_shear_web_2.layer['biax, left'].mass_fraction()
+            du['shear web 2 (foam)'] = self.lower_shear_web_2.layer['foam'].mass_fraction()
+            du['shear web 2 (right biax)'] = self.lower_shear_web_2.layer['biax, right'].mass_fraction()
+        if self.lower_shear_web_3.exists():
+            du['shear web 3 (left biax)'] = self.lower_shear_web_3.layer['biax, left'].mass_fraction()
+            du['shear web 3 (foam)'] = self.lower_shear_web_3.layer['foam'].mass_fraction()
+            du['shear web 3 (right biax)'] = self.lower_shear_web_3.layer['biax, right'].mass_fraction()
+        if self.lower_TE_reinforcement.exists():
+            du['TE reinforcement (uniax)'] = self.lower_TE_reinforcement.layer['uniax'].mass_fraction()
+            try:
+                du['TE reinforcement (foam)'] = self.lower_TE_reinforcement.layer['foam'].mass_fraction()
+            except KeyError:
+                # the foam layer doesn't exist in TE reinf at this station
+                du['TE reinforcement (foam)'] = 0.0
+        if self.lower_internal_surface_1.exists():
+            du['internal surface 1 (triax)'] = self.lower_internal_surface_1.layer['triax'].mass_fraction()
+            du['internal surface 1 (resin)'] = self.lower_internal_surface_1.layer['resin'].mass_fraction()
+        if self.lower_internal_surface_2.exists():
+            du['internal surface 2 (triax)'] = self.lower_internal_surface_2.layer['triax'].mass_fraction()
+            du['internal surface 2 (resin)'] = self.lower_internal_surface_2.layer['resin'].mass_fraction()
+        if self.lower_internal_surface_3.exists():
+            du['internal surface 3 (triax)'] = self.lower_internal_surface_3.layer['triax'].mass_fraction()
+            du['internal surface 3 (resin)'] = self.lower_internal_surface_3.layer['resin'].mass_fraction()
+        if self.lower_internal_surface_4.exists():
+            du['internal surface 4 (triax)'] = self.lower_internal_surface_4.layer['triax'].mass_fraction()
+            du['internal surface 4 (resin)'] = self.lower_internal_surface_4.layer['resin'].mass_fraction()
+        # add up the contributions from the upper and lower airfoils for the entire station
+        d = {}
+        if self.lower_external_surface.exists() and self.upper_external_surface.exists():
+            d['external surface (gelcoat)'] = dl['external surface (gelcoat)'] + du['external surface (gelcoat)']
+            d['external surface (triax)'] = dl['external surface (triax)'] + du['external surface (triax)']
+        if self.lower_root_buildup.exists() and self.upper_root_buildup.exists():
+            d['root buildup'] = dl['root buildup'] + du['root buildup']
+        if self.lower_spar_cap.exists() and self.upper_spar_cap.exists():
+            d['spar cap (lower)'] = dl['spar cap (lower)'] + du['spar cap (lower)']
+            d['spar cap (upper)'] = dl['spar cap (upper)'] + du['spar cap (upper)']
+        if self.lower_aft_panel_1.exists() and self.upper_aft_panel_1.exists():
+            d['aft panel 1 (lower)'] = dl['aft panel 1 (lower)'] + du['aft panel 1 (lower)']
+            d['aft panel 1 (upper)'] = dl['aft panel 1 (upper)'] + du['aft panel 1 (upper)']
+        if self.lower_aft_panel_2.exists() and self.upper_aft_panel_2.exists():
+            d['aft panel 2 (lower)'] = dl['aft panel 2 (lower)'] + du['aft panel 2 (lower)']
+            d['aft panel 2 (upper)'] = dl['aft panel 2 (upper)'] + du['aft panel 2 (upper)']
+        if self.lower_LE_panel.exists() and self.upper_LE_panel.exists():
+            d['LE panel'] = dl['LE panel'] + du['LE panel']
+        if self.lower_shear_web_1.exists() and self.upper_shear_web_1.exists():
+            d['shear web 1 (left biax)'] = dl['shear web 1 (left biax)'] + du['shear web 1 (left biax)']
+            d['shear web 1 (foam)'] = dl['shear web 1 (foam)'] + du['shear web 1 (foam)']
+            d['shear web 1 (right biax)'] = dl['shear web 1 (right biax)'] + du['shear web 1 (right biax)']
+        if self.lower_shear_web_2.exists() and self.upper_shear_web_2.exists():
+            d['shear web 2 (left biax)'] = dl['shear web 2 (left biax)'] + du['shear web 2 (left biax)']
+            d['shear web 2 (foam)'] = dl['shear web 2 (foam)'] + du['shear web 2 (foam)']
+            d['shear web 2 (right biax)'] = dl['shear web 2 (right biax)'] + du['shear web 2 (right biax)']
+        if self.lower_shear_web_3.exists() and self.upper_shear_web_3.exists():
+            d['shear web 3 (left biax)'] = dl['shear web 3 (left biax)'] + du['shear web 3 (left biax)']
+            d['shear web 3 (foam)'] = dl['shear web 3 (foam)'] + du['shear web 3 (foam)']
+            d['shear web 3 (right biax)'] = dl['shear web 3 (right biax)'] + du['shear web 3 (right biax)']
+        if self.lower_TE_reinforcement.exists() and self.upper_TE_reinforcement.exists():
+            d['TE reinforcement (uniax)'] = dl['TE reinforcement (uniax)'] + du['TE reinforcement (uniax)']
+            try:
+                d['TE reinforcement (foam)'] = dl['TE reinforcement (foam)'] + du['TE reinforcement (foam)']
+            except KeyError:
+                # foam layer doesn't exist
+                pass
+        if self.lower_internal_surface_1.exists() and self.upper_internal_surface_1.exists():
+            d['internal surface 1 (triax)'] = dl['internal surface 1 (triax)'] + du['internal surface 1 (triax)']
+            d['internal surface 1 (resin)'] = dl['internal surface 1 (resin)'] + du['internal surface 1 (resin)']
+        if self.lower_internal_surface_2.exists() and self.upper_internal_surface_2.exists():
+            d['internal surface 2 (triax)'] = dl['internal surface 2 (triax)'] + du['internal surface 2 (triax)']
+            d['internal surface 2 (resin)'] = dl['internal surface 2 (resin)'] + du['internal surface 2 (resin)']
+        if self.lower_internal_surface_3.exists() and self.upper_internal_surface_3.exists():
+            d['internal surface 3 (triax)'] = dl['internal surface 3 (triax)'] + du['internal surface 3 (triax)']
+            d['internal surface 3 (resin)'] = dl['internal surface 3 (resin)'] + du['internal surface 3 (resin)']
+        if self.lower_internal_surface_4.exists() and self.upper_internal_surface_4.exists():
+            d['internal surface 4 (triax)'] = dl['internal surface 4 (triax)'] + du['internal surface 4 (triax)']
+            d['internal surface 4 (resin)'] = dl['internal surface 4 (resin)'] + du['internal surface 4 (resin)']
+        return d

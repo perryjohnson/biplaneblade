@@ -40,6 +40,7 @@ if sandia_flag:
 
 # compare blade masses ----------------------------
 # cb.plot_mass_schedule(m,b1)
-m.plot_percent_areas()
+# m.plot_percent_areas()
 # m.plot_percent_masses()
-b1.plot_percent_areas()
+# b1.plot_percent_areas()
+b1.plot_percent_masses()
