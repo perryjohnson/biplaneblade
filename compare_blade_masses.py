@@ -42,13 +42,19 @@ if sandia_flag:
 # compare blade masses ----------------------------
 plt.close('all')
 cb.plot_mass_schedule(m, b1, show_stn_nums=True, blade1_stn_nums=[10,20],
-    blade2_stn_nums=[10,24], print_flag=True)
+    blade2_stn_nums=[10,24])
+print 'stn   mass mono   mass bi   % diff'
+print '---   ---------   -------   ------'
+for stn in range(9,19):
+    m_stn = m.list_of_stations[stn]
+    b_stn = b1.list_of_stations[stn]
+    pd = (b_stn.structure.mass - m_stn.structure.mass)/(m_stn.structure.mass)*100
+    print '{0:3}   {1:9.0f}   {2:7.0f}   {3: 6.2f}'.format(
+        m_stn.station_num, m_stn.structure.mass, b_stn.structure.mass, pd)
 m.plot_percent_masses()
 b1.plot_percent_masses()
-# m.plot_selected_cross_sections()
-# b1.plot_selected_cross_sections(selected_stations=[1,7,11,13,16,22,25,29,32,34,36,39])
-# b1.plot_selected_cross_sections(nrows=2, ncols=3, selected_stations=[10,13,17,20,22,24])
-fig1, ax1 = plt.subplots()
-m.list_of_stations[10-1].plot_parts(ax1)
-fig2, ax2 = plt.subplots()
-b1.list_of_stations[10-1].plot_parts(ax2)
+# fig1, ax1 = plt.subplots()
+# stn_to_plot = 12
+# m.list_of_stations[stn_to_plot-1].plot_parts(ax1)
+# fig2, ax2 = plt.subplots()
+# b1.list_of_stations[stn_to_plot-1].plot_parts(ax2)
