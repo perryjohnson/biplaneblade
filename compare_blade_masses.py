@@ -43,14 +43,20 @@ if sandia_flag:
 plt.close('all')
 cb.plot_mass_schedule(m, b1, show_stn_nums=True, blade1_stn_nums=[10,20],
     blade2_stn_nums=[10,24])
-print 'stn   mass mono   mass bi   % diff'
-print '---   ---------   -------   ------'
+print 'stn #   mass mono   mass bi   % diff'
+print '-----   ---------   -------   ------'
 for stn in range(9,19):
     m_stn = m.list_of_stations[stn]
     b_stn = b1.list_of_stations[stn]
     pd = (b_stn.structure.mass - m_stn.structure.mass)/(m_stn.structure.mass)*100
-    print '{0:3}   {1:9.0f}   {2:7.0f}   {3: 6.2f}'.format(
+    print '{0:5}   {1:9.0f}   {2:7.0f}   {3: 6.2f}'.format(
         m_stn.station_num, m_stn.structure.mass, b_stn.structure.mass, pd)
+m_stn = m.list_of_stations[20-1]
+b_stn = b1.list_of_stations[22-1]
+pd = (b_stn.structure.mass - m_stn.structure.mass)/(m_stn.structure.mass)*100
+print '{0:2}/{1:2}   {2:9.0f}   {3:7.0f}   {4: 6.2f}'.format(
+    m_stn.station_num, b_stn.station_num,
+    m_stn.structure.mass, b_stn.structure.mass, pd)
 m.plot_percent_masses()
 b1.plot_percent_masses()
 # fig1, ax1 = plt.subplots()

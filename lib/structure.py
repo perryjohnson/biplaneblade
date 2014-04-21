@@ -3480,11 +3480,14 @@ class BiplaneStructure:
 
     def calculate_mass(self):
         """Add the mass (per unit length) of all polygons in this station."""
-        m = 0
+        m_l = 0
         for layer in self._list_of_lower_layers:
-            m += layer.mass
+            m_l += layer.mass
+        m_u = 0
         for layer in self._list_of_upper_layers:
-            m += layer.mass
+            m_u += layer.mass
+        m = m_l + m_u
+        print m_l, m_u, 'kg/m'
         self.mass = m
         return m
         
