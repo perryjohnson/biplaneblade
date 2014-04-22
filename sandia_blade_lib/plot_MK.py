@@ -11,7 +11,7 @@ Open an IPython terminal and type:
 |> %run plot_MK
 
 Author: Perry Roth-Johnson
-Last modified: April 9, 2014
+Last modified: April 22, 2014
 
 """
 
@@ -19,16 +19,17 @@ import lib.blade as bl
 reload(bl)
 import pandas as pd
 import matplotlib.pyplot as plt
+from numpy import average
 
 
 def rel_diff(vabs_data, sandia_data):
     """Calculate the percent relative difference."""
-    return ((vabs_data-sandia_data)/sandia_data)*100.0
+    return ((vabs_data-sandia_data)/average([vabs_data,sandia_data]))*100.0
 
-def prep_rel_diff_plot(axis,ymin=-100,ymax=100):
+def prep_rel_diff_plot(axis,ymin=-40,ymax=40):
     """Prepare a relative difference plot."""
     axis2 = axis.twinx()
-    axis2.set_ylabel('difference [%]', color='m')
+    axis2.set_ylabel('difference from average [%]', color='m')
     axis2.set_ylim([ymin,ymax])
     for tl in axis2.get_yticklabels():
         tl.set_color('m')

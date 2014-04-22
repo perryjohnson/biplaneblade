@@ -61,8 +61,8 @@ print '{0:2}/{1:2}   {2:9.0f}   {3:7.0f}   {4: 6.2f}'.format(
     m_stn.structure.mass, b_stn.structure.mass, pd)
 m.plot_percent_masses()
 b1.plot_percent_masses()
-# fig1, ax1 = plt.subplots()
-# stn_to_plot = 16
-# m.list_of_stations[stn_to_plot-1].plot_parts(ax1)
-# fig2, ax2 = plt.subplots()
-# b1.list_of_stations[stn_to_plot-1].plot_parts(ax2)
+fig1, ax1 = plt.subplots()
+stn_to_plot = 16
+m.list_of_stations[stn_to_plot-1].plot_parts(ax1)
+fig2, ax2 = plt.subplots()
+b1.list_of_stations[stn_to_plot-1].plot_parts(ax2)

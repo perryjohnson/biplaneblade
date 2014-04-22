@@ -673,7 +673,7 @@ class _Blade:
 
         """
         pa = self.get_all_percent_masses()
-        plt.figure(figsize=(22,12))
+        plt.figure(figsize=(22,11))
         plt.title(self.name)
         ind = np.arange(self.number_of_stations)  # the x locations for each blade station
         width = 0.45                           # the width of the bars
@@ -762,7 +762,7 @@ class _Blade:
             bbox_to_anchor=(1.02, 0.5),
             loc='center left',
             borderaxespad=0.0)
-        plt.subplots_adjust(left=0.05, bottom=0.05, right=0.82, top=0.95)
+        plt.subplots_adjust(left=0.05, bottom=0.05, right=0.77, top=0.95)
         plt.grid(axis='y')
         plt.show()
 

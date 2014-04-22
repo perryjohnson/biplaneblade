@@ -31,9 +31,15 @@
     }
   }
   @INCLUDE_COMMAND {
-    @INCLUDE_COMMAND_NAME {includeLoads} {
+    @INCLUDE_COMMAND_NAME {includeTipLoads} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {loadDist_tip.dat}
+    }
+  }  
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {includeBEMLoads} {
       @ACTIVE_COMMAND {YES}
-      @LIST_OF_FILE_NAMES {loadDist.dat}
+      @LIST_OF_FILE_NAMES {loadDist_BEM.dat}
     }
   }  
   @INCLUDE_COMMAND {
