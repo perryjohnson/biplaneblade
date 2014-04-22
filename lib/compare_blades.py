@@ -96,7 +96,8 @@ def plot_gap_to_chord_schedule(list_of_blades):
     plt.show()
 
 def plot_mass_schedule(blade1, blade2, show_stn_nums=False, 
-    blade1_stn_nums=[], blade2_stn_nums=[], print_flag=False):
+    blade1_stn_nums=[], blade2_stn_nums=[], blade1_label='', blade2_label='',
+    print_flag=False):
     """Plot the mass vs. span."""
     blade1.calculate_all_masses()
     masses1 = []
@@ -110,12 +111,18 @@ def plot_mass_schedule(blade1, blade2, show_stn_nums=False,
     plt.plot(blade1._df['x1'],masses1,'bo-',label=blade1.name)
     plt.plot(blade2._df['x1'],masses2,'rx-',label=blade2.name)
     if show_stn_nums:
+        plt.text(blade1._df['x1'].ix[blade1_stn_nums[0]-1], 
+            (masses1[blade1_stn_nums[0]-1]+500), (blade1_label+' station #:'),
+            va='bottom')
         for i in range(blade1_stn_nums[0]-1, blade1_stn_nums[1]):
-            plt.text(blade1._df['x1'].ix[i+1], masses1[i]-100, str(i+1),
-                va='top', ha='center')
-        for i in range(blade2_stn_nums[0]-1, blade2_stn_nums[1]):
-            plt.text(blade2._df['x1'].ix[i+1], masses2[i]+100, str(i+1),
+            plt.text(blade1._df['x1'].ix[i+1], masses1[i]+100, str(i+1),
                 va='bottom', ha='center')
+        plt.text(blade2._df['x1'].ix[blade2_stn_nums[0]-1], 
+            (masses2[blade2_stn_nums[0]-1]-1000), (blade2_label+' station #:'),
+            va='top')
+        for i in range(blade2_stn_nums[0]-1, blade2_stn_nums[1]):
+            plt.text(blade2._df['x1'].ix[i+1], masses2[i]-100, str(i+1),
+                va='top', ha='center')
     if print_flag:
         print "stn#", "x1", "mass1"
         for i in range(1,len(masses1)):

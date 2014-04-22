@@ -42,7 +42,9 @@ if sandia_flag:
 # compare blade masses ----------------------------
 plt.close('all')
 cb.plot_mass_schedule(m, b1, show_stn_nums=True, blade1_stn_nums=[10,20],
-    blade2_stn_nums=[10,24])
+    blade2_stn_nums=[10,24], blade1_label='Sandia blade', 
+    blade2_label='biplane blade')
+print ''
 print 'stn #   mass mono   mass bi   % diff'
 print '-----   ---------   -------   ------'
 for stn in range(9,19):
@@ -57,8 +59,8 @@ pd = (b_stn.structure.mass - m_stn.structure.mass)/(m_stn.structure.mass)*100
 print '{0:2}/{1:2}   {2:9.0f}   {3:7.0f}   {4: 6.2f}'.format(
     m_stn.station_num, b_stn.station_num,
     m_stn.structure.mass, b_stn.structure.mass, pd)
-# m.plot_percent_masses()
-# b1.plot_percent_masses()
+m.plot_percent_masses()
+b1.plot_percent_masses()
 # fig1, ax1 = plt.subplots()
 # stn_to_plot = 16
 # m.list_of_stations[stn_to_plot-1].plot_parts(ax1)
