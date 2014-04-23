@@ -126,17 +126,55 @@ y_boundary_buffer&nbsp;:&nbsp;float&nbsp;(default:&nbsp;1.2),&nbsp;factor&nbsp;t
 
 <dl><dt><a name="BiplaneStructure-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Returns&nbsp;a&nbsp;string&nbsp;of&nbsp;all&nbsp;the&nbsp;internal&nbsp;dimensions&nbsp;for&nbsp;this&nbsp;structure.</tt></dd></dl>
 
+<dl><dt><a name="BiplaneStructure-calculate_all_percent_areas"><strong>calculate_all_percent_areas</strong></a>(self)</dt><dd><tt>Calculate&nbsp;the&nbsp;percent&nbsp;areas&nbsp;of&nbsp;all&nbsp;parts&nbsp;in&nbsp;this&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;area&nbsp;fractions&nbsp;for&nbsp;each&nbsp;structural&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-calculate_all_percent_masses"><strong>calculate_all_percent_masses</strong></a>(self)</dt><dd><tt>Calculate&nbsp;the&nbsp;percent&nbsp;masses&nbsp;of&nbsp;all&nbsp;parts&nbsp;in&nbsp;this&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;mass&nbsp;fractions&nbsp;for&nbsp;each&nbsp;structural&nbsp;part.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-calculate_area"><strong>calculate_area</strong></a>(self)</dt><dd><tt>Add&nbsp;the&nbsp;area&nbsp;of&nbsp;all&nbsp;polygons&nbsp;in&nbsp;this&nbsp;station.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-calculate_mass"><strong>calculate_mass</strong></a>(self)</dt><dd><tt>Add&nbsp;the&nbsp;mass&nbsp;(per&nbsp;unit&nbsp;length)&nbsp;of&nbsp;all&nbsp;polygons&nbsp;in&nbsp;this&nbsp;station.</tt></dd></dl>
+
 <dl><dt><a name="BiplaneStructure-create_all_layers"><strong>create_all_layers</strong></a>(self)</dt><dd><tt>Create&nbsp;polygons&nbsp;for&nbsp;single&nbsp;material&nbsp;layers&nbsp;of&nbsp;each&nbsp;structural&nbsp;part.</tt></dd></dl>
 
 <dl><dt><a name="BiplaneStructure-merge_all_polygons"><strong>merge_all_polygons</strong></a>(self, airfoil, plot_flag<font color="#909090">=False</font>)</dt><dd><tt>Merges&nbsp;all&nbsp;the&nbsp;layer&nbsp;polygons&nbsp;in&nbsp;this&nbsp;structure&nbsp;into&nbsp;one&nbsp;polygon.<br>
 &nbsp;<br>
 NOTE:&nbsp;internal&nbsp;surface&nbsp;polygons&nbsp;are&nbsp;NOT&nbsp;merged!</tt></dd></dl>
 
+<dl><dt><a name="BiplaneStructure-save_all_layer_edges"><strong>save_all_layer_edges</strong></a>(self)</dt><dd><tt>Save&nbsp;all&nbsp;layer&nbsp;edges&nbsp;as&nbsp;layer&nbsp;attributes.<br>
+&nbsp;<br>
+Identifies&nbsp;and&nbsp;saves&nbsp;the&nbsp;left,&nbsp;top,&nbsp;right,&nbsp;and&nbsp;bottom&nbsp;(LTRB)&nbsp;edges&nbsp;for<br>
+each&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;saves&nbsp;LTRB&nbsp;edges&nbsp;as&nbsp;attributes&nbsp;within&nbsp;each&nbsp;layer&nbsp;object.<br>
+&nbsp;<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.left&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;left&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.top&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;top&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.right&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;right&nbsp;edge<br>
+&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.bottom&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;bottom&nbsp;edge<br>
+&nbsp;<br>
+Note:&nbsp;External&nbsp;and&nbsp;internal&nbsp;surfaces&nbsp;have&nbsp;not&nbsp;yet&nbsp;been&nbsp;implemented!</tt></dd></dl>
+
 <dl><dt><a name="BiplaneStructure-which_parts_exist"><strong>which_parts_exist</strong></a>(self)</dt><dd><tt>Check&nbsp;which&nbsp;structural&nbsp;parts&nbsp;exist&nbsp;at&nbsp;this&nbsp;biplane&nbsp;station.<br>
 &nbsp;<br>
 Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;booleans.</tt></dd></dl>
 
+<dl><dt><a name="BiplaneStructure-write_all_alt_layer_edges"><strong>write_all_alt_layer_edges</strong></a>(self, alt_TE_reinforcement<font color="#909090">=False</font>, soft_warning<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;all&nbsp;layer&nbsp;edges&nbsp;to&nbsp;`station_path`.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;is&nbsp;formatted&nbsp;as&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;(*.tg).</tt></dd></dl>
+
 <dl><dt><a name="BiplaneStructure-write_all_part_polygons"><strong>write_all_part_polygons</strong></a>(self)</dt><dd><tt>Write&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;all&nbsp;structural&nbsp;parts&nbsp;to&nbsp;`station_path`s.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-write_truegrid_footer"><strong>write_truegrid_footer</strong></a>(self, interrupt_flag<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;footer&nbsp;for&nbsp;the&nbsp;TrueGrid&nbsp;input&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-write_truegrid_header"><strong>write_truegrid_header</strong></a>(self, outputfile_type<font color="#909090">='abaqus'</font>)</dt><dd><tt>Create&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;and&nbsp;write&nbsp;the&nbsp;header.<br>
+&nbsp;<br>
+This&nbsp;file&nbsp;is&nbsp;formatted&nbsp;as&nbsp;a&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;(*.tg).</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStructure-write_truegrid_inputfile"><strong>write_truegrid_inputfile</strong></a>(self, interrupt_flag<font color="#909090">=False</font>, additional_layers<font color="#909090">=[]</font>, alt_TE_reinforcement<font color="#909090">=False</font>, soft_warning<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;TrueGrid&nbsp;input&nbsp;file&nbsp;in&nbsp;`station_path`.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -357,20 +395,6 @@ structural&nbsp;part.</tt></dd></dl>
 <dl><dt><a name="MonoplaneStructure-merge_all_polygons"><strong>merge_all_polygons</strong></a>(self, plot_flag<font color="#909090">=False</font>)</dt><dd><tt>Merges&nbsp;all&nbsp;the&nbsp;layer&nbsp;polygons&nbsp;in&nbsp;this&nbsp;structure&nbsp;into&nbsp;one&nbsp;polygon.<br>
 &nbsp;<br>
 NOTE:&nbsp;internal&nbsp;surface&nbsp;polygons&nbsp;are&nbsp;NOT&nbsp;merged!</tt></dd></dl>
-
-<dl><dt><a name="MonoplaneStructure-save_all_alternate_layer_edges"><strong>save_all_alternate_layer_edges</strong></a>(self)</dt><dd><tt>Save&nbsp;all&nbsp;alternate&nbsp;layer&nbsp;edges&nbsp;as&nbsp;layer&nbsp;attributes.<br>
-&nbsp;<br>
-Identifies&nbsp;and&nbsp;saves&nbsp;the&nbsp;left,&nbsp;top,&nbsp;right,&nbsp;and&nbsp;bottom&nbsp;(LTRB)&nbsp;edges&nbsp;for<br>
-each&nbsp;layer.<br>
-&nbsp;<br>
-This&nbsp;method&nbsp;saves&nbsp;LTRB&nbsp;edges&nbsp;as&nbsp;attributes&nbsp;within&nbsp;each&nbsp;layer&nbsp;object.<br>
-&nbsp;<br>
-&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.left&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;left&nbsp;edge<br>
-&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.top&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;top&nbsp;edge<br>
-&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.right&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;right&nbsp;edge<br>
-&lt;structure&gt;.&lt;part&gt;.&lt;layer&gt;.bottom&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;bottom&nbsp;edge<br>
-&nbsp;<br>
-Note:&nbsp;External&nbsp;and&nbsp;internal&nbsp;surfaces&nbsp;have&nbsp;not&nbsp;yet&nbsp;been&nbsp;implemented!</tt></dd></dl>
 
 <dl><dt><a name="MonoplaneStructure-save_all_layer_edges"><strong>save_all_layer_edges</strong></a>(self)</dt><dd><tt>Save&nbsp;all&nbsp;layer&nbsp;edges&nbsp;as&nbsp;layer&nbsp;attributes.<br>
 &nbsp;<br>

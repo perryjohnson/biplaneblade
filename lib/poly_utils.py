@@ -53,8 +53,22 @@ def plot_polygon(p, face_color, edge_color='r'):
     ax.add_patch(patch)
 
 def cut_plot_and_write_alt_layer(part, material, ext_label, b_polygon,
-    area_threshold=1.0e-08):
-    """Cut, plot, and write a polygon for an alternate layer."""
+    area_threshold=1.0e-08, airfoil=None):
+    """Cut, plot, and write a polygon for an alternate layer.
+
+    Parameters
+    ----------
+    part : object, the structural part containing the material layer to be cut
+    material : str, the name of the material layer to be cut
+    ext_label : str, extension label to name the new layer created from the cut
+    b_polygon : shapely.polygon object, the bounding polygon
+    area_threshold : float, polygons with areas smaller than this threshold
+        will be thrown out
+    airfoil : str, set to either 'lower' or 'upper', to designate which airfoil
+        should be cut in a biplane station (default=None for monoplane
+        stations)
+
+    """
     l = part.layer[material]
     # cut polygon
     p_new = cut_polygon(l.polygon, b_polygon, ext_label, area_threshold)
@@ -65,7 +79,7 @@ def cut_plot_and_write_alt_layer(part, material, ext_label, b_polygon,
     l.parent_part.add_new_layer(new_layer_name, p_new, material)
     new_layer = part.alt_layer[new_layer_name]
     # write polygon exterior to text file in `station_path`
-    new_layer.write_polygon_edges()
+    new_layer.write_polygon_edges(airfoil=airfoil)
     # find and plot the corners of the new layer
     new_layer.find_corners(b_polygon)
     plot_corners(new_layer.corners)
@@ -74,5 +88,3 @@ def plot_corners(list_of_corners):
     ax = plt.gca()
     for corner in list_of_corners:
         ax.scatter(corner.x, corner.y, s=40, alpha=0.8, zorder=100)
-
-

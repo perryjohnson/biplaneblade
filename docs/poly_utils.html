@@ -28,7 +28,19 @@ Last&nbsp;modified:&nbsp;March&nbsp;14,&nbsp;2014</tt></p>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-cut_plot_and_write_alt_layer"><strong>cut_plot_and_write_alt_layer</strong></a>(part, material, ext_label, b_polygon, area_threshold<font color="#909090">=1e-08</font>)</dt><dd><tt>Cut,&nbsp;plot,&nbsp;and&nbsp;write&nbsp;a&nbsp;polygon&nbsp;for&nbsp;an&nbsp;alternate&nbsp;layer.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-cut_plot_and_write_alt_layer"><strong>cut_plot_and_write_alt_layer</strong></a>(part, material, ext_label, b_polygon, area_threshold<font color="#909090">=1e-08</font>, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Cut,&nbsp;plot,&nbsp;and&nbsp;write&nbsp;a&nbsp;polygon&nbsp;for&nbsp;an&nbsp;alternate&nbsp;layer.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+part&nbsp;:&nbsp;object,&nbsp;the&nbsp;structural&nbsp;part&nbsp;containing&nbsp;the&nbsp;material&nbsp;layer&nbsp;to&nbsp;be&nbsp;cut<br>
+material&nbsp;:&nbsp;str,&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;material&nbsp;layer&nbsp;to&nbsp;be&nbsp;cut<br>
+ext_label&nbsp;:&nbsp;str,&nbsp;extension&nbsp;label&nbsp;to&nbsp;name&nbsp;the&nbsp;new&nbsp;layer&nbsp;created&nbsp;from&nbsp;the&nbsp;cut<br>
+b_polygon&nbsp;:&nbsp;shapely.polygon&nbsp;object,&nbsp;the&nbsp;bounding&nbsp;polygon<br>
+area_threshold&nbsp;:&nbsp;float,&nbsp;polygons&nbsp;with&nbsp;areas&nbsp;smaller&nbsp;than&nbsp;this&nbsp;threshold<br>
+&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;thrown&nbsp;out<br>
+airfoil&nbsp;:&nbsp;str,&nbsp;set&nbsp;to&nbsp;either&nbsp;'lower'&nbsp;or&nbsp;'upper',&nbsp;to&nbsp;designate&nbsp;which&nbsp;airfoil<br>
+&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;be&nbsp;cut&nbsp;in&nbsp;a&nbsp;biplane&nbsp;station&nbsp;(default=None&nbsp;for&nbsp;monoplane<br>
+&nbsp;&nbsp;&nbsp;&nbsp;stations)</tt></dd></dl>
  <dl><dt><a name="-cut_polygon"><strong>cut_polygon</strong></a>(original, bounding, ext_label, area_threshold<font color="#909090">=1e-08</font>)</dt><dd><tt>Cut&nbsp;the&nbsp;original&nbsp;layer&nbsp;polygon&nbsp;with&nbsp;the&nbsp;bounding&nbsp;polygon.</tt></dd></dl>
  <dl><dt><a name="-plot_corners"><strong>plot_corners</strong></a>(list_of_corners)</dt></dl>
  <dl><dt><a name="-plot_polygon"><strong>plot_polygon</strong></a>(p, face_color, edge_color<font color="#909090">='r'</font>)</dt><dd><tt>Plot&nbsp;a&nbsp;polygon&nbsp;on&nbsp;the&nbsp;current&nbsp;axes.</tt></dd></dl>

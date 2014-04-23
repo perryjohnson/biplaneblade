@@ -9,6 +9,7 @@ Last updated: October 11, 2013
 import os
 import numpy as np
 from shapely.geometry import asLineString, Point, LineString
+from shapely.affinity import translate
 
 
 class Layer:
@@ -570,3 +571,20 @@ class Layer:
             # no interior coords exist
             pass
         f.close()
+
+    def move(self, x3_offset, alt_layer=False):
+        """Translate a layer in the vertical (x3) direction."""
+        # translate the polygon
+        self.polygon = translate(self.polygon, yoff=x3_offset)
+        # translate the corners
+        for i in range(len(self.corners)):
+            new_corner = translate(self.corners[i], yoff=x3_offset)
+            self.corners[i] = new_corner
+        if not alt_layer:
+            # in a regular layer, update the left, right, top, and bottom edges
+            #   so they will be translated too
+            self.get_and_save_edges()
+        else:
+            # in an alt layer, translate the edges
+            for edge in self.edges:
+                edge[:,1] += x3_offset

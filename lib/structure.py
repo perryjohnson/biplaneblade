@@ -186,7 +186,8 @@ height:  {1:6.4f} (meters)
             m = b.dict_of_materials['gelcoat']
         else:
             raise Warning("Unrecognized material requested:", material)
-        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
+        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, 
+            name=new_name, face_color='#5EE54C')
         assert self.alt_layer[new_name].polygon.geom_type == 'Polygon'
 
     def create_alternate_layers(self):
@@ -439,7 +440,8 @@ class RootBuildup(Part):
             m = b.dict_of_materials['triaxial GFRP']
         else:
             raise Warning("Unrecognized material requested:", material)
-        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name, face_color='#BE925A')
+        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, 
+            name=new_name, face_color='#BE925A')
         assert self.alt_layer[new_name].polygon.geom_type == 'Polygon'
 
     def create_alternate_layers(self):
@@ -1362,7 +1364,8 @@ height:  {1:6.4f} (meters)
             m = b.dict_of_materials['resin']
         else:
             raise Warning("Unrecognized material requested:", material)
-        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, name=new_name)
+        self.alt_layer[new_name] = l.Layer(new_polygon, m, parent_part=self, 
+            name=new_name, face_color='#999999')
         assert self.alt_layer[new_name].polygon.geom_type == 'Polygon'
 
 
@@ -2034,53 +2037,33 @@ class MonoplaneStructure:
             except KeyError:  # foam layer doesn't exist
                 pass
 
-    def save_all_alternate_layer_edges(self):
-        """Save all alternate layer edges as layer attributes.
-
-        Identifies and saves the left, top, right, and bottom (LTRB) edges for
-        each layer.
-
-        This method saves LTRB edges as attributes within each layer object.
-
-        <structure>.<part>.<layer>.left : np.array, coords for left edge
-        <structure>.<part>.<layer>.top : np.array, coords for top edge
-        <structure>.<part>.<layer>.right : np.array, coords for right edge
-        <structure>.<part>.<layer>.bottom : np.array, coords for bottom edge
-
-        Note: External and internal surfaces have not yet been implemented!
-
-        """
-        if self.root_buildup.exists():
-            self.root_buildup.layer['triax, lower left'].get_and_save_edges()
-            self.root_buildup.layer['triax, lower right'].get_and_save_edges()
-            self.root_buildup.layer['triax, upper right'].get_and_save_edges()
-            self.root_buildup.layer['triax, upper left'].get_and_save_edges()
-        if (self.TE_reinforcement.exists() and
-            self.parent_station.airfoil.has_sharp_TE):
-            te = self.TE_reinforcement
-            te.layer['uniax, upper left'].get_and_save_edges()
-            te.layer['uniax, upper right'].get_and_save_edges()
-            te.layer['uniax, lower left'].get_and_save_edges()
-            te.layer['uniax, lower right'].get_and_save_edges()
-            te.layer['uniax, upper middle'].get_and_save_edges()
-            te.layer['uniax, lower middle'].get_and_save_edges()
-            te.layer['foam, upper left'].get_and_save_edges()
-            te.layer['foam, upper middle'].get_and_save_edges()
-            te.layer['foam, lower left'].get_and_save_edges()
-            te.layer['foam, lower middle'].get_and_save_edges()
-        # if self.external_surface.exists():
-        #     es = self.external_surface
-        #     if not self.parent_station.airfoil.has_sharp_TE:
-        #         es.layer['gelcoat, lower left'].get_and_save_edges()
-        #         es.layer['gelcoat, lower right'].get_and_save_edges()
-        #         es.layer['gelcoat, upper right'].get_and_save_edges()
-        #         es.layer['gelcoat, upper left'].get_and_save_edges()
-        #         es.layer['triax, lower left'].get_and_save_edges()
-        #         es.layer['triax, lower right'].get_and_save_edges()
-        #         es.layer['triax, upper right'].get_and_save_edges()
-        #         es.layer['triax, upper left'].get_and_save_edges()
-        # if self.internal_surface_1.exists():
-        #     # do something...
+    def write_truegrid_inputfile(self, interrupt_flag=False,
+        additional_layers=[], alt_TE_reinforcement=False, soft_warning=False):
+        """Write the TrueGrid input file in `station_path`."""
+        self.write_truegrid_header()
+        start_edge_num = self.write_all_alt_layer_edges(alt_TE_reinforcement=alt_TE_reinforcement,
+            soft_warning=soft_warning)
+        if len(additional_layers) > 0:
+            stn = self.parent_station
+            f = open(os.path.join(stn.station_path,
+                self.truegrid_input_filename), 'a')
+            for layer in additional_layers:
+                part_name = layer.parent_part.__class__.__name__  # part name
+                layer_name = layer.name  # layer name
+                if part_name in ['ShearWeb', 'AftPanel', 'InternalSurface']:
+                    part_num = layer.parent_part.num
+                    fmt = 'c {0}{1}; {2}'.format(part_name, part_num, layer_name)
+                else:
+                    fmt = 'c {0}; {1}'.format(part_name, layer_name)
+                fmt = fmt + '-'*40 + '\n'
+                f.write(fmt.format(part_name, layer_name))
+                layer.write_layer_edges(f, start_edge_num)
+                start_edge_num += 4
+            f.close()
+        # self.write_all_block_meshes()
+        self.write_truegrid_footer(interrupt_flag=interrupt_flag)
+        print " Wrote TrueGrid input file for Station #{0}.".format(
+            self.parent_station.station_num)
 
     def write_truegrid_header(self, outputfile_type='abaqus'):
         """Create a TrueGrid input file and write the header.
@@ -2672,35 +2655,6 @@ class MonoplaneStructure:
                         dict_key_prefix='TE_Reinforcement; foam',
                         i_cells=2,
                         j_cells=30)
-
-    def write_truegrid_inputfile(self, interrupt_flag=False,
-        additional_layers=[], alt_TE_reinforcement=False, soft_warning=False):
-        """Write the TrueGrid input file in `station_path`."""
-        self.write_truegrid_header()
-        # self.write_all_layer_edges()
-        start_edge_num = self.write_all_alt_layer_edges(alt_TE_reinforcement=alt_TE_reinforcement,
-            soft_warning=soft_warning)
-        if len(additional_layers) > 0:
-            stn = self.parent_station
-            f = open(os.path.join(stn.station_path,
-                self.truegrid_input_filename), 'a')
-            for layer in additional_layers:
-                part_name = layer.parent_part.__class__.__name__  # part name
-                layer_name = layer.name  # layer name
-                if part_name in ['ShearWeb', 'AftPanel', 'InternalSurface']:
-                    part_num = layer.parent_part.num
-                    fmt = 'c {0}{1}; {2}'.format(part_name, part_num, layer_name)
-                else:
-                    fmt = 'c {0}; {1}'.format(part_name, layer_name)
-                fmt = fmt + '-'*40 + '\n'
-                f.write(fmt.format(part_name, layer_name))
-                layer.write_layer_edges(f, start_edge_num)
-                start_edge_num += 4
-            f.close()
-        # self.write_all_block_meshes()
-        self.write_truegrid_footer(interrupt_flag=interrupt_flag)
-        print " Wrote TrueGrid input file for Station #{0}.".format(
-            self.parent_station.station_num)
 
 
 class BiplaneStructure:
@@ -3800,3 +3754,270 @@ class BiplaneStructure:
             d['internal surface 4 (triax)'] = dl['internal surface 4 (triax)'] + du['internal surface 4 (triax)']
             d['internal surface 4 (resin)'] = dl['internal surface 4 (resin)'] + du['internal surface 4 (resin)']
         return d
+
+    def write_truegrid_inputfile(self, interrupt_flag=False,
+        additional_layers=[], alt_TE_reinforcement=False, soft_warning=False):
+        """Write the TrueGrid input file in `station_path`."""
+        self.write_truegrid_header()
+        start_edge_num = self.write_all_alt_layer_edges(alt_TE_reinforcement=alt_TE_reinforcement,
+            soft_warning=soft_warning)
+        if len(additional_layers) > 0:
+            stn = self.parent_station
+            f = open(os.path.join(stn.station_path,
+                self.truegrid_input_filename), 'a')
+            for layer in additional_layers:
+                part_name = layer.parent_part.__class__.__name__  # part name
+                layer_name = layer.name  # layer name
+                if part_name in ['ShearWeb', 'AftPanel', 'InternalSurface']:
+                    part_num = layer.parent_part.num
+                    fmt = 'c {0}{1}; {2}'.format(part_name, part_num, layer_name)
+                else:
+                    fmt = 'c {0}; {1}'.format(part_name, layer_name)
+                fmt = fmt + '-'*40 + '\n'
+                f.write(fmt.format(part_name, layer_name))
+                layer.write_layer_edges(f, start_edge_num)
+                start_edge_num += 4
+            f.close()
+        # self.write_all_block_meshes()
+        self.write_truegrid_footer(interrupt_flag=interrupt_flag)
+        print " Wrote TrueGrid input file for Station #{0}.".format(
+            self.parent_station.station_num)
+
+    def write_truegrid_header(self, outputfile_type='abaqus'):
+        """Create a TrueGrid input file and write the header.
+
+        This file is formatted as a TrueGrid input file (*.tg).
+
+        """
+        stn = self.parent_station
+        b = stn.parent_blade
+        separator = "c " + "-"*40 + "\n"
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'w')
+        f.write("c {0} ".format(b.name) + "-"*40 + "\n")
+        f.write("c Station #{0:02d}\n".format(stn.station_num))
+        f.write("\n")
+        f.write(separator)
+        f.write("\n")
+        f.write("c set the name of the mesh output file\n")
+        f.write("mof stn{0:02d}/mesh_stn{0:02d}.abq\n".format(stn.station_num))
+        f.write("\n")
+        f.write("c set the output file type\n")
+        f.write(outputfile_type + "\n")
+        f.write("\n")
+        f.write("c set some {0}-specific parameters\n".format(outputfile_type))
+        f.write("c   assign a title to the problem\n")
+        f.write("title blade station #{0}\n".format(stn.station_num))
+        f.write("c   build 2nd-order quadrilateral elements (with mid-side nodes)\n")
+        f.write("quadratic\n")
+        f.write("\n")
+        f.write("c write symbolic 'pbs' commands instead of absolute 'pb' commands\n")
+        f.write("cooref symbolic\n")
+        f.write("\n")
+        f.write(separator)
+        f.write("\n")
+        f.write("c set some global parameters\n")
+        f.write("para t_elem 4;      c num of elements across laminate thickness\n")
+        f.write("para l_elemLE 120;  c num of elements along leading edge\n")
+        f.write("para l_elemSP 30;   c num of elements along spar cap\n")
+        f.write("para l_elemAP 30;   c num of elements along aft panel\n")
+        f.write("para l_elemTE 80;   c num of elements along trailing edge\n")
+        f.write("\n")
+        f.write(separator)
+        f.write("\n")
+        f.close()
+
+    def write_truegrid_footer(self, interrupt_flag=False):
+        """Write the footer for the TrueGrid input file."""
+        stn = self.parent_station
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'a')
+        if interrupt_flag:
+            f.write("interrupt\n")
+        f.write("c merge all the individual block meshes into a single mesh\n")
+        f.write("merge\n")
+        f.write("c display all 3D curves\n")
+        f.write("dacd\n")
+        f.write("c display numbers of defined 3D curves\n")
+        f.write("labels crv\n")
+        f.write("c display the mesh (wireframe)\n")
+        f.write("disp\n")
+        f.write("\n")
+        if interrupt_flag:
+            f.write("interrupt\n")
+        f.write("c delete redundant nodes at part boundaries\n")
+        f.write("stp 0.0001\n")
+        f.write("c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375\n")
+        f.write("c   choose a tolerance smaller than this (0.0001)\n")
+        f.write("c   the command stp deletes nodes who are near each other (w/in the tolerance)\n")
+        f.write("c display the mesh (filled)\n")
+        f.write("tvv\n")
+        f.write("\n")
+        if interrupt_flag:
+            f.write("interrupt\n")
+        f.write("c write the mesh to an output file\n")
+        f.write("write\n")
+        f.write("\n")
+        f.write("c exit\n")
+        f.close()
+
+    def write_all_alt_layer_edges(self, alt_TE_reinforcement=False,
+        soft_warning=False):
+        """Write the coordinates of all layer edges to `station_path`.
+
+        This file is formatted as a TrueGrid input file (*.tg).
+
+        """
+        stn = self.parent_station
+        start_edge_num = 1
+        f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
+            'a')
+        if self.lower_root_buildup.exists():
+            f.write("c root buildup " + "-"*40 + "\n")
+            sd = sorted(self.lower_root_buildup.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) > 4:
+                    fmt = "More than 4 edges found in layer 'RootBuildup; {0}'!"
+                    if soft_warning:
+                        print "*** Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'RootBuildup; {0}'!"
+                    print "*** Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'RootBuildup; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
+                start_edge_num += 4
+        if self.lower_external_surface.exists():
+            f.write("c external surface " + "-"*40 + "\n")
+            sd = sorted(self.lower_external_surface.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) > 4:
+                    fmt = "More than 4 edges found in layer 'ExternalSurface; {0}'!"
+                    if soft_warning:
+                        print "*** Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'ExternalSurface; {0}'!"
+                    print "*** Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'ExternalSurface; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
+                start_edge_num += 4
+        if self.lower_internal_surface_1.exists():
+            f.write("c internal surface 1 " + "-"*40 + "\n")
+            sd = sorted(self.lower_internal_surface_1.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) > 4:
+                    fmt = "More than 4 edges found in layer 'InternalSurface1; {0}'!"
+                    if soft_warning:
+                        print "*** Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface1; {0}'!"
+                    print "*** Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface1; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
+                start_edge_num += 4
+        if self.lower_internal_surface_2.exists():
+            f.write("c internal surface 2 " + "-"*40 + "\n")
+            sd = sorted(self.lower_internal_surface_2.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) > 4:
+                    fmt = "More than 4 edges found in layer 'InternalSurface2; {0}'!"
+                    if soft_warning:
+                        print "*** Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface2; {0}'!"
+                    print "*** Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface2; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
+                start_edge_num += 4
+        if self.lower_internal_surface_3.exists():
+            f.write("c internal surface 3 " + "-"*40 + "\n")
+            sd = sorted(self.lower_internal_surface_3.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) > 4:
+                    fmt = "More than 4 edges found in layer 'InternalSurface3; {0}'!"
+                    if soft_warning:
+                        print "*** Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface3; {0}'!"
+                    print "*** Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface3; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
+                start_edge_num += 4
+        if self.lower_internal_surface_4.exists():
+            f.write("c internal surface 4 " + "-"*40 + "\n")
+            sd = sorted(self.lower_internal_surface_4.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) > 4:
+                    fmt = "More than 4 edges found in layer 'InternalSurface4; {0}'!"
+                    if soft_warning:
+                        print "*** Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'InternalSurface4; {0}'!"
+                    print "*** Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'InternalSurface4; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
+                start_edge_num += 4
+        if self.lower_TE_reinforcement.exists() and alt_TE_reinforcement:
+            f.write("c TE reinforcement " + "-"*40 + "\n")
+            sd = sorted(self.lower_TE_reinforcement.alt_layer.items())
+            for (layer_name, layer_obj) in sd:
+                f.write("c " + layer_name + " " + "-"*5 + "\n")
+                layer_obj.write_alt_layer_edges2(f, start_edge_num)
+                if len(layer_obj.edges) > 4:
+                    fmt = "More than 4 edges found in layer 'TE_Reinforcement; {0}'!"
+                    if soft_warning:
+                        print "*** Warning: " + fmt.format(layer_name)
+                    else:
+                        raise Warning(fmt.format(layer_name))
+                elif len(layer_obj.edges) == 4:
+                    pass
+                elif len(layer_obj.edges) == 3:
+                    fmt2 = "Only 3 edges found in layer 'TE_Reinforcement; {0}'!"
+                    print "*** Warning: " + fmt2.format(layer_name)
+                else:
+                    fmt3 = "Layer 'TE_Reinforcement; {0}' does not have 3 or 4 edges!"
+                    raise Warning(fmt3.format(layer_name))
+                start_edge_num += 4
+        f.close()
+        return start_edge_num
