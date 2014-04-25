@@ -3399,7 +3399,6 @@ curd 316 lp3
  0.83600000   0.54082482  0.0
 ;;
 
-interrupt
 c merge all the individual block meshes into a single mesh
 merge
 c display all 3D curves

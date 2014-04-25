@@ -2039,7 +2039,21 @@ class MonoplaneStructure:
 
     def write_truegrid_inputfile(self, interrupt_flag=False,
         additional_layers=[], alt_TE_reinforcement=False, soft_warning=False):
-        """Write the TrueGrid input file in `station_path`."""
+        """Write the TrueGrid input file in `station_path`.
+
+        Parameters
+        ----------
+        interrupt_flag : bool, True if intterupt statements should be written
+            at the end of the input file for debugging, False otherwise
+        additional_layers : list, contains uncut layers that should have their
+            bounding curves drawn in TrueGrid
+        alt_TE_reinforcement : bool, True if TE reinforcement has been cut by
+            bounding polygons, False otherwise
+        soft_warning : bool, True if you want to bypass small errors with an
+            explanatory printout, False if you want the code to halt if it
+            finds a small error
+
+        """
         self.write_truegrid_header()
         start_edge_num = self.write_all_alt_layer_edges(alt_TE_reinforcement=alt_TE_reinforcement,
             soft_warning=soft_warning)
@@ -3755,7 +3769,21 @@ class BiplaneStructure:
 
     def write_truegrid_inputfile(self, interrupt_flag=False,
         additional_layers=[], alt_TE_reinforcement=False, soft_warning=False):
-        """Write the TrueGrid input file in `station_path`."""
+        """Write the TrueGrid input file in `station_path`.
+
+        Parameters
+        ----------
+        interrupt_flag : bool, True if intterupt statements should be written
+            at the end of the input file for debugging, False otherwise
+        additional_layers : list, contains uncut layers that should have their
+            bounding curves drawn in TrueGrid
+        alt_TE_reinforcement : bool, True if TE reinforcement has been cut by
+            bounding polygons, False otherwise
+        soft_warning : bool, True if you want to bypass small errors with an
+            explanatory printout, False if you want the code to halt if it
+            finds a small error
+
+        """
         self.write_truegrid_header()
         start_edge_num = self.write_all_alt_layer_edges(alt_TE_reinforcement=alt_TE_reinforcement,
             soft_warning=soft_warning)

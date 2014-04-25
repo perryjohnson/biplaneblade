@@ -12,7 +12,7 @@ or
 |> import biplane_blade_lib/prep_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: April 17, 2014
+Last updated: April 23, 2014
 
 """
 
