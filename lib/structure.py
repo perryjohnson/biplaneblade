@@ -2114,8 +2114,6 @@ class MonoplaneStructure:
         stn = self.parent_station
         f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
             'a')
-        if interrupt_flag:
-            f.write("interrupt\n")
         f.write("c merge all the individual block meshes into a single mesh\n")
         f.write("merge\n")
         f.write("c display all 3D curves\n")
@@ -3832,8 +3830,6 @@ class BiplaneStructure:
         stn = self.parent_station
         f = open(os.path.join(stn.station_path, self.truegrid_input_filename),
             'a')
-        if interrupt_flag:
-            f.write("interrupt\n")
         f.write("c merge all the individual block meshes into a single mesh\n")
         f.write("merge\n")
         f.write("c display all 3D curves\n")

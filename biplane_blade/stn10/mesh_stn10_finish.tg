@@ -2868,9 +2868,9 @@ block 1 2 [%t_elemSW+1] [%t_elemSW+2];
       0.75 0.753 0.83 0.835;
       c may need to manually set these initial y-coords
       c SW_bottom lower_SC_top lower_AP1_top
-      -2.32 -2.30 -2.22
+      -1.53 -1.51 -1.46
       c upper_AP1_bottom upper_SC_bottom SW_top
-      2.22 2.30 2.32;
+      1.47 1.52 1.54;
       0;
 c manually position the left biax boundary nodes
 pbs 1 5 1 1 5 1 xy 203.2  c upper spar cap, right
@@ -3611,13 +3611,13 @@ c make a block mesh for: internal surface 2, resin, lower spar cap
 block 1 %l_elemSP; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 141
+cure 1 1 1 1 2 1 142
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 142
+cure 1 2 1 2 2 1 143
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 143
+cure 2 1 1 2 2 1 144
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 144
+cure 1 1 1 2 1 1 141
 c assign the material to be resin (material #6)
 mate 6
 c name this set of elements
@@ -3683,13 +3683,13 @@ c make a block mesh for: internal surface 2, triax, lower spar cap
 block 1 %l_elemSP; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 157
+cure 1 1 1 1 2 1 158
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 158
+cure 1 2 1 2 2 1 159
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 159
+cure 2 1 1 2 2 1 160
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 160
+cure 1 1 1 2 1 1 157
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -3757,13 +3757,13 @@ c make a block mesh for: internal surface 3, resin, lower aft panel 1
 block 1 %l_elemAP; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 173
+cure 1 1 1 1 2 1 174
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 174
+cure 1 2 1 2 2 1 175
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 175
+cure 2 1 1 2 2 1 176
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 176
+cure 1 1 1 2 1 1 173
 c assign the material to be resin (material #6)
 mate 6
 c name this set of elements
@@ -3831,13 +3831,13 @@ c make a block mesh for: internal surface 3, triax, lower aft panel 1
 block 1 %l_elemAP; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 189
+cure 1 1 1 1 2 1 190
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 190
+cure 1 2 1 2 2 1 191
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 191
+cure 2 1 1 2 2 1 192
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 192
+cure 1 1 1 2 1 1 189
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -3892,7 +3892,7 @@ labels crv
 c display the mesh (wireframe)
 disp
 
-interrupt
+c interrupt
 c delete redundant nodes at part boundaries
 stp 0.0001
 c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375
@@ -3901,7 +3901,7 @@ c   the command stp deletes nodes who are near each other (w/in the tolerance)
 c display the mesh (filled)
 tvv
 
-interrupt
+c interrupt
 c write the mesh to an output file
 write
 
