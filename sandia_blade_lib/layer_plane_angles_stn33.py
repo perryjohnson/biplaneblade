@@ -1,10 +1,10 @@
 """Determine the layer plane angle of all the elements in a grid.
 
 Author: Perry Roth-Johnson
-Last modified: April 9, 2014
+Last modified: April 25, 2014
 
 Usage:
-1. Look through the mesh_stn11.abq file and find all the element set names.
+1. Look through the mesh_stnXX.abq file and find all the element set names.
    (Find all the lines that start with "*ELSET".)
 2. Enter each of the element set names in one of the four lists below:
      (1) list_of_LE_elementsets
@@ -69,7 +69,7 @@ station.structure.save_all_layer_edges()
 station.structure.write_all_part_polygons()
 
 # plot the parts
-station.plot_parts(alternate_layers=False)
+station.plot_parts()
 
 # create a figure
 # plt.figure(num='Station #{0:02d}'.format(station_num))

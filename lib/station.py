@@ -25,6 +25,7 @@ import structure as struc
 reload(struc)
 from shapely.geometry import Polygon
 from shapely.ops import cascaded_union
+from shapely.affinity import translate
 from descartes import PolygonPatch
 # the descartes module translates shapely objects into matplotlib objects
 # from operator import attrgetter
@@ -1297,4 +1298,46 @@ class BiplaneStation(_Station):
         except AttributeError:
             raise AttributeError("Part instance has no attribute 'polygon'.\n  Try running <station>.structure.create_all_layers() first.")
         plt.show()
-        
+
+    def plot_parts_offset(self, airfoil_to_plot='lower', x3_offset=None, 
+        ax=None):
+        """Plots the structural parts in one airfoil of this station.
+
+        Parts are shifted by the x3_offset distance.
+
+        """
+        if ax is None:
+            fig, ax = plt.subplots()
+        st = self.structure
+        fmt1 = "Station #{0}, {1}, {2}% span\n"
+        fmt2 = "lower airfoil in local beam coordinate system (x3-offset = {3:+.4f})"
+        fmt = fmt1 + fmt2
+        ax.set_title(fmt.format(self.station_num, self.airfoil.name, 
+            self.coords.x1, x3_offset))
+        ax.set_aspect('equal')
+        ax.grid('on')
+        ax.set_xlabel('x2 [meters]')
+        ax.set_ylabel('x3 [meters]')
+        if self.type == 'monoplane':
+            raise Warning("This method is only meant for biplane stations.")
+        elif self.type == 'biplane':
+            if airfoil_to_plot == 'lower':
+                lp2 = translate(self.airfoil.lower_polygon, yoff=x3_offset)
+                (minx, miny, maxx, maxy) = lp2.bounds
+            elif airfoil_to_plot == 'upper':
+                raise NotImplementedError("`airfoil_to_plot`='upper' is not implemented! Try `airfoil_to_plot`='lower' instead.")
+            else:
+                raise ValueError("`airfoil_to_plot` keyword must be 'lower'")
+        else:
+            raise ValueError("<station>.type must be 'monoplane' or 'biplane'")
+        ax.set_xlim([minx*1.2,maxx*1.2])
+        ax.set_ylim([miny*1.2,maxy*1.2])
+        if airfoil_to_plot == 'lower':
+            for layer in self.structure._list_of_lower_layers:
+                new_polygon = translate(layer.polygon, yoff=x3_offset)
+                self.plot_polygon(new_polygon, ax, layer.face_color, 
+                    layer.edge_color, alpha=0.8)
+        elif airfoil_to_plot == 'upper':
+            raise NotImplementedError("`airfoil_to_plot`='upper' is not implemented! Try `airfoil_to_plot`='lower' instead.")
+        else:
+            raise ValueError("`airfoil_to_plot` keyword must be 'lower'")
