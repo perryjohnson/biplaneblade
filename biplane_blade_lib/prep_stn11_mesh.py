@@ -149,7 +149,7 @@ label = 'TE reinforcement, lower 1'
 points_tel1 = [
     (ter.bottom[0][0], -4.1),              # TE_Reinforcement_foam.txt
     tuple(ter.bottom[1]),                  # TE_Reinforcement_foam.txt
-    is3.polygon.interiors[0].coords[387-232], # InternalSurface4_resin.txt
+    is3.polygon.interiors[0].coords[387-232], # InternalSurface3_resin.txt
     (2.8, -3.8),
     is3.polygon.interiors[0].coords[548-232],           # InternalSurface3_resin.txt
     (is3.polygon.interiors[0].coords[548-232][0], -4.1) # InternalSurface3_resin.txt
