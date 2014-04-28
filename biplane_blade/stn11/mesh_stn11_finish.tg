@@ -4835,11 +4835,11 @@ c make a block mesh for: root buildup, triax, TE reinforcement, upper 1
 block 1 %l_elmTE1; 1 %t_elemRB; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 22
+cure 1 1 1 1 2 1 24
 c top edge (j=2, i varies)
 cure 1 2 1 2 2 1 21
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 24
+cure 2 1 1 2 2 1 22
 c bottom edge (j=1, i varies)
 cure 1 1 1 2 1 1 23
 c assign the material to be triax (material #3)
