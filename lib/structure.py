@@ -2051,7 +2051,10 @@ class MonoplaneStructure:
             bounding polygons, False otherwise
         soft_warning : bool, True if you want to bypass small errors with an
             explanatory printout, False if you want the code to halt if it
-            finds a small error
+            finds a small error. These error messages tell the user if 
+            more/less than 4 edges were found in a new cut layer. If more than
+            4 edges were found, the message also says if the extra edges were 
+            thrown out.
 
         """
         self.write_truegrid_header()

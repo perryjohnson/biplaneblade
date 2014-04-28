@@ -743,21 +743,26 @@ for layer in list_of_mesh_layers:
 plt.show()
 
 
-# # write the TrueGrid input file for mesh generation ---------------------
-# st.write_truegrid_inputfile(
-#     interrupt_flag=True, 
-#     additional_layers=[
-#         st.lower_spar_cap.layer['upper'],
-#         st.lower_spar_cap.layer['lower'],
-#         st.lower_aft_panel_1.layer['upper'],
-#         st.lower_aft_panel_1.layer['lower'],
-#         st.lower_LE_panel.layer['foam'],
-#         st.lower_shear_web_1.layer['biax, left'],
-#         st.lower_shear_web_1.layer['foam'],
-#         st.lower_shear_web_1.layer['biax, right'],
-#         st.lower_shear_web_2.layer['biax, left'],
-#         st.lower_shear_web_2.layer['foam'],
-#         st.lower_shear_web_2.layer['biax, right']
-#     ],
-#     alt_TE_reinforcement=True,
-#     soft_warning=False)
+# write the TrueGrid input file for mesh generation ---------------------
+st.write_truegrid_inputfile(
+    interrupt_flag=True, 
+    additional_layers=[
+        st.lower_spar_cap.layer['upper'],
+        st.lower_spar_cap.layer['lower'],
+        st.lower_aft_panel_1.layer['upper'],
+        st.lower_aft_panel_1.layer['lower'],
+        st.lower_aft_panel_2.layer['upper'],
+        st.lower_aft_panel_2.layer['lower'],
+        st.lower_LE_panel.layer['foam'],
+        st.lower_shear_web_1.layer['biax, left'],
+        st.lower_shear_web_1.layer['foam'],
+        st.lower_shear_web_1.layer['biax, right'],
+        st.lower_shear_web_2.layer['biax, left'],
+        st.lower_shear_web_2.layer['foam'],
+        st.lower_shear_web_2.layer['biax, right'],
+        st.lower_shear_web_3.layer['biax, left'],
+        st.lower_shear_web_3.layer['foam'],
+        st.lower_shear_web_3.layer['biax, right']
+    ],
+    alt_TE_reinforcement=True,
+    soft_warning=True)
