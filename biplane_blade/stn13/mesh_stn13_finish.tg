@@ -4691,7 +4691,7 @@ esetc esglteu4  ExternalSurface; gelcoat; TE reinforcement, upper 4
 c gelcoat, above shear web 1 -----
 c make a block mesh for: external surface, gelcoat, above shear web 1
 block 1 [%t_elemSW+2]; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+-0.835 -0.75; 2.40 2.47; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 40
 c top edge (j=2, i varies)
@@ -5080,18 +5080,22 @@ esetc estrteu4  ExternalSurface; triax; TE reinforcement, upper 4
 
 c triax, above shear web 1 -----
 c make a block mesh for: external surface, triax, above shear web 1
-block 1 [%t_elemSW+2]; 1 2; -1;
--0.835 -0.75; 1.741 1.759; 0;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
+-0.835 -0.83 -0.753 -0.75; 1.741 1.759; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 124
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 121
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 122
+cure 1 2 1 4 2 1 121
+c right edge (i=4, j varies)
+cure 4 1 1 4 2 1 122
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 123
+curs 1 1 1 4 1 1 123
+c    use 'curs' instead of 'cure', so we don't freeze nodes to curve
 c linearly interpolate all the interior nodes
 lin 0 0 1 0 0 1
+c manually move nodes to line up with biax layers in shear web 1
+pbs 2 1 1 2 1 1 xy 396.1  c bottom edge, left middle node
+pbs 3 1 1 3 1 1 xy 396.3  c bottom edge, right middle node
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5100,18 +5104,22 @@ esetc estrasw1  ExternalSurface; triax; above shear web 1
 
 c triax, above shear web 2 -----
 c make a block mesh for: external surface, triax, above shear web 2
-block 1 [%t_elemSW+2]; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
+-0.1 -0.05 0.05 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 128
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 125
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 126
+cure 1 2 1 4 2 1 125
+c right edge (i=4, j varies)
+cure 4 1 1 4 2 1 126
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 127
+curs 1 1 1 4 1 1 127
+c    use 'curs' instead of 'cure', so we don't freeze nodes to curve
 c linearly interpolate all the interior nodes
 lin 0 0 1 0 0 1
+c manually move nodes to line up with biax layers in shear web 2
+pbs 2 1 1 2 1 1 xy 408.1  c bottom edge, left middle node
+pbs 3 1 1 3 1 1 xy 408.2  c bottom edge, right middle node
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5120,18 +5128,22 @@ esetc estrasw2  ExternalSurface; triax; above shear web 2
 
 c triax, above shear web 3 -----
 c make a block mesh for: external surface, triax, above shear web 3
-block 1 [%t_elemSW+2]; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
+-0.1 -0.05 0.05 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 132
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 129
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 130
+cure 1 2 1 4 2 1 129
+c right edge (i=4, j varies)
+cure 4 1 1 4 2 1 130
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 131
+curs 1 1 1 4 1 1 131
+c    use 'curs' instead of 'cure', so we don't freeze nodes to curve
 c linearly interpolate all the interior nodes
 lin 0 0 1 0 0 1
+c manually move nodes to line up with biax layers in shear web 2
+pbs 2 1 1 2 1 1 xy 420.1  c bottom edge, left middle node
+pbs 3 1 1 3 1 1 xy 420.2  c bottom edge, right middle node
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5140,18 +5152,22 @@ esetc estrasw3  ExternalSurface; triax; above shear web 3
 
 c triax, below shear web 1 -----
 c make a block mesh for: external surface, triax, below shear web 1
-block 1 [%t_elemSW+2]; 1 2; -1;
--0.1 0.1; -0.1 0.1; 0;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
+-0.1 -0.05 0.05 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 134
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 135
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 136
+curs 1 2 1 4 2 1 135
+c    use 'curs' instead of 'cure', so we don't freeze nodes to curve
+c right edge (i=4, j varies)
+cure 4 1 1 4 2 1 136
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 133
+cure 1 1 1 4 1 1 133
 c linearly interpolate all the interior nodes
 lin 0 0 1 0 0 1
+c manually move nodes to line up with biax layers in shear web 2
+pbs 2 2 1 2 2 1 xy 394.3  c top edge, left middle node
+pbs 3 2 1 3 2 1 xy 394.1  c top edge, right middle node
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5160,18 +5176,22 @@ esetc estrbsw1  ExternalSurface; triax; below shear web 1
 
 c triax, below shear web 2 -----
 c make a block mesh for: external surface, triax, below shear web 2
-block 1 [%t_elemSW+2]; 1 2; -1;
-0.75 0.836; -1.796 -1.777; 0;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
+0.75 -0.05 0.05 0.836; -1.796 -1.777; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 138
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 139
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 140
+curs 1 2 1 4 2 1 139
+c    use 'curs' instead of 'cure', so we don't freeze nodes to curve
+c right edge (i=4, j varies)
+cure 4 1 1 4 2 1 140
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 137
+cure 1 1 1 4 1 1 137
 c linearly interpolate all the interior nodes
 lin 0 0 1 0 0 1
+c manually move nodes to line up with biax layers in shear web 2
+pbs 2 2 1 2 2 1 xy 406.2  c top edge, left middle node
+pbs 3 2 1 3 2 1 xy 406.1  c top edge, right middle node
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5180,18 +5200,22 @@ esetc estrbsw2  ExternalSurface; triax; below shear web 2
 
 c triax, below shear web 3 -----
 c make a block mesh for: external surface, triax, below shear web 3
-block 1 [%t_elemSW+2]; 1 2; -1;
-0.75 0.836; -1.796 -1.777; 0;
+block 1 2 [%t_elemSW+1] [%t_elemSW+2]; 1 2; -1;
+0.75 -0.05 0.05 0.836; -1.796 -1.777; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 142
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 143
-c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 144
+curs 1 2 1 4 2 1 143
+c    use 'curs' instead of 'cure', so we don't freeze nodes to curve
+c right edge (i=4, j varies)
+cure 4 1 1 4 2 1 144
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 141
+cure 1 1 1 4 1 1 141
 c linearly interpolate all the interior nodes
 lin 0 0 1 0 0 1
+c manually move nodes to line up with biax layers in shear web 2
+pbs 2 2 1 2 2 1 xy 418.4  c top edge, left middle node
+pbs 3 2 1 3 2 1 xy 418.1  c top edge, right middle node
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5272,7 +5296,7 @@ esetc estruap1  ExternalSurface; triax; upper aft panel 1
 
 c triax, upper aft panel 2 -----
 c make a block mesh for: external surface, triax, upper aft panel 2
-block 1 %l_elemA1; 1 2; -1;
+block 1 %l_elemA2; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 164
@@ -5328,7 +5352,7 @@ esetc is1rsle  InternalSurface1; resin; LE panel
 
 c resin, left of shear web 1 -----
 c make a block mesh for: internal surface 1, resin, left of shear web 1
-block 1 2; 1 %l_elemSW; -1;
+block 1 2; 1 [%l_elemSW+2]; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 175
@@ -5364,7 +5388,7 @@ esetc is1trile  InternalSurface1; triax; LE panel
 
 c triax, left of shear web 1 -----
 c make a block mesh for: internal surface 1, triax, left of shear web 1
-block 1 2; 1 %l_elemSW; -1;
+block 1 2; 1 [%l_elemSW+2]; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
 cure 1 1 1 1 2 1 183
@@ -5787,13 +5811,13 @@ c make a block mesh for: internal surface 4, resin, upper aft panel 2
 block 1 %l_elemA2; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 276
+cure 1 1 1 1 2 1 275
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 273
+cure 1 2 1 2 2 1 276
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 274
+cure 2 1 1 2 2 1 273
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 275
+cure 1 1 1 2 1 1 274
 c assign the material to be resin (material #6)
 mate 6
 c name this set of elements
@@ -5913,13 +5937,13 @@ c make a block mesh for: internal surface 4, triax, upper aft panel 2
 block 1 %l_elemA2; 1 2; -1;
 -0.1 0.1; -0.1 0.1; 0;
 c left edge (i=1, j varies)
-cure 1 1 1 1 2 1 304
+cure 1 1 1 1 2 1 303
 c top edge (j=2, i varies)
-cure 1 2 1 2 2 1 301
+cure 1 2 1 2 2 1 304
 c right edge (i=2, j varies)
-cure 2 1 1 2 2 1 302
+cure 2 1 1 2 2 1 301
 c bottom edge (j=1, i varies)
-cure 1 1 1 2 1 1 303
+cure 1 1 1 2 1 1 302
 c assign the material to be triax (material #3)
 mate 3
 c name this set of elements
@@ -5937,7 +5961,7 @@ labels crv
 c display the mesh (wireframe)
 disp
 
-interrupt
+c interrupt
 c delete redundant nodes at part boundaries
 stp 0.0001
 c the minimum space between nodes at biax plies is(0.836-0.833)/8 = 0.000375
@@ -5946,7 +5970,7 @@ c   the command stp deletes nodes who are near each other (w/in the tolerance)
 c display the mesh (filled)
 tvv
 
-interrupt
+c interrupt
 c write the mesh to an output file
 write
 

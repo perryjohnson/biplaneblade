@@ -107,7 +107,7 @@ axarr[1,1].grid('on')
 # axarr[1,1].grid('on', axis='x')
 
 plt.tight_layout()
-plt.savefig('sandia_blade/biplane_vs_Sandia_stiffness_props.png')
+plt.savefig('biplane_blade/biplane_vs_Sandia_stiffness_props.png')
 
 # mass properties -------------------------------------------------------------
 f2, axarr2 = plt.subplots(2,2, figsize=(12,8))
