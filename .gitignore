@@ -1,5 +1,4 @@
 *.pyc
-biplane_blade/stn18
 biplane_blade/stn19
 biplane_blade/stn20
 biplane_blade/stn21
@@ -40,3 +39,5 @@ biplane_blade/beam_model/*.html
 biplane_blade/beam_model/*.out
 biplane_blade/beam_model/*.rcv
 biplane_blade/beam_model/FIGURES/*.mdt
+sandia_blade/stn*/*.txt
+biplane_blade/stn*/*.txt

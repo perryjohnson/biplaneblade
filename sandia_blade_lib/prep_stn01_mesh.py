@@ -12,7 +12,7 @@ or
 |> import sandia_blade_lib/prep_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: April 10, 2014
+Last updated: April 30, 2014
 
 """
 
@@ -41,30 +41,6 @@ station.structure.write_all_part_polygons()
 # plot the parts
 station.plot_parts()
 
-# cut up the layer polygons to prepare for grid generation
-def cut_polygon(original, bounding):
-    """Cut the original layer polygon with the bounding polygon."""
-    return original.intersection(bounding)
-
-def plot_polygon(p, face_color, edge_color='r'):
-    """Plot a polygon on the current axes."""
-    # get the current axes, so we can add polygons to the plot
-    ax = plt.gca()
-    patch = PolygonPatch(p, fc=face_color, ec=edge_color, alpha=0.8)
-    ax.add_patch(patch)
-
-def cut_plot_and_write_alt_layer(part, material, ext_label, b_polygon):
-    """Cut, plot, and write a polygon for an alternate layer."""
-    l = part.layer[material]
-    # cut polygon
-    p_new = cut_polygon(l.polygon, b_polygon)
-    # plot polygon
-    plot_polygon(p_new, l.face_color)
-    new_layer_name = material + ', ' + ext_label
-    l.parent_part.add_new_layer(new_layer_name, p_new, material)
-    # write polygon
-    part.alt_layer[new_layer_name].write_polygon_edges()
-
 # access the structure for this station
 st = station.structure
 
@@ -79,18 +55,18 @@ points = [
     (0.0, 3.0)
     ]
 bounding_polygon = Polygon(points)
-plot_polygon(bounding_polygon, 'None', '#000000')
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
 # cut the new layer polygons
-cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
     bounding_polygon)
 
 # lower right -----------------------------------------------------------
@@ -104,18 +80,18 @@ points = [
     (0.0,-3.0)
     ]
 bounding_polygon = Polygon(points)
-plot_polygon(bounding_polygon, 'None', '#000000')
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
 # cut the new layer polygons
-cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
     bounding_polygon)
 
 # lower left -----------------------------------------------------------
@@ -129,18 +105,18 @@ points = [
     ( 0.0,-3.0)
     ]
 bounding_polygon = Polygon(points)
-plot_polygon(bounding_polygon, 'None', '#000000')
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
 # cut the new layer polygons
-cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
     bounding_polygon)
 
 # lower right -----------------------------------------------------------
@@ -154,18 +130,18 @@ points = [
     ( 0.0, 3.0)
     ]
 bounding_polygon = Polygon(points)
-plot_polygon(bounding_polygon, 'None', '#000000')
+pu.plot_polygon(bounding_polygon, 'None', '#000000')
 
 # cut the new layer polygons
-cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.root_buildup, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
+pu.cut_plot_and_write_alt_layer(st.external_surface, 'gelcoat', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'triax', label, 
     bounding_polygon)
-cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
+pu.cut_plot_and_write_alt_layer(st.internal_surface_1, 'resin', label, 
     bounding_polygon)
 
 # show the plot
