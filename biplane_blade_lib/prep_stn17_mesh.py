@@ -12,7 +12,7 @@ or
 |> import biplane_blade_lib/prep_stnXX_mesh
 
 Author: Perry Roth-Johnson
-Last updated: April 29, 2014
+Last updated: April 30, 2014
 
 """
 
@@ -27,7 +27,7 @@ from shapely.affinity import translate
 
 
 # SET THESE PARAMETERS -----------------
-station_num = 15
+station_num = 17
 # --------------------------------------
 plt.close('all')
 
@@ -114,8 +114,8 @@ is4 = st.lower_internal_surface_4.layer['resin']
 points_teu1 = [
     (ter.top[0][0], -3.5),              # TE_Reinforcement_foam.txt
     (ter.top[0][0], -4.6),              # TE_Reinforcement_foam.txt
-    is4.polygon.interiors[0].coords[343-149],           # InternalSurface4_resin.txt
-    (is4.polygon.interiors[0].coords[343-149][0], -3.5) # InternalSurface4_resin.txt
+    is4.polygon.interiors[0].coords[377-167],           # InternalSurface4_resin.txt
+    (is4.polygon.interiors[0].coords[377-167][0], -3.5) # InternalSurface4_resin.txt
     ]
 bounding_polygon = Polygon(points_teu1)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -141,8 +141,8 @@ label = 'TE reinforcement, lower 1'
 points_tel1 = [
     (ter.bottom[0][0], -5.0),              # TE_Reinforcement_foam.txt
     (ter.bottom[0][0], -4.6),              # TE_Reinforcement_foam.txt
-    is4.polygon.interiors[0].coords[343-149], # InternalSurface4_resin.txt
-    (is4.polygon.interiors[0].coords[343-149][0], -5.0) # InternalSurface4_resin.txt
+    is4.polygon.interiors[0].coords[377-167], # InternalSurface4_resin.txt
+    (is4.polygon.interiors[0].coords[377-167][0], -5.0) # InternalSurface4_resin.txt
     ]
 bounding_polygon = Polygon(points_tel1)
 pu.plot_polygon(bounding_polygon, 'None', '#000000')
@@ -270,7 +270,7 @@ teru = st.lower_TE_reinforcement.layer['uniax']
 points_teu4 = [
     points_teu3[-1],
     points_teu3[-2],
-    (teru.polygon.exterior.coords[-2][0],   -4.768),  # TE_Reinforcement_uniax.txt
+    (teru.polygon.exterior.coords[-2][0],   -4.767),  # TE_Reinforcement_uniax.txt
     teru.polygon.exterior.coords[-2],  # TE_Reinforcement_uniax.txt
     es.polygon.exterior.coords[-2],
     (teru.polygon.exterior.coords[-2][0],   -3.5) # TE_Reinforcement_uniax.txt
@@ -347,7 +347,7 @@ points_ap1u = [
     (0.836, 0.0),
     (ap1u.right[1][0], 0.0),              # lower_AftPanel1_upper.txt
     tuple(ap1u.right[1]),                 # lower_AftPanel1_upper.txt
-    is3.polygon.interiors[0].coords[113-59],  # lower_InternalSurface3_resin.txt
+    is3.polygon.interiors[0].coords[89-51],  # lower_InternalSurface3_resin.txt
     (2.0, -4.5),
     is3.polygon.interiors[0].coords[-2],  # lower_InternalSurface3_resin.txt
     tuple(ap1u.left[0])                   # lower_AftPanel1_upper.txt
@@ -372,7 +372,7 @@ points_ap1l = [
     (0.836, -6.5),
     (ap1l.right[0][0], -6.5),             # lower_AftPanel1_lower.txt
     tuple(ap1l.right[0]),                 # lower_AftPanel1_lower.txt
-    is3.polygon.interiors[0].coords[112-59],  # lower_InternalSurface3_resin.txt
+    is3.polygon.interiors[0].coords[88-51],  # lower_InternalSurface3_resin.txt
     (2.0, -4.5),
     is3.polygon.interiors[0].coords[-1],  # lower_InternalSurface3_resin.txt
     tuple(ap1l.left[1])                   # lower_AftPanel1_lower.txt
@@ -399,7 +399,7 @@ points_ap2u = [
     (sw3br.right[0][0], 0.0),
     (ap2u.right[1][0], 0.0),             # AftPanel2_upper.txt
     tuple(ap2u.right[1]),                # AftPanel2_upper.txt
-    is4.polygon.interiors[0].coords[376-149],  # InternalSurface4_resin.txt
+    is4.polygon.interiors[0].coords[410-167],  # InternalSurface4_resin.txt
     (3.0, -4.6),
     is4.polygon.interiors[0].coords[-2],  # InternalSurface4_resin.txt
     tuple(ap2u.left[0])                  # AftPanel2_upper.txt
@@ -425,7 +425,7 @@ points_ap2l = [
     (sw3br.right[0][0], -5.4),
     (ap2l.right[0][0], -5.4),             # AftPanel2_lower.txt
     tuple(ap2l.right[0]),                 # AftPanel2_lower.txt
-    is4.polygon.interiors[0].coords[246-149],  # InternalSurface4_resin.txt
+    is4.polygon.interiors[0].coords[280-167],  # InternalSurface4_resin.txt
     (3.0, -4.6),
     is4.polygon.interiors[0].coords[-1],  # InternalSurface4_resin.txt
     tuple(ap2l.left[1])                   # AftPanel2_lower.txt
