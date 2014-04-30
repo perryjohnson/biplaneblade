@@ -19,6 +19,7 @@ sandia_blade/stn*/*.txt
 sandia_blade/*.png
 sandia_blade/percent_areas.csv
 sandia_blade/percent_masses.csv
+sandia_blade/blade_props_from_VABS.csv
 sandia_blade/beam_model/*.grf
 sandia_blade/beam_model/*.plt
 sandia_blade/beam_model/*.ats
@@ -32,6 +33,7 @@ biplane_blade/stn*/*.txt
 biplane_blade/*.png
 biplane_blade/percent_areas.csv
 biplane_blade/percent_masses.csv
+biplane_blade/blade_props_from_VABS.csv
 biplane_blade/beam_model/*.grf
 biplane_blade/beam_model/*.plt
 biplane_blade/beam_model/*.ats
