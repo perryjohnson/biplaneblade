@@ -28,6 +28,7 @@
         @TIME {1.40000e+001}  @FUNCTION_VALUE {1.00000e+000}
         @TIME {1.50000e+001}  @FUNCTION_VALUE {1.00000e+000}
       }
+      @COMMENTS {gives a 15-second constant time function}
     }
   }
   @INCLUDE_COMMAND {
@@ -45,7 +46,7 @@
   @INCLUDE_COMMAND {
     @INCLUDE_COMMAND_NAME {includeParts} {
       @ACTIVE_COMMAND {YES}
-      @LIST_OF_FILE_NAMES {sandia_blade.dat}
+      @LIST_OF_FILE_NAMES {biplane_blade.dat}
     }
   }
   @INCLUDE_COMMAND {
@@ -114,12 +115,12 @@
   }
   @PLOTTING_CONTROL_PARAMETERS {
     @PLOTTING_CONTROL_PARAMETERS_NAME {PlottingControlParameters} {
-      @MAP_PLOT_FORMAT {PNG, EPS, TRM}
-      @MAP_PLOT_SIZE {LARGE, LARGE, LARGE}
+      ! @MAP_PLOT_FORMAT {PNG, EPS, TRM}
+      ! @MAP_PLOT_SIZE {LARGE, LARGE, LARGE}
       @OBJECT_PLOT_FORMAT {PNG, EPS, TRM}
       @OBJECT_PLOT_SIZE {LARGE, LARGE, LARGE}
-      @SENSOR_PLOT_FORMAT {PNG, EPS, TRM}
-      @SENSOR_PLOT_SIZE {LARGE, LARGE, LARGE}
+      ! @SENSOR_PLOT_FORMAT {PNG, EPS, TRM}
+      ! @SENSOR_PLOT_SIZE {LARGE, LARGE, LARGE}
       @SURVEY_PLOT_FORMAT {PNG, EPS, TRM}
       @SURVEY_PLOT_SIZE {LARGE, LARGE, LARGE}
     }

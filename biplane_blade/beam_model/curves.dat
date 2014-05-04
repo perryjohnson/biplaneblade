@@ -1,0 +1,19 @@
+@CURVE_DEFINITION {
+  @CURVE_NAME {CurveSquare} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {5}
+      @DEGREE_OF_CURVE {1}
+      @RATIONAL_CURVE_FLAG {YES}
+      @COORDINATES {0.0,  0.5,  0.5, 1.0}
+      @COORDINATES {0.0, -0.5,  0.5, 1.0}
+      @COORDINATES {0.0, -0.5, -0.5, 1.0}
+      @COORDINATES {0.0,  0.5, -0.5, 1.0}
+      @COORDINATES {0.0,  0.5,  0.5, 1.0}
+    }
+    @KNOT_SEQUENCE_DEFINITION {
+      @KNOT_SEQUENCE {0.00, 0.00, 0.25, 0.50, 0.75, 1.00, 1.00}
+    }
+    @COMMENTS {unit square, modified from: www.ocnus.com, Square.wrl}
+  }
+}

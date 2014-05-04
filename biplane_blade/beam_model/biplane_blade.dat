@@ -1,0 +1,2810 @@
+@POINT_DEFINITION {
+  @POINT_NAME {root} {
+    @COORDINATES { 0.0,  0.0,  0.0}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {root_joint} {
+    @COORDINATES { 4.7,  0.0,  0.0}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_10} {
+    @COORDINATES { 6.8, 0.50788, -2.14715}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_11} {
+    @COORDINATES { 8.9, 0.90477, -3.82505}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_12} {
+    @COORDINATES { 11.4,  1.09739, -4.63939}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_13} {
+    @COORDINATES { 14.6,  1.09778, -4.64105}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_14} {
+    @COORDINATES { 16.3,  1.08695, -4.64264}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_15} {
+    @COORDINATES { 17.9,  1.07654, -4.64600}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_16} {
+    @COORDINATES { 19.5,  1.06556, -4.64690}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_17} {
+    @COORDINATES { 22.2,  1.00197, -4.66068}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_18} {
+    @COORDINATES { 24.9,  0.93872, -4.67658}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_19} {
+    @COORDINATES { 27.6,  0.87450, -4.68732}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_20} {
+    @COORDINATES { 30.333,  0.75829, -4.25658}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_21} {
+    @COORDINATES { 33.067,  0.65014, -3.83042}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_22} {
+    @COORDINATES { 35.8,  0.55140, -3.41730}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_23} {
+    @COORDINATES { 38.5,  0.43311, -2.83931}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {lower_24} {
+    @COORDINATES { 41.2,  0.28150, -1.95807}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_10} {
+    @COORDINATES { 6.8, -0.50788, 2.14715}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_11} {
+    @COORDINATES { 8.9, -0.90477, 3.82505}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_12} {
+    @COORDINATES { 11.4,  -1.09739, 4.63939}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_13} {
+    @COORDINATES { 14.6,  -1.09778, 4.64105}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_14} {
+    @COORDINATES { 16.3,  -1.08695, 4.64264}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_15} {
+    @COORDINATES { 17.9,  -1.07654, 4.64600}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_16} {
+    @COORDINATES { 19.5,  -1.06556, 4.64690}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_17} {
+    @COORDINATES { 22.2,  -1.00197, 4.66068}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_18} {
+    @COORDINATES { 24.9,  -0.93872, 4.67658}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_19} {
+    @COORDINATES { 27.6,  -0.87450, 4.68732}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_20} {
+    @COORDINATES { 30.333,  -0.75829, 4.25658}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_21} {
+    @COORDINATES { 33.067,  -0.65014, 3.83042}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_22} {
+    @COORDINATES { 35.8,  -0.55140, 3.41730}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_23} {
+    @COORDINATES { 38.5,  -0.43311, 2.83931}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {upper_24} {
+    @COORDINATES { 41.2,  -0.28150, 1.95807}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {midblade_joint} {
+    @COORDINATES { 43.9,  0.0,  0.0}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+  @POINT_NAME {tip} {
+    @COORDINATES { 100.0,  0.0,  0.0}
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+  }
+}
+
+@VERTEX_DEFINITION {
+  @VERTEX_NAME { root_v } {
+    @AT_POINT { root }
+  }
+  @VERTEX_NAME { root_joint_v } {
+    @AT_POINT { root_joint }
+  }
+  @VERTEX_NAME { lower_10_v } {
+    @AT_POINT { lower_10 }
+  }
+  @VERTEX_NAME { lower_11_v } {
+    @AT_POINT { lower_11 }
+  }
+  @VERTEX_NAME { lower_12_v } {
+    @AT_POINT { lower_12 }
+  }
+  @VERTEX_NAME { lower_13_v } {
+    @AT_POINT { lower_13 }
+  }
+  @VERTEX_NAME { lower_14_v } {
+    @AT_POINT { lower_14 }
+  }
+  @VERTEX_NAME { lower_15_v } {
+    @AT_POINT { lower_15 }
+  }
+  @VERTEX_NAME { lower_16_v } {
+    @AT_POINT { lower_16 }
+  }
+  @VERTEX_NAME { lower_17_v } {
+    @AT_POINT { lower_17 }
+  }
+  @VERTEX_NAME { lower_18_v } {
+    @AT_POINT { lower_18 }
+  }
+  @VERTEX_NAME { lower_19_v } {
+    @AT_POINT { lower_19 }
+  }
+  @VERTEX_NAME { lower_20_v } {
+    @AT_POINT { lower_20 }
+  }
+  @VERTEX_NAME { lower_21_v } {
+    @AT_POINT { lower_21 }
+  }
+  @VERTEX_NAME { lower_22_v } {
+    @AT_POINT { lower_22 }
+  }
+  @VERTEX_NAME { lower_23_v } {
+    @AT_POINT { lower_23 }
+  }
+  @VERTEX_NAME { lower_24_v } {
+    @AT_POINT { lower_24 }
+  }
+  @VERTEX_NAME { upper_10_v } {
+    @AT_POINT { upper_10 }
+  }
+  @VERTEX_NAME { upper_11_v } {
+    @AT_POINT { upper_11 }
+  }
+  @VERTEX_NAME { upper_12_v } {
+    @AT_POINT { upper_12 }
+  }
+  @VERTEX_NAME { upper_13_v } {
+    @AT_POINT { upper_13 }
+  }
+  @VERTEX_NAME { upper_14_v } {
+    @AT_POINT { upper_14 }
+  }
+  @VERTEX_NAME { upper_15_v } {
+    @AT_POINT { upper_15 }
+  }
+  @VERTEX_NAME { upper_16_v } {
+    @AT_POINT { upper_16 }
+  }
+  @VERTEX_NAME { upper_17_v } {
+    @AT_POINT { upper_17 }
+  }
+  @VERTEX_NAME { upper_18_v } {
+    @AT_POINT { upper_18 }
+  }
+  @VERTEX_NAME { upper_19_v } {
+    @AT_POINT { upper_19 }
+  }
+  @VERTEX_NAME { upper_20_v } {
+    @AT_POINT { upper_20 }
+  }
+  @VERTEX_NAME { upper_21_v } {
+    @AT_POINT { upper_21 }
+  }
+  @VERTEX_NAME { upper_22_v } {
+    @AT_POINT { upper_22 }
+  }
+  @VERTEX_NAME { upper_23_v } {
+    @AT_POINT { upper_23 }
+  }
+  @VERTEX_NAME { upper_24_v } {
+    @AT_POINT { upper_24 }
+  }
+  @VERTEX_NAME { midblade_joint_v } {
+    @AT_POINT { midblade_joint }
+  }
+  @VERTEX_NAME { tip_v } {
+    @AT_POINT { tip }
+  }
+}
+
+@EDGE_DEFINITION {
+  @EDGE_NAME {edge_01_09} {
+    @CONNECTED_TO_VERTICES {root_v, root_joint_v}
+    @CURVE_NAME {curve_01_09}
+  }
+  @EDGE_NAME {lower_edge_09_10} {
+    @CONNECTED_TO_VERTICES {root_joint_v, lower_10_v}
+    @CURVE_NAME {lower_curve_09_10}
+  }
+  @EDGE_NAME {lower_edge_10_11} {
+    @CONNECTED_TO_VERTICES {lower_10_v, lower_11_v}
+    @CURVE_NAME {lower_curve_10_11}
+  }
+  @EDGE_NAME {lower_edge_11_12} {
+    @CONNECTED_TO_VERTICES {lower_11_v, lower_12_v}
+    @CURVE_NAME {lower_curve_11_12}
+  }
+  @EDGE_NAME {lower_edge_12_13} {
+    @CONNECTED_TO_VERTICES {lower_12_v, lower_13_v}
+    @CURVE_NAME {lower_curve_12_13}
+  }
+  @EDGE_NAME {lower_edge_13_14} {
+    @CONNECTED_TO_VERTICES {lower_13_v, lower_14_v}
+    @CURVE_NAME {lower_curve_13_14}
+  }
+  @EDGE_NAME {lower_edge_14_15} {
+    @CONNECTED_TO_VERTICES {lower_14_v, lower_15_v}
+    @CURVE_NAME {lower_curve_14_15}
+  }
+  @EDGE_NAME {lower_edge_15_16} {
+    @CONNECTED_TO_VERTICES {lower_15_v, lower_16_v}
+    @CURVE_NAME {lower_curve_15_16}
+  }
+  @EDGE_NAME {lower_edge_16_17} {
+    @CONNECTED_TO_VERTICES {lower_16_v, lower_17_v}
+    @CURVE_NAME {lower_curve_16_17}
+  }
+  @EDGE_NAME {lower_edge_17_18} {
+    @CONNECTED_TO_VERTICES {lower_17_v, lower_18_v}
+    @CURVE_NAME {lower_curve_17_18}
+  }
+  @EDGE_NAME {lower_edge_18_19} {
+    @CONNECTED_TO_VERTICES {lower_18_v, lower_19_v}
+    @CURVE_NAME {lower_curve_18_19}
+  }
+  @EDGE_NAME {lower_edge_19_20} {
+    @CONNECTED_TO_VERTICES {lower_19_v, lower_20_v}
+    @CURVE_NAME {lower_curve_19_20}
+  }
+  @EDGE_NAME {lower_edge_20_21} {
+    @CONNECTED_TO_VERTICES {lower_20_v, lower_21_v}
+    @CURVE_NAME {lower_curve_20_21}
+  }
+  @EDGE_NAME {lower_edge_21_22} {
+    @CONNECTED_TO_VERTICES {lower_21_v, lower_22_v}
+    @CURVE_NAME {lower_curve_21_22}
+  }
+  @EDGE_NAME {lower_edge_22_23} {
+    @CONNECTED_TO_VERTICES {lower_22_v, lower_23_v}
+    @CURVE_NAME {lower_curve_22_23}
+  }
+  @EDGE_NAME {lower_edge_23_24} {
+    @CONNECTED_TO_VERTICES {lower_23_v, lower_24_v}
+    @CURVE_NAME {lower_curve_23_24}
+  }
+  @EDGE_NAME {lower_edge_24_25} {
+    @CONNECTED_TO_VERTICES {lower_24_v, midblade_joint_v}
+    @CURVE_NAME {lower_curve_24_25}
+  }
+  @EDGE_NAME {upper_edge_09_10} {
+    @CONNECTED_TO_VERTICES {root_joint_v, upper_10_v}
+    @CURVE_NAME {upper_curve_09_10}
+  }
+  @EDGE_NAME {upper_edge_10_11} {
+    @CONNECTED_TO_VERTICES {upper_10_v, upper_11_v}
+    @CURVE_NAME {upper_curve_10_11}
+  }
+  @EDGE_NAME {upper_edge_11_12} {
+    @CONNECTED_TO_VERTICES {upper_11_v, upper_12_v}
+    @CURVE_NAME {upper_curve_11_12}
+  }
+  @EDGE_NAME {upper_edge_12_13} {
+    @CONNECTED_TO_VERTICES {upper_12_v, upper_13_v}
+    @CURVE_NAME {upper_curve_12_13}
+  }
+  @EDGE_NAME {upper_edge_13_14} {
+    @CONNECTED_TO_VERTICES {upper_13_v, upper_14_v}
+    @CURVE_NAME {upper_curve_13_14}
+  }
+  @EDGE_NAME {upper_edge_14_15} {
+    @CONNECTED_TO_VERTICES {upper_14_v, upper_15_v}
+    @CURVE_NAME {upper_curve_14_15}
+  }
+  @EDGE_NAME {upper_edge_15_16} {
+    @CONNECTED_TO_VERTICES {upper_15_v, upper_16_v}
+    @CURVE_NAME {upper_curve_15_16}
+  }
+  @EDGE_NAME {upper_edge_16_17} {
+    @CONNECTED_TO_VERTICES {upper_16_v, upper_17_v}
+    @CURVE_NAME {upper_curve_16_17}
+  }
+  @EDGE_NAME {upper_edge_17_18} {
+    @CONNECTED_TO_VERTICES {upper_17_v, upper_18_v}
+    @CURVE_NAME {upper_curve_17_18}
+  }
+  @EDGE_NAME {upper_edge_18_19} {
+    @CONNECTED_TO_VERTICES {upper_18_v, upper_19_v}
+    @CURVE_NAME {upper_curve_18_19}
+  }
+  @EDGE_NAME {upper_edge_19_20} {
+    @CONNECTED_TO_VERTICES {upper_19_v, upper_20_v}
+    @CURVE_NAME {upper_curve_19_20}
+  }
+  @EDGE_NAME {upper_edge_20_21} {
+    @CONNECTED_TO_VERTICES {upper_20_v, upper_21_v}
+    @CURVE_NAME {upper_curve_20_21}
+  }
+  @EDGE_NAME {upper_edge_21_22} {
+    @CONNECTED_TO_VERTICES {upper_21_v, upper_22_v}
+    @CURVE_NAME {upper_curve_21_22}
+  }
+  @EDGE_NAME {upper_edge_22_23} {
+    @CONNECTED_TO_VERTICES {upper_22_v, upper_23_v}
+    @CURVE_NAME {upper_curve_22_23}
+  }
+  @EDGE_NAME {upper_edge_23_24} {
+    @CONNECTED_TO_VERTICES {upper_23_v, upper_24_v}
+    @CURVE_NAME {upper_curve_23_24}
+  }
+  @EDGE_NAME {upper_edge_24_25} {
+    @CONNECTED_TO_VERTICES {upper_24_v, midblade_joint_v}
+    @CURVE_NAME {upper_curve_24_25}
+  }
+  @EDGE_NAME {edge_25_40} {
+    @CONNECTED_TO_VERTICES {midblade_joint_v, tip_v}
+    @CURVE_NAME {curve_25_40}
+  }
+}
+
+@BEAM_DEFINITION {
+  @BEAM_NAME {beam_01_09} {
+    @EDGE_NAME {edge_01_09}
+    @BEAM_PROPERTY_NAME {prop_01_09}
+  }
+  @BEAM_NAME {lower_beam_09_10} {
+    @EDGE_NAME {lower_edge_09_10}
+    @BEAM_PROPERTY_NAME {prop_09_10}
+  }
+  @BEAM_NAME {lower_beam_10_11} {
+    @EDGE_NAME {lower_edge_10_11}
+    @BEAM_PROPERTY_NAME {prop_10_11}
+  }
+  @BEAM_NAME {lower_beam_11_12} {
+    @EDGE_NAME {lower_edge_11_12}
+    @BEAM_PROPERTY_NAME {prop_11_12}
+  }
+  @BEAM_NAME {lower_beam_12_13} {
+    @EDGE_NAME {lower_edge_12_13}
+    @BEAM_PROPERTY_NAME {prop_12_13}
+  }
+  @BEAM_NAME {lower_beam_13_14} {
+    @EDGE_NAME {lower_edge_13_14}
+    @BEAM_PROPERTY_NAME {prop_13_14}
+  }
+  @BEAM_NAME {lower_beam_14_15} {
+    @EDGE_NAME {lower_edge_14_15}
+    @BEAM_PROPERTY_NAME {prop_14_15}
+  }
+  @BEAM_NAME {lower_beam_15_16} {
+    @EDGE_NAME {lower_edge_15_16}
+    @BEAM_PROPERTY_NAME {prop_15_16}
+  }
+  @BEAM_NAME {lower_beam_16_17} {
+    @EDGE_NAME {lower_edge_16_17}
+    @BEAM_PROPERTY_NAME {prop_16_17}
+  }
+  @BEAM_NAME {lower_beam_17_18} {
+    @EDGE_NAME {lower_edge_17_18}
+    @BEAM_PROPERTY_NAME {prop_17_18}
+  }
+  @BEAM_NAME {lower_beam_18_19} {
+    @EDGE_NAME {lower_edge_18_19}
+    @BEAM_PROPERTY_NAME {prop_18_19}
+  }
+  @BEAM_NAME {lower_beam_19_20} {
+    @EDGE_NAME {lower_edge_19_20}
+    @BEAM_PROPERTY_NAME {prop_19_20}
+  }
+  @BEAM_NAME {lower_beam_20_21} {
+    @EDGE_NAME {lower_edge_20_21}
+    @BEAM_PROPERTY_NAME {prop_20_21}
+  }
+  @BEAM_NAME {lower_beam_21_22} {
+    @EDGE_NAME {lower_edge_21_22}
+    @BEAM_PROPERTY_NAME {prop_21_22}
+  }
+  @BEAM_NAME {lower_beam_22_23} {
+    @EDGE_NAME {lower_edge_22_23}
+    @BEAM_PROPERTY_NAME {prop_22_23}
+  }
+  @BEAM_NAME {lower_beam_23_24} {
+    @EDGE_NAME {lower_edge_23_24}
+    @BEAM_PROPERTY_NAME {prop_23_24}
+  }
+  @BEAM_NAME {lower_beam_24_25} {
+    @EDGE_NAME {lower_edge_24_25}
+    @BEAM_PROPERTY_NAME {prop_24_25}
+  }
+  @BEAM_NAME {upper_beam_09_10} {
+    @EDGE_NAME {upper_edge_09_10}
+    @BEAM_PROPERTY_NAME {prop_09_10}
+  }
+  @BEAM_NAME {upper_beam_10_11} {
+    @EDGE_NAME {upper_edge_10_11}
+    @BEAM_PROPERTY_NAME {prop_10_11}
+  }
+  @BEAM_NAME {upper_beam_11_12} {
+    @EDGE_NAME {upper_edge_11_12}
+    @BEAM_PROPERTY_NAME {prop_11_12}
+  }
+  @BEAM_NAME {upper_beam_12_13} {
+    @EDGE_NAME {upper_edge_12_13}
+    @BEAM_PROPERTY_NAME {prop_12_13}
+  }
+  @BEAM_NAME {upper_beam_13_14} {
+    @EDGE_NAME {upper_edge_13_14}
+    @BEAM_PROPERTY_NAME {prop_13_14}
+  }
+  @BEAM_NAME {upper_beam_14_15} {
+    @EDGE_NAME {upper_edge_14_15}
+    @BEAM_PROPERTY_NAME {prop_14_15}
+  }
+  @BEAM_NAME {upper_beam_15_16} {
+    @EDGE_NAME {upper_edge_15_16}
+    @BEAM_PROPERTY_NAME {prop_15_16}
+  }
+  @BEAM_NAME {upper_beam_16_17} {
+    @EDGE_NAME {upper_edge_16_17}
+    @BEAM_PROPERTY_NAME {prop_16_17}
+  }
+  @BEAM_NAME {upper_beam_17_18} {
+    @EDGE_NAME {upper_edge_17_18}
+    @BEAM_PROPERTY_NAME {prop_17_18}
+  }
+  @BEAM_NAME {upper_beam_18_19} {
+    @EDGE_NAME {upper_edge_18_19}
+    @BEAM_PROPERTY_NAME {prop_18_19}
+  }
+  @BEAM_NAME {upper_beam_19_20} {
+    @EDGE_NAME {upper_edge_19_20}
+    @BEAM_PROPERTY_NAME {prop_19_20}
+  }
+  @BEAM_NAME {upper_beam_20_21} {
+    @EDGE_NAME {upper_edge_20_21}
+    @BEAM_PROPERTY_NAME {prop_20_21}
+  }
+  @BEAM_NAME {upper_beam_21_22} {
+    @EDGE_NAME {upper_edge_21_22}
+    @BEAM_PROPERTY_NAME {prop_21_22}
+  }
+  @BEAM_NAME {upper_beam_22_23} {
+    @EDGE_NAME {upper_edge_22_23}
+    @BEAM_PROPERTY_NAME {prop_22_23}
+  }
+  @BEAM_NAME {upper_beam_23_24} {
+    @EDGE_NAME {upper_edge_23_24}
+    @BEAM_PROPERTY_NAME {prop_23_24}
+  }
+  @BEAM_NAME {upper_beam_24_25} {
+    @EDGE_NAME {upper_edge_24_25}
+    @BEAM_PROPERTY_NAME {prop_24_25}
+  }
+  @BEAM_NAME {beam_25_40} {
+    @EDGE_NAME {edge_25_40}
+    @BEAM_PROPERTY_NAME {prop_25_40}
+  }
+}
+
+@CURVE_DEFINITION {
+  @CURVE_NAME {curve_01_09} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {root}
+      @END_POINT_1 {root_joint}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_01_09}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_01_09}
+  }
+  @CURVE_NAME {lower_curve_09_10} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {root_joint}
+      @END_POINT_1 {lower_10}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_09_10}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_10_11} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_10}
+      @END_POINT_1 {lower_11}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_10_11}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_11_12} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_11}
+      @END_POINT_1 {lower_12}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_11_12}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_12_13} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_12}
+      @END_POINT_1 {lower_13}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_12_13}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_13_14} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_13}
+      @END_POINT_1 {lower_14}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_13_14}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_14_15} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_14}
+      @END_POINT_1 {lower_15}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_14_15}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_15_16} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_15}
+      @END_POINT_1 {lower_16}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_15_16}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_16_17} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_16}
+      @END_POINT_1 {lower_17}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_16_17}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_17_18} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_17}
+      @END_POINT_1 {lower_18}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_17_18}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_18_19} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_18}
+      @END_POINT_1 {lower_19}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_18_19}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_19_20} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_19}
+      @END_POINT_1 {lower_20}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_19_20}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_20_21} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_20}
+      @END_POINT_1 {lower_21}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_20_21}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_21_22} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_21}
+      @END_POINT_1 {lower_22}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_21_22}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_22_23} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_22}
+      @END_POINT_1 {lower_23}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_22_23}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_23_24} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_23}
+      @END_POINT_1 {lower_24}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_23_24}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {lower_curve_24_25} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {lower_24}
+      @END_POINT_1 {midblade_joint}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_24_25}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_09_10} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {root_joint}
+      @END_POINT_1 {upper_10}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_09_10}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_10_11} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_10}
+      @END_POINT_1 {upper_11}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_10_11}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_11_12} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_11}
+      @END_POINT_1 {upper_12}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_11_12}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_12_13} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_12}
+      @END_POINT_1 {upper_13}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_12_13}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_13_14} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_13}
+      @END_POINT_1 {upper_14}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_13_14}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_14_15} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_14}
+      @END_POINT_1 {upper_15}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_14_15}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_15_16} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_15}
+      @END_POINT_1 {upper_16}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_15_16}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_16_17} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_16}
+      @END_POINT_1 {upper_17}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_16_17}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_17_18} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_17}
+      @END_POINT_1 {upper_18}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_17_18}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_18_19} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_18}
+      @END_POINT_1 {upper_19}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_18_19}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_19_20} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_19}
+      @END_POINT_1 {upper_20}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_19_20}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_20_21} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_20}
+      @END_POINT_1 {upper_21}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_20_21}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_21_22} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_21}
+      @END_POINT_1 {upper_22}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_21_22}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_22_23} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_22}
+      @END_POINT_1 {upper_23}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_22_23}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_23_24} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_23}
+      @END_POINT_1 {upper_24}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_23_24}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {upper_curve_24_25} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {upper_24}
+      @END_POINT_1 {midblade_joint}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_24_25}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_one_element}
+  }
+  @CURVE_NAME {curve_25_40} {
+    @IS_DEFINED_IN_FRAME {INERTIAL}
+    @POINT_DEFINITION {
+      @NUMBER_OF_CONTROL_POINTS {     2}
+      @DEGREE_OF_CURVE {     1}
+      @RATIONAL_CURVE_FLAG {NO}
+      @END_POINT_0 {midblade_joint}
+      @END_POINT_1 {tip}
+    }
+    @TRIAD_DEFINITION {
+      @ORIENTATION_DISTRIBUTION_NAME {orientation_25_40}
+      @INITIAL_COORDINATE{0}
+    }
+    @CURVE_MESH_PARAMETERS_NAME {mesh_25_40}
+  }
+}
+
+@ORIENTATION_DISTRIBUTION_DEFINITION {
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_01_09 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.000000000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 01
+
+    @ETA_COORDINATE { 0.106382979}
+    @TWIST_ANGLE    {13.30800}
+
+    @ETA_COORDINATE { 0.148936170}
+    @TWIST_ANGLE    {13.30800}
+
+    @ETA_COORDINATE { 0.191489362}
+    @TWIST_ANGLE    {13.30800}
+
+    @ETA_COORDINATE { 0.234042553}
+    @TWIST_ANGLE    {13.30800}
+
+    @ETA_COORDINATE { 0.276595745}
+    @TWIST_ANGLE    {13.30800}
+
+    @ETA_COORDINATE { 0.510638298}
+    @TWIST_ANGLE    {13.30800}
+
+    @ETA_COORDINATE { 0.553191489}
+    @TWIST_ANGLE    {13.30800}
+
+    @ETA_COORDINATE { 1.000000000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 09
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_09_10 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 09
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 10
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_10_11 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 10
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 11
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_11_12 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 11    
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 12
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_12_13 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 12
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 13
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_13_14 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {13.30800}
+    ! station 13
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {13.17700}
+    ! station 14
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_14_15 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {13.17700}
+    ! station 14
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {13.04600}
+    ! station 15
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_15_16 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {13.04600}
+    ! station 15
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {12.91500}
+    ! station 16
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_16_17 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {12.91500}
+    ! station 16
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {12.13300}
+    ! station 17
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_17_18 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {12.13300}
+    ! station 17
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {11.35000}
+    ! station 18
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_18_19 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {11.35000}
+    ! station 18
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {10.56800}
+    ! station 19
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_19_20 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {10.56800}
+    ! station 19
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    {10.10100}
+    ! station 20
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_20_21 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    {10.10100}
+    ! station 20
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    { 9.63300}
+    ! station 21
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_21_22 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    { 9.63300}
+    ! station 21
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    { 9.16600}
+    ! station 22
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_22_23 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    { 9.16600}
+    ! station 22
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    { 8.67300}
+    ! station 23
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_23_24 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    { 8.67300}
+    ! station 23
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    { 8.18100}
+    ! station 24
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_24_25 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.00000}
+    @TWIST_ANGLE    { 8.18100}
+    ! station 24
+
+    @ETA_COORDINATE { 1.00000}
+    @TWIST_ANGLE    { 7.68800}
+    ! station 25
+  }
+
+  @ORIENTATION_DISTRIBUTION_NAME { orientation_25_40 } {
+    @ORIENTATION_DEFINITION_TYPE { TWIST_ANGLE }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    @ETA_COORDINATE { 0.000000000}
+    @TWIST_ANGLE    { 7.68800}
+    ! station 25
+
+    @ETA_COORDINATE { 0.048128342}
+    @TWIST_ANGLE    { 7.18500}
+
+    @ETA_COORDINATE { 0.096256684}
+    @TWIST_ANGLE    { 6.68300}
+
+    @ETA_COORDINATE { 0.144385027}
+    @TWIST_ANGLE    { 6.18000}
+
+    @ETA_COORDINATE { 0.290552585}
+    @TWIST_ANGLE    { 4.74300}
+
+    @ETA_COORDINATE { 0.406417112}
+    @TWIST_ANGLE    { 3.63300}
+
+    @ETA_COORDINATE { 0.434937611}
+    @TWIST_ANGLE    { 3.38300}
+
+    @ETA_COORDINATE { 0.522281640}
+    @TWIST_ANGLE    { 2.73500}
+
+    @ETA_COORDINATE { 0.579322638}
+    @TWIST_ANGLE    { 2.34800}
+
+    @ETA_COORDINATE { 0.725490196}
+    @TWIST_ANGLE    { 1.38000}
+
+    @ETA_COORDINATE { 0.811051693}
+    @TWIST_ANGLE    { 0.79900}
+
+    @ETA_COORDINATE { 0.898395722}
+    @TWIST_ANGLE    { 0.28000}
+
+    @ETA_COORDINATE { 0.923351159}
+    @TWIST_ANGLE    { 0.21000}
+
+    @ETA_COORDINATE { 0.950089127}
+    @TWIST_ANGLE    { 0.14000}
+
+    @ETA_COORDINATE { 0.975044563}
+    @TWIST_ANGLE    { 0.07000}
+
+    @ETA_COORDINATE { 1.000000000}
+    @TWIST_ANGLE    { 0.00000}
+    ! station 40
+  }
+}
+
+@CURVE_MESH_PARAMETERS_DEFINITION {
+  @CURVE_MESH_PARAMETERS_NAME {mesh_01_09} {
+    @NUMBER_OF_ELEMENTS {8}
+    @ORDER_OF_ELEMENTS {3}
+    @ETA_COORDINATE {0.000000000}
+    @ETA_COORDINATE {0.106382979}
+    @ETA_COORDINATE {0.148936170}
+    @ETA_COORDINATE {0.191489362}
+    @ETA_COORDINATE {0.234042553}
+    @ETA_COORDINATE {0.276595745}
+    @ETA_COORDINATE {0.510638298}
+    @ETA_COORDINATE {0.553191489}
+    @ETA_COORDINATE {1.000000000}
+    @COMMENTS {use ETA_COORDINATE, not ETA_VALUE}
+  }
+  @CURVE_MESH_PARAMETERS_NAME {mesh_one_element} {
+    @NUMBER_OF_ELEMENTS {1}
+    @ORDER_OF_ELEMENTS {3}
+  }
+  @CURVE_MESH_PARAMETERS_NAME {mesh_25_40} {
+    @NUMBER_OF_ELEMENTS {15}
+    @ORDER_OF_ELEMENTS {3}
+    @ETA_COORDINATE {0.000000000}
+    @ETA_COORDINATE {0.048128342}
+    @ETA_COORDINATE {0.096256684}
+    @ETA_COORDINATE {0.144385027}
+    @ETA_COORDINATE {0.290552585}
+    @ETA_COORDINATE {0.406417112}
+    @ETA_COORDINATE {0.434937611}
+    @ETA_COORDINATE {0.522281640}
+    @ETA_COORDINATE {0.579322638}
+    @ETA_COORDINATE {0.725490196}
+    @ETA_COORDINATE {0.811051693}
+    @ETA_COORDINATE {0.898395722}
+    @ETA_COORDINATE {0.923351159}
+    @ETA_COORDINATE {0.950089127}
+    @ETA_COORDINATE {0.975044563}
+    @ETA_COORDINATE {1.000000000}
+    @COMMENTS {use ETA_COORDINATE, not ETA_VALUE}
+  }
+}
+
+@BOUNDARY_CONDITION_DEFINITION {
+  @BOUNDARY_CONDITION_NAME {clampRoot} {
+    @ENTITY_NAME {root_v}
+    @DISPLACEMENT_BOUNDARY_CONDITIONS { 1, 1, 1}
+    @ROTATION_BOUNDARY_CONDITIONS { 1, 1, 1}
+  }
+}
+
+@BEAM_PROPERTY_DEFINITION {
+  @BEAM_PROPERTY_NAME {prop_01_09} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 01
+    @ETA_COORDINATE {0.000000000} {
+      @STIFFNESS_MATRIX { 8.2009889380e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.5112874703e-01,    1.0303755067e-01,
+                                               1.0694623766e+10,   -7.8254877367e-02,    1.8095367871e-04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.0694623766e+10,   -2.1412682154e-04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.6271537595e+11,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.1249525822e+11,    2.2102981903e-01,
+                                                                                                                                   3.1249525822e+11}
+      @MASS_PER_UNIT_SPAN { 5.5605498728e+03}
+      @MOMENTS_OF_INERTIA { 4.2346651565e+04,
+                            2.1173325783e+04,
+                            2.1173325783e+04}
+      @CENTRE_OF_MASS_LOCATION {-6.3718233324e-15,
+                                -1.4701013960e-16}
+    }
+    
+    ! station 02
+    @ETA_COORDINATE {0.106382979} {
+      @STIFFNESS_MATRIX { 7.4503635656e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.2898578169e+05,   -4.3637710925e+08,
+                                               9.5744153902e+09,    9.6520831285e+03,   -3.4238412040e+04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    9.4621721457e+09,    2.5054619353e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.4598304306e+11,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              2.9073912298e+11,    2.4752882999e+05,
+                                                                                                                                   2.8024167444e+11}
+      @MASS_PER_UNIT_SPAN { 5.0207227659e+03}
+      @MOMENTS_OF_INERTIA { 3.8466667912e+04,
+                            1.8994376303e+04,
+                            1.9472291609e+04}
+      @CENTRE_OF_MASS_LOCATION { 3.9003644592e-03,
+                                 7.9734443661e-07}
+    }
+    
+    ! station 03
+    @ETA_COORDINATE {0.148936170} {
+      @STIFFNESS_MATRIX { 6.5028503021e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.9170379713e+05,   -9.0299593746e+08,
+                                               8.3631405754e+09,   -1.7599989807e+04,   -7.5566600394e+04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    8.1663865401e+09,    5.7294916189e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.2671567189e+11,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              2.5238188776e+11,   -3.8345598697e+05,
+                                                                                                                                   2.4550590281e+11}
+      @MASS_PER_UNIT_SPAN { 4.3842640554e+03}
+      @MOMENTS_OF_INERTIA { 3.3560597828e+04,
+                            1.6655306462e+04,
+                            1.6905291366e+04}
+      @CENTRE_OF_MASS_LOCATION { 9.3267847065e-03,
+                                 1.5577985009e-05}
+    }
+    
+    ! station 04
+    @ETA_COORDINATE {0.191489362} {
+      @STIFFNESS_MATRIX { 5.5560852563e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    4.5121632516e-02,   -1.3834188183e+09,
+                                               7.1384742755e+09,    6.3775441985e-02,    1.6488325486e-04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    6.8859481091e+09,    8.7341456937e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.0746982340e+11,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              2.1452275707e+11,    7.3304735124e-03,
+                                                                                                                                   2.1047066108e+11}
+      @MASS_PER_UNIT_SPAN { 3.7482322258e+03}
+      @MOMENTS_OF_INERTIA { 2.8666238870e+04,
+                            1.4372293026e+04,
+                            1.4293945844e+04}
+      @CENTRE_OF_MASS_LOCATION { 1.6803409326e-02,
+                                 3.6674780585e-15}
+    }
+    
+    ! station 05
+    @ETA_COORDINATE {0.234042553} {
+      @STIFFNESS_MATRIX { 4.6296765258e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -3.0551090837e-02,   -2.3257633721e+09,
+                                               5.9029419848e+09,   -6.6628533941e-02,    2.9863421469e-04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    5.6327308917e+09,    1.4461768291e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         8.8364205419e+10,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.7746233470e+11,    1.4117855579e-01,
+                                                                                                                                   1.7629705188e+11}
+      @MASS_PER_UNIT_SPAN { 3.1215909814e+03}
+      @MOMENTS_OF_INERTIA { 2.3848653468e+04,
+                            1.1885591955e+04,
+                            1.1963061513e+04}
+      @CENTRE_OF_MASS_LOCATION { 3.3954382754e-02,
+                                 5.6640174391e-15}
+    }
+    
+    ! station 06
+    @ETA_COORDINATE {0.276595745} {
+      @STIFFNESS_MATRIX { 4.1783510998e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -3.7947687315e+05,   -3.2570485327e+09,
+                                               5.2875851308e+09,   -1.9767511638e+04,    9.6372754673e+04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.9969003757e+09,    1.9943053608e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         7.8454270780e+10,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.5803047543e+11,   -5.5482714482e+05,
+                                                                                                                                   1.5979619059e+11}
+      @MASS_PER_UNIT_SPAN { 2.8137369848e+03}
+      @MOMENTS_OF_INERTIA { 2.1396244005e+04,
+                            1.0581115084e+04,
+                            1.0815128921e+04}
+      @CENTRE_OF_MASS_LOCATION { 5.2031418009e-02,
+                                -4.1860840914e-06}
+    }
+    
+    ! station 07
+    @ETA_COORDINATE {0.510638298} {
+      @STIFFNESS_MATRIX { 4.2646139126e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -1.3856608760e+02,   -3.9245272819e+09,
+                                               4.9598157044e+09,    6.3957794083e+02,    1.6184170489e+01,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    6.0739239419e+09,    2.5222286155e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         7.2277540027e+10,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.4870203091e+11,    1.0897798170e+03,
+                                                                                                                                   1.5418121322e+11}
+      @MASS_PER_UNIT_SPAN { 3.1564829350e+03}
+      @MOMENTS_OF_INERTIA { 2.1175047796e+04,
+                            1.0561303368e+04,
+                            1.0613744428e+04}
+      @CENTRE_OF_MASS_LOCATION { 5.5996239928e-02,
+                                -6.9564372166e-11}
+    }
+    
+    ! station 08
+    @ETA_COORDINATE {0.553191489} {
+      @STIFFNESS_MATRIX { 3.9065883703e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    8.2477999668e+02,   -4.5943280516e+09,
+                                               4.4616638496e+09,    6.1330051124e+02,    2.7970094933e+01,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    5.5908718180e+09,    2.9921203727e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         6.5071935877e+10,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.3514570117e+11,    1.2197726075e+03,
+                                                                                                                                   1.4141274786e+11}
+      @MASS_PER_UNIT_SPAN { 2.9297115262e+03}
+      @MOMENTS_OF_INERTIA { 1.9502662183e+04,
+                            9.7039686867e+03,
+                            9.7986934962e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.5808655275e-02,
+                                 5.5318803656e-15}
+    }
+    
+    ! station 09
+    @ETA_COORDINATE {1.000000000} {
+      @STIFFNESS_MATRIX { 3.3352188603e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.9372654679e+05,   -8.5690413975e+09,
+                                               3.7622572168e+09,    3.3012258652e+06,    1.5336963947e+04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.4554665130e+09,    5.4775368093e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         5.1191245043e+10,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.0788852269e+11,   -1.3433178620e+08,
+                                                                                                                                   1.2652377004e+11}
+      @MASS_PER_UNIT_SPAN { 2.5728374889e+03}
+      @MOMENTS_OF_INERTIA { 1.6770946890e+04,
+                            7.9416080268e+03,
+                            8.8293388635e+03}
+      @CENTRE_OF_MASS_LOCATION { 1.7485129384e-01,
+                                -1.2739355185e-04}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_09_10} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 09
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 3.3352188603e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.9372654679e+05,   -8.5690413975e+09,
+                                               3.7622572168e+09,    3.3012258652e+06,    1.5336963947e+04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.4554665130e+09,    5.4775368093e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         5.1191245043e+10,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.0788852269e+11,   -1.3433178620e+08,
+                                                                                                                                   1.2652377004e+11}
+      @MASS_PER_UNIT_SPAN { 2.5728374889e+03}
+      @MOMENTS_OF_INERTIA { 1.6770946890e+04,
+                            7.9416080268e+03,
+                            8.8293388635e+03}
+      @CENTRE_OF_MASS_LOCATION { 1.7485129384e-01,
+                                -1.2739355185e-04}
+    }
+    
+    ! station 10
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.2893513653e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -4.4387065753e+07,   -3.9042677861e+09,
+                                               1.5388784379e+09,    8.9025154240e+06,    6.5424038197e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.3492315307e+09,    2.5021779732e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.5654858303e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.9775457227e+10,   -3.0883759209e+08,
+                                                                                                                                   4.1851121366e+10}
+      @MASS_PER_UNIT_SPAN { 1.0931891213e+03}
+      @MOMENTS_OF_INERTIA { 4.6891376749e+03,
+                            1.5097445977e+03,
+                            3.1793930772e+03}
+      @CENTRE_OF_MASS_LOCATION { 1.7115523056e-01,
+                                -4.3040222167e-03}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_10_11} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 10
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.2893513653e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -4.4387065753e+07,   -3.9042677861e+09,
+                                               1.5388784379e+09,    8.9025154240e+06,    6.5424038197e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.3492315307e+09,    2.5021779732e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.5654858303e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.9775457227e+10,   -3.0883759209e+08,
+                                                                                                                                   4.1851121366e+10}
+      @MASS_PER_UNIT_SPAN { 1.0931891213e+03}
+      @MOMENTS_OF_INERTIA { 4.6891376749e+03,
+                            1.5097445977e+03,
+                            3.1793930772e+03}
+      @CENTRE_OF_MASS_LOCATION { 1.7115523056e-01,
+                                -4.3040222167e-03}
+    }
+    
+    ! station 11
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3168672634e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -1.1344485443e+08,   -3.4067718725e+09,
+                                               1.4936570118e+09,    3.7224100597e+07,   -3.0963927867e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    8.2500635812e+08,   -3.3448549943e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         4.4319576440e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.1096595734e+10,   -1.1736535268e+09,
+                                                                                                                                   3.6143928217e+10}
+      @MASS_PER_UNIT_SPAN { 1.0249833065e+03}
+      @MOMENTS_OF_INERTIA { 3.5773309261e+03,
+                            7.5973441920e+02,
+                            2.8175965069e+03}
+      @CENTRE_OF_MASS_LOCATION { 1.5339438850e-01,
+                                -5.4373441255e-03}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_11_12} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 11
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3168672634e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -1.1344485443e+08,   -3.4067718725e+09,
+                                               1.4936570118e+09,    3.7224100597e+07,   -3.0963927867e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    8.2500635812e+08,   -3.3448549943e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         4.4319576440e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.1096595734e+10,   -1.1736535268e+09,
+                                                                                                                                   3.6143928217e+10}
+      @MASS_PER_UNIT_SPAN { 1.0249833065e+03}
+      @MOMENTS_OF_INERTIA { 3.5773309261e+03,
+                            7.5973441920e+02,
+                            2.8175965069e+03}
+      @CENTRE_OF_MASS_LOCATION { 1.5339438850e-01,
+                                -5.4373441255e-03}
+    }
+    
+    ! station 12
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.2225801646e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -1.9753927646e+08,   -5.3124224239e+09,
+                                               1.1910426212e+09,    3.6215960580e+07,   -2.6387359009e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    5.2607997052e+08,   -1.5000008846e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         2.1896310268e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.3148545772e+09,   -1.2223823720e+09,
+                                                                                                                                   3.4521323612e+10}
+      @MASS_PER_UNIT_SPAN { 9.0949527595e+02}
+      @MOMENTS_OF_INERTIA { 2.9299259925e+03,
+                            4.0689659400e+02,
+                            2.5230293985e+03}
+      @CENTRE_OF_MASS_LOCATION { 3.2269705679e-01,
+                                -1.2510201151e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_12_13} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 12
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.2225801646e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,   -1.9753927646e+08,   -5.3124224239e+09,
+                                               1.1910426212e+09,    3.6215960580e+07,   -2.6387359009e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    5.2607997052e+08,   -1.5000008846e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         2.1896310268e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.3148545772e+09,   -1.2223823720e+09,
+                                                                                                                                   3.4521323612e+10}
+      @MASS_PER_UNIT_SPAN { 9.0949527595e+02}
+      @MOMENTS_OF_INERTIA { 2.9299259925e+03,
+                            4.0689659400e+02,
+                            2.5230293985e+03}
+      @CENTRE_OF_MASS_LOCATION { 3.2269705679e-01,
+                                -1.2510201151e-02}
+    }
+    
+    ! station 13
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3434879147e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    3.7742337296e+07,   -7.4643758668e+09,
+                                               7.2242571613e+08,    1.8402787858e+07,   -5.5926115894e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.7657705063e+08,   -4.0613556640e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.6712678515e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              7.7246673296e+09,   -1.1566560580e+09,
+                                                                                                                                   3.7878756885e+10}
+      @MASS_PER_UNIT_SPAN { 9.5292154147e+02}
+      @MOMENTS_OF_INERTIA { 3.0907642888e+03,
+                            4.5828735529e+02,
+                            2.6324769335e+03}
+      @CENTRE_OF_MASS_LOCATION { 4.9771411810e-01,
+                                 1.1329733796e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_13_14} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 13
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3434879147e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    3.7742337296e+07,   -7.4643758668e+09,
+                                               7.2242571613e+08,    1.8402787858e+07,   -5.5926115894e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.7657705063e+08,   -4.0613556640e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.6712678515e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              7.7246673296e+09,   -1.1566560580e+09,
+                                                                                                                                   3.7878756885e+10}
+      @MASS_PER_UNIT_SPAN { 9.5292154147e+02}
+      @MOMENTS_OF_INERTIA { 3.0907642888e+03,
+                            4.5828735529e+02,
+                            2.6324769335e+03}
+      @CENTRE_OF_MASS_LOCATION { 4.9771411810e-01,
+                                 1.1329733796e-02}
+    }
+    
+    ! station 14
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3957565357e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    2.9581863961e+08,   -9.4236576883e+09,
+                                               6.8906393342e+08,    1.5229889786e+07,   -6.9391974694e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.8141580212e+08,   -2.5443586005e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.7084738649e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              7.8743776003e+09,   -1.3434702705e+09,
+                                                                                                                                   4.6511479640e+10}
+      @MASS_PER_UNIT_SPAN { 9.6761347660e+02}
+      @MOMENTS_OF_INERTIA { 3.4121513541e+03,
+                            4.6282095447e+02,
+                            2.9493303996e+03}
+      @CENTRE_OF_MASS_LOCATION { 5.7619078348e-01,
+                                 2.7463476484e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_14_15} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 14
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3957565357e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    2.9581863961e+08,   -9.4236576883e+09,
+                                               6.8906393342e+08,    1.5229889786e+07,   -6.9391974694e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.8141580212e+08,   -2.5443586005e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.7084738649e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              7.8743776003e+09,   -1.3434702705e+09,
+                                                                                                                                   4.6511479640e+10}
+      @MASS_PER_UNIT_SPAN { 9.6761347660e+02}
+      @MOMENTS_OF_INERTIA { 3.4121513541e+03,
+                            4.6282095447e+02,
+                            2.9493303996e+03}
+      @CENTRE_OF_MASS_LOCATION { 5.7619078348e-01,
+                                 2.7463476484e-02}
+    }
+    
+    ! station 15
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3750743954e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    5.4553910473e+08,   -1.1360564750e+10,
+                                               6.8566103399e+08,    1.2936204133e+07,   -8.3752816224e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.7943004592e+08,   -1.4866548027e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.6911755757e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              7.4048999246e+09,   -1.5319718395e+09,
+                                                                                                                                   5.5154521404e+10}
+      @MASS_PER_UNIT_SPAN { 9.6360813424e+02}
+      @MOMENTS_OF_INERTIA { 3.7064634251e+03,
+                            4.4005046230e+02,
+                            3.2664129628e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.9808365109e-01,
+                                 4.5439240672e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_15_16} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 15
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3750743954e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    5.4553910473e+08,   -1.1360564750e+10,
+                                               6.8566103399e+08,    1.2936204133e+07,   -8.3752816224e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.7943004592e+08,   -1.4866548027e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.6911755757e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              7.4048999246e+09,   -1.5319718395e+09,
+                                                                                                                                   5.5154521404e+10}
+      @MASS_PER_UNIT_SPAN { 9.6360813424e+02}
+      @MOMENTS_OF_INERTIA { 3.7064634251e+03,
+                            4.4005046230e+02,
+                            3.2664129628e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.9808365109e-01,
+                                 4.5439240672e-02}
+    }
+    
+    ! station 16
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3441963102e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    7.4969998905e+08,   -1.1985267243e+10,
+                                               6.8590025633e+08,    1.1588296146e+07,   -9.7392494830e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.6964666882e+08,   -4.4643870610e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.6350081406e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.9364199752e+09,   -1.5776622159e+09,
+                                                                                                                                   5.8280424703e+10}
+      @MASS_PER_UNIT_SPAN { 9.5089777283e+02}
+      @MOMENTS_OF_INERTIA { 3.7900108473e+03,
+                            4.1358141660e+02,
+                            3.3764294307e+03}
+      @CENTRE_OF_MASS_LOCATION { 7.6531577019e-01,
+                                 6.1637918963e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_16_17} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 16
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3441963102e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    7.4969998905e+08,   -1.1985267243e+10,
+                                               6.8590025633e+08,    1.1588296146e+07,   -9.7392494830e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.6964666882e+08,   -4.4643870610e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.6350081406e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.9364199752e+09,   -1.5776622159e+09,
+                                                                                                                                   5.8280424703e+10}
+      @MASS_PER_UNIT_SPAN { 9.5089777283e+02}
+      @MOMENTS_OF_INERTIA { 3.7900108473e+03,
+                            4.1358141660e+02,
+                            3.3764294307e+03}
+      @CENTRE_OF_MASS_LOCATION { 7.6531577019e-01,
+                                 6.1637918963e-02}
+    }
+    
+    ! station 17
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3210982951e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.1035345355e+09,   -1.2008530354e+10,
+                                               6.8181404127e+08,    1.0392860566e+07,   -1.1930633892e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.3290961470e+08,    1.1776163423e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.4576475178e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.0204210221e+09,   -1.5498814382e+09,
+                                                                                                                                   5.7709599735e+10}
+      @MASS_PER_UNIT_SPAN { 9.3060080677e+02}
+      @MOMENTS_OF_INERTIA { 3.6518119310e+03,
+                            3.5538181048e+02,
+                            3.2964301205e+03}
+      @CENTRE_OF_MASS_LOCATION { 7.8674429567e-01,
+                                 8.8597603583e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_17_18} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 17
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.3210982951e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.1035345355e+09,   -1.2008530354e+10,
+                                               6.8181404127e+08,    1.0392860566e+07,   -1.1930633892e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.3290961470e+08,    1.1776163423e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.4576475178e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.0204210221e+09,   -1.5498814382e+09,
+                                                                                                                                   5.7709599735e+10}
+      @MASS_PER_UNIT_SPAN { 9.3060080677e+02}
+      @MOMENTS_OF_INERTIA { 3.6518119310e+03,
+                            3.5538181048e+02,
+                            3.2964301205e+03}
+      @CENTRE_OF_MASS_LOCATION { 7.8674429567e-01,
+                                 8.8597603583e-02}
+    }
+    
+    ! station 18
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.2947140343e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.4173768181e+09,   -1.1851243940e+10,
+                                               6.7391184651e+08,    9.6556168896e+06,   -1.3895508577e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.9267266011e+08,    4.6637207323e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.2706152603e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              5.1372810642e+09,   -1.5036727167e+09,
+                                                                                                                                   5.5921054927e+10}
+      @MASS_PER_UNIT_SPAN { 9.0564087455e+02}
+      @MOMENTS_OF_INERTIA { 3.4495839892e+03,
+                            2.9800884997e+02,
+                            3.1515751392e+03}
+      @CENTRE_OF_MASS_LOCATION { 7.9740609464e-01,
+                                 1.1348687224e-01}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_18_19} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 18
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.2947140343e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.4173768181e+09,   -1.1851243940e+10,
+                                               6.7391184651e+08,    9.6556168896e+06,   -1.3895508577e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.9267266011e+08,    4.6637207323e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.2706152603e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              5.1372810642e+09,   -1.5036727167e+09,
+                                                                                                                                   5.5921054927e+10}
+      @MASS_PER_UNIT_SPAN { 9.0564087455e+02}
+      @MOMENTS_OF_INERTIA { 3.4495839892e+03,
+                            2.9800884997e+02,
+                            3.1515751392e+03}
+      @CENTRE_OF_MASS_LOCATION { 7.9740609464e-01,
+                                 1.1348687224e-01}
+    }
+    
+    ! station 19
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.1520914102e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.5622054303e+09,   -7.5477112083e+09,
+                                               6.9154584690e+08,    1.0395110710e+07,   -1.5774594299e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.4965517026e+08,    5.3508321164e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.0790839506e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              4.2572135891e+09,   -1.0460356728e+09,
+                                                                                                                                   3.7143789401e+10}
+      @MASS_PER_UNIT_SPAN { 8.2832716744e+02}
+      @MOMENTS_OF_INERTIA { 2.7449140753e+03,
+                            2.4185119246e+02,
+                            2.5030628828e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4372773095e-01,
+                                 1.3736763699e-01}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_19_20} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 19
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.1520914102e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.5622054303e+09,   -7.5477112083e+09,
+                                               6.9154584690e+08,    1.0395110710e+07,   -1.5774594299e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.4965517026e+08,    5.3508321164e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.0790839506e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              4.2572135891e+09,   -1.0460356728e+09,
+                                                                                                                                   3.7143789401e+10}
+      @MASS_PER_UNIT_SPAN { 8.2832716744e+02}
+      @MOMENTS_OF_INERTIA { 2.7449140753e+03,
+                            2.4185119246e+02,
+                            2.5030628828e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4372773095e-01,
+                                 1.3736763699e-01}
+    }
+    
+    ! station 20
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.1054519867e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.4825228671e+09,   -7.3774195786e+09,
+                                               6.8075413825e+08,    1.0207060550e+07,   -1.5362633206e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.4406604583e+08,    5.2923547889e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.0320968119e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.9617952680e+09,   -1.0129779293e+09,
+                                                                                                                                   3.5483389160e+10}
+      @MASS_PER_UNIT_SPAN { 8.0148180489e+02}
+      @MOMENTS_OF_INERTIA { 2.5956929398e+03,
+                            2.2670763631e+02,
+                            2.3689853035e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4478471829e-01,
+                                 1.3596221435e-01}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_20_21} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 20
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.1054519867e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.4825228671e+09,   -7.3774195786e+09,
+                                               6.8075413825e+08,    1.0207060550e+07,   -1.5362633206e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.4406604583e+08,    5.2923547889e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.0320968119e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.9617952680e+09,   -1.0129779293e+09,
+                                                                                                                                   3.5483389160e+10}
+      @MASS_PER_UNIT_SPAN { 8.0148180489e+02}
+      @MOMENTS_OF_INERTIA { 2.5956929398e+03,
+                            2.2670763631e+02,
+                            2.3689853035e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4478471829e-01,
+                                 1.3596221435e-01}
+    }
+    
+    ! station 21
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.0573935708e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.4013382440e+09,   -7.1984667886e+09,
+                                               6.6690011124e+08,    1.0095588726e+07,   -1.4888601712e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.3808656347e+08,    5.0790704072e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.8359507714e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.6645580704e+09,   -9.7970836484e+08,
+                                                                                                                                   3.3830589933e+10}
+      @MASS_PER_UNIT_SPAN { 7.7390481409e+02}
+      @MOMENTS_OF_INERTIA { 2.4491804333e+03,
+                            2.1147013994e+02,
+                            2.2377102934e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4613484662e-01,
+                                 1.3446153025e-01}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_21_22} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 21
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.0573935708e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.4013382440e+09,   -7.1984667886e+09,
+                                               6.6690011124e+08,    1.0095588726e+07,   -1.4888601712e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.3808656347e+08,    5.0790704072e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.8359507714e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.6645580704e+09,   -9.7970836484e+08,
+                                                                                                                                   3.3830589933e+10}
+      @MASS_PER_UNIT_SPAN { 7.7390481409e+02}
+      @MOMENTS_OF_INERTIA { 2.4491804333e+03,
+                            2.1147013994e+02,
+                            2.2377102934e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4613484662e-01,
+                                 1.3446153025e-01}
+    }
+    
+    ! station 22
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 1.0105782700e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.3228739796e+09,   -7.0249883938e+09,
+                                               6.5097014092e+08,    1.0055203504e+07,   -1.4372255869e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.3188844341e+08,    4.8379874240e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.3507500647e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.3799617856e+09,   -9.4630809011e+08,
+                                                                                                                                   3.2244777233e+10}
+      @MASS_PER_UNIT_SPAN { 7.4672735535e+02}
+      @MOMENTS_OF_INERTIA { 2.3078492407e+03,
+                            1.9682049645e+02,
+                            2.1110287442e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4721161254e-01,
+                                 1.3292260425e-01}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_22_23} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 22
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 1.0105782700e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.3228739796e+09,   -7.0249883938e+09,
+                                               6.5097014092e+08,    1.0055203504e+07,   -1.4372255869e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.3188844341e+08,    4.8379874240e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.3507500647e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.3799617856e+09,   -9.4630809011e+08,
+                                                                                                                                   3.2244777233e+10}
+      @MASS_PER_UNIT_SPAN { 7.4672735535e+02}
+      @MOMENTS_OF_INERTIA { 2.3078492407e+03,
+                            1.9682049645e+02,
+                            2.1110287442e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.4721161254e-01,
+                                 1.3292260425e-01}
+    }
+    
+    ! station 23
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 9.4234255605e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.2998837350e+09,   -6.1263164738e+09,
+                                               6.4151769687e+08,    1.0468551274e+07,   -1.4678794794e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.5348714602e+08,    5.3132127854e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.8631520706e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.4748150232e+09,   -9.0191489810e+08,
+                                                                                                                                   2.7957481574e+10}
+      @MASS_PER_UNIT_SPAN { 7.1791666217e+02}
+      @MOMENTS_OF_INERTIA { 2.1267833076e+03,
+                            2.0596378396e+02,
+                            1.9208195236e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.1081672890e-01,
+                                 1.3992665134e-01}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_23_24} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 23
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 9.4234255605e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.2998837350e+09,   -6.1263164738e+09,
+                                               6.4151769687e+08,    1.0468551274e+07,   -1.4678794794e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.5348714602e+08,    5.3132127854e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.8631520706e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.4748150232e+09,   -9.0191489810e+08,
+                                                                                                                                   2.7957481574e+10}
+      @MASS_PER_UNIT_SPAN { 7.1791666217e+02}
+      @MOMENTS_OF_INERTIA { 2.1267833076e+03,
+                            2.0596378396e+02,
+                            1.9208195236e+03}
+      @CENTRE_OF_MASS_LOCATION { 6.1081672890e-01,
+                                 1.3992665134e-01}
+    }
+    
+    ! station 24
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 8.8112550666e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    4.2979317803e+08,   -5.0779357113e+09,
+                                               6.3374449456e+08,    1.3135170858e+07,   -6.7265952447e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.6907786298e+08,   -5.4519670843e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.8270071208e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.3761645310e+09,   -7.5374034402e+08,
+                                                                                                                                   2.3416012385e+10}
+      @MASS_PER_UNIT_SPAN { 6.8738356106e+02}
+      @MOMENTS_OF_INERTIA { 1.9148481125e+03,
+                            2.1101347154e+02,
+                            1.7038346409e+03}
+      @CENTRE_OF_MASS_LOCATION { 5.4297750760e-01,
+                                 5.3929552188e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_24_25} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 24
+    @ETA_COORDINATE {0.00000e+00} {
+      @STIFFNESS_MATRIX { 8.8112550666e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    4.2979317803e+08,   -5.0779357113e+09,
+                                               6.3374449456e+08,    1.3135170858e+07,   -6.7265952447e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.6907786298e+08,   -5.4519670843e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         9.8270071208e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.3761645310e+09,   -7.5374034402e+08,
+                                                                                                                                   2.3416012385e+10}
+      @MASS_PER_UNIT_SPAN { 6.8738356106e+02}
+      @MOMENTS_OF_INERTIA { 1.9148481125e+03,
+                            2.1101347154e+02,
+                            1.7038346409e+03}
+      @CENTRE_OF_MASS_LOCATION { 5.4297750760e-01,
+                                 5.3929552188e-02}
+    }
+    
+    ! station 25
+    @ETA_COORDINATE {1.00000e+00} {
+      @STIFFNESS_MATRIX { 2.0610887551e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    9.2404438637e+08,   -7.3187589344e+09,
+                                               1.1326338957e+09,    2.8589350570e+07,   -1.1837146356e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    5.2511010955e+08,   -1.8926988438e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.7916867728e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              9.0822804227e+09,   -1.2492643201e+09,
+                                                                                                                                   3.4967743766e+10}
+      @MASS_PER_UNIT_SPAN { 1.3095283075e+03}
+      @MOMENTS_OF_INERTIA { 2.9572261332e+03,
+                            4.9014520416e+02,
+                            2.4670809290e+03}
+      @CENTRE_OF_MASS_LOCATION { 3.8219120487e-01,
+                                 5.0364809231e-02}
+    }
+  }
+
+  @BEAM_PROPERTY_NAME {prop_25_40} {
+    @PROPERTY_DEFINITION_TYPE { 6X6_MATRICES }
+    @COORDINATE_TYPE { ETA_COORDINATE }
+
+    ! station 25
+    @ETA_COORDINATE {0.000000000} {
+      @STIFFNESS_MATRIX { 2.0610887551e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    9.2404438637e+08,   -7.3187589344e+09,
+                                               1.1326338957e+09,    2.8589350570e+07,   -1.1837146356e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    5.2511010955e+08,   -1.8926988438e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.7916867728e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              9.0822804227e+09,   -1.2492643201e+09,
+                                                                                                                                   3.4967743766e+10}
+      @MASS_PER_UNIT_SPAN { 1.3095283075e+03}
+      @MOMENTS_OF_INERTIA { 2.9572261332e+03,
+                            4.9014520416e+02,
+                            2.4670809290e+03}
+      @CENTRE_OF_MASS_LOCATION { 3.8219120487e-01,
+                                 5.0364809231e-02}
+    }
+    
+    ! station 26
+    @ETA_COORDINATE {0.048128342} {
+      @STIFFNESS_MATRIX { 1.9871318730e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.4268729576e+09,   -6.5924053946e+09,
+                                               1.1239509786e+09,    2.5160232466e+07,   -1.4857073522e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.8252066480e+08,   -9.7537695340e+05,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.5745667431e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              7.7996603244e+09,   -1.1120625216e+09,
+                                                                                                                                   3.1066296514e+10}
+      @MASS_PER_UNIT_SPAN { 1.2594432363e+03}
+      @MOMENTS_OF_INERTIA { 2.6463471074e+03,
+                            4.1680266546e+02,
+                            2.2295444419e+03}
+      @CENTRE_OF_MASS_LOCATION { 3.6678900416e-01,
+                                 7.5642889717e-02}
+    }
+
+    ! station 27
+    @ETA_COORDINATE {0.096256684} {
+      @STIFFNESS_MATRIX { 1.9046664026e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.8849051323e+09,   -5.6027059189e+09,
+                                               1.1270631341e+09,    2.2453479654e+07,   -1.7887373104e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    4.4013938429e+08,   -3.1756686416e+05,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.3744859984e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.6719588722e+09,   -9.6002063884e+08,
+                                                                                                                                   2.6502000892e+10}
+      @MASS_PER_UNIT_SPAN { 1.2055673037e+03}
+      @MOMENTS_OF_INERTIA { 2.3251783023e+03,
+                            3.5070843516e+02,
+                            1.9744698671e+03}
+      @CENTRE_OF_MASS_LOCATION { 3.4115073722e-01,
+                                 1.0089787057e-01}
+    }
+
+    ! station 28
+    @ETA_COORDINATE {0.144385027} {
+      @STIFFNESS_MATRIX { 1.8292562518e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    2.3152084247e+09,   -4.8716793195e+09,
+                                               1.1242931189e+09,    1.9676784299e+07,   -2.0985776352e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.9830802330e+08,    7.1711284215e+05,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.1930430597e+09,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              5.6994098885e+09,   -8.4454926721e+08,
+                                                                                                                                   2.3007740375e+10}
+      @MASS_PER_UNIT_SPAN { 1.1547449908e+03}
+      @MOMENTS_OF_INERTIA { 2.0527348118e+03,
+                            2.9198785037e+02,
+                            1.7607469614e+03}
+      @CENTRE_OF_MASS_LOCATION { 3.2123317888e-01,
+                                 1.2631216893e-01}
+    }
+    
+    ! station 29
+    @ETA_COORDINATE {0.290552585} {
+      @STIFFNESS_MATRIX { 1.5241837777e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.6174140222e+09,   -3.2052693486e+09,
+                                               1.0808161348e+09,    1.9706923959e+07,   -1.6180405034e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    3.0378784690e+08,   -3.6622709807e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         7.6663960340e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              3.3043098532e+09,   -5.3155418388e+08,
+                                                                                                                                   1.5119332832e+10}
+      @MASS_PER_UNIT_SPAN { 9.7007927651e+02}
+      @MOMENTS_OF_INERTIA { 1.4003685929e+03,
+                            1.6936561408e+02,
+                            1.2310029788e+03}
+      @CENTRE_OF_MASS_LOCATION { 2.7223235240e-01,
+                                 1.0565305621e-01}
+    }
+    
+    ! station 30
+    @ETA_COORDINATE {0.406417112} {
+      @STIFFNESS_MATRIX { 1.2482504693e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.9180670894e+09,   -2.4690600057e+09,
+                                               1.0017069938e+09,    5.5039164054e+06,   -2.0154717925e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    2.2079747056e+08,   -1.0002062914e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         5.0678076885e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              2.1007693784e+09,   -3.3766492582e+08,
+                                                                                                                                   1.1317229522e+10}
+      @MASS_PER_UNIT_SPAN { 7.9481258271e+02}
+      @MOMENTS_OF_INERTIA { 9.9713397441e+02,
+                            9.9072914439e+01,
+                            8.9806105998e+02}
+      @CENTRE_OF_MASS_LOCATION { 2.3546447854e-01,
+                                 1.4892215720e-01}
+    }
+    
+    ! station 31
+    @ETA_COORDINATE {0.434937611} {
+      @STIFFNESS_MATRIX { 1.1873966706e+10,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.7372331463e+09,   -2.3720503372e+09,
+                                               9.7212371787e+08,    5.3966309410e+06,   -1.8666524387e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    2.0477341972e+08,   -8.7433637806e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         4.5134475536e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.8097298999e+09,   -3.1050527342e+08,
+                                                                                                                                   1.0629481704e+10}
+      @MASS_PER_UNIT_SPAN { 7.5482214676e+02}
+      @MOMENTS_OF_INERTIA { 9.1647758648e+02,
+                            8.5392883152e+01,
+                            8.3108470333e+02}
+      @CENTRE_OF_MASS_LOCATION { 2.3567747388e-01,
+                                 1.4187320559e-01}
+    }
+    
+    ! station 32
+    @ETA_COORDINATE {0.522281640} {
+      @STIFFNESS_MATRIX { 9.4787469689e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.2495361786e+09,   -2.1019295746e+09,
+                                               8.5734398838e+08,    4.6760809172e+06,   -1.5048248650e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.7277387886e+08,   -6.2991444695e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         3.3833487134e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              1.1819430698e+09,   -2.5053467129e+08,
+                                                                                                                                   8.6728933424e+09}
+      @MASS_PER_UNIT_SPAN { 6.1873764489e+02}
+      @MOMENTS_OF_INERTIA { 7.1654248281e+02,
+                            5.7114598122e+01,
+                            6.5942788469e+02}
+      @CENTRE_OF_MASS_LOCATION { 2.4802148025e-01,
+                                 1.2798307096e-01}
+    }
+    
+    ! station 33
+    @ETA_COORDINATE {0.579322638} {
+      @STIFFNESS_MATRIX { 7.6928926685e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    9.5475513894e+08,   -1.9272795289e+09,
+                                               7.6641883520e+08,    3.9921124056e+06,   -1.2882981167e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.5660304313e+08,   -4.8849907597e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         2.8093924556e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              8.5606789120e+08,   -2.1790900330e+08,
+                                                                                                                                   7.4617740147e+09}
+      @MASS_PER_UNIT_SPAN { 5.1674817089e+02}
+      @MOMENTS_OF_INERTIA { 5.9274336328e+02,
+                            4.2682787418e+01,
+                            5.5006057586e+02}
+      @CENTRE_OF_MASS_LOCATION { 2.6686928722e-01,
+                                 1.2086787246e-01}
+    }
+    
+    ! station 34
+    @ETA_COORDINATE {0.725490196} {
+      @STIFFNESS_MATRIX { 5.1727387220e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    5.4990772848e+08,   -1.5408720179e+09,
+                                               6.2042824621e+08,    1.7617871992e+06,   -9.2291539850e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.2021100554e+08,   -1.7596146498e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.7715493697e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              4.1567389534e+08,   -1.5455200408e+08,
+                                                                                                                                   5.1206317133e+09}
+      @MASS_PER_UNIT_SPAN { 3.7024256791e+02}
+      @MOMENTS_OF_INERTIA { 3.8595158530e+02,
+                            2.2238356256e+01,
+                            3.6371322905e+02}
+      @CENTRE_OF_MASS_LOCATION { 2.9064413963e-01,
+                                 1.0424879668e-01}
+    }
+    
+    ! station 35
+    @ETA_COORDINATE {0.811051693} {
+      @STIFFNESS_MATRIX { 3.9289137658e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    3.7357057744e+08,   -1.3265815713e+09,
+                                               5.2590824807e+08,    7.0169278834e+05,   -7.2039549848e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    9.9689185001e+07,   -3.0500314390e+05,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.2735325212e+08,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              2.4480531781e+08,   -1.2252624511e+08,
+                                                                                                                                   3.9422801751e+09}
+      @MASS_PER_UNIT_SPAN { 2.9825734823e+02}
+      @MOMENTS_OF_INERTIA { 2.9034651561e+02,
+                            1.4084761209e+01,
+                            2.7626175440e+02}
+      @CENTRE_OF_MASS_LOCATION { 3.0780050269e-01,
+                                 9.3954375718e-02}
+    }
+    
+    ! station 36
+    @ETA_COORDINATE {0.898395722} {
+      @STIFFNESS_MATRIX { 2.7614486743e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    2.0031009464e+08,   -8.1856932207e+08,
+                                               3.9341106611e+08,    6.0516232905e+05,   -4.1608448452e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    5.4333411683e+07,    8.1024927264e+05,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         5.7512329952e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              9.6908026366e+07,   -6.2377171938e+07,
+                                                                                                                                   1.8839958801e+09}
+      @MASS_PER_UNIT_SPAN { 2.0985163419e+02}
+      @MOMENTS_OF_INERTIA { 1.3500938281e+02,
+                            5.7070945104e+00,
+                            1.2930228830e+02}
+      @CENTRE_OF_MASS_LOCATION { 2.6682548054e-01,
+                                 7.1605817681e-02}
+    }
+    
+    ! station 37
+    @ETA_COORDINATE {0.923351159} {
+      @STIFFNESS_MATRIX { 2.1745780071e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    1.3444132169e+08,   -5.7427215443e+08,
+                                               3.3014384708e+08,    5.1532633256e+05,   -2.9450496761e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.7546187919e+07,   -2.3851659260e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         3.0446921895e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              5.6488929242e+07,   -3.6039627436e+07,
+                                                                                                                                   1.0314226137e+09}
+      @MASS_PER_UNIT_SPAN { 1.5348925081e+02}
+      @MOMENTS_OF_INERTIA { 6.7282299924e+01,
+                            3.2687330185e+00,
+                            6.4013566905e+01}
+      @CENTRE_OF_MASS_LOCATION { 2.5315922082e-01,
+                                 6.1251838989e-02}
+    }
+    
+    ! station 38
+    @ETA_COORDINATE {0.950089127} {
+      @STIFFNESS_MATRIX { 1.6575037977e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    7.9809697899e+07,   -3.2230617452e+08,
+                                               2.4985997588e+08,    7.1593820772e+05,   -1.7098126765e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.3568040427e+07,   -1.3574239577e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         1.3629321152e+07,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              2.5408444616e+07,   -1.6210267741e+07,
+                                                                                                                                   4.5293177887e+08}
+      @MASS_PER_UNIT_SPAN { 1.1675349497e+02}
+      @MOMENTS_OF_INERTIA { 2.9762145281e+01,
+                            1.4558345641e+00,
+                            2.8306310717e+01}
+      @CENTRE_OF_MASS_LOCATION { 1.8535512284e-01,
+                                 4.7715173610e-02}
+    }
+    
+    ! station 39
+    @ETA_COORDINATE {0.975044563} {
+      @STIFFNESS_MATRIX { 1.0612117877e+09,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    3.4022882971e+07,   -1.2376165193e+08,
+                                               1.5747332296e+08,    8.1516837503e+05,   -7.0049863240e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    8.8981927934e+06,   -5.3110630417e+05,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         3.6158307572e+06,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.8082812639e+06,   -4.3451015386e+06,
+                                                                                                                                   1.1736247654e+08}
+      @MASS_PER_UNIT_SPAN { 7.4332533284e+01}
+      @MOMENTS_OF_INERTIA { 7.7683413388e+00,
+                            3.8173738058e-01,
+                            7.3866039582e+00}
+      @CENTRE_OF_MASS_LOCATION { 1.0909379953e-01,
+                                 3.1792836974e-02}
+    }
+    
+    ! station 40
+    @ETA_COORDINATE {1.000000000} {
+      @STIFFNESS_MATRIX { 2.5280170477e+07,    0.0000000000e+00,    0.0000000000e+00,    0.0000000000e+00,    6.9872201183e+04,   -8.8907077552e+04,
+                                               5.9538599170e+06,    7.9451659117e+04,   -2.0711621095e+04,    0.0000000000e+00,    0.0000000000e+00,
+                                                                    1.0299032726e+06,   -1.3461408599e+01,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                         5.2076420351e+02,    0.0000000000e+00,    0.0000000000e+00,
+                                                                                                              6.5127318376e+02,   -4.2518481921e+02,
+                                                                                                                                   1.2237282861e+04}
+      @MASS_PER_UNIT_SPAN { 1.8849747493e+00}
+      @MOMENTS_OF_INERTIA { 9.4394015577e-04,
+                            3.5058003158e-05,
+                            9.0888215261e-04}
+      @CENTRE_OF_MASS_LOCATION { 3.7592877857e-03,
+                                 2.7576045680e-03}
+    }
+  }
+}
+
+@SURVEY_DEFINITION {
+  @SURVEY_NAME { displacements_01_09 } {
+    @OBJECT_NAME {beam_01_09}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_09_10 } {
+    @OBJECT_NAME {lower_beam_09_10}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_10_11 } {
+    @OBJECT_NAME {lower_beam_10_11}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_11_12 } {
+    @OBJECT_NAME {lower_beam_11_12}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_12_13 } {
+    @OBJECT_NAME {lower_beam_12_13}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_13_14 } {
+    @OBJECT_NAME {lower_beam_13_14}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_14_15 } {
+    @OBJECT_NAME {lower_beam_14_15}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_15_16 } {
+    @OBJECT_NAME {lower_beam_15_16}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_16_17 } {
+    @OBJECT_NAME {lower_beam_16_17}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_17_18 } {
+    @OBJECT_NAME {lower_beam_17_18}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_18_19 } {
+    @OBJECT_NAME {lower_beam_18_19}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_19_20 } {
+    @OBJECT_NAME {lower_beam_19_20}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_20_21 } {
+    @OBJECT_NAME {lower_beam_20_21}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_21_22 } {
+    @OBJECT_NAME {lower_beam_21_22}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_22_23 } {
+    @OBJECT_NAME {lower_beam_22_23}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_23_24 } {
+    @OBJECT_NAME {lower_beam_23_24}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_displacements_24_25 } {
+    @OBJECT_NAME {lower_beam_24_25}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_09_10 } {
+    @OBJECT_NAME {upper_beam_09_10}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_10_11 } {
+    @OBJECT_NAME {upper_beam_10_11}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_11_12 } {
+    @OBJECT_NAME {upper_beam_11_12}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_12_13 } {
+    @OBJECT_NAME {upper_beam_12_13}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_13_14 } {
+    @OBJECT_NAME {upper_beam_13_14}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_14_15 } {
+    @OBJECT_NAME {upper_beam_14_15}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_15_16 } {
+    @OBJECT_NAME {upper_beam_15_16}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_16_17 } {
+    @OBJECT_NAME {upper_beam_16_17}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_17_18 } {
+    @OBJECT_NAME {upper_beam_17_18}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_18_19 } {
+    @OBJECT_NAME {upper_beam_18_19}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_19_20 } {
+    @OBJECT_NAME {upper_beam_19_20}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_20_21 } {
+    @OBJECT_NAME {upper_beam_20_21}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_21_22 } {
+    @OBJECT_NAME {upper_beam_21_22}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_22_23 } {
+    @OBJECT_NAME {upper_beam_22_23}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_23_24 } {
+    @OBJECT_NAME {upper_beam_23_24}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_displacements_24_25 } {
+    @OBJECT_NAME {upper_beam_24_25}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { displacements_25_40 } {
+    @OBJECT_NAME {beam_25_40}
+    @SURVEY_TYPE { DISPLACEMENTS }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+}
+
+@SURVEY_DEFINITION {
+  @SURVEY_NAME { forces_01_09 } {
+    @OBJECT_NAME {beam_01_09}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_09_10 } {
+    @OBJECT_NAME {lower_beam_09_10}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_10_11 } {
+    @OBJECT_NAME {lower_beam_10_11}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_11_12 } {
+    @OBJECT_NAME {lower_beam_11_12}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_12_13 } {
+    @OBJECT_NAME {lower_beam_12_13}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_13_14 } {
+    @OBJECT_NAME {lower_beam_13_14}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_14_15 } {
+    @OBJECT_NAME {lower_beam_14_15}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_15_16 } {
+    @OBJECT_NAME {lower_beam_15_16}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_16_17 } {
+    @OBJECT_NAME {lower_beam_16_17}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_17_18 } {
+    @OBJECT_NAME {lower_beam_17_18}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_18_19 } {
+    @OBJECT_NAME {lower_beam_18_19}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_19_20 } {
+    @OBJECT_NAME {lower_beam_19_20}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_20_21 } {
+    @OBJECT_NAME {lower_beam_20_21}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_21_22 } {
+    @OBJECT_NAME {lower_beam_21_22}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_22_23 } {
+    @OBJECT_NAME {lower_beam_22_23}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_23_24 } {
+    @OBJECT_NAME {lower_beam_23_24}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { lower_forces_24_25 } {
+    @OBJECT_NAME {lower_beam_24_25}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_09_10 } {
+    @OBJECT_NAME {upper_beam_09_10}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_10_11 } {
+    @OBJECT_NAME {upper_beam_10_11}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_11_12 } {
+    @OBJECT_NAME {upper_beam_11_12}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_12_13 } {
+    @OBJECT_NAME {upper_beam_12_13}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_13_14 } {
+    @OBJECT_NAME {upper_beam_13_14}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_14_15 } {
+    @OBJECT_NAME {upper_beam_14_15}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_15_16 } {
+    @OBJECT_NAME {upper_beam_15_16}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_16_17 } {
+    @OBJECT_NAME {upper_beam_16_17}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_17_18 } {
+    @OBJECT_NAME {upper_beam_17_18}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_18_19 } {
+    @OBJECT_NAME {upper_beam_18_19}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_19_20 } {
+    @OBJECT_NAME {upper_beam_19_20}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_20_21 } {
+    @OBJECT_NAME {upper_beam_20_21}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_21_22 } {
+    @OBJECT_NAME {upper_beam_21_22}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_22_23 } {
+    @OBJECT_NAME {upper_beam_22_23}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_23_24 } {
+    @OBJECT_NAME {upper_beam_23_24}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { upper_forces_24_25 } {
+    @OBJECT_NAME {upper_beam_24_25}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+  @SURVEY_NAME { forces_25_40 } {
+    @OBJECT_NAME {beam_25_40}
+    @SURVEY_TYPE { FORCES }
+    @FRAME_NAME {INERTIAL}
+    @TIME {5.00000e+000}
+  }
+}
+
+! @SURVEY_DEFINITION {
+!   @SURVEY_NAME { svy_strain_blade } {
+!     @OBJECT_NAME {beam_01_09}
+!     @SURVEY_TYPE { STRAINS }
+!     @FRAME_NAME {INERTIAL}
+!     @TIME {5.00000e+000}
+!   }
+! }
