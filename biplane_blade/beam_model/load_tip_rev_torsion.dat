@@ -1,10 +1,10 @@
 @DEAD_LOAD_DEFINITION {
-  @DEAD_LOAD_NAME {load_tip_fwd_torsion} {
-    @CONNECTED_TO_VERTEX {vertexB}
+  @DEAD_LOAD_NAME {load_tip_rev_torsion} {
+    @CONNECTED_TO_VERTEX {tip_v}
     @TIME_FUNCTION_NAME {scheduleload} 
     @SCALING_FACTOR {1.000e+004}
     @APPLIED_FORCES {0,0,0}
-    @APPLIED_MOMENTS {1,0,0}
+    @APPLIED_MOMENTS {-1,0,0}
   
     @FOLLOWER_FORCE_FLAG {NO}
    

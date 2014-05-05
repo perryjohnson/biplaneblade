@@ -1,0 +1,12 @@
+@DEAD_LOAD_DEFINITION {
+  @DEAD_LOAD_NAME {load_tip_fwd_flap} {
+    @CONNECTED_TO_VERTEX {tip_v}
+    @TIME_FUNCTION_NAME {scheduleload} 
+    @SCALING_FACTOR {1.000e+005}
+    @APPLIED_FORCES {0,0,1}
+    @APPLIED_MOMENTS {0,0,0}
+  
+    @FOLLOWER_FORCE_FLAG {NO}
+   
+  }
+}

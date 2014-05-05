@@ -2,7 +2,7 @@
   @DEAD_LOAD_NAME {load_tip_rev_torsion} {
     @CONNECTED_TO_VERTEX {vertexB}
     @TIME_FUNCTION_NAME {scheduleload} 
-    @SCALING_FACTOR {1.000e+005}
+    @SCALING_FACTOR {1.000e+004}
     @APPLIED_FORCES {0,0,0}
     @APPLIED_MOMENTS {-1,0,0}
   

@@ -1,5 +1,5 @@
 @EDGE_LOAD_DEFINITION {
-  @EDGE_LOAD_NAME {BEMloaddist} {
+  @EDGE_LOAD_NAME {load_BEM} {
     @EDGE_NAME {edgeBlade}
     @LOADING_COMPONENT {
       @APPLIED_FORCE_ALONG_i3 {BEMloaddistTable}

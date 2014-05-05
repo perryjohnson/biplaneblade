@@ -32,17 +32,47 @@
     }
   }
   @INCLUDE_COMMAND {
-    @INCLUDE_COMMAND_NAME {includeTipLoads} {
+    @INCLUDE_COMMAND_NAME {case1_load_tip_fwd_flap} {
       @ACTIVE_COMMAND {YES}
-      @LIST_OF_FILE_NAMES {loadDist_tip.dat}
+      @LIST_OF_FILE_NAMES {load_tip_fwd_flap.dat}
     }
-  }  
+  }
   @INCLUDE_COMMAND {
-    @INCLUDE_COMMAND_NAME {includeBEMLoads} {
+    @INCLUDE_COMMAND_NAME {case2_load_tip_rev_flap} {
       @ACTIVE_COMMAND {NO}
-      @LIST_OF_FILE_NAMES {loadDist_BEM.dat}
+      @LIST_OF_FILE_NAMES {load_tip_rev_flap.dat}
     }
-  }  
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {case3_load_tip_fwd_edge} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_fwd_edge.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {case4_load_tip_rev_edge} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_rev_edge.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {case5_load_tip_fwd_torsion} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_fwd_torsion.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {case6_load_tip_rev_torsion} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_rev_torsion.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {case7_load_BEM_dist_flap_edge} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_BEM_dist_flap_edge.dat}
+    }
+  }
   @INCLUDE_COMMAND {
     @INCLUDE_COMMAND_NAME {includeParts} {
       @ACTIVE_COMMAND {YES}
@@ -70,10 +100,10 @@
 @FINITE_ELEMENT_ANALYSIS {
   @FEM_CONTROL_PARAMETERS {
     @FEM_CONTROL_PARAMETERS_NAME {AnalysisControlParameters} {
-      @MAXIMUM_NUMBER_OF_TIME_STEPS {  10}
-      @SIMULATION_TIME_RANGE { 0.00000e+000,  1.50000e+001}
-      @TIME_STEP_SIZE_RANGE { 1.00000e-006,  5.00000e-002}
-      @REFERENCE_ENERGY_LEVEL { 6.00000e+005}
+      @MAXIMUM_NUMBER_OF_TIME_STEPS {10}
+      @SIMULATION_TIME_RANGE {0.0,  15.0}
+      @TIME_STEP_SIZE_RANGE {1.0e-06,  5.0e-02}
+      @REFERENCE_ENERGY_LEVEL { 6.0e+05}
     }
   }
   @INITIAL_CONDITION_DEFINITION {
@@ -81,19 +111,19 @@
   }
   @STEP_CONTROL_PARAMETERS {
     @STEP_CONTROL_PARAMETER_NAME {Step1} {
-      @ARCHIVAL_FREQUENCY {     1}
-      @REUSE_NUMBER {   100}
-      @NUMBER_OF_EIGENVALUES {    10}
-      @EIGENPROBLEM_PRINT_FLAG {     0}
+      @ARCHIVAL_FREQUENCY {1}
+      @REUSE_NUMBER {100}
+      @NUMBER_OF_EIGENVALUES {0}
+      @EIGENPROBLEM_PRINT_FLAG {0}
       @GYROSCOPIC_TERMS {NO}
-      @EIGEN_SPECTRUM_SHIFT { 0.00000e+000}
-      @TIME_STEP_SIZE { 1.00000e+000}
-      @MAXIMUM_NUMBER_OF_ITERATIONS {    10}
-      @FACTORIZATION_STRATEGY {     1}
-      @CONVERGENCE_TOLERANCE { 1.00000e-006}
-      @MAXIMUM_NUMBER_OF_REJECT {     5}
-      @AVERAGE_STIFFNESS_TERM { 1.00000e+006}
-      @AVERAGE_MASS_TERM { 0.00000e+000}
+      @EIGEN_SPECTRUM_SHIFT {0.0}
+      @TIME_STEP_SIZE {1.0}
+      @MAXIMUM_NUMBER_OF_ITERATIONS {10}
+      @FACTORIZATION_STRATEGY {1}
+      @CONVERGENCE_TOLERANCE {1.0e-06}
+      @MAXIMUM_NUMBER_OF_REJECT {5}
+      ! @AVERAGE_STIFFNESS_TERM {1.0e+11}
+      ! @AVERAGE_MASS_TERM {1.0e+04}
     }
   }
 }
@@ -115,12 +145,12 @@
   }
   @PLOTTING_CONTROL_PARAMETERS {
     @PLOTTING_CONTROL_PARAMETERS_NAME {PlottingControlParameters} {
-      ! @MAP_PLOT_FORMAT {PNG, EPS, TRM}
-      ! @MAP_PLOT_SIZE {LARGE, LARGE, LARGE}
+      @MAP_PLOT_FORMAT {PNG, EPS, TRM}
+      @MAP_PLOT_SIZE {LARGE, LARGE, LARGE}
       @OBJECT_PLOT_FORMAT {PNG, EPS, TRM}
       @OBJECT_PLOT_SIZE {LARGE, LARGE, LARGE}
-      ! @SENSOR_PLOT_FORMAT {PNG, EPS, TRM}
-      ! @SENSOR_PLOT_SIZE {LARGE, LARGE, LARGE}
+      @SENSOR_PLOT_FORMAT {PNG, EPS, TRM}
+      @SENSOR_PLOT_SIZE {LARGE, LARGE, LARGE}
       @SURVEY_PLOT_FORMAT {PNG, EPS, TRM}
       @SURVEY_PLOT_SIZE {LARGE, LARGE, LARGE}
     }
