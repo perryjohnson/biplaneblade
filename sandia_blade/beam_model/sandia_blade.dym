@@ -31,15 +31,45 @@
     }
   }
   @INCLUDE_COMMAND {
-    @INCLUDE_COMMAND_NAME {includeTipLoads} {
+    @INCLUDE_COMMAND_NAME {include_load_tip_fwd_flap} {
       @ACTIVE_COMMAND {YES}
-      @LIST_OF_FILE_NAMES {loadDist_tip.dat}
+      @LIST_OF_FILE_NAMES {load_tip_fwd_flap.dat}
     }
-  }  
+  }
   @INCLUDE_COMMAND {
-    @INCLUDE_COMMAND_NAME {includeBEMLoads} {
+    @INCLUDE_COMMAND_NAME {include_load_tip_rev_flap} {
       @ACTIVE_COMMAND {NO}
-      @LIST_OF_FILE_NAMES {loadDist_BEM.dat}
+      @LIST_OF_FILE_NAMES {load_tip_rev_flap.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {include_load_tip_fwd_edge} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_fwd_edge.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {include_load_tip_rev_edge} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_rev_edge.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {include_load_tip_fwd_torsion} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_fwd_torsion.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {include_load_tip_rev_torsion} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_tip_rev_torsion.dat}
+    }
+  }
+  @INCLUDE_COMMAND {
+    @INCLUDE_COMMAND_NAME {include_load_BEM_dist_flap_edge} {
+      @ACTIVE_COMMAND {NO}
+      @LIST_OF_FILE_NAMES {load_BEM_dist_flap_edge.dat}
     }
   }  
   @INCLUDE_COMMAND {
