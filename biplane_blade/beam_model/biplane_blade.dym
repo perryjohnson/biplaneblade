@@ -81,13 +81,13 @@
   }
   @INCLUDE_COMMAND {
     @INCLUDE_COMMAND_NAME {includeCurvesShapes} {
-      @ACTIVE_COMMAND {NO}
+      @ACTIVE_COMMAND {YES}
       @LIST_OF_FILE_NAMES {curves.dat, shapes.dat}
     }
   }
   @INCLUDE_COMMAND {
     @INCLUDE_COMMAND_NAME {includeGraphicParameters} {
-      @ACTIVE_COMMAND {NO}
+      @ACTIVE_COMMAND {YES}
       @LIST_OF_FILE_NAMES {grfparams.dat}
     }
   }

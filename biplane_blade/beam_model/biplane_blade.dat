@@ -385,138 +385,206 @@
   @BEAM_NAME {beam_01_09} {
     @EDGE_NAME {edge_01_09}
     @BEAM_PROPERTY_NAME {prop_01_09}
+    @SHAPE_NAME {shape_01_09}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_09_10} {
     @EDGE_NAME {lower_edge_09_10}
     @BEAM_PROPERTY_NAME {prop_09_10}
+    @SHAPE_NAME {shape_09_10}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_10_11} {
     @EDGE_NAME {lower_edge_10_11}
     @BEAM_PROPERTY_NAME {prop_10_11}
+    @SHAPE_NAME {shape_10_11}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_11_12} {
     @EDGE_NAME {lower_edge_11_12}
     @BEAM_PROPERTY_NAME {prop_11_12}
+    @SHAPE_NAME {shape_11_12}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_12_13} {
     @EDGE_NAME {lower_edge_12_13}
     @BEAM_PROPERTY_NAME {prop_12_13}
+    @SHAPE_NAME {shape_12_13}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_13_14} {
     @EDGE_NAME {lower_edge_13_14}
     @BEAM_PROPERTY_NAME {prop_13_14}
+    @SHAPE_NAME {shape_13_14}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_14_15} {
     @EDGE_NAME {lower_edge_14_15}
     @BEAM_PROPERTY_NAME {prop_14_15}
+    @SHAPE_NAME {shape_14_15}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_15_16} {
     @EDGE_NAME {lower_edge_15_16}
     @BEAM_PROPERTY_NAME {prop_15_16}
+    @SHAPE_NAME {shape_15_16}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_16_17} {
     @EDGE_NAME {lower_edge_16_17}
     @BEAM_PROPERTY_NAME {prop_16_17}
+    @SHAPE_NAME {shape_16_17}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_17_18} {
     @EDGE_NAME {lower_edge_17_18}
     @BEAM_PROPERTY_NAME {prop_17_18}
+    @SHAPE_NAME {shape_17_18}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_18_19} {
     @EDGE_NAME {lower_edge_18_19}
     @BEAM_PROPERTY_NAME {prop_18_19}
+    @SHAPE_NAME {shape_18_19}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_19_20} {
     @EDGE_NAME {lower_edge_19_20}
     @BEAM_PROPERTY_NAME {prop_19_20}
+    @SHAPE_NAME {shape_19_20}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_20_21} {
     @EDGE_NAME {lower_edge_20_21}
     @BEAM_PROPERTY_NAME {prop_20_21}
+    @SHAPE_NAME {shape_20_21}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_21_22} {
     @EDGE_NAME {lower_edge_21_22}
     @BEAM_PROPERTY_NAME {prop_21_22}
+    @SHAPE_NAME {shape_21_22}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_22_23} {
     @EDGE_NAME {lower_edge_22_23}
     @BEAM_PROPERTY_NAME {prop_22_23}
+    @SHAPE_NAME {shape_22_23}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_23_24} {
     @EDGE_NAME {lower_edge_23_24}
     @BEAM_PROPERTY_NAME {prop_23_24}
+    @SHAPE_NAME {shape_23_24}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {lower_beam_24_25} {
     @EDGE_NAME {lower_edge_24_25}
     @BEAM_PROPERTY_NAME {prop_24_25}
+    @SHAPE_NAME {shape_24_25}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_09_10} {
     @EDGE_NAME {upper_edge_09_10}
     @BEAM_PROPERTY_NAME {prop_09_10}
+    @SHAPE_NAME {shape_09_10}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_10_11} {
     @EDGE_NAME {upper_edge_10_11}
     @BEAM_PROPERTY_NAME {prop_10_11}
+    @SHAPE_NAME {shape_10_11}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_11_12} {
     @EDGE_NAME {upper_edge_11_12}
     @BEAM_PROPERTY_NAME {prop_11_12}
+    @SHAPE_NAME {shape_11_12}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_12_13} {
     @EDGE_NAME {upper_edge_12_13}
     @BEAM_PROPERTY_NAME {prop_12_13}
+    @SHAPE_NAME {shape_12_13}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_13_14} {
     @EDGE_NAME {upper_edge_13_14}
     @BEAM_PROPERTY_NAME {prop_13_14}
+    @SHAPE_NAME {shape_13_14}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_14_15} {
     @EDGE_NAME {upper_edge_14_15}
     @BEAM_PROPERTY_NAME {prop_14_15}
+    @SHAPE_NAME {shape_14_15}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_15_16} {
     @EDGE_NAME {upper_edge_15_16}
     @BEAM_PROPERTY_NAME {prop_15_16}
+    @SHAPE_NAME {shape_15_16}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_16_17} {
     @EDGE_NAME {upper_edge_16_17}
     @BEAM_PROPERTY_NAME {prop_16_17}
+    @SHAPE_NAME {shape_16_17}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_17_18} {
     @EDGE_NAME {upper_edge_17_18}
     @BEAM_PROPERTY_NAME {prop_17_18}
+    @SHAPE_NAME {shape_17_18}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_18_19} {
     @EDGE_NAME {upper_edge_18_19}
     @BEAM_PROPERTY_NAME {prop_18_19}
+    @SHAPE_NAME {shape_18_19}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_19_20} {
     @EDGE_NAME {upper_edge_19_20}
     @BEAM_PROPERTY_NAME {prop_19_20}
+    @SHAPE_NAME {shape_19_20}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_20_21} {
     @EDGE_NAME {upper_edge_20_21}
     @BEAM_PROPERTY_NAME {prop_20_21}
+    @SHAPE_NAME {shape_20_21}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_21_22} {
     @EDGE_NAME {upper_edge_21_22}
     @BEAM_PROPERTY_NAME {prop_21_22}
+    @SHAPE_NAME {shape_21_22}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_22_23} {
     @EDGE_NAME {upper_edge_22_23}
     @BEAM_PROPERTY_NAME {prop_22_23}
+    @SHAPE_NAME {shape_22_23}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_23_24} {
     @EDGE_NAME {upper_edge_23_24}
     @BEAM_PROPERTY_NAME {prop_23_24}
+    @SHAPE_NAME {shape_23_24}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {upper_beam_24_25} {
     @EDGE_NAME {upper_edge_24_25}
     @BEAM_PROPERTY_NAME {prop_24_25}
+    @SHAPE_NAME {shape_24_25}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
   @BEAM_NAME {beam_25_40} {
     @EDGE_NAME {edge_25_40}
     @BEAM_PROPERTY_NAME {prop_25_40}
+    @SHAPE_NAME {shape_25_40}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
   }
 }
 
