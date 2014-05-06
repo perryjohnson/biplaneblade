@@ -29,8 +29,8 @@
   @BEAM_NAME {sandia_blade} {
     @EDGE_NAME {edgeBlade}
     @BEAM_PROPERTY_NAME {propBlade}
-!    @SHAPE_NAME {shape_sandiaBlade}
-!    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
+    @SHAPE_NAME {shape_sandia_blade}
+    @GRAPHICAL_PARAMETERS_NAME {gp_bladeExterior}
     @COMMENTS {the Sandia blade}
   }
 }

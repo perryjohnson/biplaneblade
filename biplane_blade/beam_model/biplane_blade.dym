@@ -33,7 +33,7 @@
   }
   @INCLUDE_COMMAND {
     @INCLUDE_COMMAND_NAME {case1_load_tip_fwd_flap} {
-      @ACTIVE_COMMAND {YES}
+      @ACTIVE_COMMAND {NO}
       @LIST_OF_FILE_NAMES {load_tip_fwd_flap.dat}
     }
   }
@@ -113,7 +113,7 @@
     @STEP_CONTROL_PARAMETER_NAME {Step1} {
       @ARCHIVAL_FREQUENCY {1}
       @REUSE_NUMBER {100}
-      @NUMBER_OF_EIGENVALUES {0}
+      @NUMBER_OF_EIGENVALUES {10}
       @EIGENPROBLEM_PRINT_FLAG {0}
       @GYROSCOPIC_TERMS {NO}
       @EIGEN_SPECTRUM_SHIFT {0.0}
