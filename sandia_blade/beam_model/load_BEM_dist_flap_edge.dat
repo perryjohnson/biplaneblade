@@ -1,16 +1,29 @@
 @EDGE_LOAD_DEFINITION {
-  @EDGE_LOAD_NAME {load_BEM} {
+  ! The first load applied to edgeBlade in this list seems to override 
+  !   all the other loads applied to edgeBlade below, so I can only apply 
+  !   one load at a time right now  :(
+  ! @EDGE_LOAD_NAME {BEM_edge_load} {
+  !   @EDGE_NAME {edgeBlade}
+  !   @LOADING_COMPONENT {
+  !     @APPLIED_FORCE_ALONG_i2 {BEM_edge_load_table}
+  !     @SCALING_FACTOR { 1.0}
+  !     @TIME_FUNCTION_NAME {scheduleload}
+  !     @FOLLOWER_FORCE_FLAG {NO}
+  !   }
+  ! }
+  @EDGE_LOAD_NAME {BEM_flap_load} {
     @EDGE_NAME {edgeBlade}
     @LOADING_COMPONENT {
-      @APPLIED_FORCE_ALONG_i3 {BEMloaddistTable}
-      @SCALING_FACTOR { 1.0}
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table}
+      @SCALING_FACTOR { 4.0}
       @TIME_FUNCTION_NAME {scheduleload}
       @FOLLOWER_FORCE_FLAG {NO}
     }
   }
 }
+
 @DATA_TABLE_DEFINITION {
-  @DATA_TABLE_NAME {BEMloaddistTable} {
+  @DATA_TABLE_NAME {BEM_flap_load_table} {
     @COORDINATE_TYPE {ETA_COORDINATE}
     @DATA_TYPE {FORCE_ALONG_I3}
     @TABLE_ENTRIES {
@@ -36,4 +49,30 @@
     }
     @COMMENTS {from avg of loads in WT_Perf_Results__SNL100.xlsx}
   }
+  ! @DATA_TABLE_NAME {BEM_edge_load_table} {
+  !   @COORDINATE_TYPE {ETA_COORDINATE}
+  !   @DATA_TYPE {FORCE_ALONG_I2}
+  !   @TABLE_ENTRIES {
+  !     @X_ENTRY {0.00000} @Y_ENTRY {   0.00000}
+  !     @X_ENTRY {0.02164} @Y_ENTRY {  60.96950}
+  !     @X_ENTRY {0.06611} @Y_ENTRY {  74.78850}
+  !     @X_ENTRY {0.11058} @Y_ENTRY {  65.76625}
+  !     @X_ENTRY {0.16617} @Y_ENTRY { 584.57875}
+  !     @X_ENTRY {0.23288} @Y_ENTRY { 829.38850}
+  !     @X_ENTRY {0.29958} @Y_ENTRY {1000.18475}
+  !     @X_ENTRY {0.36629} @Y_ENTRY {1195.29700}
+  !     @X_ENTRY {0.43300} @Y_ENTRY {1462.99600}
+  !     @X_ENTRY {0.49970} @Y_ENTRY {1703.09100}
+  !     @X_ENTRY {0.56641} @Y_ENTRY {2005.20075}
+  !     @X_ENTRY {0.63312} @Y_ENTRY {2296.15175}
+  !     @X_ENTRY {0.69982} @Y_ENTRY {2453.86300}
+  !     @X_ENTRY {0.76653} @Y_ENTRY {2692.07825}
+  !     @X_ENTRY {0.83323} @Y_ENTRY {2902.33825}
+  !     @X_ENTRY {0.88882} @Y_ENTRY {3022.11000}
+  !     @X_ENTRY {0.93329} @Y_ENTRY {2952.88750}
+  !     @X_ENTRY {0.97776} @Y_ENTRY {2137.81850}
+  !     @X_ENTRY {1.00000} @Y_ENTRY {   0.00000}
+  !   }
+  !   @COMMENTS {dummy loads...need to replace}
+  ! }
 }

@@ -3,7 +3,7 @@
     @EDGE_NAME {edgeBlade}
     @LOADING_COMPONENT {
       @APPLIED_FORCE_ALONG_i3 {BEMloaddistTable}
-      @SCALING_FACTOR { 1.0}
+      @SCALING_FACTOR { 4.0}
       @TIME_FUNCTION_NAME {scheduleload}
       @FOLLOWER_FORCE_FLAG {NO}
     }
