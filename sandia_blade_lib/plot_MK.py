@@ -99,6 +99,7 @@ axarr[1,1].grid('on', axis='x')
 
 plt.tight_layout()
 plt.savefig('sandia_blade/Sandia_vs_VABS_stiffness_props.png')
+plt.savefig('sandia_blade/Sandia_vs_VABS_stiffness_props.pdf')
 
 # mass properties -------------------------------------------------------------
 f2, axarr2 = plt.subplots(2,2, figsize=(12,8))
@@ -141,5 +142,6 @@ axarr2[0,1].grid('on', axis='x')
 
 plt.tight_layout()
 plt.savefig('sandia_blade/Sandia_vs_VABS_mass_props.png')
+plt.savefig('sandia_blade/Sandia_vs_VABS_mass_props.pdf')
 
 plt.show()
