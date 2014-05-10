@@ -1,0 +1,494 @@
+@EDGE_LOAD_DEFINITION {
+  @EDGE_LOAD_NAME {BEM_flap_load_01_09} {
+    @EDGE_NAME {edge_01_09}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_01_09}
+      @SCALING_FACTOR { 1.0}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_09_10} {
+    @EDGE_NAME {lower_edge_09_10}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_09_10}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_10_11} {
+    @EDGE_NAME {lower_edge_10_11}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_10_11}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_11_12} {
+    @EDGE_NAME {lower_edge_11_12}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_11_12}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_12_13} {
+    @EDGE_NAME {lower_edge_12_13}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_12_13}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_13_14} {
+    @EDGE_NAME {lower_edge_13_14}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_13_14}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_14_15} {
+    @EDGE_NAME {lower_edge_14_15}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_14_15}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_15_16} {
+    @EDGE_NAME {lower_edge_15_16}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_15_16}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_16_17} {
+    @EDGE_NAME {lower_edge_16_17}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_16_17}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_17_18} {
+    @EDGE_NAME {lower_edge_17_18}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_17_18}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_18_19} {
+    @EDGE_NAME {lower_edge_18_19}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_18_19}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_19_20} {
+    @EDGE_NAME {lower_edge_19_20}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_19_20}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_20_21} {
+    @EDGE_NAME {lower_edge_20_21}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_20_21}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_21_22} {
+    @EDGE_NAME {lower_edge_21_22}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_21_22}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_22_23} {
+    @EDGE_NAME {lower_edge_22_23}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_22_23}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_23_24} {
+    @EDGE_NAME {lower_edge_23_24}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_23_24}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_lower_24_25} {
+    @EDGE_NAME {lower_edge_24_25}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_24_25}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_09_10} {
+    @EDGE_NAME {upper_edge_09_10}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_09_10}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_10_11} {
+    @EDGE_NAME {upper_edge_10_11}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_10_11}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_11_12} {
+    @EDGE_NAME {upper_edge_11_12}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_11_12}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_12_13} {
+    @EDGE_NAME {upper_edge_12_13}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_12_13}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_13_14} {
+    @EDGE_NAME {upper_edge_13_14}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_13_14}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_14_15} {
+    @EDGE_NAME {upper_edge_14_15}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_14_15}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_15_16} {
+    @EDGE_NAME {upper_edge_15_16}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_15_16}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_16_17} {
+    @EDGE_NAME {upper_edge_16_17}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_16_17}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_17_18} {
+    @EDGE_NAME {upper_edge_17_18}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_17_18}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_18_19} {
+    @EDGE_NAME {upper_edge_18_19}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_18_19}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_19_20} {
+    @EDGE_NAME {upper_edge_19_20}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_19_20}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_20_21} {
+    @EDGE_NAME {upper_edge_20_21}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_20_21}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_21_22} {
+    @EDGE_NAME {upper_edge_21_22}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_21_22}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_22_23} {
+    @EDGE_NAME {upper_edge_22_23}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_22_23}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_23_24} {
+    @EDGE_NAME {upper_edge_23_24}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_23_24}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_upper_24_25} {
+    @EDGE_NAME {upper_edge_24_25}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_24_25}
+      @SCALING_FACTOR { 0.5}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {BEM_flap_load_25_40} {
+    @EDGE_NAME {edge_25_40}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table_25_40}
+      @SCALING_FACTOR { 1.0}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+}
+
+@DATA_TABLE_DEFINITION {
+  @DATA_TABLE_NAME {BEM_flap_load_table_01_09} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY {    0.0000}
+      @X_ENTRY {0.106382979} @Y_ENTRY {   56.3489}
+      @X_ENTRY {0.148936170} @Y_ENTRY {   78.8884}
+      @X_ENTRY {0.191489362} @Y_ENTRY {  101.4280}
+      @X_ENTRY {0.234042553} @Y_ENTRY {  123.9676}
+      @X_ENTRY {0.276595745} @Y_ENTRY {  146.5071}
+      @X_ENTRY {0.510638298} @Y_ENTRY {  246.8115}
+      @X_ENTRY {0.553191489} @Y_ENTRY {  249.2975}
+      @X_ENTRY {1.000000000} @Y_ENTRY {  275.4004}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_09_10} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY {  275.4004}
+      @X_ENTRY {1.000000000} @Y_ENTRY {  297.6202}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_10_11} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY {  297.6202}
+      @X_ENTRY {1.000000000} @Y_ENTRY {  280.5779}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_11_12} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY {  280.5779}
+      @X_ENTRY {1.000000000} @Y_ENTRY {  390.7382}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_12_13} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY {  390.7382}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 1585.3416}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_13_14} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 1585.3416}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 2219.9746}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_14_15} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 2219.9746}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 2526.6471}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_15_16} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 2526.6471}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 2761.5118}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_16_17} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 2761.5118}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 3157.8460}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_17_18} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 3157.8460}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 3482.6656}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_18_19} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 3482.6656}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 3759.2172}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_19_20} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 3759.2172}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 4044.6107}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_20_21} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 4044.6107}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 4364.4650}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_21_22} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 4364.4650}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 4684.2022}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_22_23} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 4684.2022}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 5081.5117}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_23_24} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 5081.5117}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 5514.9024}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_24_25} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 5514.9024}
+      @X_ENTRY {1.000000000} @Y_ENTRY { 5938.3750}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+  @DATA_TABLE_NAME {BEM_flap_load_table_25_40} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.000000000} @Y_ENTRY { 5938.3750}
+      @X_ENTRY {0.048128342} @Y_ENTRY { 6327.1345}
+      @X_ENTRY {0.096256684} @Y_ENTRY { 6715.8940}
+      @X_ENTRY {0.144385027} @Y_ENTRY { 7180.0947}
+      @X_ENTRY {0.290552585} @Y_ENTRY { 8641.6962}
+      @X_ENTRY {0.406417112} @Y_ENTRY { 9505.0422}
+      @X_ENTRY {0.434937611} @Y_ENTRY { 9656.3693}
+      @X_ENTRY {0.522281640} @Y_ENTRY {10275.0992}
+      @X_ENTRY {0.579322638} @Y_ENTRY {10732.1754}
+      @X_ENTRY {0.725490196} @Y_ENTRY {11719.4077}
+      @X_ENTRY {0.811051693} @Y_ENTRY {12056.1870}
+      @X_ENTRY {0.898395722} @Y_ENTRY {11099.6705}
+      @X_ENTRY {0.923351159} @Y_ENTRY {10073.2738}
+      @X_ENTRY {0.950089127} @Y_ENTRY { 8973.5630}
+      @X_ENTRY {0.975044563} @Y_ENTRY { 5382.9962}
+      @X_ENTRY {1.000000000} @Y_ENTRY {    0.0000}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+}

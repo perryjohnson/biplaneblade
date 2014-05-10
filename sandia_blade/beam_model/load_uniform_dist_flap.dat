@@ -1,0 +1,22 @@
+@EDGE_LOAD_DEFINITION {
+  @EDGE_LOAD_NAME {uniform_dist_flap_load} {
+    @EDGE_NAME {edgeBlade}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {uniform_dist_flap_load_table}
+      @SCALING_FACTOR { 1.0e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+}
+
+@DATA_TABLE_DEFINITION {
+  @DATA_TABLE_NAME {uniform_dist_flap_load_table} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.0} @Y_ENTRY {1.0}
+      @X_ENTRY {1.0} @Y_ENTRY {1.0}
+    }
+  }
+}
