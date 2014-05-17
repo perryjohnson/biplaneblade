@@ -252,6 +252,15 @@ class _Blade:
         plt.ylabel('chord [m]')
         plt.show()
 
+    def plot_thickness_to_chord_schedule(self):
+        """Plot the chord vs. span."""
+        plt.figure(figsize=(8,4))
+        plt.plot(self._df['x1'],self._df['thickness-to-chord ratio'],'bo-')
+        plt.xlabel('span, x1 [m]')
+        plt.ylabel('thickness-to-chord ratio [-]')
+        plt.subplots(bottom=0.19)
+        plt.show()
+
     def plot_twist_schedule(self):
         """Plot the twist vs. span."""
         plt.figure()
