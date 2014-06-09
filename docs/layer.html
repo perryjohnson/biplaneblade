@@ -1,0 +1,130 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module layer</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>layer</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/layer.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\layer.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;for&nbsp;manipulating&nbsp;single&nbsp;material&nbsp;layers&nbsp;of&nbsp;structural&nbsp;parts.<br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;updated:&nbsp;October&nbsp;11,&nbsp;2013</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="layer.html#Layer">Layer</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Layer">class <strong>Layer</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;a&nbsp;layer&nbsp;made&nbsp;of&nbsp;a&nbsp;single&nbsp;material&nbsp;for&nbsp;a&nbsp;structural&nbsp;part.<br>
+&nbsp;<br>
+Parameters:<br>
+-----------<br>
+polygon&nbsp;:&nbsp;shapely.Polygon&nbsp;object,&nbsp;represents&nbsp;the&nbsp;boundary&nbsp;of&nbsp;this&nbsp;layer<br>
+material&nbsp;:&nbsp;Material&nbsp;object,&nbsp;the&nbsp;material&nbsp;properties&nbsp;of&nbsp;this&nbsp;layer<br>
+parent_part&nbsp;:&nbsp;structure.Part&nbsp;object,&nbsp;the&nbsp;part&nbsp;this&nbsp;layer&nbsp;belongs&nbsp;to<br>
+name&nbsp;:&nbsp;str,&nbsp;the&nbsp;name&nbsp;of&nbsp;this&nbsp;layer<br>
+mass&nbsp;:&nbsp;float,&nbsp;the&nbsp;mass&nbsp;per&nbsp;unit&nbsp;length&nbsp;of&nbsp;this&nbsp;layer<br>
+left&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;left&nbsp;edge,&nbsp;saved&nbsp;later&nbsp;by&nbsp;<a href="#Layer-get_and_save_edges">get_and_save_edges</a>()<br>
+top&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;top&nbsp;edge,&nbsp;saved&nbsp;later&nbsp;by&nbsp;<a href="#Layer-get_and_save_edges">get_and_save_edges</a>()<br>
+right&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;right&nbsp;edge,&nbsp;saved&nbsp;later&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layer-get_and_save_edges">get_and_save_edges</a>()<br>
+bottom&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;bottom&nbsp;edge,&nbsp;saved&nbsp;later&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layer-get_and_save_edges">get_and_save_edges</a>()<br>
+face_color&nbsp;:&nbsp;str,&nbsp;hex&nbsp;color&nbsp;code&nbsp;for&nbsp;plotting&nbsp;this&nbsp;layer&nbsp;face<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;red)<br>
+edge_color&nbsp;:&nbsp;str,&nbsp;hex&nbsp;color&nbsp;code&nbsp;for&nbsp;plotting&nbsp;this&nbsp;layer&nbsp;edge<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;black)<br>
+corners&nbsp;:&nbsp;list&nbsp;of&nbsp;shapely&nbsp;Point&nbsp;objects,&nbsp;the&nbsp;corners&nbsp;of&nbsp;this&nbsp;polygon<br>
+edges&nbsp;:&nbsp;list&nbsp;of&nbsp;numpy&nbsp;arrays&nbsp;of&nbsp;coords&nbsp;for&nbsp;each&nbsp;edge&nbsp;of&nbsp;this&nbsp;polygon<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Layer-__init__"><strong>__init__</strong></a>(self, polygon, material, parent_part, name, face_color<font color="#909090">='#FF0000'</font>, edge_color<font color="#909090">='#000000'</font>)</dt></dl>
+
+<dl><dt><a name="Layer-area_fraction"><strong>area_fraction</strong></a>(self)</dt><dd><tt>Calculate&nbsp;the&nbsp;ratio&nbsp;of&nbsp;this&nbsp;part&nbsp;area&nbsp;to&nbsp;the&nbsp;cross-section&nbsp;area.</tt></dd></dl>
+
+<dl><dt><a name="Layer-find_corners"><strong>find_corners</strong></a>(self, bounding_polygon, tol<font color="#909090">=1e-08</font>, print_flag<font color="#909090">=False</font>)</dt><dd><tt>Find&nbsp;the&nbsp;corners&nbsp;of&nbsp;a&nbsp;layer&nbsp;cut&nbsp;by&nbsp;a&nbsp;bounding&nbsp;polygon.<br>
+&nbsp;<br>
+Saves:&nbsp;self.<strong>corners</strong></tt></dd></dl>
+
+<dl><dt><a name="Layer-get_and_save_edges"><strong>get_and_save_edges</strong></a>(self)</dt><dd><tt>Identifies&nbsp;and&nbsp;saves&nbsp;the&nbsp;left,&nbsp;top,&nbsp;right,&nbsp;and&nbsp;bottom&nbsp;(LTRB)&nbsp;edges.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;saves&nbsp;the&nbsp;LTRB&nbsp;edges&nbsp;as&nbsp;attributes&nbsp;within&nbsp;the&nbsp;layer&nbsp;object.<br>
+&nbsp;<br>
+self.<strong>left</strong>&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;left&nbsp;edge<br>
+self.<strong>top</strong>&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;top&nbsp;edge<br>
+self.<strong>right</strong>&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;right&nbsp;edge<br>
+self.<strong>bottom</strong>&nbsp;:&nbsp;np.array,&nbsp;coords&nbsp;for&nbsp;bottom&nbsp;edge</tt></dd></dl>
+
+<dl><dt><a name="Layer-get_edges"><strong>get_edges</strong></a>(self)</dt><dd><tt>Returns&nbsp;4&nbsp;arrays&nbsp;of&nbsp;coords&nbsp;for&nbsp;each&nbsp;edge&nbsp;of&nbsp;this&nbsp;layer.</tt></dd></dl>
+
+<dl><dt><a name="Layer-get_edges2"><strong>get_edges2</strong></a>(self, tol<font color="#909090">=1e-08</font>)</dt><dd><tt>Saves&nbsp;a&nbsp;list&nbsp;of&nbsp;arrays&nbsp;of&nbsp;coords&nbsp;for&nbsp;each&nbsp;edge&nbsp;of&nbsp;this&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;an&nbsp;alternate&nbsp;version&nbsp;of&nbsp;the&nbsp;method&nbsp;<a href="#Layer-get_edges">get_edges</a>().<br>
+&nbsp;<br>
+Saves:<br>
+self.<strong>edges</strong></tt></dd></dl>
+
+<dl><dt><a name="Layer-mass_fraction"><strong>mass_fraction</strong></a>(self)</dt><dd><tt>Calculate&nbsp;the&nbsp;ratio&nbsp;of&nbsp;this&nbsp;part&nbsp;mass&nbsp;to&nbsp;the&nbsp;cross-section&nbsp;mass.</tt></dd></dl>
+
+<dl><dt><a name="Layer-move"><strong>move</strong></a>(self, x3_offset, alt_layer<font color="#909090">=False</font>)</dt><dd><tt>Translate&nbsp;a&nbsp;layer&nbsp;in&nbsp;the&nbsp;vertical&nbsp;(x3)&nbsp;direction.</tt></dd></dl>
+
+<dl><dt><a name="Layer-plot_edges"><strong>plot_edges</strong></a>(self, axes)</dt><dd><tt>Plots&nbsp;the&nbsp;polygon&nbsp;edges&nbsp;of&nbsp;this&nbsp;layer.</tt></dd></dl>
+
+<dl><dt><a name="Layer-write_alt_layer_edges"><strong>write_alt_layer_edges</strong></a>(self, f)</dt><dd><tt>Writes&nbsp;the&nbsp;edges&nbsp;for&nbsp;this&nbsp;alternate&nbsp;layer&nbsp;in&nbsp;the&nbsp;file&nbsp;f.</tt></dd></dl>
+
+<dl><dt><a name="Layer-write_alt_layer_edges2"><strong>write_alt_layer_edges2</strong></a>(self, f, start_edge_num, tol<font color="#909090">=1e-07</font>)</dt><dd><tt>Writes&nbsp;the&nbsp;edges&nbsp;for&nbsp;this&nbsp;alternate&nbsp;layer&nbsp;in&nbsp;the&nbsp;file&nbsp;f.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;an&nbsp;alternate&nbsp;version&nbsp;of&nbsp;the&nbsp;method&nbsp;<a href="#Layer-write_alt_layer_edges">write_alt_layer_edges</a>()</tt></dd></dl>
+
+<dl><dt><a name="Layer-write_layer_edges"><strong>write_layer_edges</strong></a>(self, f, start_edge_num, triangular_region<font color="#909090">=False</font>)</dt><dd><tt>Writes&nbsp;the&nbsp;edges&nbsp;for&nbsp;this&nbsp;layer&nbsp;in&nbsp;the&nbsp;file&nbsp;f.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;ID&nbsp;numbers&nbsp;for&nbsp;each&nbsp;edge.<br>
+d['&lt;part&gt;,&nbsp;&lt;layer&gt;,&nbsp;left']&nbsp;:&nbsp;start_edge_num<br>
+d['&lt;part&gt;,&nbsp;&lt;layer&gt;,&nbsp;bottom']&nbsp;:&nbsp;start_edge_num+1<br>
+d['&lt;part&gt;,&nbsp;&lt;layer&gt;,&nbsp;right']&nbsp;:&nbsp;start_edge_num+2<br>
+d['&lt;part&gt;,&nbsp;&lt;layer&gt;,&nbsp;top']&nbsp;:&nbsp;start_edge_num+3<br>
+&nbsp;<br>
+If&nbsp;triangular_region=True,&nbsp;then&nbsp;only&nbsp;3&nbsp;items&nbsp;are&nbsp;in&nbsp;the&nbsp;dictionary.<br>
+d['&lt;part&gt;,&nbsp;&lt;layer&gt;,&nbsp;left']&nbsp;:&nbsp;start_edge_num<br>
+d['&lt;part&gt;,&nbsp;&lt;layer&gt;,&nbsp;bottom']&nbsp;:&nbsp;start_edge_num+1<br>
+d['&lt;part&gt;,&nbsp;&lt;layer&gt;,&nbsp;top']&nbsp;:&nbsp;start_edge_num+2<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+f&nbsp;:&nbsp;file&nbsp;object,&nbsp;the&nbsp;handle&nbsp;for&nbsp;the&nbsp;file&nbsp;being&nbsp;written&nbsp;to<br>
+start_edge_num&nbsp;:&nbsp;int,&nbsp;the&nbsp;ID&nbsp;number&nbsp;for&nbsp;the&nbsp;first&nbsp;edge&nbsp;being&nbsp;written</tt></dd></dl>
+
+<dl><dt><a name="Layer-write_layer_edges2"><strong>write_layer_edges2</strong></a>(self, f, curve_num_placeholder<font color="#909090">='#'</font>)</dt><dd><tt>Writes&nbsp;the&nbsp;edges&nbsp;for&nbsp;this&nbsp;layer&nbsp;in&nbsp;the&nbsp;file&nbsp;f.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+f&nbsp;:&nbsp;file&nbsp;object,&nbsp;the&nbsp;handle&nbsp;for&nbsp;the&nbsp;file&nbsp;being&nbsp;written&nbsp;to</tt></dd></dl>
+
+<dl><dt><a name="Layer-write_polygon_edges"><strong>write_polygon_edges</strong></a>(self, airfoil<font color="#909090">=None</font>)</dt><dd><tt>Write&nbsp;edges&nbsp;for&nbsp;this&nbsp;layer's&nbsp;polygon&nbsp;to&nbsp;a&nbsp;file&nbsp;in&nbsp;`station_path`.</tt></dd></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

@@ -1,0 +1,210 @@
+@SHAPE_DEFINITION {
+  @SHAPE_NAME {shape_sandia_blade} {
+    @SHAPE_TYPE {CURVE}
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    ! station 01
+    @ETA_COORDINATE { 0.00000} {
+      @CURVE_NAME {Cylinder}
+      @SCALING_FACTOR {0.0, 5.694, 5.694}
+      @ORIGIN {2.847, 0.0, 0.0}
+    }
+    ! station 02
+    @ETA_COORDINATE { 0.00500} {
+      @CURVE_NAME {Cylinder}
+      @SCALING_FACTOR {0.0, 5.694, 5.694}
+      @ORIGIN {2.847, 0.0, 0.0}
+    }
+    ! station 03
+    @ETA_COORDINATE { 0.00700} {
+      @CURVE_NAME {SNL_100m_0pt007}
+      @SCALING_FACTOR {0.0, 5.694, 5.694}
+      @ORIGIN {2.847, 0.0, 0.0}
+    }
+    ! station 04
+    @ETA_COORDINATE { 0.00900} {
+      @CURVE_NAME {SNL_100m_0pt009}
+      @SCALING_FACTOR {0.0, 5.694, 5.694}
+      @ORIGIN {2.847, 0.0, 0.0}
+    }
+    ! station 05
+    @ETA_COORDINATE { 0.01100} {
+      @CURVE_NAME {SNL_100m_0pt011}
+      @SCALING_FACTOR {0.0, 5.694, 5.694}
+      @ORIGIN {2.847, 0.0, 0.0}
+    }
+    ! station 06
+    @ETA_COORDINATE { 0.01300} {
+      @CURVE_NAME {SNL_100m_Ellipse97}
+      @SCALING_FACTOR {0.0, 5.694, 5.694}
+      @ORIGIN {2.847, 0.0, 0.0}
+    }
+    ! station 07
+    @ETA_COORDINATE { 0.02400} {
+      @CURVE_NAME {SNL_100m_Ellipse93pt1}
+      @SCALING_FACTOR {0.0, 5.792, 5.792}
+      @ORIGIN {2.890208, 0.0, 0.0}
+    }
+    ! station 08
+    @ETA_COORDINATE { 0.02600} {
+      @CURVE_NAME {SNL_100m_Ellipse92pt5}
+      @SCALING_FACTOR {0.0, 5.811, 5.811}
+      @ORIGIN {2.893878, 0.0, 0.0}
+    }
+    ! station 09
+    @ETA_COORDINATE { 0.04700} {
+      @CURVE_NAME {SNL_100m_Transition84}
+      @SCALING_FACTOR {0.0, 6.058, 6.058}
+      @ORIGIN {2.926014, 0.0, 0.0}
+    }
+    ! station 10
+    @ETA_COORDINATE { 0.06800} {
+      @CURVE_NAME {SNL_100m_Transition76}
+      @SCALING_FACTOR {0.0, 6.304, 6.304}
+      @ORIGIN {2.950272, 0.0, 0.0}
+    }
+    ! station 11
+    @ETA_COORDINATE { 0.08900} {
+      @CURVE_NAME {SNL_100m_Transition68}
+      @SCALING_FACTOR {0.0, 6.551, 6.551}
+      @ORIGIN {2.967603, 0.0, 0.0}
+    }
+    ! station 12
+    @ETA_COORDINATE { 0.11400} {
+      @CURVE_NAME {SNL_100m_Transition60}
+      @SCALING_FACTOR {0.0, 6.835, 6.835}
+      @ORIGIN {2.973225, 0.0, 0.0}
+    }
+    ! station 13
+    @ETA_COORDINATE { 0.14600} {
+      @CURVE_NAME {SNL_100m_Transition51}
+      @SCALING_FACTOR {0.0, 7.215, 7.215}
+      @ORIGIN {2.95815, 0.0, 0.0}
+    }
+    ! station 14
+    @ETA_COORDINATE { 0.16300} {
+      @CURVE_NAME {SNL_100m_Transition47}
+      @SCALING_FACTOR {0.0, 7.404, 7.404}
+      @ORIGIN {2.9616, 0.0, 0.0}
+    }
+    ! station 15
+    @ETA_COORDINATE { 0.17900} {
+      @CURVE_NAME {SNL_100m_Transition43pt5}
+      @SCALING_FACTOR {0.0, 7.552, 7.552}
+      @ORIGIN {2.94528, 0.0, 0.0}
+    }
+    ! station 16
+    @ETA_COORDINATE { 0.19500} {
+      @CURVE_NAME {DU99_W_405}
+      @SCALING_FACTOR {0.0, 7.628, 7.628}
+      @ORIGIN {2.89864, 0.0, 0.0}
+    }
+    ! station 17
+    @ETA_COORDINATE { 0.22200} {
+      @CURVE_NAME {DU99_W_405_38}
+      @SCALING_FACTOR {0.0, 7.585, 7.585}
+      @ORIGIN {2.86713, 0.0, 0.0}
+    }
+    ! station 18
+    @ETA_COORDINATE { 0.24900} {
+      @CURVE_NAME {DU99_W_350_36}
+      @SCALING_FACTOR {0.0, 7.488, 7.488}
+      @ORIGIN {2.822976, 0.0, 0.0}
+    }
+    ! station 19
+    @ETA_COORDINATE { 0.27600} {
+      @CURVE_NAME {DU99_W_350_34}
+      @SCALING_FACTOR {0.0, 7.347, 7.347}
+      @ORIGIN {2.755125, 0.0, 0.0}
+    }
+    ! station 20
+    @ETA_COORDINATE { 0.35800} {
+      @CURVE_NAME {DU97_W_300}
+      @SCALING_FACTOR {0.0, 6.923, 6.923}
+      @ORIGIN {2.596125, 0.0, 0.0}
+    }
+    ! station 21
+    @ETA_COORDINATE { 0.43900} {
+      @CURVE_NAME {DU91_W2_250_26}
+      @SCALING_FACTOR {0.0, 6.429, 6.429}
+      @ORIGIN {2.410875, 0.0, 0.0}
+    }
+    ! station 22
+    @ETA_COORDINATE { 0.52000} {
+      @CURVE_NAME {DU93_W_210_23}
+      @SCALING_FACTOR {0.0, 5.915, 5.915}
+      @ORIGIN {2.218125, 0.0, 0.0}
+    }
+    ! station 23
+    @ETA_COORDINATE { 0.60200} {
+      @CURVE_NAME {DU93_W_210}
+      @SCALING_FACTOR {0.0, 5.417, 5.417}
+      @ORIGIN {2.031375, 0.0, 0.0}
+    }
+    ! station 24
+    @ETA_COORDINATE { 0.66700} {
+      @CURVE_NAME {NACA_64_618_19}
+      @SCALING_FACTOR {0.0, 5.019, 5.019}
+      @ORIGIN {1.882125, 0.0, 0.0}
+    }
+    ! station 25
+    @ETA_COORDINATE { 0.68300} {
+      @CURVE_NAME {NACA_64_618_18pt5}
+      @SCALING_FACTOR {0.0, 4.920, 4.920}
+      @ORIGIN {1.845, 0.0, 0.0}
+    }
+    ! station 26
+    @ETA_COORDINATE { 0.73200} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 4.621, 4.621}
+      @ORIGIN {1.732875, 0.0, 0.0}
+    }
+    ! station 27
+    @ETA_COORDINATE { 0.76400} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 4.422, 4.422}
+      @ORIGIN {1.65825, 0.0, 0.0}
+    }
+    ! station 28
+    @ETA_COORDINATE { 0.84600} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 3.925, 3.925}
+      @ORIGIN {1.471875, 0.0, 0.0}
+    }
+    ! station 29
+    @ETA_COORDINATE { 0.89400} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 3.619, 3.619}
+      @ORIGIN {1.357125, 0.0, 0.0}
+    }
+    ! station 30
+    @ETA_COORDINATE { 0.94300} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 2.824, 2.824}
+      @ORIGIN {1.059, 0.0, 0.0}
+    }
+    ! station 31
+    @ETA_COORDINATE { 0.95700} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 2.375, 2.375}
+      @ORIGIN {0.890625, 0.0, 0.0}
+    }
+    ! station 32
+    @ETA_COORDINATE { 0.97200} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 1.836, 1.836}
+      @ORIGIN {0.6885, 0.0, 0.0}
+    }
+    ! station 33
+    @ETA_COORDINATE { 0.98600} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 1.208, 1.208}
+      @ORIGIN {0.453, 0.0, 0.0}
+    }
+    ! station 34
+    @ETA_COORDINATE { 1.00000} {
+      @CURVE_NAME {NACA_64_618}
+      @SCALING_FACTOR {0.0, 0.100, 0.100}
+      @ORIGIN {0.0375, 0.0, 0.0}
+    }
+  }
+}

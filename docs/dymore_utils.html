@@ -1,0 +1,188 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module dymore_utils</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>dymore_utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/dymore_utils.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\dymore_utils.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;to&nbsp;translate&nbsp;the&nbsp;outputs&nbsp;from&nbsp;VABS&nbsp;to&nbsp;inputs&nbsp;for&nbsp;DYMORE.<br>
+&nbsp;<br>
+For&nbsp;example,&nbsp;if&nbsp;VABS&nbsp;was&nbsp;used&nbsp;to&nbsp;calculate&nbsp;the&nbsp;mass&nbsp;and&nbsp;stiffness&nbsp;matrices&nbsp;for<br>
+a&nbsp;series&nbsp;of&nbsp;cross-sections&nbsp;in&nbsp;a&nbsp;beam,&nbsp;this&nbsp;module&nbsp;can&nbsp;construct&nbsp;the&nbsp;DYMORE<br>
+input&nbsp;file&nbsp;for&nbsp;a&nbsp;beam&nbsp;with&nbsp;those&nbsp;cross-sectional&nbsp;properties.<br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;modified:&nbsp;August&nbsp;1,&nbsp;2013</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-defineRegularExpressions"><strong>defineRegularExpressions</strong></a>()</dt><dd><tt>Define&nbsp;regular&nbsp;expressions&nbsp;to&nbsp;search&nbsp;for&nbsp;mass&nbsp;and&nbsp;stiffness&nbsp;matrices&nbsp;in&nbsp;a&nbsp;<br>
+VABS-formatted&nbsp;output&nbsp;file.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+&lt;none&gt;<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+cm_x2_pat&nbsp;:&nbsp;&lt;pattern&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;regex&nbsp;pattern&nbsp;for&nbsp;the&nbsp;x2-coordinate&nbsp;of&nbsp;the&nbsp;center&nbsp;of&nbsp;mass.<br>
+cm_x3_pat&nbsp;:&nbsp;&lt;pattern&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;regex&nbsp;pattern&nbsp;for&nbsp;the&nbsp;x3-coordinate&nbsp;of&nbsp;the&nbsp;center&nbsp;of&nbsp;mass.<br>
+mpus_pat&nbsp;:&nbsp;&lt;pattern&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;regex&nbsp;pattern&nbsp;for&nbsp;the&nbsp;mass&nbsp;per&nbsp;unit&nbsp;span.<br>
+i1_pat&nbsp;:&nbsp;&lt;pattern&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;regex&nbsp;pattern&nbsp;for&nbsp;the&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x1-axis.<br>
+i2_pat&nbsp;:&nbsp;&lt;pattern&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;regex&nbsp;pattern&nbsp;for&nbsp;the&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x2-axis.<br>
+i3_pat&nbsp;:&nbsp;&lt;pattern&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;regex&nbsp;pattern&nbsp;for&nbsp;the&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x3-axis.<br>
+K_head_pat&nbsp;:&nbsp;&lt;pattern&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;regex&nbsp;pattern&nbsp;for&nbsp;the&nbsp;Timoshenko&nbsp;Stiffness&nbsp;Matrix&nbsp;header.</tt></dd></dl>
+ <dl><dt><a name="-formatComments"><strong>formatComments</strong></a>(comments)</dt><dd><tt>Format&nbsp;the&nbsp;comments&nbsp;for&nbsp;a&nbsp;Dymore&nbsp;code&nbsp;block.&nbsp;Maximum&nbsp;comment&nbsp;length&nbsp;is&nbsp;5&nbsp;lines&nbsp;of&nbsp;120&nbsp;characters&nbsp;each<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+comments&nbsp;:&nbsp;&lt;string&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;original,&nbsp;unformatted&nbsp;comment.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+comments&nbsp;:&nbsp;&lt;string&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;comment,&nbsp;reformatted&nbsp;for&nbsp;Dymore.</tt></dd></dl>
+ <dl><dt><a name="-makeFile"><strong>makeFile</strong></a>(dymoreFileName)</dt><dd><tt>Make&nbsp;a&nbsp;temporary&nbsp;file&nbsp;on&nbsp;the&nbsp;hard&nbsp;disk&nbsp;to&nbsp;store&nbsp;DYMORE-formatted&nbsp;data.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+dymoreFileName&nbsp;:&nbsp;&lt;string&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;file&nbsp;to&nbsp;write&nbsp;to.<br>
+&nbsp;&nbsp;&nbsp;<br>
+Returns<br>
+-------<br>
+tempFile&nbsp;:&nbsp;&lt;file&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;file&nbsp;handle&nbsp;to&nbsp;the&nbsp;temporary&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-pullMKmatrices"><strong>pullMKmatrices</strong></a>(MKlines, print_flag<font color="#909090">=False</font>)</dt><dd><tt>Pull&nbsp;the&nbsp;numerical&nbsp;values&nbsp;of&nbsp;the&nbsp;mass&nbsp;and&nbsp;stiffness&nbsp;matrices&nbsp;from&nbsp;the&nbsp;VABS&nbsp;<br>
+output&nbsp;file&nbsp;(*.dat.K).<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+MKlines&nbsp;:&nbsp;&lt;list&nbsp;of&nbsp;strings&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;contents&nbsp;of&nbsp;the&nbsp;VABS&nbsp;output&nbsp;file&nbsp;(*.dat.K).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Each&nbsp;string&nbsp;is&nbsp;a&nbsp;line&nbsp;from&nbsp;the&nbsp;VABS&nbsp;output&nbsp;file.<br>
+print_flag&nbsp;:&nbsp;&lt;logical&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;to&nbsp;True&nbsp;to&nbsp;print&nbsp;out&nbsp;extra&nbsp;debugging&nbsp;information&nbsp;to&nbsp;the&nbsp;screen.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+cm_x2&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;x2-coordinate&nbsp;of&nbsp;the&nbsp;center&nbsp;of&nbsp;mass.<br>
+cm_x3&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;x3-coordinate&nbsp;of&nbsp;the&nbsp;center&nbsp;of&nbsp;mass.<br>
+mpus&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;mass&nbsp;per&nbsp;unit&nbsp;span.<br>
+i1&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x1-axis.<br>
+i2&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x2-axis.<br>
+i3&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x3-axis.<br>
+K&nbsp;:&nbsp;&lt;np.array&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;Timoshenko&nbsp;stiffness&nbsp;matrix.</tt></dd></dl>
+ <dl><dt><a name="-readFile"><strong>readFile</strong></a>(filestr)</dt><dd><tt>Read&nbsp;a&nbsp;file&nbsp;into&nbsp;memory.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+filestr&nbsp;:&nbsp;&lt;string&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;file&nbsp;to&nbsp;be&nbsp;read&nbsp;into&nbsp;memory.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+fileLines&nbsp;:&nbsp;&lt;list&nbsp;of&nbsp;strings&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;strings,&nbsp;each&nbsp;of&nbsp;which&nbsp;represents&nbsp;one&nbsp;line&nbsp;in&nbsp;the&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-writeDymoreMK"><strong>writeDymoreMK</strong></a>(f, CoordType, coord, cm_x2, cm_x3, mpus, i1, i2, i3, K)</dt><dd><tt>Description.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+f&nbsp;:&nbsp;&lt;file&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;file&nbsp;handle&nbsp;that&nbsp;data&nbsp;will&nbsp;be&nbsp;written&nbsp;to.<br>
+CoordType&nbsp;:&nbsp;&lt;string&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Acceptable&nbsp;values&nbsp;are:&nbsp;'ETA_COORDINATE',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'CURVILINEAR_COORDINATE',&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'AXIAL_COORDINATE'<br>
+coord&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;spanwise&nbsp;coordinate&nbsp;of&nbsp;this&nbsp;cross-section.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;coordinate&nbsp;should&nbsp;match&nbsp;the&nbsp;CoordType&nbsp;specified&nbsp;above.<br>
+cm_x2&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;x2-coordinate&nbsp;of&nbsp;the&nbsp;center&nbsp;of&nbsp;mass.<br>
+cm_x3&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;x3-coordinate&nbsp;of&nbsp;the&nbsp;center&nbsp;of&nbsp;mass.<br>
+mpus&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;mass&nbsp;per&nbsp;unit&nbsp;span.<br>
+i1&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x1-axis.<br>
+i2&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x2-axis.<br>
+i3&nbsp;:&nbsp;&lt;float&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;moment&nbsp;of&nbsp;inertia&nbsp;about&nbsp;the&nbsp;x3-axis.<br>
+K&nbsp;:&nbsp;&lt;np.array&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;Timoshenko&nbsp;stiffness&nbsp;matrix.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+&lt;none&gt;<br>
+&nbsp;<br>
+Example&nbsp;output&nbsp;(written&nbsp;to&nbsp;a&nbsp;file)<br>
+----------------------------------<br>
+@ETA_COORDINATE&nbsp;{0.00000e+00}&nbsp;{<br>
+&nbsp;&nbsp;@STIFFNESS_MATRIX&nbsp;{&nbsp;7.6443255182E+09,&nbsp;&nbsp;&nbsp;-3.5444961981E-04,&nbsp;&nbsp;&nbsp;-1.5092432335E-03,&nbsp;&nbsp;&nbsp;&nbsp;3.3599749794E+06,&nbsp;&nbsp;&nbsp;&nbsp;2.7710007447E-01,&nbsp;&nbsp;&nbsp;&nbsp;4.1602501550E-02,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.8284702841E+08,&nbsp;&nbsp;&nbsp;-2.8863166160E+01,&nbsp;&nbsp;&nbsp;-4.5930836014E-01,&nbsp;&nbsp;&nbsp;-3.3517886643E+05,&nbsp;&nbsp;&nbsp;&nbsp;3.4162114776E-03,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.5606703330E+08,&nbsp;&nbsp;&nbsp;-4.0749872012E-01,&nbsp;&nbsp;&nbsp;&nbsp;3.6079611429E-02,&nbsp;&nbsp;&nbsp;-4.2577508629E+04,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8.8773955810E+08,&nbsp;&nbsp;&nbsp;&nbsp;1.8897378940E-03,&nbsp;&nbsp;&nbsp;&nbsp;8.3869473951E-04,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5282893600E+10,&nbsp;&nbsp;&nbsp;-5.7686739280E-02,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.2625281359E+09}<br>
+&nbsp;&nbsp;@MASS_PER_UNIT_SPAN&nbsp;{7.1224712000E+02}<br>
+&nbsp;&nbsp;@MOMENTS_OF_INERTIA&nbsp;{3.9569408290E+03,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.6961203640E+03,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.6082046495E+02}<br>
+&nbsp;&nbsp;@CENTRE_OF_MASS_LOCATION&nbsp;{-1.6834618673E-17,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1.1472480873E-16}<br>
+}</tt></dd></dl>
+ <dl><dt><a name="-writeMKmatrices"><strong>writeMKmatrices</strong></a>(DYMOREfileHandle, vabsMKfilepath, station_data, CoordType<font color="#909090">='ETA_COORDINATE'</font>, debug_flag<font color="#909090">=False</font>)</dt><dd><tt>Write&nbsp;the&nbsp;mass&nbsp;and&nbsp;stiffness&nbsp;matrices&nbsp;for&nbsp;one&nbsp;cross-section&nbsp;to&nbsp;a&nbsp;file.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+DYMOREfileHandle&nbsp;:&nbsp;&lt;file&nbsp;object&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;file&nbsp;handle&nbsp;that&nbsp;data&nbsp;will&nbsp;be&nbsp;written&nbsp;to.<br>
+vabsMKfilepath&nbsp;:&nbsp;&lt;string&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;path&nbsp;to&nbsp;the&nbsp;VABS&nbsp;file&nbsp;that&nbsp;contains&nbsp;the&nbsp;mass&nbsp;and&nbsp;stiffness&nbsp;matrices&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;this&nbsp;cross-section.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Example:&nbsp;'VABS/M_and_K_matrices/spar_station_04.dat.K'<br>
+station_data&nbsp;:&nbsp;&lt;dictionary&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;dictionary&nbsp;of&nbsp;layup&nbsp;parameters&nbsp;for&nbsp;this&nbsp;spar&nbsp;station.<br>
+CoordType&nbsp;:&nbsp;&lt;string&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Acceptable&nbsp;values&nbsp;are:&nbsp;'ETA_COORDINATE',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'CURVILINEAR_COORDINATE',&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'AXIAL_COORDINATE'<br>
+debug_flag&nbsp;:&nbsp;&lt;logical&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;to&nbsp;True&nbsp;to&nbsp;print&nbsp;out&nbsp;extra&nbsp;debugging&nbsp;information&nbsp;to&nbsp;the&nbsp;screen.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+&lt;none&gt;</tt></dd></dl>
+</td></tr></table>
+</body></html>

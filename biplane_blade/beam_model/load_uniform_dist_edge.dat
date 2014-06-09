@@ -1,0 +1,319 @@
+@EDGE_LOAD_DEFINITION {
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_01_09} {
+    @EDGE_NAME {edge_01_09}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 1.0e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_09_10} {
+    @EDGE_NAME {lower_edge_09_10}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_10_11} {
+    @EDGE_NAME {lower_edge_10_11}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_11_12} {
+    @EDGE_NAME {lower_edge_11_12}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_12_13} {
+    @EDGE_NAME {lower_edge_12_13}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_13_14} {
+    @EDGE_NAME {lower_edge_13_14}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_14_15} {
+    @EDGE_NAME {lower_edge_14_15}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_15_16} {
+    @EDGE_NAME {lower_edge_15_16}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_16_17} {
+    @EDGE_NAME {lower_edge_16_17}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_17_18} {
+    @EDGE_NAME {lower_edge_17_18}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_18_19} {
+    @EDGE_NAME {lower_edge_18_19}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_19_20} {
+    @EDGE_NAME {lower_edge_19_20}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_20_21} {
+    @EDGE_NAME {lower_edge_20_21}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_21_22} {
+    @EDGE_NAME {lower_edge_21_22}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_22_23} {
+    @EDGE_NAME {lower_edge_22_23}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_23_24} {
+    @EDGE_NAME {lower_edge_23_24}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_lower_24_25} {
+    @EDGE_NAME {lower_edge_24_25}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_09_10} {
+    @EDGE_NAME {upper_edge_09_10}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_10_11} {
+    @EDGE_NAME {upper_edge_10_11}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_11_12} {
+    @EDGE_NAME {upper_edge_11_12}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_12_13} {
+    @EDGE_NAME {upper_edge_12_13}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_13_14} {
+    @EDGE_NAME {upper_edge_13_14}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_14_15} {
+    @EDGE_NAME {upper_edge_14_15}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_15_16} {
+    @EDGE_NAME {upper_edge_15_16}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_16_17} {
+    @EDGE_NAME {upper_edge_16_17}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_17_18} {
+    @EDGE_NAME {upper_edge_17_18}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_18_19} {
+    @EDGE_NAME {upper_edge_18_19}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_19_20} {
+    @EDGE_NAME {upper_edge_19_20}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_20_21} {
+    @EDGE_NAME {upper_edge_20_21}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_21_22} {
+    @EDGE_NAME {upper_edge_21_22}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_22_23} {
+    @EDGE_NAME {upper_edge_22_23}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_23_24} {
+    @EDGE_NAME {upper_edge_23_24}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_upper_24_25} {
+    @EDGE_NAME {upper_edge_24_25}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 0.5e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+  @EDGE_LOAD_NAME {uniform_dist_edge_load_25_40} {
+    @EDGE_NAME {edge_25_40}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i2 {uniform_dist_edge_load_table}
+      @SCALING_FACTOR { 1.0e+03}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+}
+
+@DATA_TABLE_DEFINITION {
+  @DATA_TABLE_NAME {uniform_dist_edge_load_table} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I2}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.0} @Y_ENTRY {1.0}
+      @X_ENTRY {1.0} @Y_ENTRY {1.0}
+    }
+  }
+}

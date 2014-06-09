@@ -1,0 +1,2 @@
+this file doesn't calculate anything
+it simply keeps github from deleting the FIGURES directory if it is empty

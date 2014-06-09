@@ -1,0 +1,40 @@
+@EDGE_LOAD_DEFINITION {
+  @EDGE_LOAD_NAME {BEM_flap_load} {
+    @EDGE_NAME {edgeBlade}
+    @LOADING_COMPONENT {
+      @APPLIED_FORCE_ALONG_i3 {BEM_flap_load_table}
+      @SCALING_FACTOR { 1.0}
+      @TIME_FUNCTION_NAME {scheduleload}
+      @FOLLOWER_FORCE_FLAG {NO}
+    }
+  }
+}
+
+@DATA_TABLE_DEFINITION {
+  @DATA_TABLE_NAME {BEM_flap_load_table} {
+    @COORDINATE_TYPE {ETA_COORDINATE}
+    @DATA_TYPE {FORCE_ALONG_I3}
+    @TABLE_ENTRIES {
+      @X_ENTRY {0.00000} @Y_ENTRY {    0.000}
+      @X_ENTRY {0.02164} @Y_ENTRY {  243.878}
+      @X_ENTRY {0.06611} @Y_ENTRY {  299.154}
+      @X_ENTRY {0.11058} @Y_ENTRY {  263.065}
+      @X_ENTRY {0.16617} @Y_ENTRY { 2338.315}
+      @X_ENTRY {0.23288} @Y_ENTRY { 3317.554}
+      @X_ENTRY {0.29958} @Y_ENTRY { 4000.739}
+      @X_ENTRY {0.36629} @Y_ENTRY { 4781.188}
+      @X_ENTRY {0.43300} @Y_ENTRY { 5851.984}
+      @X_ENTRY {0.49970} @Y_ENTRY { 6812.364}
+      @X_ENTRY {0.56641} @Y_ENTRY { 8020.803}
+      @X_ENTRY {0.63312} @Y_ENTRY { 9184.607}
+      @X_ENTRY {0.69982} @Y_ENTRY { 9815.452}
+      @X_ENTRY {0.76653} @Y_ENTRY {10768.313}
+      @X_ENTRY {0.83323} @Y_ENTRY {11609.353}
+      @X_ENTRY {0.88882} @Y_ENTRY {12088.440}
+      @X_ENTRY {0.93329} @Y_ENTRY {11811.550}
+      @X_ENTRY {0.97776} @Y_ENTRY { 8551.274}
+      @X_ENTRY {1.00000} @Y_ENTRY {    0.000}
+    }
+    @COMMENTS {from WT_Perf_Results__SNL100.xlsx, summed thrust per length}
+  }
+}

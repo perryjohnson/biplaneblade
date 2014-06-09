@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module station</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>station</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///D:/dropbox/ucla/research/perry/github-desktop/spardesign2/lib/station.py">d:\dropbox\ucla\research\perry\github-desktop\spardesign2\lib\station.py</a></font></td></tr></table>
+    <p><tt>A&nbsp;module&nbsp;for&nbsp;organizing&nbsp;geometrical&nbsp;data&nbsp;for&nbsp;a&nbsp;blade&nbsp;station.<br>
+&nbsp;<br>
+Note:&nbsp;to&nbsp;generate&nbsp;html&nbsp;documentation&nbsp;of&nbsp;this&nbsp;module,&nbsp;open&nbsp;a&nbsp;Windows&nbsp;cmd&nbsp;prompt:<br>
+&gt;&nbsp;cd&nbsp;path/to/lib<br>
+&gt;&nbsp;python&nbsp;-m&nbsp;pydoc&nbsp;-w&nbsp;station<br>
+Then,&nbsp;open&nbsp;path/to/lib/station.html&nbsp;in&nbsp;a&nbsp;browser.<br>
+Refs:<br>
+https://docs.python.org/2.7/library/pydoc.html<br>
+<a href="http://bytes.com/topic/python/answers/436285-how-use-pydoc">http://bytes.com/topic/python/answers/436285-how-use-pydoc</a><br>
+&nbsp;<br>
+Author:&nbsp;Perry&nbsp;Roth-Johnson<br>
+Last&nbsp;updated:&nbsp;April&nbsp;14,&nbsp;2014</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="airfoil.html">airfoil</a><br>
+<a href="coordinates.html">coordinates</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+<a href="structure.html">structure</a><br>
+</td><td width="25%" valign=top><a href="transformation.html">transformation</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="station.html#_Station">_Station</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="station.html#BiplaneStation">BiplaneStation</a>
+</font></dt><dt><font face="helvetica, arial"><a href="station.html#MonoplaneStation">MonoplaneStation</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BiplaneStation">class <strong>BiplaneStation</strong></a>(<a href="station.html#_Station">_Station</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;a&nbsp;biplane&nbsp;station&nbsp;for&nbsp;a&nbsp;biplane&nbsp;wind&nbsp;turbine&nbsp;blade.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BiplaneStation-__init__"><strong>__init__</strong></a>(self, stn_series, blade_path, parent_blade)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;biplane&nbsp;station&nbsp;for&nbsp;a&nbsp;biplane&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStation-find_SW_cs_coords"><strong>find_SW_cs_coords</strong></a>(self)</dt><dd><tt>Find&nbsp;the&nbsp;corners&nbsp;of&nbsp;each&nbsp;shear&nbsp;web&nbsp;cross-section.<br>
+&nbsp;<br>
+Saves&nbsp;cross-section&nbsp;coordinates&nbsp;(in&nbsp;meters)&nbsp;as&nbsp;the&nbsp;'.cs_coords'&nbsp;<br>
+attribute&nbsp;(a&nbsp;numpy&nbsp;array)&nbsp;within&nbsp;each&nbsp;ShearWeb&nbsp;instance.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStation-find_part_edges"><strong>find_part_edges</strong></a>(self)</dt><dd><tt>Find&nbsp;the&nbsp;edges&nbsp;of&nbsp;each&nbsp;structural&nbsp;part&nbsp;in&nbsp;this&nbsp;biplane&nbsp;station.<br>
+&nbsp;<br>
+Saves&nbsp;coordinates&nbsp;(in&nbsp;meters)&nbsp;as&nbsp;'.left'&nbsp;and&nbsp;'.right'&nbsp;attributes<br>
+(floats)&nbsp;within&nbsp;each&nbsp;Part&nbsp;instance&nbsp;(OOP&nbsp;style).</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStation-plot_parts"><strong>plot_parts</strong></a>(self, ax<font color="#909090">=None</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;structural&nbsp;parts&nbsp;in&nbsp;this&nbsp;blade&nbsp;station.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="station.html#_Station">_Station</a>:<br>
+<dl><dt><a name="BiplaneStation-__del__"><strong>__del__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="BiplaneStation-create_plot"><strong>create_plot</strong></a>(self, legend_flag<font color="#909090">=False</font>)</dt><dd><tt>Create&nbsp;a&nbsp;plot&nbsp;for&nbsp;this&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;handles&nbsp;to&nbsp;the&nbsp;figure&nbsp;and&nbsp;its&nbsp;axes:&nbsp;(fig,&nbsp;axes)<br>
+&nbsp;<br>
+Several&nbsp;settings&nbsp;are&nbsp;applied&nbsp;---------<br>
+Title&nbsp;:&nbsp;Station&nbsp;#[num],&nbsp;[airfoil&nbsp;name],&nbsp;[num]%&nbsp;span<br>
+Aspect&nbsp;ratio&nbsp;:&nbsp;equal<br>
+Grid&nbsp;:&nbsp;on<br>
+x-label&nbsp;:&nbsp;x2&nbsp;[meters]<br>
+y-label&nbsp;:&nbsp;x3&nbsp;[meters]</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStation-plot_polygon"><strong>plot_polygon</strong></a>(self, polygon, axes, face_color<font color="#909090">=(1, 0, 0)</font>, edge_color<font color="#909090">=(1, 0, 0)</font>, alpha<font color="#909090">=0.5</font>)</dt><dd><tt>Plot&nbsp;a&nbsp;polygon&nbsp;in&nbsp;a&nbsp;matplotlib&nbsp;figure.</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStation-save_plot"><strong>save_plot</strong></a>(self, fig)</dt><dd><tt>Save&nbsp;the&nbsp;plot&nbsp;in&nbsp;the&nbsp;station&nbsp;path&nbsp;as&nbsp;a&nbsp;PNG&nbsp;file:&nbsp;stnXX.png</tt></dd></dl>
+
+<dl><dt><a name="BiplaneStation-show_plot"><strong>show_plot</strong></a>(self)</dt><dd><tt>Show&nbsp;the&nbsp;plot.</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="station.html#_Station">_Station</a>:<br>
+<dl><dt><strong>logfile_name</strong> = 'station.log'</dl>
+
+<dl><dt><strong>number_of_stations</strong> = 0</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MonoplaneStation">class <strong>MonoplaneStation</strong></a>(<a href="station.html#_Station">_Station</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Define&nbsp;a&nbsp;monoplane&nbsp;station&nbsp;for&nbsp;a&nbsp;wind&nbsp;turbine&nbsp;blade.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="MonoplaneStation-__init__"><strong>__init__</strong></a>(self, stn_series, blade_path, parent_blade)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;biplane&nbsp;station&nbsp;for&nbsp;a&nbsp;biplane&nbsp;blade.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStation-find_SW_cs_coords"><strong>find_SW_cs_coords</strong></a>(self)</dt><dd><tt>Find&nbsp;the&nbsp;corners&nbsp;of&nbsp;each&nbsp;shear&nbsp;web&nbsp;cross-section.<br>
+&nbsp;<br>
+Saves&nbsp;cross-section&nbsp;coordinates&nbsp;(in&nbsp;meters)&nbsp;as&nbsp;the&nbsp;'.cs_coords'&nbsp;<br>
+attribute&nbsp;(a&nbsp;numpy&nbsp;array)&nbsp;within&nbsp;each&nbsp;ShearWeb&nbsp;instance.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStation-find_part_edges"><strong>find_part_edges</strong></a>(self)</dt><dd><tt>Find&nbsp;the&nbsp;edges&nbsp;of&nbsp;each&nbsp;structural&nbsp;part&nbsp;in&nbsp;this&nbsp;monoplane&nbsp;station.<br>
+&nbsp;<br>
+Saves&nbsp;coordinates&nbsp;(in&nbsp;meters)&nbsp;as&nbsp;'.left'&nbsp;and&nbsp;'.right'&nbsp;attributes<br>
+(floats)&nbsp;within&nbsp;each&nbsp;Part&nbsp;instance&nbsp;(OOP&nbsp;style).</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStation-plot_parts"><strong>plot_parts</strong></a>(self, ax<font color="#909090">=None</font>)</dt><dd><tt>Plots&nbsp;the&nbsp;structural&nbsp;parts&nbsp;in&nbsp;this&nbsp;blade&nbsp;station.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="station.html#_Station">_Station</a>:<br>
+<dl><dt><a name="MonoplaneStation-__del__"><strong>__del__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="MonoplaneStation-create_plot"><strong>create_plot</strong></a>(self, legend_flag<font color="#909090">=False</font>)</dt><dd><tt>Create&nbsp;a&nbsp;plot&nbsp;for&nbsp;this&nbsp;station.<br>
+&nbsp;<br>
+Returns&nbsp;handles&nbsp;to&nbsp;the&nbsp;figure&nbsp;and&nbsp;its&nbsp;axes:&nbsp;(fig,&nbsp;axes)<br>
+&nbsp;<br>
+Several&nbsp;settings&nbsp;are&nbsp;applied&nbsp;---------<br>
+Title&nbsp;:&nbsp;Station&nbsp;#[num],&nbsp;[airfoil&nbsp;name],&nbsp;[num]%&nbsp;span<br>
+Aspect&nbsp;ratio&nbsp;:&nbsp;equal<br>
+Grid&nbsp;:&nbsp;on<br>
+x-label&nbsp;:&nbsp;x2&nbsp;[meters]<br>
+y-label&nbsp;:&nbsp;x3&nbsp;[meters]</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStation-plot_polygon"><strong>plot_polygon</strong></a>(self, polygon, axes, face_color<font color="#909090">=(1, 0, 0)</font>, edge_color<font color="#909090">=(1, 0, 0)</font>, alpha<font color="#909090">=0.5</font>)</dt><dd><tt>Plot&nbsp;a&nbsp;polygon&nbsp;in&nbsp;a&nbsp;matplotlib&nbsp;figure.</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStation-save_plot"><strong>save_plot</strong></a>(self, fig)</dt><dd><tt>Save&nbsp;the&nbsp;plot&nbsp;in&nbsp;the&nbsp;station&nbsp;path&nbsp;as&nbsp;a&nbsp;PNG&nbsp;file:&nbsp;stnXX.png</tt></dd></dl>
+
+<dl><dt><a name="MonoplaneStation-show_plot"><strong>show_plot</strong></a>(self)</dt><dd><tt>Show&nbsp;the&nbsp;plot.</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="station.html#_Station">_Station</a>:<br>
+<dl><dt><strong>logfile_name</strong> = 'station.log'</dl>
+
+<dl><dt><strong>number_of_stations</strong> = 0</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-isnan"><strong>isnan</strong></a>(...)</dt><dd><tt><a href="#-isnan">isnan</a>(x)&nbsp;-&gt;&nbsp;bool<br>
+&nbsp;<br>
+Check&nbsp;if&nbsp;float&nbsp;x&nbsp;is&nbsp;not&nbsp;a&nbsp;number&nbsp;(NaN).</tt></dd></dl>
+</td></tr></table>
+</body></html>

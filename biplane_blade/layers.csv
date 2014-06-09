@@ -1,0 +1,7 @@
+layer number,layer name,material number,material name,layup orientation angle
+1,uniax layer,1,uniaxial GFRP,0
+2,biax layer,2,biaxial GFRP,0
+3,triax layer,3,triaxial GFRP,0
+4,foam layer,4,foam,0
+5,gelcoat layer,5,gelcoat,0
+6,resin layer,6,resin,0
