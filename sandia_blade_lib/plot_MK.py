@@ -20,6 +20,10 @@ reload(bl)
 import pandas as pd
 import matplotlib.pyplot as plt
 from numpy import average
+from matplotlib import rc
+
+
+rc('font', size=14.0)
 
 
 def rel_diff(vabs_data, sandia_data):
@@ -46,7 +50,7 @@ s=pd.DataFrame.from_csv('sandia_blade/blade_props_from_Sandia.csv')
 plt.close('all')
 
 # stiffness properties --------------------------------------------------------
-f, axarr = plt.subplots(2,2, figsize=(12,8))
+f, axarr = plt.subplots(2,2, figsize=(10*1.5,6.5*1.5))
 # ref for dual-axis plotting: http://matplotlib.org/examples/api/two_scales.html
 
 # flapwise stiffness
@@ -98,11 +102,12 @@ axarr[1,1].legend()
 axarr[1,1].grid('on', axis='x')
 
 plt.tight_layout()
+plt.subplots_adjust(left=0.05, bottom=0.07, right=0.94, top=0.96, wspace=0.33, hspace=0.28)
 plt.savefig('sandia_blade/Sandia_vs_VABS_stiffness_props.png')
 plt.savefig('sandia_blade/Sandia_vs_VABS_stiffness_props.pdf')
 
 # mass properties -------------------------------------------------------------
-f2, axarr2 = plt.subplots(2,2, figsize=(12,8))
+f2, axarr2 = plt.subplots(2,2, figsize=(10*1.5,6.5*1.5))
 
 # mass density
 twin_axis2_10 = prep_rel_diff_plot(axarr2[1,0])
@@ -141,6 +146,7 @@ axarr2[0,1].legend()
 axarr2[0,1].grid('on', axis='x')
 
 plt.tight_layout()
+plt.subplots_adjust(left=0.07, bottom=0.07, right=0.94, top=0.96, wspace=0.33, hspace=0.28)
 plt.savefig('sandia_blade/Sandia_vs_VABS_mass_props.png')
 plt.savefig('sandia_blade/Sandia_vs_VABS_mass_props.pdf')
 
