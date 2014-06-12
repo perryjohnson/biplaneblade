@@ -3,8 +3,8 @@ biplaneblade
 
 create and analyze biplane wind turbine blades with 1D beam finite elements and 2D cross-sectional analysis
 
-Current workflow (as of April 25, 2014)
----------------------------------------
+Current workflow
+----------------
 1. run `path_to_blade_lib/prep_stnXX_mesh.py` - write initial TrueGrid input file with boundary curves: `mesh_stnXX_start.tg`
 2. manually edit `mesh_stnXX_start.tg` to create block meshes fitted to boundary curves; save as `mesh_stnXX_finish.tg`
 3. run TrueGrid on `mesh_stnXX_finish.tg` to write ABAQUS output file: `mesh_stnXX.abq`
@@ -19,11 +19,9 @@ Current workflow (as of April 25, 2014)
 12. run `clean.bat` to erase all DYMORE results
 
 
-Plan forward (as of April 10, 2014)
------------------------------------
-Create a beam model of the biplane blade (flapwise symmetric, no stagger configuration). Reuse cross-section meshes at stations 1-9 and 25-34 from the Sandia blade. Make new meshes for stations 10-24, then create new DYMORE input files for the biplane blade.
-
-In the end, you should have an archive of all the blade input files that looks like:
+Folder structure
+----------------
+The archive of all the blade input files looks like this:
 
 * `biplane_blade/`
   * `blade_definition.csv`
