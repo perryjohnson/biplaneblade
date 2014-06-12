@@ -3,6 +3,8 @@ biplaneblade
 
 create and analyze biplane wind turbine blades with 1D beam finite elements and 2D cross-sectional analysis
 
+This repository holds the source code used for the analysis of a 100-meter biplane wind turbine blade, as described in Chapter 5 of P. Roth-Johnson (2014), 'Aero-Structural Design Investigations for Biplane Wind Turbine Blades,' Ph.D. Dissertation, UCLA.
+
 Current workflow
 ----------------
 1. run `path_to_blade_lib/prep_stnXX_mesh.py` - write initial TrueGrid input file with boundary curves: `mesh_stnXX_start.tg`
